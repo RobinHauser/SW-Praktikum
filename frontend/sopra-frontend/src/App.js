@@ -1,16 +1,18 @@
 import './App.css';
-import MenuAppBar from "./components/AppHeader";
-import GridContainer from "./components/GridContainer";
-import Container from '@mui/material/Container';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Main from "./pages/Main";
+import Profile from "./pages/Profile";
+import SignIn from "./pages/SignIn";
 
 
 export default function App() {
     return (
-        <div className="App">
-            <MenuAppBar></MenuAppBar>
-            <Container style={{marginTop: '50px'}}>
-                <GridContainer></GridContainer>
-            </Container>
-        </div>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Main/>}></Route>
+                <Route path="/profile" element={<Profile/>}></Route>
+                <Route path="/signIn" element={<SignIn/>}></Route>
+            </Routes>
+        </BrowserRouter>
     );
 }
