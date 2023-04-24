@@ -8,8 +8,8 @@ import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 export default function ProfileCard() {
     return (
         <Card direction="row"
-              justifyContent="space-evenly"
-              alignItems="center">
+              justifycontent="space-evenly"
+              alignitems="center">
             <CardMedia
                 sx={{height: 300}}
                 image={placeHolderImage}
