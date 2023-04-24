@@ -1,25 +1,16 @@
-import logo from './logo.svg';
 import './App.css';
+import MenuAppBar from "./components/AppHeader";
+import GridContainer from "./components/GridContainer";
+import Container from '@mui/material/Container';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+export default function App() {
+    return (
+        <div className="App">
+            <MenuAppBar></MenuAppBar>
+            <Container style={{marginTop: '50px'}}>
+                <GridContainer></GridContainer>
+            </Container>
+        </div>
+    );
 }
-
-export default App;
