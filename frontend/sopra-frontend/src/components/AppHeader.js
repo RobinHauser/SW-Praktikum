@@ -11,13 +11,17 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import {useNavigate} from "react-router-dom";
 
-const pages = ['Merkliste', 'Blockliste', 'Suchprofil', 'Chat'];
 const settings = ['Profil', 'Ausloggen'];
 
 export default function AppHeader() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    const navigate = useNavigate()
+
+
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -33,6 +37,10 @@ export default function AppHeader() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    function navigateToProfilePage() {
+        navigate('/profile')
+    }
 
     return (
         <AppBar position="static">
@@ -146,13 +154,17 @@ export default function AppHeader() {
                                 horizontal: 'right',
                             }}
                             open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
+                            onClose={handleCloseUserMenu}>
+
+                            <MenuItem onClick={ () => {
+                                handleCloseUserMenu()
+                                navigateToProfilePage()
+                            }}>
+                                <Typography textAlign="center">Profil</Typography>
+                            </MenuItem>
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Typography textAlign="center">Ausloggen</Typography>
+                            </MenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>
