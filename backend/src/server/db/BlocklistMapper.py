@@ -1,4 +1,4 @@
-import server.db.Mapper
+from server.db import Mapper
 
 
 class BlocklistMapper(Mapper):
