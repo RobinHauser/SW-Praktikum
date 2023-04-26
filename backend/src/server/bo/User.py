@@ -1,7 +1,7 @@
 from server.bo import BusinessObject as bo
 
 
-class User(bo):
+class User(bo.BusinessObject):
     def __init__(self, owner_id):
         super().__init__()
         self.__first_name = ""
@@ -9,7 +9,7 @@ class User(bo):
         self.__email = ""
         self.__g_id = int
         self.__date_of_birth = ""
-        self.__owner = owner_id
+        self.__owner = id()
 
     def get_first_name(self):
         return self.__first_name
