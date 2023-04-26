@@ -31,7 +31,7 @@ export default function SignInCard() {
                 </div>
                 <Divider style={{marginTop: '50px', marginBottom: '50px'}}/>
                 <Button variant="contained" startIcon={<GoogleIcon/>}>
-                    Sign-In with Google
+                    Sign-In
                 </Button>
             </CardContent>
         </Card>
