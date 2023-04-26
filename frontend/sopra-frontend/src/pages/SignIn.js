@@ -1,13 +1,13 @@
-import MenuAppBar from "../components/AppHeader";
+import AppHeaderLight from "../components/AppHeaderLight";
 import Container from "@mui/material/Container";
-import GridContainer from "../components/GridContainer";
+import ProfileCard from "../components/SignInCard";
 
 export default function SignIn() {
     return (
         <div className="App">
-            <MenuAppBar></MenuAppBar>
+            <AppHeaderLight></AppHeaderLight>
             <Container style={{marginTop: '50px'}}>
-                SignIn
+                <ProfileCard></ProfileCard>
             </Container>
         </div>
     );
