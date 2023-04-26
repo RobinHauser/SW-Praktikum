@@ -56,8 +56,8 @@ class BookmarklistMapper(Mapper):
         for (maxid) in tuples:
             bookmarklist.set_id(maxid[0] + 1)
 
-        command = "INSERT INTO bookmarklist (id, name, owner) VALUES (%s,%s,%s)"
-        data = (bookmarklist.get_id(), bookmarklist.get_name(), bookmarklist.get_owner())
+        command = "INSERT INTO bookmarklist (id, owner) VALUES (%s,%s,%s)"
+        data = (bookmarklist.get_id(), bookmarklist.get_owner())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -68,8 +68,8 @@ class BookmarklistMapper(Mapper):
     def update(self, bookmarklist):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE bookmarklist SET name=%s, owner=%s WHERE id=%s"
-        data = (bookmarklist.get_name(), bookmarklist.get_owner(), bookmarklist.get_id())
+        command = "UPDATE bookmarklist SET owner=%s WHERE id=%s"
+        data = (bookmarklist.get_owner(), bookmarklist.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
