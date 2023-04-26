@@ -14,7 +14,6 @@ export default function AppHeaderLight() {
                         noWrap
                         component="a"
                         sx={{
-                            display: {xs: 'none', md: 'flex'},
                             fontWeight: 700,
                             color: 'inherit',
                             textDecoration: 'none',
