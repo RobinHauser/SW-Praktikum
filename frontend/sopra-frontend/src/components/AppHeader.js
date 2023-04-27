@@ -41,6 +41,9 @@ export default function AppHeader() {
     function navigateToProfilePage() {
         navigate('/profile')
     }
+    function navigateToChatPage() {
+        navigate('/chat')
+    }
 
     return (
         <AppBar position="static">
@@ -129,7 +132,7 @@ export default function AppHeader() {
                         <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
                             Suchprofil
                         </Button>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={navigateToChatPage} sx={{my: 2, color: 'white', display: 'block'}}>
                             chat
                         </Button>
                     </Box>
