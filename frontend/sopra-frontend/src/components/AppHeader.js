@@ -42,6 +42,14 @@ export default function AppHeader() {
         navigate('/profile')
     }
 
+    function navigateToBookmarkListPage() {
+        navigate(('/bookmarklist'))
+    }
+
+    function navigateToBlockListPage() {
+            navigate(('/blockList'))
+    }
+
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
@@ -120,10 +128,16 @@ export default function AppHeader() {
                     >
                     </Typography>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex', marginLeft: '50px'}}}>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={ () => {
+                            handleCloseNavMenu()
+                            navigateToBookmarkListPage()
+                        }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Merkliste
                         </Button>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={ () => {
+                            handleCloseNavMenu()
+                            navigateToBlockListPage()
+                        }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Blockliste
                         </Button>
                         <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
