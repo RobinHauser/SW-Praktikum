@@ -22,7 +22,6 @@ export default function AppHeader() {
     const navigate = useNavigate()
 
 
-
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -40,6 +39,14 @@ export default function AppHeader() {
 
     function navigateToProfilePage() {
         navigate('/profile')
+    }
+
+    function navigateToBookmarkListPage() {
+        navigate(('/bookmarklist'))
+    }
+
+    function navigateToBlockListPage() {
+        navigate(('/blockList'))
     }
 
     return (
@@ -88,16 +95,26 @@ export default function AppHeader() {
                             sx={{
                                 display: {xs: 'block', md: 'none'},
                             }}>
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseNavMenu()
+                                navigateToBookmarkListPage()
+                            }}>
                                 <Typography textAlign="center">Merkliste</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseNavMenu()
+                                navigateToBlockListPage()
+                            }}>
                                 <Typography textAlign="center">Blockliste</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseNavMenu()
+                            }}>
                                 <Typography textAlign="center">Suchprofil</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseNavMenu()
+                            }}>
                                 <Typography textAlign="center">Chat</Typography>
                             </MenuItem>
                         </Menu>
@@ -120,10 +137,16 @@ export default function AppHeader() {
                     >
                     </Typography>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex', marginLeft: '50px'}}}>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={() => {
+                            handleCloseNavMenu()
+                            navigateToBookmarkListPage()
+                        }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Merkliste
                         </Button>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={() => {
+                            handleCloseNavMenu()
+                            navigateToBlockListPage()
+                        }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Blockliste
                         </Button>
                         <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
@@ -156,7 +179,7 @@ export default function AppHeader() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}>
 
-                            <MenuItem onClick={ () => {
+                            <MenuItem onClick={() => {
                                 handleCloseUserMenu()
                                 navigateToProfilePage()
                             }}>
