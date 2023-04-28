@@ -7,9 +7,9 @@ import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 export default function ChatUser() {
     return (
         <div>
-            <ListItemButton>
+            <ListItemButton sx={{ my: 1}}>
                 <Avatar src={placeHolderImage}></Avatar>
-                <Typography sx={{ ml: 2 }} > placeholder name </Typography>
+                <Typography noWrap={false} sx={{ ml: 2 }} > placeholder name</Typography>
             </ListItemButton>
         </div>
     );

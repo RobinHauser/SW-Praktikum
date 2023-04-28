@@ -5,7 +5,7 @@ import ChatUser from "./ChatUser";
 import Typography from "@mui/material/Typography";
 import ProfileCard from "./ProfileCard";
 import * as React from "react";
-
+import Message from "./Message"
 
 const styles = {
     paper: {
@@ -20,10 +20,12 @@ export default function ChatContainer() {
                 alignItems="center"
                 spacing={0}
                 direction="row"
-                justifyContent="center">
+                justifyContent="center"
+                flexFlow="column wrap">
 
                  <Grid ChatUserContainer>
-                    <Paper elevation={3} style={{ textAlign: "left"}}   >
+                    <Paper elevation={3} style={{ textAlign: "center"}}>
+                        <Typography> My Chats </Typography>
                         <List>
                             {Array.from(Array(9)).map((_, index) => (
                                 <ChatUser></ChatUser>
@@ -32,9 +34,20 @@ export default function ChatContainer() {
                     </Paper>
                  </Grid>
                  <Grid ChatUserContainer>
-                    <Paper style={{ textAlign: "left", width: 300 }}>
-                        test
-                    </Paper>
+                     <Grid MessageContainerLeft>
+                        <Paper style={{ textAlign: "left", width: 300 }}>
+                            {Array.from(Array(9)).map((_, index) => (
+                                <Message></Message>
+                            ))}
+                        </Paper>
+                     </Grid>
+                     <Grid MessageContainerRight>
+                        <Paper>
+                            {Array.from(Array(9)).map((_, index) => (
+                                <Message></Message>
+                            ))}
+                        </Paper>
+                     </Grid>
                  </Grid>
             </Grid>
 

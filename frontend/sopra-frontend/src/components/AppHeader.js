@@ -117,9 +117,11 @@ export default function AppHeader() {
                             </MenuItem>
                             <MenuItem onClick={() => {
                                 handleCloseNavMenu()
+                                navigateToChatPage()
                             }}>
                                 <Typography textAlign="center">Chat</Typography>
                             </MenuItem>
+
                         </Menu>
                     </Box>
                     <Typography
