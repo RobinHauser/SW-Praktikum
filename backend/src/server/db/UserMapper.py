@@ -30,7 +30,7 @@ class UserMapper(Mapper.Mapper):
     def find_by_id(self, id):
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM user WHERE id={}".format(id)
+        command = "SELECT * FROM user WHERE UserID={}".format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -50,7 +50,7 @@ class UserMapper(Mapper.Mapper):
     def find_by_name(self, name):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM user WHERE first_name LIKE '{}' OR last_name LIKE '{}'".format(name, name)
+        command = "SELECT * FROM user WHERE Firstname LIKE '{}' OR Lastname LIKE '{}'".format(name, name)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -87,13 +87,13 @@ class UserMapper(Mapper.Mapper):
 
     def insert(self, user):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM user ")
+        cursor.execute("SELECT MAX(UserID) AS maxid FROM user ")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
             user.set_id(maxid[0] + 1)
 
-        command = "INSERT INTO user (id, first_name, last_name, email, g_id, date_of_birth, owner) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO user (UserID, Firstname, Lastname, email, g_id, date_of_birth, owner) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         data = (user.get_id(), user.get_first_name(), user.get_last_name(), user.get_email(), user.get_g_id(),
                 user.get_date_of_birth(), user.get_owner())
         cursor.execute(command, data)
@@ -106,7 +106,7 @@ class UserMapper(Mapper.Mapper):
     def update(self, user):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE user SET first_name=%s, last_name=%s, email=%s, g_id=%s, date_of_birth=%s, owner=%s WHERE id=%s"
+        command = "UPDATE user SET Firstname=%s, Lastname=%s, email=%s, g_id=%s, date_of_birth=%s, owner=%s WHERE UserID=%s"
         data = (
         user.get_first_name(), user.get_last_name(), user.get_email(), user.get_g_id(), user.get_date_of_birth(),
         user.get_owner(), user.get_id())
@@ -118,7 +118,7 @@ class UserMapper(Mapper.Mapper):
     def delete(self, user):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM user WHERE id={}".format(user.get_id())
+        command = "DELETE FROM user WHERE UserID={}".format(user.get_id())
         cursor.execute(command)
 
         self._cnx.commit()
