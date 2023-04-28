@@ -16,7 +16,7 @@ class BlocklistMapper(Mapper):
 
         for (id) in tuples:
             blocklist = Blocklist()
-            blocklist.set_blocklist_id(id)
+            blocklist.set_id(id)
             result.append(blocklist)
 
 
@@ -52,7 +52,7 @@ class BlocklistMapper(Mapper):
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
-            Blocklist.set_blocklist_id(maxid[0] + 1)
+            Blocklist.set_id(maxid[0] + 1)
 
         command = "INSERT INTO blocklist (id) VALUES (%s)"
         data = (Blocklist.get_id())
