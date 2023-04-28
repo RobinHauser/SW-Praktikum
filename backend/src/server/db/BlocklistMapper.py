@@ -16,7 +16,7 @@ class BlocklistMapper(Mapper):
 
         for (id) in tuples:
             blocklist = Blocklist()
-            blocklist.set_blocklist_id(id)
+            blocklist.set_id(id)
             result.append(blocklist)
 
 
