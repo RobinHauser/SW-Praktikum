@@ -14,11 +14,9 @@ class BookmarklistMapper(Mapper):
         cursor.execute("SELECT * FROM bookmarklist")
         tuples = cursor.fetchall()
 
-        for (id, name, owner) in tuples:
+        for (id) in tuples:
             bookmarklist = Bookmarklist()
             bookmarklist.set_id(id)
-            bookmarklist.set_name(name)
-            bookmarklist.set_owner(owner)
             result.append(bookmarklist)
 
         self._cnx.commit()
@@ -34,11 +32,9 @@ class BookmarklistMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, name, owner) = tuples[0]
+            (id) = tuples[0]
             bookmarklist = Bookmarklist()
             bookmarklist.set_id(id)
-            bookmarklist.set_name(name)
-            bookmarklist.set_owner(owner)
             result = bookmarklist
         except IndexError:
             result = None
@@ -56,8 +52,8 @@ class BookmarklistMapper(Mapper):
         for (maxid) in tuples:
             bookmarklist.set_id(maxid[0] + 1)
 
-        command = "INSERT INTO bookmarklist (id, owner) VALUES (%s,%s,%s)"
-        data = (bookmarklist.get_id(), bookmarklist.get_owner())
+        command = "INSERT INTO bookmarklist (id) VALUES (%s)"
+        data = (bookmarklist.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -68,8 +64,8 @@ class BookmarklistMapper(Mapper):
     def update(self, bookmarklist):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE bookmarklist SET owner=%s WHERE id=%s"
-        data = (bookmarklist.get_owner(), bookmarklist.get_id())
+        command = "UPDATE bookmarklist SET id=%s WHERE id=%s"
+        data = (bookmarklist.get_id(), bookmarklist.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
