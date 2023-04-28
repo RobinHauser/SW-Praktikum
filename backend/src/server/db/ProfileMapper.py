@@ -82,3 +82,9 @@ class ProfileMapper(Mapper.Mapper):
         cursor.close()
 
         return profile
+
+    def find_by_email(self, email):
+        pass
+
+    def find_by_name(self, name):
+        pass

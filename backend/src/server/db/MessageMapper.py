@@ -84,3 +84,9 @@ class MessageMapper(Mapper.Mapper):
 
         self._cnx.commit()
         cursor.close()
+
+    def find_by_email(self, email):
+        pass
+
+    def find_by_name(self, name):
+        pass
