@@ -2,7 +2,7 @@ from server.bo import Bookmarklist
 from server.db import Mapper
 
 
-class BookmarklistMapper(Mapper):
+class BookmarklistMapper(Mapper.Mapper):
 
     def __init__(self):
         super().__init__()

@@ -1,7 +1,7 @@
 from server.bo import BusinessObject as bo
 
 
-class Profile(bo):
+class Profile(bo.BusinessObject):
     def __init__(self):
         super().__init__()
         self.__information = ""

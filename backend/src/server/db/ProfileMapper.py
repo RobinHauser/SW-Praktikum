@@ -2,7 +2,7 @@ from server.bo import Profile
 from server.db import Mapper
 
 
-class ProfileMapper(Mapper):
+class ProfileMapper(Mapper.Mapper):
 
     def __init__(self):
         super().__init__()
