@@ -2,7 +2,7 @@ from server.bo import Message
 from server.db import Mapper
 
 
-class MessageMapper(Mapper):
+class MessageMapper(Mapper.Mapper):
 
     def __init__(self):
         super().__init__()

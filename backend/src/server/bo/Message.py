@@ -1,7 +1,8 @@
 from server.bo import BusinessObject as bo
 from server.bo.User import User
 
-class Message(bo):
+
+class Message(bo.BusinessObject):
     def __init__(self):
         super().__init__()
         self.__timestamp = ""
@@ -32,6 +33,3 @@ class Message(bo):
 
     def set_receiver(self, receiver):
         self.__receiver = receiver
-
-
-
