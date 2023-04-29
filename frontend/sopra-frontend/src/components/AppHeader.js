@@ -40,10 +40,9 @@ export default function AppHeader() {
     function navigateToProfilePage() {
         navigate('/profile')
     }
-    function navigateToChatPage() {
-        navigate('/chat')
+    function navigateToConversationOverviewPage() {
+        navigate('/conversationOverview')
     }
-
     function navigateToBookmarkListPage() {
         navigate(('/bookmarklist'))
     }
@@ -117,7 +116,7 @@ export default function AppHeader() {
                             </MenuItem>
                             <MenuItem onClick={() => {
                                 handleCloseNavMenu()
-                                navigateToChatPage()
+                                navigateToConversationOverviewPage()
                             }}>
                                 <Typography textAlign="center">Chat</Typography>
                             </MenuItem>
@@ -157,7 +156,7 @@ export default function AppHeader() {
                         <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
                             Suchprofil
                         </Button>
-                        <Button onClick={navigateToChatPage} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={navigateToConversationOverviewPage} sx={{my: 2, color: 'white', display: 'block'}}>
                             chat
                         </Button>
                     </Box>
