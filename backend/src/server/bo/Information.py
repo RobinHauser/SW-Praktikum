@@ -1,5 +1,4 @@
 from server.bo import BusinessObject as bo
-from server.bo.Property import Property
 
 
 class Information(bo.BusinessObject):
@@ -13,3 +12,4 @@ class Information(bo.BusinessObject):
 
     def set_value(self, value):
         self.value = value
+
