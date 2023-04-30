@@ -1,6 +1,6 @@
 from BusinessObject import BusinessObject
 import datetime
-from datetime import date
+
 class User (BusinessObject):
     user_counter = 1000
     def __init__(self):
@@ -16,7 +16,7 @@ class User (BusinessObject):
     def get_user_id(self):
         return self.__user_id
 
-    def set_user_id(self, user_id): #user_id-setter fragwürdig, da die id zu Beginn bereits instanziiert wird
+    def set_user_id(self, user_id):
         self.__user_id = user_id
 
     def get_firstname(self):
@@ -50,7 +50,7 @@ class User (BusinessObject):
         self.__google_id = g_id
 
     def __str__(self):
-        return "User: {}, {}, {}, {}, {}, {}".format(self.__user_id, self.__firstname, self.__lastname, self.__email, self.__birthdate, self.get_google_id())
+        return "User: {}, {}, {}, {}, {}, {}".format(self.__user_id, self.__firstname, self.__lastname, self.__email, self.__birthdate, self.__google_id)
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -63,5 +63,3 @@ class User (BusinessObject):
         obj.set_google_id(["google_id"])
         return obj
 
-
-# __str__  & from_dict methoden - notwendig? (scheinbar kein gebrauch)
