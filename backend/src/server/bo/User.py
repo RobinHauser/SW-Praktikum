@@ -54,7 +54,7 @@ class User (BusinessObject):
 
     @staticmethod
     def from_dict(dictionary=dict()):
-        obj =User()
+        obj = User()
         obj.set_user_id(dictionary["user_id"])
         obj.set_firstname(dictionary["firstname"])
         obj.set_lastname(dictionary["lastname"])
