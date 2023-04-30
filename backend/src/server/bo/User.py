@@ -2,22 +2,13 @@ from BusinessObject import BusinessObject
 import datetime
 
 class User (BusinessObject):
-    user_counter = 1000
     def __init__(self):
-        #super().__init__(id)
-        User.user_counter += 1
-        self.__user_id = User.user_counter
+        super().__init__("User", [1001, 2000])
         self.__firstname = ""
         self.__lastname = ""
         self.__email = ""
         self.__birthdate = datetime.date(1111, 11, 11) #yyyy mm dd
         self.__google_id = 0
-
-    def get_user_id(self):
-        return self.__user_id
-
-    def set_user_id(self, user_id):
-        self.__user_id = user_id
 
     def get_firstname(self):
         return self.__firstname
@@ -50,12 +41,12 @@ class User (BusinessObject):
         self.__google_id = g_id
 
     def __str__(self):
-        return "User: {}, {}, {}, {}, {}, {}".format(self.__user_id, self.__firstname, self.__lastname, self.__email, self.__birthdate, self.__google_id)
+        return "User: {}, {}, {}, {}, {}, {}".format(self._id, self.__firstname, self.__lastname, self.__email, self.__birthdate, self.__google_id)
 
     @staticmethod
     def from_dict(dictionary=dict()):
         obj = User()
-        obj.set_user_id(dictionary["user_id"])
+        obj.set_id(dictionary["id"])
         obj.set_firstname(dictionary["firstname"])
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
