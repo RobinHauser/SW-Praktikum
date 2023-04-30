@@ -1,8 +1,8 @@
 from server.bo import User
-from server.db import Mapper
+from server.db import Mapper as Mapper
 
 
-class UserMapper(Mapper):
+class UserMapper(Mapper.Mapper):
     def __init__(self):
         super().__init__()
 

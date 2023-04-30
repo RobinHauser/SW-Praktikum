@@ -1,7 +1,7 @@
 from server.bo import BusinessObject as bo
 
 
-class Chat(bo):
+class Chat(bo.BusinessObject):
     def init(self):
         super().init()
 

@@ -2,7 +2,7 @@ from server.bo import Bookmarklist
 from server.db import Mapper
 
 
-class BookmarklistMapper(Mapper):
+class BookmarklistMapper(Mapper.Mapper):
 
     def __init__(self):
         super().__init__()
@@ -80,3 +80,8 @@ class BookmarklistMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
+    def find_by_email(self, email):
+        pass
+
+    def find_by_name(self, name):
+        pass

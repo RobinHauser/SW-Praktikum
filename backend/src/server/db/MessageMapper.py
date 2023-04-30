@@ -2,7 +2,7 @@ from server.bo import Message
 from server.db import Mapper
 
 
-class MessageMapper(Mapper):
+class MessageMapper(Mapper.Mapper):
 
     def __init__(self):
         super().__init__()
@@ -84,3 +84,9 @@ class MessageMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
+
+    def find_by_email(self, email):
+        pass
+
+    def find_by_name(self, name):
+        pass

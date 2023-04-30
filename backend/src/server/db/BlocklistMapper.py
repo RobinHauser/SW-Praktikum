@@ -2,7 +2,7 @@ from server.db import Mapper
 from server.bo import Blocklist
 
 
-class BlocklistMapper(Mapper):
+class BlocklistMapper(Mapper.Mapper):
 
     def __init__(self):
         super().__init__()
@@ -81,6 +81,14 @@ class BlocklistMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
+
+    def find_by_email(self, email):
+        pass
+
+    def find_by_name(self, name):
+        pass
+
+
 
 
 

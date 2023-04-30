@@ -1,6 +1,6 @@
 from server.bo import BusinessObject as bo
 
-class Bookmarklist(bo):
+class Bookmarklist(bo.BusinessObject):
     def __init__(self):
         super().__init__()
         self.__list_of_users = []

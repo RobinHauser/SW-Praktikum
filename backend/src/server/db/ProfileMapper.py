@@ -2,7 +2,7 @@ from server.bo import Profile
 from server.db import Mapper
 
 
-class ProfileMapper(Mapper):
+class ProfileMapper(Mapper.Mapper):
 
     def __init__(self):
         super().__init__()
@@ -82,3 +82,9 @@ class ProfileMapper(Mapper):
         cursor.close()
 
         return profile
+
+    def find_by_email(self, email):
+        pass
+
+    def find_by_name(self, name):
+        pass
