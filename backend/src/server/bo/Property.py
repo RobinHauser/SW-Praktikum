@@ -1,12 +1,13 @@
 from server.bo import BusinessObject as bo
+from server.bo.Information import Information
 
 
 class Property(bo.BusinessObject):
 
-    def __init__(self):
+    def __init__(self, name, value):
         super().__init__()
-        self.__name = ""
-        self.__type = ""
+        self.__name = name
+        self.__content = Information(value)
 
     def get_name(self):
         return self.__name
@@ -14,8 +15,3 @@ class Property(bo.BusinessObject):
     def set_name(self, name):
         self.__name = name
 
-    def get_type(self):
-        return self.__type
-
-    def set_type(self, type):
-        self.__type = type
