@@ -6,16 +6,22 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import placeHolderImage from "../static/images/profileImagePlaceholder.jpeg";
+import {List, ListSubheader} from "@mui/material";
+import * as React from "react";
+import ProfilePropertyItem from "../components/ProfilePropertyItem";
 
+/**
+ * @author [Björn Till]
+ */
 export default function Profile() {
     return (
         <div className="App">
             <AppHeader></AppHeader>
             <Container sx={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px', fontSize: '25px'}}>
-                Profil bearbeiten
+                Profil
             </Container>
 
-            <Card sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Card sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '50px' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '40%' }}>
                     <CardContent>
                         <Typography component="div" variant="h6" sx={{ textAlign: 'left' }}>
@@ -32,6 +38,20 @@ export default function Profile() {
                     image={placeHolderImage}
                     title="profileImage"/>
             </Card>
+            <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px'}}>
+                <List
+                    sx={{ width: '100%', maxWidth: 700}}
+                    subheader={
+                        <ListSubheader sx={{fontSize: 20, color: 'black'}}>
+                        Eigenschaften bearbeiten
+                        </ListSubheader>
+                    }
+                >
+                    {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+                        <ProfilePropertyItem key={value} value={value}/>
+                    ))}
+                </List>
+            </Container>
         </div>
     );
 }
