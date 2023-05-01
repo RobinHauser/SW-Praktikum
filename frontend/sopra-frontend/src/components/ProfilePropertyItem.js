@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 
 export default function ProfilePropertyItem ({ value }) {
     const [openDialog, setOpenDialog] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState(null);
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -20,7 +21,12 @@ export default function ProfilePropertyItem ({ value }) {
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
+        setSelectedValue(value);
     };
+
+    const handleListItemClick = (value) => {
+        handleCloseDialog(value);
+    }
 
 
     return (
@@ -37,20 +43,22 @@ export default function ProfilePropertyItem ({ value }) {
         >
             <ListItemText primary={`Eigenschaft ${value}: value`} />
         </ListItem>
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <Dialog open={openDialog} onClose={() => handleCloseDialog(null)}>
                 <DialogTitle>Information wählen</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         <List>
-                            <ListItem><ListItemText primary="Value 1" /></ListItem>
-                            <ListItem><ListItemText primary="Value 2" /></ListItem>
-                            <ListItem><ListItemText primary="Value 3" /></ListItem>
+                            <ListItem button onClick={() => handleListItemClick("Value 1")}>
+                                <ListItemText sx={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }} primary="Value 1" /></ListItem>
+                            <ListItem button onClick={() => handleListItemClick("Value 2")}>
+                                <ListItemText sx={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }} primary="Value 2" /></ListItem>
+                            <ListItem button onClick={() => handleListItemClick("Value 1")}>
+                                <ListItemText sx={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }} primary="Value 3" /></ListItem>
                         </List>
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog}>Abbrechen</Button>
-                    <Button onClick={handleCloseDialog}>Ok</Button>
                 </DialogActions>
             </Dialog>
         </div>
