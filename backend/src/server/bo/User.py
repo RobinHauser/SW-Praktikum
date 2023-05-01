@@ -51,6 +51,6 @@ class User (BusinessObject):
         obj.set_lastname(dictionary["lastname"])
         obj.set_email(dictionary["email"])
         obj.set_birthdate(dictionary["birthdate"])
-        obj.set_google_id(["google_id"])
+        obj.set_google_id(dictionary["google_id"])
         return obj
 
