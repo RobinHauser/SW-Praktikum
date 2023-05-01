@@ -59,7 +59,10 @@ class Profile(BusinessObject):
         return self.__religion.info.value
 
     def __str__(self):
-        return "Profile: {}, {}, {}, {}, {}, {}, {}, {}".format(self._id, self.__firstname, self.__lastname, self.__birthdate, self.__haircolor, self.__height, self.__smoker, self.__religion)
+        return "Profile: {}, {}, {}, {}, {}, {}, {}, {}".format(self.get_id(), self.get_firstname(),
+                                                                self.get_lastname(), self.get_birthdate(),
+                                                                self.get_haircolor(), self.get_height(),
+                                                                self.get_smoker(), self.get_religion())
 
     @staticmethod
     def from_dict(dictionary=dict()):
