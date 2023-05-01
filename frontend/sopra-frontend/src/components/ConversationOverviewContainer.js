@@ -2,10 +2,11 @@ import {List} from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import ConversationOverviewItem from "./ConversationOverviewItem";
 import * as React from "react";
+import {useEffect} from "react";
+
+export default function ConversationOverviewContainer({name}) {
 
 
-
-export default function ConversationOverviewContainer() {
     return (
         <div>
             <Grid
@@ -16,16 +17,18 @@ export default function ConversationOverviewContainer() {
                 justifyContent="center"
                 flexFlow="column wrap">
 
-                <Grid ChatUserContainer>
+                <Grid>
 
-                    <List  sx={{ width: '100%', maxWidth: 700}}>
-                        {Array.from(Array(9)).map((_, index) => (
-                            <ConversationOverviewItem></ConversationOverviewItem>
+                    <List id="conversationOverviewList" sx={{width: '100%', maxWidth: 700}}>
+                        {name.map((item) => (
+                            <ConversationOverviewItem name={item}></ConversationOverviewItem>
                         ))}
                     </List>
 
                 </Grid>
             </Grid>
         </div>
+
     );
 }
+

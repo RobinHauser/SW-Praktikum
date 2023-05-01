@@ -1,13 +1,14 @@
 import Typography from "@mui/material/Typography";
-import {ListItemButton} from "@mui/material";
+import {ListItemButton, ListItemText} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 import Tooltip from "@mui/material/Tooltip";
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
-export default function ConversationOverviewItem() {
+export default function ConversationOverviewItem({name}) {
     const navigate = useNavigate()
+
     return (
         <div>
             <ListItemButton onClick={() => navigate(('/chat'))} sx={{
@@ -20,8 +21,7 @@ export default function ConversationOverviewItem() {
             }} style={{width: 500}}>
                 <div style={{display: "flex", alignItems: "center"}}>
                     <Avatar src={placeHolderImage}></Avatar>
-                    <Typography noWrap={false} sx={{ml: 2, fontSize: 20, wordBreak: 'break-all'}}> placeholder
-                        name</Typography>
+                    <ListItemText noWrap={false} sx={{ml: 2, fontSize: 20, wordBreak: 'break-all'}} primary={`${name}`}></ListItemText>
                 </div>
 
                 <Tooltip title="zum Chat" fontSize="large" sx={{color: "#2979ff"}}>

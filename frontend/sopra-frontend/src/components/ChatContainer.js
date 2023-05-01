@@ -14,7 +14,7 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import SendIcon from '@mui/icons-material/Send';
 
-export default function ChatContainer() {
+export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
     const navigate = useNavigate()
     return (
         <div className="App">
@@ -51,10 +51,14 @@ export default function ChatContainer() {
                     }}>
 
                         <Container>
-                            {Array.from(Array(9)).map((_, index) => (
+                            {messageArrayLeft.map((text) => (
                                 <Box>
-                                    <MessageLeft></MessageLeft>
-                                    <MessageRight></MessageRight>
+                                    <MessageLeft message={text}></MessageLeft>
+                                </Box>
+                            ))}
+                            {messageArrayRight.map((text) => (
+                                <Box>
+                                    <MessageRight message={text}></MessageRight>
                                 </Box>
                             ))}
                         </Container>
