@@ -5,6 +5,7 @@ import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import BookmarkList from "./pages/BookmarkList";
 import BlockList from "./pages/BlockList";
+import SearchProfile from "./pages/SearchProfile";
 
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
                 <Route path="/signIn" element={<SignIn/>}></Route>
                 <Route path="/bookmarkList" element={<BookmarkList/>}></Route>
                 <Route path="/blockList" element={<BlockList/>}></Route>
+                <Route path="/searchProfile" element={<SearchProfile/>}></Route>
             </Routes>
         </BrowserRouter>
     );
