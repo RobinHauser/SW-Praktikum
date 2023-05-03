@@ -12,8 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
-
-const settings = ['Profil', 'Ausloggen'];
+import {getAuth, signOut} from "firebase/auth";
 
 export default function AppHeader() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -51,6 +50,11 @@ export default function AppHeader() {
 
     function navigateToSearchProfilePage() {
         navigate(('/searchProfile'))
+    }
+
+    function handleSignOutButtonClicked() {
+        const auth = getAuth();
+        signOut(auth);
     }
 
     return (
@@ -193,7 +197,10 @@ export default function AppHeader() {
                             }}>
                                 <Typography textAlign="center">Profil</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseUserMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseUserMenu()
+                                handleSignOutButtonClicked()
+                            }}>
                                 <Typography textAlign="center">Ausloggen</Typography>
                             </MenuItem>
                         </Menu>
