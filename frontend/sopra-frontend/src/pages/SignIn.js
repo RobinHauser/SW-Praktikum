@@ -9,11 +9,13 @@ import Card from "@mui/material/Card";
 import * as React from "react";
 import {Component} from "react";
 import PropTypes from "prop-types";
+import {useNavigate} from "react-router-dom";
 
 class SignIn extends Component {
 
     handleSignInButtonClicked = () =>  {
         this.props.onSignIn();
+        window.location.href = 'http://localhost:3000/';
     }
 
     render() {
@@ -33,14 +35,9 @@ class SignIn extends Component {
                                 <br/>
                                 <Typography color="text.secondary">
                                     Willkommen auf der Sopra Dating Webseite. Wenn Sie noch keinen Account haben können
-                                    Sie sich
-                                    hier
-                                    einfach über Google registrieren. Dann wird ein neuer Account für die angelegt.
-                                    Haben Sie
-                                    bereits
-                                    einen können sie sich mit dem gleich Google Account anmelden mit dem Sie sich
-                                    registriert
-                                    haben.
+                                    Sie sich hier  einfach über Google registrieren. Dann wird ein neuer Account für
+                                    die angelegt. Haben Sie bereits einen können sie sich mit dem gleich Google
+                                    Account anmelden mit dem Sie sich registriert haben.
                                     <br/>
                                     <br/>
                                     <i>Viel Spaß beim verwenden der Sopra Dating Webseite.</i>

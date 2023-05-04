@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Main from "./pages/Main";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
@@ -99,17 +99,15 @@ class App extends React.Component {
     render() {
         const {currentUser, appError, authError, authLoading} = this.state;
 
-        console.log(currentUser)
-
         return (
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Main/>}></Route>
-                    <Route path="/profile" element={<Profile/>}></Route>
+                    <Route path="/profile" element={currentUser === null ? <Navigate replace={true} to={"/signIn"}/> : <Profile/>}></Route>
                     <Route path="/signIn" element={<SignIn onSignIn={this.handleSignIn}/>}></Route>
-                    <Route path="/bookmarkList" element={<BookmarkList/>}></Route>
-                    <Route path="/blockList" element={<BlockList/>}></Route>
-                    <Route path="/searchProfile" element={<SearchProfile/>}></Route>
+                    <Route path="/bookmarkList" element={currentUser === null ? <Navigate replace={true} to={"/signIn"}/> : <BookmarkList/>}></Route>
+                    <Route path="/blockList" element={currentUser === null ? <Navigate replace={true} to={"/signIn"}/> : <BlockList/>}></Route>
+                    <Route path="/searchProfile" element={currentUser === null ? <Navigate replace={true} to={"/signIn"}/> : <SearchProfile/>}></Route>
                 </Routes>
             </BrowserRouter>
         )
