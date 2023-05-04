@@ -13,11 +13,11 @@ export default class SopraDatingAPI {
 
 
     // Local http-fake-backend
-    #SopraDatingServerBaseURL = '/api/sopra-dating'
+    #SopraDatingServerBaseURL = 'http://localhost:8081/api/sopra-dating'
 
 
     // User related
-    #getUserURL = (id) => `${this.#SopraDatingServerBaseURL}/user/${id}`;
+    #getUserURL = (id) => `${this.#SopraDatingServerBaseURL}/user`;
 
 
     // Profile related
@@ -67,7 +67,7 @@ export default class SopraDatingAPI {
 
 
     /**
-   * Get the Singelton instance
+   * Get the Singleton instance
    *
    * @public
    */
@@ -76,5 +76,26 @@ export default class SopraDatingAPI {
             this.#api = new SopraDatingAPI();
         }
         return this.#api;
+    }
+
+    /**
+   *  Returns a Promise which resolves to a json object.
+   *  The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
+   *  fetchAdvanced throws an Error also an server status errors
+   */
+    #fetchAdvanced = (url, init) => fetch(url, init)
+        .then(res => {
+            // The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
+            if (!res.ok) {
+                throw Error(`${res.status} ${res.statusText}`);
+            }
+            return res.json();
+        }
+        )
+
+    getUser(userID) {
+        return this.#fetchAdvanced(this.#getUserURL(userID)).then((responseJSON) => {
+            return responseJSON
+        })
     }
 }
