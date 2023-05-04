@@ -6,7 +6,7 @@ const Config = require('../../../config');
 const Hapi = require('hapi');
 const Vision = require('vision');
 const Inert = require('inert');
-const HomePlugin = require('../../../server/web');
+const HomePlugin = require('../../../server/web/index');
 
 
 const lab = exports.lab = Lab.script();

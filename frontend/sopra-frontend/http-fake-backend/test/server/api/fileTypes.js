@@ -6,7 +6,7 @@ const Config = require('../../../config');
 const Hapi = require('hapi');
 const Fs = require('fs');
 const Path = require('path');
-const SetupEndpoint = require('../../../server/api/setup');
+const SetupEndpoint = require('../../../server/api/setup/');
 
 const apiUrlPrefix = Config.get('/apiUrlPrefix');
 
