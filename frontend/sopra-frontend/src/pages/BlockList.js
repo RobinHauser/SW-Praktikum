@@ -11,11 +11,44 @@ import SopraDatingAPI from "../api/SopraDatingAPI";
  * @author [Michael Bergdolt]
  */
 export default class BlockList extends React.Component{
-    componentDidMount() {
-        console.log(SopraDatingAPI.getAPI().getUser(2))
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            blocklist: [],
+            error: null
+        }
     }
 
+    getBlocklist = () => {
+        SopraDatingAPI.getAPI().getBlocklist(1)
+            .then(BlocklistBOs =>
+                this.setState({
+                    blocklist: BlocklistBOs,
+                    error: null
+                }))
+            .catch(e =>
+                this.setState({
+                    blocklist: [],
+                    error: e
+                    })
+                )
+        ;
+    }
+
+    componentDidMount() {
+        this.getBlocklist()
+    }
+
+
     render() {
+        const { blocklist } = this.state;
+        console.log(`Blocklist Zustand im State:`, this.state.blocklist);
+        if(blocklist.user !== undefined) {
+            console.log(blocklist.user[0].id)
+        }
+
         return (
             <div className="App">
                 <AppHeader></AppHeader>
@@ -28,9 +61,13 @@ export default class BlockList extends React.Component{
                             </ListSubheader>
                         }
                     >
-                        {[1, 2, 3].map((value) => (
-                            <BlockListItem key={value} value={value}/>
-                        ))}
+                        {blocklist.user && blocklist.user.length > 0 ? (
+                            blocklist.user.map((blocklistItem) => (
+                                <BlockListItem key={blocklistItem.id} value={blocklistItem.firstname}/>
+                            ))
+                        ) : (
+                            <p>Keine blockierten Benutzer gefunden.</p>
+                        )}
                     </List>
                 </Container>
             </div>

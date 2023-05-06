@@ -11,6 +11,11 @@ module.exports = SetupEndpoint({
         requests: [
             { response: '/response-files/sopra-dating/user.json' }
         ]
+    }, {
+        params: '/blocklist/{id}',
+        requests: [
+            { response: '/response-files/sopra-dating/blocklist.json' }
+        ]
     }]
 });
 

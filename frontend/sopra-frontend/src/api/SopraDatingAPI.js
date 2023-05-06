@@ -98,4 +98,10 @@ export default class SopraDatingAPI {
             return responseJSON
         })
     }
+
+    getBlocklist(userID) {
+        return this.#fetchAdvanced(this.#getBlocklistURL(userID)).then((responseJSON) => {
+            return responseJSON
+        })
+    }
 }
