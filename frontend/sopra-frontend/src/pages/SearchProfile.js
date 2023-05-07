@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
 import {List, ListSubheader} from "@mui/material";
-import ProfilePropertyItem from "../components/ProfilePropertyItem";
+import ProfilePropertySelect from "../components/ProfilePropertySelect";
 
 /**
  * @author [Björn Till]
@@ -24,7 +24,7 @@ class SearchProfile extends Component {
                         }
                     >
                         {[1, 2, 3, 4, 5, 6, 7].map((value) => (
-                            <ProfilePropertyItem key={value} value={value}/>
+                            <ProfilePropertySelect key={value} value={value}/>
                         ))}
                     </List>
                 </Container>

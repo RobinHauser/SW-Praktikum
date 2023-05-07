@@ -15,7 +15,7 @@ import Button from "@mui/material/Button";
  * @author [Björn Till]
  */
 
-class ProfilePropertyItem extends Component {
+class ProfilePropertySelect extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -49,7 +49,7 @@ class ProfilePropertyItem extends Component {
                 <ListItem
                     sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}
                     secondaryAction={
-                        <Tooltip title="Eigenschaft bearbeiten">
+                        <Tooltip title="Auswahl-Eigenschaft bearbeiten">
                             <IconButton onClick={this.handleOpenDialog}>
                                 <EditSharpIcon/>
                             </IconButton>
@@ -59,9 +59,9 @@ class ProfilePropertyItem extends Component {
                     <ListItemText primary={`Eigenschaft ${value}: Value`}/>
                 </ListItem>
                 <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
-                    <DialogTitle>Information wählen</DialogTitle>
+                    <DialogTitle>{`Eigenschaft ${value}`}</DialogTitle>
                     <DialogContent>
-                        <DialogContentText>
+                        <DialogContentText> Diese Eigenschaft ist folgendermaßen beschrieben.
                             <List>
                                 <ListItem button onClick={() => this.handleListItemClick("Value 1")}>
                                     <ListItemText sx={{textAlign: 'center', display: 'flex', justifyContent: 'center'}}
@@ -84,5 +84,5 @@ class ProfilePropertyItem extends Component {
     }
 }
 
-export default ProfilePropertyItem;
+export default ProfilePropertySelect;
 

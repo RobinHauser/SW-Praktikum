@@ -8,7 +8,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import placeHolderImage from "../static/images/profileImagePlaceholder.jpeg";
 import {List, ListSubheader} from "@mui/material";
-import ProfilePropertyItem from "../components/ProfilePropertyItem";
+import ProfilePropertySelect from "../components/ProfilePropertySelect";
+import ProfilePropertyFreeText from "../components/ProfilePropertyFreeText";
 
 /**
  * @author [Björn Till]
@@ -42,17 +43,34 @@ class Profile extends Component {
                     image={placeHolderImage}
                     title="profileImage"/>
             </Card>
+            <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
+                <List
+                    sx={{ width: '100%', maxWidth: 700}}
+                    subheader={
+                        <ListSubheader sx={{fontSize: 20, color: 'black'}}>
+                        Auswahl-Eigenschaften bearbeiten
+                        </ListSubheader>
+                    }
+                >
+                    {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+                        <ProfilePropertySelect key={value} value={value}/>
+                    ))}
+                </List>
+            </Container>
+
+            <hr />
+
             <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px'}}>
                 <List
                     sx={{ width: '100%', maxWidth: 700}}
                     subheader={
                         <ListSubheader sx={{fontSize: 20, color: 'black'}}>
-                        Eigenschaften bearbeiten
+                        Freitext-Eigenschaften bearbeiten
                         </ListSubheader>
                     }
                 >
-                    {[1, 2, 3, 4, 5, 6, 7].map((value) => (
-                        <ProfilePropertyItem key={value} value={value}/>
+                    {[1, 2, 3].map((value) => (
+                        <ProfilePropertyFreeText key={value} value={value}/>
                     ))}
                 </List>
             </Container>
