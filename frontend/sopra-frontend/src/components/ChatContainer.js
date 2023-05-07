@@ -13,7 +13,10 @@ import MessageRight from "./MessageRight"
 import * as React from "react";
 import Button from "@mui/material/Button";
 import SendIcon from '@mui/icons-material/Send';
-
+/**
+ * *
+ * @author [Jannik Haug](https://github.com/JannikHaug)
+ */
 export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
     const navigate = useNavigate()
     return (

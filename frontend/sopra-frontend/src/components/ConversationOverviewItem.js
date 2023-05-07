@@ -4,8 +4,11 @@ import Avatar from "@mui/material/Avatar";
 import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 import Tooltip from "@mui/material/Tooltip";
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import {useNavigate, useParams} from "react-router-dom";
-
+import {useNavigate} from "react-router-dom";
+/**
+ * *
+ * @author [Jannik Haug](https://github.com/JannikHaug)
+ */
 export default function ConversationOverviewItem({name}) {
     const navigate = useNavigate()
 
