@@ -1,3 +1,4 @@
+import React, { Component } from 'react';
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
 import Card from '@mui/material/Card';
@@ -7,13 +8,16 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import placeHolderImage from "../static/images/profileImagePlaceholder.jpeg";
 import {List, ListSubheader} from "@mui/material";
-import * as React from "react";
 import ProfilePropertyItem from "../components/ProfilePropertyItem";
 
 /**
  * @author [Björn Till]
  */
-export default function Profile() {
+
+class Profile extends Component {
+
+    render() {
+
     return (
         <div className="App">
             <AppHeader></AppHeader>
@@ -54,4 +58,7 @@ export default function Profile() {
             </Container>
         </div>
     );
+    }
 }
+
+export default Profile;
