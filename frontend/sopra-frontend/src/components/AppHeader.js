@@ -51,6 +51,10 @@ export default function AppHeader() {
         navigate(('/blockList'))
     }
 
+    function navigateToSearchProfilePage() {
+        navigate(('/searchProfile'))
+    }
+
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
@@ -111,6 +115,7 @@ export default function AppHeader() {
                             </MenuItem>
                             <MenuItem onClick={() => {
                                 handleCloseNavMenu()
+                                navigateToSearchProfilePage()
                             }}>
                                 <Typography textAlign="center">Suchprofil</Typography>
                             </MenuItem>
@@ -153,7 +158,10 @@ export default function AppHeader() {
                         }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Blockliste
                         </Button>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={() => {
+                            handleCloseNavMenu()
+                            navigateToSearchProfilePage()
+                        }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Suchprofil
                         </Button>
                         <Button onClick={navigateToConversationOverviewPage} sx={{my: 2, color: 'white', display: 'block'}}>
