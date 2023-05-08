@@ -1,31 +1,22 @@
-from server.bo import BusinessObject as bo
-from server.bo import Information
-Information = Information.Information # https://stackoverflow.com/questions/4534438/typeerror-module-object-is-not-callable
+from BusinessObject import BusinessObject
 
-class Property(bo.BusinessObject):
+class Property(BusinessObject):
+    def __init__(self, info):
+        super().__init__("Property", [6001, 7000])
+        self.info = info
 
-    def __init__(self, name, value):
-        super().__init__()
-        self.__name = name
-        self.__content = Information(value)
+    def set_info(self, info):
+        self.info = info
 
-    def get_name(self):
-        return self.__name
+    def get_info(self):
+        return self.info
 
-    def set_name(self, name):
-        self.__name = name
+    def __str__(self):
+        return "Property: {}, {}".format(self._id, self.info)
 
-    def get_content(self):
-        return self.__content
-
-    def set_content(self, content):
-        self.__content = content
-
-
-
-
-
-p = Property(name="Religion", value="Islam")
-
-print(p.get_name(), p.get_content().get_value())
-
+    @staticmethod
+    def from_dict(dictionary=dict()):
+        obj = Property()
+        obj.set_id(dictionary["id"])
+        obj.set_info(dictionary["info"])
+        return obj
