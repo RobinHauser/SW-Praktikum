@@ -1,3 +1,4 @@
+import React, { Component } from 'react';
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
 import Card from '@mui/material/Card';
@@ -7,13 +8,17 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import placeHolderImage from "../static/images/profileImagePlaceholder.jpeg";
 import {List, ListSubheader} from "@mui/material";
-import * as React from "react";
-import ProfilePropertyItem from "../components/ProfilePropertyItem";
+import ProfilePropertySelect from "../components/ProfilePropertySelect";
+import ProfilePropertyFreeText from "../components/ProfilePropertyFreeText";
 
 /**
  * @author [Björn Till]
  */
-export default function Profile() {
+
+class Profile extends Component {
+
+    render() {
+
     return (
         <div className="App">
             <AppHeader></AppHeader>
@@ -38,20 +43,40 @@ export default function Profile() {
                     image={placeHolderImage}
                     title="profileImage"/>
             </Card>
+            <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
+                <List
+                    sx={{ width: '100%', maxWidth: 700}}
+                    subheader={
+                        <ListSubheader sx={{fontSize: 20, color: 'black'}}>
+                        Auswahl-Eigenschaften bearbeiten
+                        </ListSubheader>
+                    }
+                >
+                    {[1, 2, 3, 4, 5, 6, 7].map((value) => (
+                        <ProfilePropertySelect key={value} value={value}/>
+                    ))}
+                </List>
+            </Container>
+
+            <hr />
+
             <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px'}}>
                 <List
                     sx={{ width: '100%', maxWidth: 700}}
                     subheader={
                         <ListSubheader sx={{fontSize: 20, color: 'black'}}>
-                        Eigenschaften bearbeiten
+                        Freitext-Eigenschaften bearbeiten
                         </ListSubheader>
                     }
                 >
-                    {[1, 2, 3, 4, 5, 6, 7].map((value) => (
-                        <ProfilePropertyItem key={value} value={value}/>
+                    {[1, 2, 3].map((value) => (
+                        <ProfilePropertyFreeText key={value} value={value}/>
                     ))}
                 </List>
             </Container>
         </div>
     );
+    }
 }
+
+export default Profile;
