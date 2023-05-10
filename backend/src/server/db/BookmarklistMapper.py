@@ -27,7 +27,7 @@ class BookmarklistMapper(Mapper.Mapper):
     def find_by_id(self, id):
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM bookmarklist WHERE id={}".format(id)
+        command = "SELECT * FROM bookmarklist WHERE BookmarklistID={}".format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
