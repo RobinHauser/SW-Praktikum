@@ -1,4 +1,3 @@
-import Typography from "@mui/material/Typography";
 import {ListItemButton, ListItemText} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
