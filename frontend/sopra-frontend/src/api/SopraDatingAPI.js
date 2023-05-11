@@ -12,10 +12,10 @@ export default class SopraDatingAPI {
     static #api = null;
 
     // Local Python backend
-    #SopraDatingServerBaseURL = '/sopra-dating';
+    // #SopraDatingServerBaseURL = '/api/v1';
 
     // Local http-fake-backend
-    // #SopraDatingServerBaseURL = 'http://localhost:8081/api/sopra-dating'
+    #SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
 
     // User related
@@ -28,15 +28,21 @@ export default class SopraDatingAPI {
 
 
     // Bookmarklist related
-    #getBookmarklistURL = (id) => `${this.#SopraDatingServerBaseURL}/bookmarklist/${id}`;
-    #addUserBookmarklistURL = (id) => `${this.#SopraDatingServerBaseURL}/bookmarklist/${id}`;
-    #removeUserBookmarklistURL = (id) => `${this.#SopraDatingServerBaseURL}/bookmarklist/${id}`;
+    #addUserBookmarklistURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist`;
+    };
+    #getBookmarklistURL = (BookmarklistID) => {
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${BookmarklistID}`;
+    };
+    #removeUserBookmarklistURL = (BookmarkID) => {
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${BookmarkID}`;
+    };
 
 
     // Blocklist related
-    #getBlocklistURL = (id) => `${this.#SopraDatingServerBaseURL}/blocklist/${id}`;
-    #addUserBlocklistURL = (id) => `${this.#SopraDatingServerBaseURL}/blocklist/${id}`;
-    #removeUserBlocklistURL = (id) => `${this.#SopraDatingServerBaseURL}/blocklist/${id}`;
+    #addUserBlocklistURL = () => `${this.#SopraDatingServerBaseURL}/blocklist`;
+    #getBlocklistURL = (BlocklistID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${BlocklistID}`;
+    #removeUserBlocklistURL = (BlockID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${BlockID}`;
 
 
     // SearchProfile related
