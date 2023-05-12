@@ -18,15 +18,6 @@ export default class SopraDatingAPI {
     #SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
 
-    // User related
-    #getUserURL = (id) => `${this.#SopraDatingServerBaseURL}/user`;
-
-
-    // Profile related
-    #getProfileURL = (id) => `${this.#SopraDatingServerBaseURL}/user/${id}/properties`;
-    #updateProfileURL = (id) => `${this.#SopraDatingServerBaseURL}/user/${id}/properties`;
-
-
     // Bookmarklist related
     #addUserBookmarklistURL = () => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist`;
@@ -38,40 +29,42 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${BookmarkID}`;
     };
 
-
     // Blocklist related
     #addUserBlocklistURL = () => `${this.#SopraDatingServerBaseURL}/blocklist`;
     #getBlocklistURL = (BlocklistID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${BlocklistID}`;
     #removeUserBlocklistURL = (BlockID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${BlockID}`;
 
+    // Chat related
+    #addUserChatURL = () => `${this.#SopraDatingServerBaseURL}/conversationoverview`;
+    #getUserChatsURL = (conversationsoverviewListID) => {
+        return `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${conversationsoverviewListID}`;
+    }
+    #removeChatURL = (chatID) => `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${chatID}`;
+
+    // Message related
+    #addMessageURl = () => `${this.#SopraDatingServerBaseURL}/message`;
+    #getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message?id=${chatID}`;
+
+    // Profile related
+    #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
+    #updateProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
 
     // SearchProfile related
-    #getSearchProfilesURL = (id) => `${this.#SopraDatingServerBaseURL}/search-profiles/${id}`;
-    #getSearchProfileURL = (id, searchProfileId) => {
-        return `${this.#SopraDatingServerBaseURL}/search-profiles/${id}/${searchProfileId}`;
+    #getSearchProfileURL = (searchprofileID) => {
+        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
-    #addSearchProfileURL = (id, searchProfileId)=> {
-        return `${this.#SopraDatingServerBaseURL}/search-profiles/${id}/${searchProfileId}`;
+    #getSearchProfilesURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${userID}`;
     }
-    #updateSearchProfileURL = (id, searchProfileId)=> {
-        return `${this.#SopraDatingServerBaseURL}/search-profiles/${id}/${searchProfileId}`;
+    #addSearchProfileURL = ()=> {
+        return `${this.#SopraDatingServerBaseURL}/searchprofile`;
     }
-    #deleteSearchProfileURL = (id, searchProfileId)=> {
-        return `${this.#SopraDatingServerBaseURL}/search-profiles/${id}/${searchProfileId}`;
+    #updateSearchProfileURL = (searchprofileID)=> {
+        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
-
-
-    // Users sorted by similarity with searchProfile
-    #getUsersBySimilarity = (searchProfileId) => {
-        return `${this.#SopraDatingServerBaseURL}/similar-profiles/${searchProfileId}`;
+    #deleteSearchProfileURL = (searchprofileID)=> {
+        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
-
-
-    // Chat related
-    #getUserChatsURL = (id) => `${this.#SopraDatingServerBaseURL}/user/${id}/chats`
-    #getChatMessagesURL = (chatId) => `${this.#SopraDatingServerBaseURL}/chats/${chatId}/messages`
-    #createChatURL = () => `${this.#SopraDatingServerBaseURL}/chats`
-    #addChatMessageURL = (chatId) => `${this.#SopraDatingServerBaseURL}/chats/${chatId}/messages`
 
 
     /**
@@ -102,7 +95,7 @@ export default class SopraDatingAPI {
         )
 
     getUser(userID) {
-        return this.#fetchAdvanced(this.#getUserURL(userID)).then((responseJSON) => {
+        return this.#fetchAdvanced(this.#getProfileURL(userID)).then((responseJSON) => {
             return responseJSON
         })
     }
