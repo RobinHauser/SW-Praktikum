@@ -12,6 +12,7 @@ import {initializeApp} from 'firebase/app';
 import {getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup} from "firebase/auth";
 import firebaseConfig from './firebaseconfig'
 import ConversationOverviewItem from "./components/ConversationOverviewItem";
+import ChatContainer from "./components/ChatContainer";
 
 class App extends React.Component {
 
@@ -99,6 +100,7 @@ class App extends React.Component {
                         <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList/> </Secured>}/>
                         <Route path={'/searchProfile'} element={<Secured user={currentUser}><SearchProfile/> </Secured>}/>
                         <Route path={'/conversationOverview'} element={<Secured user={currentUser}><ConversationOverview/> </Secured>}/>
+                        <Route path={'/chat'} element={<Secured user={currentUser}><ChatContainer/> </Secured>}/>
                     </Route>
                 </Routes>
             </BrowserRouter>
