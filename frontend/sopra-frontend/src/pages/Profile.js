@@ -21,7 +21,7 @@ class Profile extends Component {
 
     return (
         <div className="App">
-            <AppHeader></AppHeader>
+            <AppHeader avatar={this.props.avatar}></AppHeader>
             <Container sx={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px', fontSize: '25px'}}>
                 Profil
             </Container>

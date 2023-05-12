@@ -13,7 +13,7 @@ class SearchProfile extends Component {
 
         return (
             <div className="App">
-                <AppHeader></AppHeader>
+                <AppHeader avatar={this.props.avatar}></AppHeader>
                 <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px'}}>
                     <List
                         sx={{width: '100%', maxWidth: 700}}

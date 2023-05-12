@@ -16,8 +16,6 @@ import ChatContainer from "./components/ChatContainer";
 
 class App extends React.Component {
 
-
-    /** Constructor of the app, which initializes firebase  */
     constructor(props) {
         super(props);
 
@@ -66,6 +64,7 @@ class App extends React.Component {
                     document.cookie = `token=${token};path=/`;
                     this.setState({
                         currentUser: user,
+                        profileImageURL: user.toJSON().photoURL,
                         authError: null,
                         authLoading: false
                     });
@@ -87,20 +86,21 @@ class App extends React.Component {
     }
 
     render() {
-        const {currentUser} = this.state;
+        const {currentUser, profileImageURL} = this.state;
+
         return (
             <BrowserRouter>
                 <Routes>
                     <Route path={"/"}>
                         <Route path={'/'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
                         <Route path={'/*'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
-                        <Route path={'/main'} element={<Secured user={currentUser}><Main/> </Secured>}/>
-                        <Route path={'/profile'} element={<Secured user={currentUser}><Profile/> </Secured>}/>
-                        <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList/> </Secured>}/>
-                        <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList/> </Secured>}/>
-                        <Route path={'/searchProfile'} element={<Secured user={currentUser}><SearchProfile/> </Secured>}/>
-                        <Route path={'/conversationOverview'} element={<Secured user={currentUser}><ConversationOverview/> </Secured>}/>
-                        <Route path={'/chat'} element={<Secured user={currentUser}><ChatContainer/> </Secured>}/>
+                        <Route path={'/main'} element={<Secured user={currentUser}><Main avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/profile'} element={<Secured user={currentUser}><Profile avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/searchProfile'} element={<Secured user={currentUser}><SearchProfile avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/conversationOverview'} element={<Secured user={currentUser}><ConversationOverview avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/chat'} element={<Secured user={currentUser}><ChatContainer avatar={profileImageURL}/> </Secured>}/>
                     </Route>
                 </Routes>
             </BrowserRouter>
