@@ -3,6 +3,7 @@ import {BrowserRouter, Navigate, Route, Routes, useLocation} from "react-router-
 import Main from "./pages/Main";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
+import ConversationOverview from "./pages/ConversationOverview"
 import BookmarkList from "./pages/BookmarkList";
 import BlockList from "./pages/BlockList";
 import SearchProfile from "./pages/SearchProfile";
@@ -10,6 +11,7 @@ import React from 'react';
 import {initializeApp} from 'firebase/app';
 import {getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup} from "firebase/auth";
 import firebaseConfig from './firebaseconfig'
+import ConversationOverviewItem from "./components/ConversationOverviewItem";
 
 class App extends React.Component {
 
@@ -96,6 +98,7 @@ class App extends React.Component {
                         <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList/> </Secured>}/>
                         <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList/> </Secured>}/>
                         <Route path={'/searchProfile'} element={<Secured user={currentUser}><SearchProfile/> </Secured>}/>
+                        <Route path={'/conversationOverview'} element={<Secured user={currentUser}><ConversationOverview/> </Secured>}/>
                     </Route>
                 </Routes>
             </BrowserRouter>
