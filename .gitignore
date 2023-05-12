@@ -114,3 +114,4 @@ venv.bak/
 
 #Node
 /frontend/sopra-frontend/node_modules
+/frontend/sopra-frontend/http-fake-backend/node_modules

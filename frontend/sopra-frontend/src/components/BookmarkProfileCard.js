@@ -5,52 +5,34 @@ import Typography from '@mui/material/Typography';
 import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 import Avatar from "@mui/material/Avatar";
 import {Component} from "react";
-import Dialog from "@mui/material/Dialog";
-import ExtendedProfileCard from "./ExtendedProfileCard";
+import Tooltip from "@mui/material/Tooltip";
+import BlockIcon from "@mui/icons-material/Block";
+import {Link} from "react-router-dom";
+import ChatIcon from "@mui/icons-material/Chat";
+import Box from "@mui/material/Box";
+import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 
 /**
- * @author [Jannik Haug, Theo Klautke]
+ * @author [Jannik Haug]
  */
-class ProfileCard extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            openDialog: false,
-            selectedValue: null,
-        };
-
-        this.handleOpenDialog = this.handleOpenDialog.bind(this);
-        this.handleCloseDialog = this.handleCloseDialog.bind(this);
-
-    }
-
-    handleOpenDialog() {
-        this.setState({openDialog: true});
-    }
-
-    handleCloseDialog() {
-        this.setState({openDialog: false, selectedValue: this.props.value});
-    }
-
+class BookmarkProfileCard extends Component {
     render() {
-        const {openDialog} = this.state;
+
         return (
             <div>
                 <Card direction="row"
                       justifycontent="space-evenly"
                       alignitems="center"
-                      title="Mehr Infos & Interaktionen"
 
                       sx={{
                           borderTop: 3,
                           borderBottom: 3,
                           borderRadius: 2,
                           borderColor: "#eceff1",
-                          cursor: 'pointer',
-                          ':hover': {boxShadow: 10},
+                          ':hover': {boxShadow: 3},
                           minWidth: "300px"
                       }} //Quelle: https://stackoverflow.com/questions/37062176/mui-how-to-animate-card-depth-on-hover
-                      onClick={this.handleOpenDialog}>
+                      >
                     <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -77,15 +59,29 @@ class ProfileCard extends Component {
                         <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
                             Körpergröße:
                         </Typography>
+                        <Box sx={{marginTop: 5, display: 'flex', justifyContent: 'space-between'}}>
+                        <Tooltip title="User blockieren">
+                            <BlockIcon onClick={() => alert("User wurde blockiert")}
+                                       sx={{cursor: 'pointer', width: 35, height: 35}}></BlockIcon>
+                        </Tooltip>
+                        <Tooltip title="User von Merkliste entfernen">
+                            <HeartBrokenIcon onClick={() => alert("User wurde von der Merkliste entfernt")}
+                                          sx={{cursor: 'pointer', width: 35, height: 35}}></HeartBrokenIcon>
+                        </Tooltip>
+                        <Tooltip title="Zum Chat">
+                            <Link to="/Chat">
+                                <ChatIcon sx={{cursor: 'pointer', width: 35, height: 35}}>
+                                </ChatIcon>
+                            </Link>
+                        </Tooltip>
+
+
+                    </Box>
                     </CardContent>
                 </Card>
-                <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
-
-                    <ExtendedProfileCard></ExtendedProfileCard>
-                </Dialog>
             </div>
         )
     }
 }
 
-export default ProfileCard;
+export default BookmarkProfileCard;

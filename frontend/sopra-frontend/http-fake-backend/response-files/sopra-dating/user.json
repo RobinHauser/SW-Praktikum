@@ -1,0 +1,11 @@
+[
+  {
+	"id": 6001,
+	"firstName": "Björn",
+	"lastName": "Till",
+	"email": "Björn.till@gmail.com",
+	"dateOfBirth": "31.12.2000",
+	"blocklistID": 2001,
+	"bookmarklistID": 4001
+  }
+]
