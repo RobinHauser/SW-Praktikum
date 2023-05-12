@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter, Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes, useLocation} from "react-router-dom";
 import Main from "./pages/Main";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
@@ -18,7 +18,6 @@ class App extends React.Component {
     constructor(props) {
         super(props);
 
-        // Init an empty state
         this.state = {
             currentUser: null,
             appError: null,
@@ -39,7 +38,6 @@ class App extends React.Component {
         });
 
         const app = initializeApp(firebaseConfig);
-        //const auth = getAuth(app);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider);
@@ -61,17 +59,8 @@ class App extends React.Component {
                 this.setState({
                     authLoading: true
                 });
-                // The user is signed in
                 user.getIdToken().then(token => {
-                    // Add the token to the browser's cookies. The server will then be
-                    // able to verify the token against the API.
-                    // SECURITY NOTE: As cookies can easily be modified, only put the
-                    // token (which is verified server-side) in a cookie; do not add other
-                    // user information.
                     document.cookie = `token=${token};path=/`;
-                    // console.log("Token is: " + document.cookie);
-
-                    // Set the user not before the token arrived
                     this.setState({
                         currentUser: user,
                         authError: null,
@@ -84,10 +73,8 @@ class App extends React.Component {
                     });
                 });
             } else {
-                // User has logged out, so clear the id token
                 document.cookie = 'token=;path=/';
 
-                // Set the logged out user to null
                 this.setState({
                     currentUser: null,
                     authLoading: false
@@ -97,17 +84,19 @@ class App extends React.Component {
     }
 
     render() {
-        const {currentUser, appError, authError, authLoading} = this.state;
-
+        const {currentUser} = this.state;
         return (
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<Main/>}></Route>
-                    <Route path="/profile" element={currentUser === null ? <Navigate replace={true} to={"/signIn"}/> : <Profile/>}></Route>
-                    <Route path="/signIn" element={<SignIn onSignIn={this.handleSignIn}/>}></Route>
-                    <Route path="/bookmarkList" element={currentUser === null ? <Navigate replace={true} to={"/signIn"}/> : <BookmarkList/>}></Route>
-                    <Route path="/blockList" element={currentUser === null ? <Navigate replace={true} to={"/signIn"}/> : <BlockList/>}></Route>
-                    <Route path="/searchProfile" element={currentUser === null ? <Navigate replace={true} to={"/signIn"}/> : <SearchProfile/>}></Route>
+                    <Route path={"/"}>
+                        <Route path={'/'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
+                        <Route path={'/*'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
+                        <Route path={'/main'} element={<Secured user={currentUser}><Main/> </Secured>}/>
+                        <Route path={'/profile'} element={<Secured user={currentUser}><Profile/> </Secured>}/>
+                        <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList/> </Secured>}/>
+                        <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList/> </Secured>}/>
+                        <Route path={'/searchProfile'} element={<Secured user={currentUser}><SearchProfile/> </Secured>}/>
+                    </Route>
                 </Routes>
             </BrowserRouter>
         )
@@ -115,3 +104,19 @@ class App extends React.Component {
 }
 
 export default App;
+
+/**
+ * Helper Component to wrap other Components, which shall only be accessed by a logged in user.
+ *
+ * @returns
+ * @param props
+ */
+function Secured(props) {
+    let location = useLocation();
+
+    if (!props.user) {
+        return <Navigate to={'/index.html'} state={{from: location}} replace/>;
+    }
+
+    return props.children;
+}
