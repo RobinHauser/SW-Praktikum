@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import Main from "./pages/Main";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
@@ -12,6 +12,7 @@ import {getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup} from "
 import firebaseConfig from './firebaseconfig'
 
 class App extends React.Component {
+
 
     /** Constructor of the app, which initializes firebase  */
     constructor(props) {
@@ -32,6 +33,7 @@ class App extends React.Component {
      * @see See Google [firebase.auth().signInWithRedirect](https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signinwithredirect)
      */
     handleSignIn = () => {
+
         this.setState({
             authLoading: true
         });
@@ -40,8 +42,6 @@ class App extends React.Component {
         //const auth = getAuth(app);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
-
-        auth.languageCode = 'en';
         signInWithPopup(auth, provider);
     }
 

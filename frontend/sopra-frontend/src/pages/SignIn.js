@@ -9,13 +9,11 @@ import Card from "@mui/material/Card";
 import * as React from "react";
 import {Component} from "react";
 import PropTypes from "prop-types";
-import {useNavigate} from "react-router-dom";
 
 class SignIn extends Component {
 
     handleSignInButtonClicked = () =>  {
         this.props.onSignIn();
-        window.location.href = 'http://localhost:3000/';
     }
 
     render() {
