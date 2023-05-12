@@ -65,6 +65,8 @@ class App extends React.Component {
                     this.setState({
                         currentUser: user,
                         profileImageURL: user.toJSON().photoURL,
+                        profileDisplayName: user.toJSON().displayName,
+                        profileEmail: user.toJSON().email,
                         authError: null,
                         authLoading: false
                     });
@@ -86,7 +88,10 @@ class App extends React.Component {
     }
 
     render() {
-        const {currentUser, profileImageURL} = this.state;
+        const {currentUser, profileImageURL, profileDisplayName, profileEmail} = this.state;
+
+        console.log(profileDisplayName)
+        console.log(profileEmail)
 
         return (
             <BrowserRouter>
@@ -95,7 +100,7 @@ class App extends React.Component {
                         <Route path={'/'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
                         <Route path={'/*'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
                         <Route path={'/main'} element={<Secured user={currentUser}><Main avatar={profileImageURL}/> </Secured>}/>
-                        <Route path={'/profile'} element={<Secured user={currentUser}><Profile avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/profile'} element={<Secured user={currentUser}><Profile avatar={profileImageURL} name={profileDisplayName} email={profileEmail}/> </Secured>}/>
                         <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList avatar={profileImageURL}/> </Secured>}/>
                         <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList avatar={profileImageURL}/> </Secured>}/>
                         <Route path={'/searchProfile'} element={<Secured user={currentUser}><SearchProfile avatar={profileImageURL}/> </Secured>}/>
