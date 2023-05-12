@@ -44,10 +44,6 @@ export default class BlockList extends React.Component{
 
     render() {
         const { blocklist } = this.state;
-        console.log(`Blocklist Zustand im State:`, this.state.blocklist);
-        if(blocklist.user !== undefined) {
-            console.log(blocklist.user[0].id)
-        }
 
         return (
             <div className="App">

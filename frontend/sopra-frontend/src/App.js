@@ -90,9 +90,6 @@ class App extends React.Component {
     render() {
         const {currentUser, profileImageURL, profileDisplayName, profileEmail} = this.state;
 
-        console.log(profileDisplayName)
-        console.log(profileEmail)
-
         return (
             <BrowserRouter>
                 <Routes>
