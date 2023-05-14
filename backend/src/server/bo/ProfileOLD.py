@@ -1,7 +1,7 @@
 from BusinessObject import BusinessObject
 from Property import Property
 from TextProperty import TextProperty
-from DropdownProperty import DropdownProperty
+from SelectionProperty import SelectionProperty
 
 class Profile(BusinessObject):
     def __init__(self):
@@ -29,31 +29,31 @@ class Profile(BusinessObject):
         return self.__lastname.info.value
 
     def set_birthdate(self, birthdate):
-        self.__birthdate = DropdownProperty(birthdate, ['Jan', 'Feb', 'Mar', ...])
+        self.__birthdate = SelectionProperty(birthdate, ['Jan', 'Feb', 'Mar', ...])
 
     def get_birthdate(self):
         return self.__birthdate.info.value
 
     def set_haircolor(self, haircolor):
-        self.__haircolor = DropdownProperty(haircolor, ['Blonde', 'Brunette', 'Red', ...])
+        self.__haircolor = SelectionProperty(haircolor, ['Blonde', 'Brunette', 'Red', ...])
 
     def get_haircolor(self):
         return self.__haircolor.info.value
 
     def set_height(self, height):
-        self.__height = DropdownProperty(height, ['Short', 'Average', 'Tall', ...])
+        self.__height = SelectionProperty(height, ['Short', 'Average', 'Tall', ...])
 
     def get_height(self):
         return self.__height.info.value
 
     def set_smoker(self, smoker):
-        self.__smoker = DropdownProperty(smoker, ['Yes', 'No'])
+        self.__smoker = SelectionProperty(smoker, ['Yes', 'No'])
 
     def get_smoker(self):
         return self.__smoker.info.value
 
     def set_religion(self, religion):
-        self.__religion = DropdownProperty(religion, ['Christianity', 'Islam', 'Judaism', ...])
+        self.__religion = SelectionProperty(religion, ['Christianity', 'Islam', 'Judaism', ...])
 
     def get_religion(self):
         return self.__religion.info.value

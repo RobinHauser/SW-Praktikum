@@ -2,7 +2,7 @@ from BusinessObject import BusinessObject
 from Property import Property
 from Information import Information
 
-class DropdownProperty(Property):
+class SelectionProperty(Property):
     def __init__(self, value, options):
         info = Information(value)
         self.options = options

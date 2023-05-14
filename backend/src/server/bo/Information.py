@@ -1,22 +1,19 @@
 from BusinessObject import BusinessObject
 
 class Information(BusinessObject):
-    def __init__(self, value):
+    def __init__(self):
         super().__init__("Information", [5001, 6000])
-        self.value = value
+        self.property_id = 0
+        self.value = ""
+
+    def set_property(self, property_id):
+        self.property_id = property_id
+
+    def get_property(self):
+        return self.property_id
 
     def set_value(self, value):
         self.value = value
 
     def get_value(self):
         return self.value
-
-    def __str__(self):
-        return "Information: {}, {}".format(self._id, self.value)
-
-    @staticmethod
-    def from_dict(dictionary=dict()):
-        obj = Information()
-        obj.set_id(dictionary["id"])
-        obj.set_value(dictionary["value"])
-        return obj
