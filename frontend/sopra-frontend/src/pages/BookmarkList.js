@@ -1,8 +1,16 @@
-import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
+import AppHeader from "../components/AppHeader";
+import App from "../App";
 import GridContainer from "../components/GridContainer";
 
-export default function Main() {
+/**
+ * Shows the Bookmarklist with all Profiles, that are Bookmarked by the User
+ *
+ * @author [Michael Bergdolt]
+ */
+
+export default function BookmarkList() {
+
     return (
         <div className="App">
             <AppHeader></AppHeader>
@@ -10,5 +18,5 @@ export default function Main() {
                 <GridContainer></GridContainer>
             </Container>
         </div>
-    );
+    )
 }
