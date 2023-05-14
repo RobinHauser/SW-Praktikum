@@ -19,7 +19,7 @@ export default class SopraDatingAPI {
 
 
     // Bookmarklist related
-    #addUserBookmarklistURL = () => {
+    #addUserToBookmarklistURL = () => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist`;
     };
     #getBookmarklistURL = (BookmarklistID) => {
@@ -30,12 +30,12 @@ export default class SopraDatingAPI {
     };
 
     // Blocklist related
-    #addUserBlocklistURL = () => `${this.#SopraDatingServerBaseURL}/blocklist`;
+    #addUserToBlocklistURL = () => `${this.#SopraDatingServerBaseURL}/blocklist`;
     #getBlocklistURL = (BlocklistID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${BlocklistID}`;
-    #removeUserBlocklistURL = (BlockID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${BlockID}`;
+    #removeUserFromBlocklistURL = (BlockID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${BlockID}`;
 
     // Chat related
-    #addUserChatURL = () => `${this.#SopraDatingServerBaseURL}/conversationoverview`;
+    #addUserToChatURL = () => `${this.#SopraDatingServerBaseURL}/conversationoverview`;
     #getUserChatsURL = (conversationsoverviewListID) => {
         return `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${conversationsoverviewListID}`;
     }
@@ -94,9 +94,14 @@ export default class SopraDatingAPI {
         }
         )
 
-    getUser(userID) {
-        return this.#fetchAdvanced(this.#getProfileURL(userID)).then((responseJSON) => {
-            return responseJSON
+    addUserToBookmarklist(userBO) {
+        return this.#fetchAdvanced(this.#addUserToBookmarklistURL(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(userBO)
         })
     }
 
