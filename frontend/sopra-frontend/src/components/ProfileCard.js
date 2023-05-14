@@ -1,45 +1,91 @@
 import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
+import Avatar from "@mui/material/Avatar";
+import {Component} from "react";
+import Dialog from "@mui/material/Dialog";
+import ExtendedProfileCard from "./ExtendedProfileCard";
 
-export default function ProfileCard() {
-    return (
-        <Card direction="row"
-              justifycontent="space-evenly"
-              alignitems="center">
-            <CardMedia
-                sx={{height: 300}}
-                image={placeHolderImage}
-                title="profileImage"/>
-            <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                    Hans Jürgen
-                </Typography>
-                <Typography variant="h6" color="text.secondary" style={{ textAlign: "left" }}>
-                    Alter:
-                </Typography>
-                <Typography variant="h6" color="text.secondary" style={{ textAlign: "left" }}>
-                    Geschlecht:
-                </Typography>
-                <Typography variant="h6" color="text.secondary" style={{ textAlign: "left" }}>
-                    Raucher:
-                </Typography>
-                <Typography variant="h6" color="text.secondary" style={{ textAlign: "left" }}>
-                    Religion:
-                </Typography>
-                <Typography variant="h6" color="text.secondary" style={{ textAlign: "left" }}>
-                    Haarfarbe:
-                </Typography>
-                <Typography variant="h6" color="text.secondary" style={{ textAlign: "left" }}>
-                    Geburtsdatum:
-                </Typography>
-                <Typography variant="h6" color="text.secondary" style={{ textAlign: "left" }}>
-                    Körpergröße:
-                </Typography>
-            </CardContent>
-        </Card>
-    );
+/**
+ * @author [Jannik Haug, Theo Klautke]
+ */
+class ProfileCard extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            openDialog: false,
+            selectedValue: null,
+        };
+
+        this.handleOpenDialog = this.handleOpenDialog.bind(this);
+        this.handleCloseDialog = this.handleCloseDialog.bind(this);
+
+    }
+
+    handleOpenDialog() {
+        this.setState({openDialog: true});
+    }
+
+    handleCloseDialog() {
+        this.setState({openDialog: false, selectedValue: this.props.value});
+    }
+
+    render() {
+        const {openDialog} = this.state;
+        return (
+            <div>
+                <Card direction="row"
+                      justifycontent="space-evenly"
+                      alignitems="center"
+                      title="Mehr Infos & Interaktionen"
+
+                      sx={{
+                          borderTop: 3,
+                          borderBottom: 3,
+                          borderRadius: 2,
+                          borderColor: "#eceff1",
+                          cursor: 'pointer',
+                          ':hover': {boxShadow: 10},
+                          minWidth: "300px"
+                      }} //Quelle: https://stackoverflow.com/questions/37062176/mui-how-to-animate-card-depth-on-hover
+                      onClick={this.handleOpenDialog}>
+                    <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                            Hans Jürgen
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                            Alter:
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                            Geschlecht:
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                            Raucher:
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                            Religion:
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                            Haarfarbe:
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                            Geburtsdatum:
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                            Körpergröße:
+                        </Typography>
+                    </CardContent>
+                </Card>
+                <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
+
+                    <ExtendedProfileCard></ExtendedProfileCard>
+                </Dialog>
+            </div>
+        )
+    }
 }
+
+export default ProfileCard;

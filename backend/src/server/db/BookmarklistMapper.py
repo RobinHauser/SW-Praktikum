@@ -27,7 +27,7 @@ class BookmarklistMapper(Mapper.Mapper):
     def find_by_id(self, id):
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM bookmarklist WHERE id={}".format(id)
+        command = "SELECT * FROM bookmarklist WHERE BookmarklistID={}".format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -46,13 +46,13 @@ class BookmarklistMapper(Mapper.Mapper):
 
     def insert(self, bookmarklist):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM bookmarklist ")
+        cursor.execute("SELECT MAX(BookmarklistID) AS maxid FROM bookmarklist ")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
             bookmarklist.set_id(maxid[0] + 1)
 
-        command = "INSERT INTO bookmarklist (id) VALUES (%s)"
+        command = "INSERT INTO bookmarklist (BookmarklistID) VALUES (%s)"
         data = (bookmarklist.get_id())
         cursor.execute(command, data)
 
@@ -64,7 +64,7 @@ class BookmarklistMapper(Mapper.Mapper):
     def update(self, bookmarklist):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE bookmarklist SET id=%s WHERE id=%s"
+        command = "UPDATE bookmarklist SET BookmarklistID=%s WHERE BookmarklistID=%s"
         data = (bookmarklist.get_id(), bookmarklist.get_id())
         cursor.execute(command, data)
 
@@ -74,7 +74,7 @@ class BookmarklistMapper(Mapper.Mapper):
     def delete(self, bookmarklist):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM bookmarklist WHERE id={}".format(bookmarklist.get_id())
+        command = "DELETE FROM bookmarklist WHERE BookmarklistID={}".format(bookmarklist.get_id())
         cursor.execute(command)
 
         self._cnx.commit()

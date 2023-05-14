@@ -1,6 +1,8 @@
 from server.db import Mapper
 from server.bo import Blocklist
 
+Blocklist = Blocklist.Blocklist
+
 
 class BlocklistMapper(Mapper.Mapper):
 
@@ -19,7 +21,6 @@ class BlocklistMapper(Mapper.Mapper):
             blocklist.set_id(id)
             result.append(blocklist)
 
-
         self._cnx.commit()
         cursor.close()
 
@@ -29,7 +30,7 @@ class BlocklistMapper(Mapper.Mapper):
 
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM blocklist WHERE id={}".format(id)
+        command = "SELECT * FROM blocklist WHERE BlocklistID={}".format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -46,15 +47,15 @@ class BlocklistMapper(Mapper.Mapper):
 
         return result
 
-    def insert(self, Blocklist):
+    def insert(self, blocklist):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM blocklist ")
+        cursor.execute("SELECT MAX(BlocklistID) AS maxid FROM blocklist ")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
             Blocklist.set_id(maxid[0] + 1)
 
-        command = "INSERT INTO blocklist (id) VALUES (%s)"
+        command = "INSERT INTO blocklist (BlocklistID) VALUES (%s)"
         data = (Blocklist.get_id())
         cursor.execute(command, data)
 
@@ -63,20 +64,20 @@ class BlocklistMapper(Mapper.Mapper):
 
         return Blocklist
 
-    def update(self, Blocklist):
+    def update(self, blocklist):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE blocklist SET id=%s WHERE id=%s"
+        command = "UPDATE blocklist SET BlocklistID=%s WHERE BlocklistID=%s"
         data = (Blocklist.get_id(), Blocklist.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, Blocklist):
+    def delete(self, blocklist):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM blocklist WHERE id={}".format(Blocklist.get_id())
+        command = "DELETE FROM blocklist WHERE BlocklistID={}".format(Blocklist.get_id())
         cursor.execute(command)
 
         self._cnx.commit()
@@ -87,8 +88,3 @@ class BlocklistMapper(Mapper.Mapper):
 
     def find_by_name(self, name):
         pass
-
-
-
-
-

@@ -26,7 +26,7 @@ class ProfileMapper(Mapper.Mapper):
     def find_by_id(self, id):
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM profile WHERE id={}".format(id)
+        command = "SELECT * FROM profile WHERE ProfileID={}".format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -45,13 +45,13 @@ class ProfileMapper(Mapper.Mapper):
 
     def insert(self, profile):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM profile")
+        cursor.execute("SELECT MAX(ProfileID) AS maxid FROM profile")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
             profile.set_id(maxid[0] + 1)
 
-        command = "INSERT INTO profile (id) VALUES (%s)"
+        command = "INSERT INTO profile (ProfileID) VALUES (%s)"
         data = (profile.get_id())
         cursor.execute(command, data)
 
@@ -63,7 +63,7 @@ class ProfileMapper(Mapper.Mapper):
     def update(self, profile):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE profile SET id=%s WHERE id=%s"
+        command = "UPDATE profile SET ProfileID=%s WHERE ProfileID=%s"
         data = (profile.get_id(), profile.get_id())
         cursor.execute(command, data)
 
@@ -75,7 +75,7 @@ class ProfileMapper(Mapper.Mapper):
     def delete(self, profile):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM profile WHERE id={}".format(profile.get_id())
+        command = "DELETE FROM profile WHERE ProfileID={}".format(profile.get_id())
         cursor.execute(command)
 
         self._cnx.commit()
