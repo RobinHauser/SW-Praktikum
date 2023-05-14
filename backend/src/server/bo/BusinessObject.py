@@ -10,7 +10,7 @@ class BusinessObject(ABC):
         self._id = BusinessObject.id_ranges[subclass] #Untergrenze wird der id zugewiesen
         BusinessObject.id_ranges[subclass] += 1 #Untergrenze wird erhöht
         if self._id >= id_range[1]: #wenn id größer als Obergrenze
-            raise ValueError("Reached maximum entities. Initializing not possible.")
+            raise ValueError("Reached maximum entities. Initializing not possible.") #todo besseres exception handling
 
     def get_id(self):
         return self._id

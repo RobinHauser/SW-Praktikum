@@ -2,8 +2,8 @@ from server.bo import BusinessObject as bo
 
 
 class Chat(bo.BusinessObject):
-    def init(self):
-        super().init()
+    def __init__(self):
+        super().__init__()
 
     def send_message(self):
         pass

@@ -37,8 +37,8 @@ class User (BusinessObject):
     def get_google_id(self):
         return self.__google_id
 
-    def set_google_id(self, g_id):
-        self.__google_id = g_id
+    def set_google_id(self, google_id):
+        self.__google_id = google_id
 
     def __str__(self):
         return "User: {}, {}, {}, {}, {}, {}".format(self._id, self.__firstname, self.__lastname, self.__email, self.__birthdate, self.__google_id)
