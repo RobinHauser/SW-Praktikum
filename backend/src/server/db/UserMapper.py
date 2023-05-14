@@ -93,7 +93,7 @@ class UserMapper(Mapper.Mapper):
         for (maxid) in tuples:
             user.set_id(maxid[0] + 1)
 
-        command = "INSERT INTO user (UserID, Firstname, Lastname, email, g_id, date_of_birth, owner) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO user (UserID, Firstname, Lastname, email) VALUES (%s,%s,%s,%s)"
         data = (user.get_id(), user.get_first_name(), user.get_last_name(), user.get_email(), user.get_g_id(),
                 user.get_date_of_birth(), user.get_owner())
         cursor.execute(command, data)
@@ -106,7 +106,7 @@ class UserMapper(Mapper.Mapper):
     def update(self, user):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE user SET Firstname=%s, Lastname=%s, email=%s, g_id=%s, date_of_birth=%s, owner=%s WHERE UserID=%s"
+        command = "UPDATE user SET Firstname=%s, Lastname=%s, email=%s WHERE UserID=%s"
         data = (
         user.get_first_name(), user.get_last_name(), user.get_email(), user.get_g_id(), user.get_date_of_birth(),
         user.get_owner(), user.get_id())
