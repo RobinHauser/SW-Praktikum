@@ -22,22 +22,22 @@ export default class SopraDatingAPI {
     #addUserToBookmarklistURL = () => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist`;
     };
-    #getBookmarklistURL = (BookmarklistID) => {
-        return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${BookmarklistID}`;
+    #getBookmarklistURL = (bookmarklistID) => {
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${bookmarklistID}`;
     };
-    #removeUserFromBookmarklistURL = (BookmarkID) => {
-        return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${BookmarkID}`;
+    #removeUserFromBookmarklistURL = (bookmarkID) => {
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${bookmarkID}`;
     };
 
     // Blocklist related
     #addUserToBlocklistURL = () => `${this.#SopraDatingServerBaseURL}/blocklist`;
-    #getBlocklistURL = (BlocklistID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${BlocklistID}`;
-    #removeUserFromBlocklistURL = (BlockID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${BlockID}`;
+    #getBlocklistURL = (blocklistID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${blocklistID}`;
+    #removeUserFromBlocklistURL = (blockID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${blockID}`;
 
     // Chat related
     #addUserToChatURL = () => `${this.#SopraDatingServerBaseURL}/conversationoverview`;
-    #getUserChatsURL = (conversationsoverviewListID) => {
-        return `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${conversationsoverviewListID}`;
+    #getUserChatsURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${userID}`;
     }
     #removeChatURL = (chatID) => `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${chatID}`;
 
@@ -104,14 +104,14 @@ export default class SopraDatingAPI {
         })
     }
 
-    getBookmarklist(BookmarklistID) {
-        return  this.#fetchAdvanced(this.#getBookmarklistURL(BookmarklistID)).then((responseJSON) => {
+    getBookmarklist(bookmarklistID) {
+        return  this.#fetchAdvanced(this.#getBookmarklistURL(bookmarklistID)).then((responseJSON) => {
             return responseJSON
         })
     }
 
-    removeUserFromBookmarklist(BookmarkID) {
-        return this.#fetchAdvanced(this.#removeUserFromBookmarklistURL(BookmarkID), {
+    removeUserFromBookmarklist(bookmarkID) {
+        return this.#fetchAdvanced(this.#removeUserFromBookmarklistURL(bookmarkID), {
             method: 'DELETE'
         })
     }
@@ -133,8 +133,8 @@ export default class SopraDatingAPI {
         })
     }
 
-    removeUserFromBlocklist(BlockID) {
-        return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(BlockID), {
+    removeUserFromBlocklist(blockID) {
+        return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(blockID), {
             method: 'DELETE'
         })
     }
@@ -187,7 +187,7 @@ export default class SopraDatingAPI {
 
     updateProfile(userBO) {
         return this.#fetchAdvanced(this.#updateProfileURL(userBO.id), {
-            method: 'UPDATE',
+            method: 'PUT',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json',
@@ -221,7 +221,7 @@ export default class SopraDatingAPI {
 
     updateSearchProfile(searchprofileBO) {
         return this.#fetchAdvanced(this.#updateSearchProfileURL(searchprofileBO.id), {
-            method: 'UPDATE',
+            method: 'PUT',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json'

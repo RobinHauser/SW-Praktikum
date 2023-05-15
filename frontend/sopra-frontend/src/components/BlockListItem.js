@@ -9,7 +9,7 @@ import Tooltip from "@mui/material/Tooltip";
 export default function BlockListItem ({ value }) {
     return (
         <ListItem
-            sx={{ '&:hover': { bgcolor: '#e0e0e0' } }}
+            sx={{ '&:hover': { bgcolor: '#c6e2ff' }, borderRadius: '10px' }}
             secondaryAction={
                 <Tooltip title="Benutzer entblocken">
                     <IconButton>
