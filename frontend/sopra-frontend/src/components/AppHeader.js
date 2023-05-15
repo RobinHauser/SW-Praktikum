@@ -12,10 +12,9 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
+import {getAuth, signOut} from "firebase/auth";
 
-const settings = ['Profil', 'Ausloggen'];
-
-export default function AppHeader() {
+export default function AppHeader(props) {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -55,6 +54,13 @@ export default function AppHeader() {
         navigate(('/searchProfile'))
     }
 
+    function handleSignOutButtonClicked() {
+        const auth = getAuth();
+        signOut(auth).then(
+            //TODO clear cookies
+        );
+    }
+
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
@@ -63,7 +69,7 @@ export default function AppHeader() {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/"
+                        href="/main"
                         sx={{
                             display: {xs: 'none', md: 'flex'},
                             fontWeight: 700,
@@ -172,7 +178,7 @@ export default function AppHeader() {
                     <Box sx={{flexGrow: 0}}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                <Avatar src={props.avatar}/>
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -197,7 +203,10 @@ export default function AppHeader() {
                             }}>
                                 <Typography textAlign="center">Profil</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseUserMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseUserMenu()
+                                handleSignOutButtonClicked()
+                            }}>
                                 <Typography textAlign="center">Ausloggen</Typography>
                             </MenuItem>
                         </Menu>

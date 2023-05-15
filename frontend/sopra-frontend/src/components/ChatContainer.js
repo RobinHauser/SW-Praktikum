@@ -19,6 +19,11 @@ import SendIcon from '@mui/icons-material/Send';
  */
 export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
     const navigate = useNavigate()
+
+    //TODO this is here just wor testing
+    const messageObjectLeft = ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"];
+    const messageObjectRight = ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"];
+
     return (
         <div className="App">
             <Container style={{
@@ -54,12 +59,12 @@ export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
                     }}>
 
                         <Container>
-                            {messageArrayLeft.map((text) => (
+                            {messageObjectLeft.map((text) => (
                                 <Box>
                                     <MessageLeft message={text}></MessageLeft>
                                 </Box>
                             ))}
-                            {messageArrayRight.map((text) => (
+                            {messageObjectRight.map((text) => (
                                 <Box>
                                     <MessageRight message={text}></MessageRight>
                                 </Box>

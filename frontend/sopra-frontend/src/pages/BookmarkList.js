@@ -11,11 +11,11 @@ import BookmarkProfileCard from "../components/BookmarkProfileCard";
  * @author [Michael Bergdolt]
  */
 
-export default function BookmarkList() {
+export default function BookmarkList(props) {
 
     return (
         <div className="App">
-            <AppHeader></AppHeader>
+            <AppHeader avatar={props.avatar}></AppHeader>
             <Container style={{marginTop: '50px'}}>
                         <Box sx={{display: 'flex', justifyContent: 'center'}}>
             <Grid

@@ -16,7 +16,7 @@ class Mapper(AbstractContextManager, ABC):
             self._cnx = connector.connect(user='root', password='SoPra_2023')
 
         else:
-            self._cnx = connector.connect(user='root', password='SoPra_2023', host='127.0.0.1:3306',
+            self._cnx = connector.connect(user='root', password='sopra', host='127.0.0.1:3306',
                                           database='SoPraDatabase')
 
         return self

@@ -1,8 +1,14 @@
-from server.bo import User
-from server.db import UserMapper
-from server.db import ProfileMapper
-from server.bo import Profile
+from bo.BusinessObject import BusinessObject
+from bo.Blocklist import Blocklist
+from bo.Bookmarklist import Bookmarklist
+from bo.SelectionProperty import SelectionProperty
+from bo.Information import Information
+from bo.ProfileOLD import Profile
+from bo.Property import Property
+from bo.TextProperty import TextProperty
+from bo.User import User
 
+#todo alle mapper importieren
 
 
 class Administration():
@@ -10,16 +16,16 @@ class Administration():
         pass
 
 
-    #User Anlegen, und in der Datenbank speichern
-
-    def create_user(self, first_name, last_name, email, g_id, date_of_birth, owner_id):
+    '''
+    User - Methoden
+    '''
+    def create_user(self, firstname, lastname, email, birthdate, google_id):
         user = User()
-        user.set_first_name(first_name)
-        user.set_last_name(last_name)
+        user.set_firstname(firstname)
+        user.set_lastname(lastname)
         user.set_email(email)
-        user.set_g_id(g_id)
-        user.set_date_of_birth(date_of_birth)
-        user.set_owner(owner_id)
+        user.set_birthdate(birthdate)
+        user.set_google_id(google_id)
 
         with UserMapper() as mapper:
             return mapper.insert(user)
@@ -40,7 +46,7 @@ class Administration():
         with UserMapper() as mapper:
             return mapper.find_by_email(email)
 
-    def update_user(self, user):
+    def update_user(self, user): #das selbe wie save user
         with UserMapper() as mapper:
             mapper.update(user)
 
@@ -49,7 +55,9 @@ class Administration():
             mapper.delete(user)
 
 
-    #Profile Anlegen, und in der Datenbank speichern
+    '''
+    Profile Methoden
+    '''
 
     def create_profile(self, information, personal_profile):
         profile = Profile()
