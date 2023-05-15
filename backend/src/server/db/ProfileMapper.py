@@ -1,4 +1,3 @@
-from server.bo import ProfileOLD
 from server.db import Mapper
 
 

@@ -3,7 +3,7 @@ from bo.Blocklist import Blocklist
 from bo.Bookmarklist import Bookmarklist
 from bo.SelectionProperty import SelectionProperty
 from bo.Information import Information
-from bo.ProfileOLD import Profile
+from bo.Profile import Profile
 from bo.Property import Property
 from bo.TextProperty import TextProperty
 from bo.User import User
