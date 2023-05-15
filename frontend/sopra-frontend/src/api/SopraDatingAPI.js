@@ -25,7 +25,7 @@ export default class SopraDatingAPI {
     #getBookmarklistURL = (BookmarklistID) => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${BookmarklistID}`;
     };
-    #removeUserBookmarklistURL = (BookmarkID) => {
+    #removeUserFromBookmarklistURL = (BookmarkID) => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${BookmarkID}`;
     };
 
@@ -80,8 +80,7 @@ export default class SopraDatingAPI {
     }
 
     /**
-   *  Returns a Promise which resolves to a json object.
-   *  The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
+   *  Returns a json object.
    *  fetchAdvanced throws an Error also an server status errors
    */
     #fetchAdvanced = (url, init) => fetch(url, init)
@@ -105,9 +104,135 @@ export default class SopraDatingAPI {
         })
     }
 
+    getBookmarklist(BookmarklistID) {
+        return  this.#fetchAdvanced(this.#getBookmarklistURL(BookmarklistID)).then((responseJSON) => {
+            return responseJSON
+        })
+    }
+
+    removeUserFromBookmarklist(BookmarkID) {
+        return this.#fetchAdvanced(this.#removeUserFromBookmarklistURL(BookmarkID), {
+            method: 'DELETE'
+        })
+    }
+
+    addUserToBlocklist(userBO) {
+        return this.#fetchAdvanced(this.#addUserToBlocklistURL(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(userBO)
+        })
+    }
+
     getBlocklist(userID) {
         return this.#fetchAdvanced(this.#getBlocklistURL(userID)).then((responseJSON) => {
             return responseJSON
+        })
+    }
+
+    removeUserFromBlocklist(BlockID) {
+        return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(BlockID), {
+            method: 'DELETE'
+        })
+    }
+
+    addUserToChat(userBO) {
+        return this.#fetchAdvanced(this.#addUserToChatURL(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(userBO)
+        })
+    }
+
+    getUserChats(userID) {
+        return this.#fetchAdvanced(this.#getUserChatsURL(userID)).then((responseJSON) => {
+            return responseJSON
+        })
+    }
+
+    removeChat(chatID) {
+        return this.#fetchAdvanced(this.#removeChatURL(chatID), {
+            method: 'DELETE'
+        })
+    }
+
+    addMessage(messageBO) {
+        return this.#fetchAdvanced(this.#addMessageURl(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(messageBO)
+        })
+    }
+
+    getChatMessages(chatID) {
+        return this.#fetchAdvanced(this.#getChatMessagesURL(chatID)).then((responseJSON) => {
+            return responseJSON
+        })
+    }
+
+    getProfile(userID) {
+        return this.#fetchAdvanced(this.#getProfileURL(userID)).then((responseJSON) => {
+            return responseJSON
+        })
+    }
+
+    updateProfile(userBO) {
+        return this.#fetchAdvanced(this.#updateProfileURL(userBO.id), {
+            method: 'UPDATE',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(userBO)
+        })
+    }
+
+    getSearchProfile(searchprofileID) {
+        return this.#fetchAdvanced(this.#getSearchProfileURL(searchprofileID)).then((responseJSON) => {
+            return responseJSON
+        })
+    }
+
+    getSearchProfiles(userID) {
+        return this.#fetchAdvanced(this.#getSearchProfilesURL(userID)).then((responseJSON) => {
+            return responseJSON
+        })
+    }
+
+    addSearchProfile(searchprofileBO) {
+        return this.#fetchAdvanced(this.#addSearchProfileURL(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(searchprofileBO)
+        })
+    }
+
+    updateSearchProfile(searchprofileBO) {
+        return this.#fetchAdvanced(this.#updateSearchProfileURL(searchprofileBO.id), {
+            method: 'UPDATE',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(searchprofileBO)
+        })
+    }
+
+    deleteSearchProfile(searchprofileID) {
+        return this.#fetchAdvanced(this.#deleteSearchProfileURL(searchprofileID), {
+            method: 'DELETE'
         })
     }
 }
