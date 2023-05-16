@@ -19,6 +19,16 @@ import SendIcon from '@mui/icons-material/Send';
  */
 export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
     const navigate = useNavigate()
+    const messagesEndRef = React.useRef();
+
+  React.useEffect(() => {
+    scrollToBottom(); // DOM node
+  }, [messageArrayLeft, messageArrayRight]);
+
+   function scrollToBottom() {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+  // Quelle für das automatische nach unten Scrollen: https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
     return (
         <div className="App">
             <Container style={{
@@ -26,21 +36,21 @@ export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
                 maxWidth: "100%",
                 top: "0",
                 width: "100vh",
-                height: "100vh",
+                height: "90vh",
                 minHeight: "90vh"
             }}>
-                <Paper style={{background: "#f5f5f5"}}>
+                <Paper style={{ maxHeight: "90vh"}}>
                     <Box style={{alignItems: "center"}} sx={{mb: 1}}>
-                        <Paper style={{display: "flex", alignItems: "center", background: "#37474f"}}
-                               sx={{minHeight: 50}}>
-                            <Tooltip title="zurrück zur Übersicht" fontSize="large" sx={{color: "white"}}>
+                        <Paper style={{display: "flex", alignItems: "center"}}
+                               sx={{minHeight: 50}} elevation={5}>
+                            <Tooltip title="zurück zur Übersicht" fontSize="large" sx={{color: "black"}}>
                                 <IconButton onClick={() => navigate(('/conversationOverview'))}>
                                     <KeyboardDoubleArrowLeftIcon></KeyboardDoubleArrowLeftIcon>
                                 </IconButton>
                             </Tooltip>
                             <div style={{display: "flex", alignItems: "center"}}>
                                 <Avatar src={placeHolderImage}></Avatar>
-                                <Typography style={{color: "white"}} noWrap={false}
+                                <Typography style={{color: "black"}} noWrap={false}
                                             sx={{ml: 2, fontSize: 20, wordBreak: 'break-all'}}> placeholder
                                     name</Typography>
                             </div>
@@ -49,7 +59,7 @@ export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
 
                     <List style={{
                         position: "relative",
-                        height: "calc(100vh - 130px)", //Idee inspiriert durch: https://www.jimlynchcodes.com/blog/the-css-calc-function-for-a-more-consistent-responsive-design (Abgerufen am 30.04.2023)
+                        height: "calc(100vh - 210px)", //Idee inspiriert durch: https://www.jimlynchcodes.com/blog/the-css-calc-function-for-a-more-consistent-responsive-design (Abgerufen am 30.04.2023)
                         overflow: "auto",
                     }}>
 
@@ -65,15 +75,19 @@ export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
                                 </Box>
                             ))}
                         </Container>
+                    <div ref={messagesEndRef} />
+
                     </List>
+
+                </Paper>
                     <Container sx={{
                         maxHeight: "50px",
-                        position: "fixed",
+                        position: "static",
                         bottom: "0",
-                        alignItems: "left",
+                        alignItems: "flex-start",
                         flexDirection: "row",
                         display: "flex",
-                        justifyContent: "start"
+                        justifyContent: "center"
                     }}>
                         <TextField InputProps={{style: {color: "primary"}}}
                                    InputLabelProps={{style: {color: "primary"}}}
@@ -83,8 +97,8 @@ export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
                             Send
                         </Button>
                     </Container>
-                </Paper>
             </Container>
+
         </div>
     );
 }

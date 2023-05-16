@@ -10,6 +10,7 @@ import ExtendedProfileCard from "./ExtendedProfileCard";
 
 /**
  * @author [Jannik Haug, Theo Klautke]
+ * Diaologhandling von Björn Till übernommen
  */
 class ProfileCard extends Component {
     constructor(props) {

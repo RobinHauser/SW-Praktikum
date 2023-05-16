@@ -1,18 +1,28 @@
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
-import ConversationOverwievContainer from "../components/ConversationOverviewContainer";
+import ConversationOverviewContainer from "../components/ConversationOverviewContainer";
+import {Component} from "react";
 
-export default function ConversationOverview() {
-    const nameArray= ["Peter Scheidschel","Max Verstappen", "Lewis Hamilton", "Toto Wolff", "Fernando Alonso"]
-    return (
-        <div className="App">
-            <AppHeader></AppHeader>
-            <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px'}} >
-               <h3> Meine Chats</h3>
-            </Container>
-            <ConversationOverwievContainer name={nameArray}>
+class ConversationOverview extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            nameArray: ["PeterScheidschel", "Max Verstappen", "Lewis Hamilton", "Toto Wolff", "Fernando Alonso"]
+        }
+    }
+    render() {
+        return (
+            <div className="App">
+                <AppHeader></AppHeader>
+                <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px'}}>
+                    <h3> Meine Chats</h3>
+                </Container>
+                <ConversationOverviewContainer name={this.state.nameArray}>
 
-            </ConversationOverwievContainer>
-        </div>
-    );
+                </ConversationOverviewContainer>
+            </div>
+        );
+    }
 }
+
+export default ConversationOverview
