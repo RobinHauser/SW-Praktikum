@@ -30,7 +30,7 @@ class BlocklistMapper(Mapper.Mapper):
 
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM blocklist WHERE BlocklistID={}".format(id)
+        command = "SELECT * FROM blocklist WHERE UserID={}".format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -47,16 +47,16 @@ class BlocklistMapper(Mapper.Mapper):
 
         return result
 
-    def insert(self, blocklist):
+    def insert(self, user_id, blocklist):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(BlocklistID) AS maxid FROM blocklist ")
+        cursor.execute("SELECT MAX(BlocklistID) AS maxid FROM blocklist")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
             Blocklist.set_id(maxid[0] + 1)
 
-        command = "INSERT INTO blocklist (BlocklistID) VALUES (%s)"
-        data = (Blocklist.get_id())
+        command = "INSERT INTO blocklist (UserID, BlocklistID) VALUES (%s, %s)"
+        data = (user_id, Blocklist.get_id())    #TODO ist user_id richtig übergeben?
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -77,7 +77,7 @@ class BlocklistMapper(Mapper.Mapper):
     def delete(self, blocklist):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM blocklist WHERE BlocklistID={}".format(Blocklist.get_id())
+        command = "DELETE FROM blocklist WHERE BlocklistID={}".format(Blocklist.get_id()) #TODO ist Blocklist.get_id() richtig?
         cursor.execute(command)
 
         self._cnx.commit()

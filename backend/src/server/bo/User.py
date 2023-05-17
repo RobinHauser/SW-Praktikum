@@ -1,4 +1,4 @@
-from BusinessObject import BusinessObject
+from server.bo.BusinessObject import BusinessObject
 import datetime
 
 class User (BusinessObject):

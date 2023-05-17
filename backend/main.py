@@ -1,7 +1,8 @@
 from flask import Flask, request
 
-from flask_restx import Api, Resource, Namespace, fields
+from flask_restx import Api, Resource, fields, Namespace
 
+from server.Administration import Administration
 
 app = Flask(__name__)
 
@@ -59,15 +60,31 @@ property = api.inherit('Property', bo, {
 
 @bookmarklist_namespace.route(__pre_url + 'bookmarklist')
 class Bookmarklist_api(Resource):
-    @api.marshal_list_with(message)
+
+
+    @api.marshal_list_with(user)
     def get(self):
-        pass
+
+        user_id = request.args.get('user-id')
+        #adm = Administration()
+        #response = adm.get_bookmarklist_by_user_id(user_id)
+        return user_id
+
 
     def post(self):
-        pass
+
+        adm = Administration()
+        response = adm.create_bookmarklist(user_id)
+        return response
 
     def delete(self):
-        pass
+        @app.route('/bookmarklist')
+        def data():
+            # here we want to get the value of bookmarklist (i.e. ?user=some-value)
+            bookmarklist_id = request.args.get('bookmarklist-id')
+        adm = Administration()
+        response = adm.delete_bookmarklist(bookmarklist_id)
+        return response
 
 
 @blocklist_namespace.route(__pre_url + 'blocklist')
@@ -75,19 +92,31 @@ class Blocklist_api(Resource):
     @api.marshal_list_with(user)
 
     def get(self):
-        pass
+
+        adm = Administration()
+        response = adm.get_blocklist_by_user_id(user_id)
+        return response
 
     def post(self):
-        pass
+
+        adm = Administration()
+        response = adm.create_blocklist_for_user(user_id)
+        return response
 
     def delete(self):
-        pass
+
+        adm = Administration()
+        response = adm.delete_blocklist(blocklist_id)
+        return response
 
 
 @chat_namespace.route(__pre_url + 'chat')
 class Chat_api(Resource):
     def get(self):
-        pass
+
+        adm = Administration()
+        response = adm.get_chat_by_user_id(user_id)
+        return response
 
     def post(self):
         pass
@@ -108,7 +137,10 @@ class Message_api(Resource):
 @profile_namespace.route(__pre_url + 'profile')
 class Profile_api(Resource):
     def get(self):
-        pass
+
+        adm = Administration()
+        response = adm.get_profile_by_user_id()
+        return response
 
     def put(self):
         pass
@@ -131,3 +163,6 @@ class Search_profile_api(Resource):
 
 if __name__ == '__main__':
     app.run()
+
+
+
