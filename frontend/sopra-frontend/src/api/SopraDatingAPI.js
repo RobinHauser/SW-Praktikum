@@ -5,6 +5,7 @@
  * @author [Michael Bergdolt] (https://github.com/MichaelBergdolt)
  * inspired by [Christoph Kunz] (https://github.com/christophkunz)
  */
+import Blocklist from "./UserBO";
 
 export default class SopraDatingAPI {
 
@@ -31,7 +32,7 @@ export default class SopraDatingAPI {
 
     // Blocklist related
     #addUserToBlocklistURL = () => `${this.#SopraDatingServerBaseURL}/blocklist`;
-    #getBlocklistURL = (blocklistID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${blocklistID}`;
+    #getBlocklistURL = (blocklistID) => `${this.#SopraDatingServerBaseURL}/blocklist/${blocklistID}`;
     #removeUserFromBlocklistURL = (blockID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${blockID}`;
 
     // Chat related
@@ -130,8 +131,13 @@ export default class SopraDatingAPI {
     }
 
     getBlocklist(userID) {
-        return this.#fetchAdvanced(this.#getBlocklistURL(userID)).then((responseJSON) => {
-            return responseJSON
+        return this.#fetchAdvanced(this.#getBlocklistURL(userID))
+            .then((responseJSON) => {
+                let blocklistBOs = Blocklist.fromJSON(responseJSON);
+                // console.log(blocklistBOs)
+                return new Promise(function (resolve) {
+                    resolve(blocklistBOs)
+                })
         })
     }
 

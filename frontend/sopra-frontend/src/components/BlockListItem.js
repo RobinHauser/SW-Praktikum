@@ -23,7 +23,7 @@ export default function BlockListItem ({ value }) {
                     <Person2SharpIcon />
                 </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={`Profil ${value}`} />
+            <ListItemText primary={value} />
         </ListItem>
     )
 }

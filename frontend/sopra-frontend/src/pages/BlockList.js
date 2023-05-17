@@ -57,9 +57,9 @@ export default class BlockList extends React.Component{
                             </ListSubheader>
                         }
                     >
-                        {blocklist.user && blocklist.user.length > 0 ? (
-                            blocklist.user.map((blocklistItem) => (
-                                <BlockListItem key={blocklistItem.id} value={blocklistItem.firstname}/>
+                        {blocklist.length > 0 ? (
+                            blocklist.map((blocklistItem) => (
+                                <BlockListItem key={blocklistItem.id} value={blocklistItem.displayname}/>
                             ))
                         ) : (
                             <p>Keine blockierten Benutzer gefunden.</p>

@@ -1,4 +1,5 @@
 import BusinessObject from './BusinessObject';
+import UserBO from "./UserBO";
 
 /**
  * Represents a Bookmarklist object of a user.
