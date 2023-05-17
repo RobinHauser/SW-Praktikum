@@ -1,14 +1,20 @@
-{
-  "user": [
-    {
-      "id": 1,
-      "lastname": "Sparbier",
-      "firstname": "Erna"
-    },
-    {
-      "id": 2,
-      "lastname": "Maffai",
-      "firstname": "Peter"
-    }
-  ]
-}
+[
+	{
+		"id": 6001,
+		"displayname": "Björn Till",
+		"email": "Björn.till@gmail.com", 
+		"dateOfBirth": "31.12.2000",
+		"blocklistID": 3002,
+		"bookmarklistID": 4002,
+		"profileID": 8002
+	},
+	{
+		"id": 6003,
+		"displayname": "Michi Bergdolt",
+		"email": "michi.bergdolt@gmail.com",
+		"dateOfBirth": "15.6.1999",
+		"blocklistID": 3003,
+		"bookmarklistID": 4003,
+		"profileID": 8003
+	}
+]

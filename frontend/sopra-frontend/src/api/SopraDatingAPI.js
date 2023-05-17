@@ -66,6 +66,8 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
 
+    // similarityMeasure related
+
 
     /**
    * Get the Singleton instance
