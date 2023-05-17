@@ -1,6 +1,6 @@
 from server.bo import Message
 from server.db import Mapper
-
+Message = Message.Message
 
 class MessageMapper(Mapper.Mapper):
 

@@ -1,13 +1,13 @@
 from server.bo.User import User
-from server.bo import Bookmarklist
-from server.db import Mapper
+from server.bo.Bookmarklist import Bookmarklist
+from server.db.Mapper import Mapper
 
 
-class BookmarklistMapper(Mapper.Mapper):
+class BookmarklistMapper(Mapper):
 
     def __init__(self):
         super().__init__()
-
+        pass
 
     def find_all(self):
         result = []
@@ -26,19 +26,16 @@ class BookmarklistMapper(Mapper.Mapper):
         return result
 
     def find_by_id(self, id):
-        result = None
+        result = []
         cursor = self._cnx.cursor()
         command = "SELECT * FROM bookmarklist WHERE UserID={}".format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        try:
-            (id) = tuples[0]
+        for (id) in tuples:
             bookmarklist = Bookmarklist()
             bookmarklist.set_id(id)
-            result = bookmarklist
-        except IndexError:
-            result = None
+            result.append(bookmarklist)
 
         self._cnx.commit()
         cursor.close()
@@ -54,7 +51,7 @@ class BookmarklistMapper(Mapper.Mapper):
             bookmarklist.set_id(maxid[0] + 1)
 
         command = "INSERT INTO bookmarklist (UserID,BookmarklistID) VALUES (%s, %s)"
-        data = (user_id, bookmarklist.get_id()) #TODO: ist user_id richtig übergeben?
+        data = (user_id, bookmarklist.get_id())  # TODO: ist user_id richtig übergeben?
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -75,7 +72,8 @@ class BookmarklistMapper(Mapper.Mapper):
     def delete(self, bookmarklist):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM bookmarklist WHERE BookmarklistID={}".format(bookmarklist.get_id()) #TODO: .get_id()? oder bookmarklist
+        command = "DELETE FROM bookmarklist WHERE BookmarklistID={}".format(
+            bookmarklist.get_id())  # TODO: .get_id()? oder bookmarklist
         cursor.execute(command)
 
         self._cnx.commit()

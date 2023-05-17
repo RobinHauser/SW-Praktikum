@@ -83,8 +83,9 @@ class Administration():
     '''
 
     def get_bookmarklist_by_user_id(self, id):
-        with BookmarklistMapper() as mapper:
-            return mapper.find_by_id(id)
+        mapper = BookmarklistMapper()
+        mapper.find_by_id(id)
+        return mapper
 
     def create_bookmarklist(self, id):
         with BookmarklistMapper() as mapper:
