@@ -4,6 +4,8 @@ from flask_restx import Api, Resource, fields, Namespace
 
 from server.Administration import Administration
 
+import json
+
 app = Flask(__name__)
 
 api = Api(app,
@@ -55,15 +57,20 @@ property = api.inherit('Property', bo, {
     'Information1': fields.Nested(information)
 })
 
+bookmarklist = api.inherit('Bookmarklist', bo, {
+    'user': fields.Nested(user)
+})
+
 
 @bookmarklist_namespace.route('/<int:user_id>')
 class Bookmarklist_api(Resource):
 
-    @api.marshal_list_with(user)
+    #@api.marshal_list_with(bookmarklist)
     def get(self, user_id):
         adm = Administration()
         response = adm.get_bookmarklist_by_user_id(user_id)
-        return response
+        x = response[0]
+        return x.toJSON()
 
     def post(self):
         adm = Administration()
@@ -71,10 +78,6 @@ class Bookmarklist_api(Resource):
         return response
 
     def delete(self):
-        @app.route('/bookmarklist')
-        def data():
-            # here we want to get the value of bookmarklist (i.e. ?user=some-value)
-            bookmarklist_id = request.args.get('bookmarklist-id')
 
         adm = Administration()
         response = adm.delete_bookmarklist(bookmarklist_id)

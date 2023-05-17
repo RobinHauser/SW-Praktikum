@@ -1,3 +1,5 @@
+import json
+
 from server.bo.User import User
 from server.bo.Bookmarklist import Bookmarklist
 from server.db.Mapper import Mapper
@@ -32,10 +34,28 @@ class BookmarklistMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id) in tuples:
-            bookmarklist = Bookmarklist()
-            bookmarklist.set_id(id)
+        v1 = tuples[0]
+        v3 = v1[0]
+        command2 = "SELECT * FROM bookmark WHERE BookmarklistID={}".format(v3)
+        cursor.execute(command2)
+        tuples2 = cursor.fetchall()
+
+        v2 = tuples2[0]
+        v4 = v2[2]
+        command3 = "SELECT * FROM user WHERE UserID={}".format(v4)
+        cursor.execute(command3)
+        tuples3 = cursor.fetchall()
+
+
+        try:
+            (id, email, firstname, lastname) = tuples3[0]
+            bookmarklist = User()
+            bookmarklist.set_email(email)
+            bookmarklist.set_firstname(firstname)
+            bookmarklist.set_lastname(lastname)
             result.append(bookmarklist)
+        except IndexError:
+            result = None
 
         self._cnx.commit()
         cursor.close()
