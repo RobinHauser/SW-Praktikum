@@ -50,8 +50,8 @@ export default function AppHeader(props) {
         navigate(('/blockList'))
     }
 
-    function navigateToSearchProfilePage() {
-        navigate(('/searchProfile'))
+    function navigateToSearchProfileOverviewPage() {
+        navigate(('/searchProfileOverview'))
     }
 
     function handleSignOutButtonClicked() {
@@ -121,7 +121,7 @@ export default function AppHeader(props) {
                             </MenuItem>
                             <MenuItem onClick={() => {
                                 handleCloseNavMenu()
-                                navigateToSearchProfilePage()
+                                navigateToSearchProfileOverviewPage()
                             }}>
                                 <Typography textAlign="center">Suchprofil</Typography>
                             </MenuItem>
@@ -166,7 +166,7 @@ export default function AppHeader(props) {
                         </Button>
                         <Button onClick={() => {
                             handleCloseNavMenu()
-                            navigateToSearchProfilePage()
+                            navigateToSearchProfileOverviewPage()
                         }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Suchprofil
                         </Button>

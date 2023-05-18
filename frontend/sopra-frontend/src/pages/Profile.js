@@ -10,7 +10,7 @@ import ProfilePropertySelect from "../components/ProfilePropertySelect";
 import ProfilePropertyFreeText from "../components/ProfilePropertyFreeText";
 
 /**
- * @author [Björn Till]
+ * @author [Björn Till](https://github.com/BjoernTill)
  */
 
 class Profile extends Component {

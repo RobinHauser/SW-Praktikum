@@ -5,7 +5,7 @@ import {List, ListSubheader} from "@mui/material";
 import ProfilePropertySelect from "../components/ProfilePropertySelect";
 
 /**
- * @author [Björn Till]
+ * @author [Björn Till](https://github.com/BjoernTill)
  */
 
 class SearchProfile extends Component {

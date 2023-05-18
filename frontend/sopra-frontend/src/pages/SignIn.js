@@ -34,8 +34,8 @@ class SignIn extends Component {
                                 <Typography color="text.secondary">
                                     Willkommen auf der Sopra Dating Webseite. Wenn Sie noch keinen Account haben können
                                     Sie sich hier  einfach über Google registrieren. Dann wird ein neuer Account für
-                                    die angelegt. Haben Sie bereits einen können sie sich mit dem gleich Google
-                                    Account anmelden mit dem Sie sich registriert haben.
+                                    Sie angelegt. Haben Sie bereits einen, können sie sich mit dem gleichen Google
+                                    Account anmelden, mit dem Sie sich registriert haben.
                                     <br/>
                                     <br/>
                                     <i>Viel Spaß beim verwenden der Sopra Dating Webseite.</i>
