@@ -1,6 +1,6 @@
 [
 	{
-		"id": 6001,
+		"userID": 6001,
 		"displayname": "Björn Till",
 		"email": "Björn.till@gmail.com", 
 		"dateOfBirth": "31.12.2000",
@@ -9,7 +9,7 @@
 		"profileID": 8002
 	},
 	{
-		"id": 6003,
+		"userID": 6003,
 		"displayname": "Michi Bergdolt",
 		"email": "michi.bergdolt@gmail.com",
 		"dateOfBirth": "15.6.1999",

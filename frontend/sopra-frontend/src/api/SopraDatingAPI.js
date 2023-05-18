@@ -5,7 +5,8 @@
  * @author [Michael Bergdolt] (https://github.com/MichaelBergdolt)
  * inspired by [Christoph Kunz] (https://github.com/christophkunz)
  */
-import Blocklist from "./UserBO";
+import UserBO from "./UserBO";
+import MessageBO from "./MessageBO";
 
 export default class SopraDatingAPI {
 
@@ -133,7 +134,7 @@ export default class SopraDatingAPI {
     getBlocklist(userID) {
         return this.#fetchAdvanced(this.#getBlocklistURL(userID))
             .then((responseJSON) => {
-                let blocklistBOs = Blocklist.fromJSON(responseJSON);
+                let blocklistBOs = UserBO.fromJSON(responseJSON);
                 // console.log(blocklistBOs)
                 return new Promise(function (resolve) {
                     resolve(blocklistBOs)
@@ -182,8 +183,13 @@ export default class SopraDatingAPI {
     }
 
     getChatMessages(chatID) {
-        return this.#fetchAdvanced(this.#getChatMessagesURL(chatID)).then((responseJSON) => {
-            return responseJSON
+        return this.#fetchAdvanced(this.#getChatMessagesURL(chatID))
+            .then((responseJSON) => {
+                let messageBOs = MessageBO.fromJSON(responseJSON);
+                // console.log(messageBOs)
+                return new Promise(function (resolve) {
+                    resolve(messageBOs)
+                })
         })
     }
 
