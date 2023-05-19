@@ -41,6 +41,12 @@ export default class BlockList extends React.Component{
         this.getBlocklist()
     }
 
+    removeUserHandler = (removedUser) => {
+        this.setState({
+            blocklist: this.state.blocklist.filter(user => user.getUserID() !== removedUser.getUserID())
+        })
+    }
+
 
     render() {
         const { blocklist } = this.state;
@@ -59,7 +65,7 @@ export default class BlockList extends React.Component{
                     >
                         {blocklist.length > 0 ? (
                             blocklist.map((blocklistItem) => (
-                                <BlockListItem key={blocklistItem.getUserID()} value={blocklistItem.getDisplayname()}/>
+                                <BlockListItem key={blocklistItem.getUserID()} user={blocklistItem} onUserRemoved={this.removeUserHandler}/>
                             ))
                         ) : (
                             <p>Keine blockierten Benutzer gefunden.</p>

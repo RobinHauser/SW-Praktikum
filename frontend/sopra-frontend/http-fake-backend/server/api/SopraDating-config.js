@@ -13,8 +13,14 @@ module.exports = SetupEndpoint({
         ]
     }, {
         params: '/blocklist/{id}',
-        requests: [
-            { response: '/response-files/sopra-dating/blocklist.json' }
+        requests: [{
+                method: 'GET',
+                response: '/response-files/sopra-dating/blocklist.json'
+        },
+            {
+                method: 'DELETE',
+                response: '/response-files/sopra-dating/deleteMichi.json'
+            }
         ]
     }]
 });

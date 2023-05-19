@@ -34,7 +34,7 @@ export default class SopraDatingAPI {
     // Blocklist related
     #addUserToBlocklistURL = () => `${this.#SopraDatingServerBaseURL}/blocklist`;
     #getBlocklistURL = (blocklistID) => `${this.#SopraDatingServerBaseURL}/blocklist/${blocklistID}`;
-    #removeUserFromBlocklistURL = (blockID) => `${this.#SopraDatingServerBaseURL}/blocklist?id=${blockID}`;
+    #removeUserFromBlocklistURL = (blockID) => `${this.#SopraDatingServerBaseURL}/blocklist/${blockID}`;
 
     // Chat related
     #addUserToChatURL = () => `${this.#SopraDatingServerBaseURL}/conversationoverview`;
@@ -145,6 +145,12 @@ export default class SopraDatingAPI {
     removeUserFromBlocklist(blockID) {
         return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(blockID), {
             method: 'DELETE'
+        }).then((responseJSON) => {
+            let userBOs = UserBO.fromJSON(responseJSON)[0];
+            // console.info(userBOs);
+            return new Promise(function (resolve) {
+               resolve(userBOs);
+            })
         })
     }
 
