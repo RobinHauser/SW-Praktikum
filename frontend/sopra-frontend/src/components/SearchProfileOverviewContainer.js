@@ -3,6 +3,9 @@ import Grid from "@mui/material/Unstable_Grid2";
 import SearchProfileOverviewItem from "./SearchProfileOverviewItem";
 import * as React from "react";
 import {Component} from "react";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+import {Link} from "react-router-dom";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -30,7 +33,9 @@ class SearchProfileOverviewContainer extends Component
                                 <SearchProfileOverviewItem name={item}></SearchProfileOverviewItem>
                             ))}
                         </List>
-
+                        <Link  to="/SearchProfile">
+                            <Button sx={{marginTop: '20px', fontWeight:'bold'}} variant="outlined" startIcon={<AddIcon />}>Suchprofil hinzufügen</Button>
+                        </Link>
                     </Grid>
                 </Grid>
             </div>
