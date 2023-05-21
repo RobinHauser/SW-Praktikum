@@ -1,10 +1,9 @@
-from flask import Flask, request
+from flask import Flask
 
-from flask_restx import Api, Resource, fields, Namespace
+from flask_restx import Resource, Api, Namespace, fields
 
-from server.Administration import Administration
+from backend.src.server.Administration import Administration
 
-import json
 
 app = Flask(__name__)
 
@@ -65,12 +64,10 @@ bookmarklist = api.inherit('Bookmarklist', bo, {
 @bookmarklist_namespace.route('/<int:user_id>')
 class Bookmarklist_api(Resource):
 
-    #@api.marshal_list_with(bookmarklist)
     def get(self, user_id):
         adm = Administration()
         response = adm.get_bookmarklist_by_user_id(user_id)
-        x = response[0]
-        return x.toJSON()
+        return response
 
     def post(self):
         adm = Administration()

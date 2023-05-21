@@ -1,5 +1,5 @@
-from server.bo import Information
-from server.db import Mapper
+from src.server.bo import Information
+from src.server.db import Mapper
 
 
 class InformationMapper(Mapper.Mapper):

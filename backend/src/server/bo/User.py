@@ -1,4 +1,4 @@
-from server.bo.BusinessObject import BusinessObject
+from src.server.bo.BusinessObject import BusinessObject
 import datetime
 import json
 
@@ -43,10 +43,13 @@ class User (BusinessObject):
     def set_google_id(self, google_id):
         self.__google_id = google_id
 
+
     def toJSON(self):
         jsstr = f'{{"id": "{self.get_id()}", "firstname": "{self.get_firstname()}", "lastname": "{self.get_lastname()}", "email": "{self.get_email()}", "birthdate": "{self.get_birthdate()}", "google_id": "{self.get_google_id()}"}}'
         userJSON = json.loads(jsstr)
         return userJSON
+
+
     def __str__(self):
         return "User: {}, {}, {}, {}, {}, {}".format(self._id, self.__firstname, self.__lastname, self.__email, self.__birthdate, self.__google_id)
 

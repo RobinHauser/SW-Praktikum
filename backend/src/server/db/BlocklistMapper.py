@@ -1,5 +1,5 @@
-from server.db import Mapper
-from server.bo import Blocklist
+from src.server.db import Mapper
+from src.server.bo import Blocklist
 
 Blocklist = Blocklist.Blocklist
 

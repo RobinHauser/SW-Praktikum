@@ -1,16 +1,9 @@
-from server.bo.BusinessObject import BusinessObject
-from server.bo.Blocklist import Blocklist
-from server.bo.Bookmarklist import Bookmarklist
-from server.bo.SelectionProperty import SelectionProperty
-from server.bo.Information import Information
-from server.bo.Profile import Profile
-from server.bo.Property import Property
-from server.bo.TextProperty import TextProperty
-from server.bo.User import User
-from server.db.BlocklistMapper import BlocklistMapper
-from server.db.BookmarklistMapper import BookmarklistMapper
-from server.db.ProfileMapper import ProfileMapper
-from server.db.UserMapper import UserMapper
+from src.server.bo.Profile import Profile
+from src.server.bo.User import User
+from src.server.db.BlocklistMapper import BlocklistMapper
+from src.server.db.BookmarklistMapper import BookmarklistMapper
+from src.server.db.ProfileMapper import ProfileMapper
+from src.server.db.UserMapper import UserMapper
 
 
 #todo alle mapper importieren

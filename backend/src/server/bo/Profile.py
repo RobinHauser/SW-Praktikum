@@ -1,8 +1,4 @@
-from server.bo.BusinessObject import BusinessObject
-from server.bo.Property import Property
-from server.bo.TextProperty import TextProperty
-from server.bo.SelectionProperty import SelectionProperty
-from server.bo.Information import Information
+from src.server.bo.BusinessObject import BusinessObject
 
 class Profile(BusinessObject):
     def __init__(self):

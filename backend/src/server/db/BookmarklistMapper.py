@@ -1,8 +1,8 @@
-import json
+from src.server.bo.User import User
+from src.server.bo.Bookmarklist import Bookmarklist
+from src.server.db.Mapper import Mapper
 
-from server.bo.User import User
-from server.bo.Bookmarklist import Bookmarklist
-from server.db.Mapper import Mapper
+import json
 
 
 class BookmarklistMapper(Mapper):
@@ -27,39 +27,43 @@ class BookmarklistMapper(Mapper):
 
         return result
 
-    def find_by_id(self, id):
+    def find_by_id(self, user_id):
+        """
+        Returns a list of all other users a user(with a user_id) has on his bookmark list
+        :param user_id: the unique id of the user
+        :return: a list of all bookmarked users. If there is no bookmarked user it will return an empty list.
+        """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM bookmarklist WHERE UserID={}".format(id)
+
+        # Bookmarklist anhand der UserID abrufen
+        command = "SELECT * FROM bookmarklist WHERE UserID={}".format(user_id)
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        bookmarklist_tuple = cursor.fetchone()
 
-        v1 = tuples[0]
-        v3 = v1[0]
-        command2 = "SELECT * FROM bookmark WHERE BookmarklistID={}".format(v3)
-        cursor.execute(command2)
-        tuples2 = cursor.fetchall()
+        if bookmarklist_tuple is not None:
+            bookmarklist_id = bookmarklist_tuple[0]
 
-        v2 = tuples2[0]
-        v4 = v2[2]
-        command3 = "SELECT * FROM user WHERE UserID={}".format(v4)
-        cursor.execute(command3)
-        tuples3 = cursor.fetchall()
+            # Retrieve bookmarklist by UserID
+            command2 = "SELECT * FROM bookmark WHERE BookmarklistID={}".format(bookmarklist_id)
+            cursor.execute(command2)
+            bookmarks = cursor.fetchall()
 
+            if bookmarks is not None:
+                user_ids = [bookmark[2] for bookmark in bookmarks]
 
-        try:
-            (id, email, firstname, lastname) = tuples3[0]
-            bookmarklist = User()
-            bookmarklist.set_email(email)
-            bookmarklist.set_firstname(firstname)
-            bookmarklist.set_lastname(lastname)
-            result.append(bookmarklist)
-        except IndexError:
-            result = None
+                # Retrieve user by UserID
+                command3 = "SELECT * FROM user WHERE UserID IN ({})".format(','.join(str(uid) for uid in user_ids))
+                cursor.execute(command3)
+                users = cursor.fetchall()
 
-        self._cnx.commit()
+                # Form the user into a json and add it to the list
+                for user in users:
+                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "firstname": "{user[2]}", "lastname": "{user[3]}"}}'
+                    userJSON = json.loads(jsstr)
+                    result.append(userJSON)
+
         cursor.close()
-
         return result
 
     def insert(self, user_id, bookmarklist):

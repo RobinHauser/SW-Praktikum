@@ -1,4 +1,4 @@
-from server.bo.BusinessObject import BusinessObject as bo
+from src.server.bo.BusinessObject import BusinessObject as bo
 
 
 class Chat(bo.BusinessObject):
