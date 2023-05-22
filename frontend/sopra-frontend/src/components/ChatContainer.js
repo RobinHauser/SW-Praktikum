@@ -13,22 +13,27 @@ import MessageRight from "./MessageRight"
 import * as React from "react";
 import Button from "@mui/material/Button";
 import SendIcon from '@mui/icons-material/Send';
+
 /**
  * *
  * @author [Jannik Haug](https://github.com/JannikHaug)
  */
-export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
+export default function ChatContainer() {
     const navigate = useNavigate()
     const messagesEndRef = React.useRef();
 
-  React.useEffect(() => {
-    scrollToBottom(); // DOM node
-  }, [messageArrayLeft, messageArrayRight]);
+    const messageArrayLeft = ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"]
+    const messageArrayRight = ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"]
 
-   function scrollToBottom() {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }
-  // Quelle für das automatische nach unten Scrollen: https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
+    React.useEffect(() => {
+        scrollToBottom(); // DOM node
+    });
+
+    function scrollToBottom() {
+        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
+    }
+
+    // Quelle für das automatische nach unten Scrollen: https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
     return (
         <div className="App">
             <Container style={{
@@ -39,7 +44,7 @@ export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
                 height: "90vh",
                 minHeight: "90vh"
             }}>
-                <Paper style={{ maxHeight: "90vh"}}>
+                <Paper style={{maxHeight: "90vh"}}>
                     <Box style={{alignItems: "center"}} sx={{mb: 1}}>
                         <Paper style={{display: "flex", alignItems: "center"}}
                                sx={{minHeight: 50}} elevation={5}>
@@ -75,28 +80,28 @@ export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
                                 </Box>
                             ))}
                         </Container>
-                    <div ref={messagesEndRef} />
+                        <div ref={messagesEndRef}/>
 
                     </List>
 
                 </Paper>
-                    <Container sx={{
-                        maxHeight: "50px",
-                        position: "static",
-                        bottom: "0",
-                        alignItems: "flex-start",
-                        flexDirection: "row",
-                        display: "flex",
-                        justifyContent: "center"
-                    }}>
-                        <TextField InputProps={{style: {color: "primary"}}}
-                                   InputLabelProps={{style: {color: "primary"}}}
-                                   label="Write Message..." variant="standard"
-                                   sx={{minWidth: "50%", mb: 1}} color="primary"/>
-                        <Button sx={{maxHeight: "45px"}} variant="contained" endIcon={<SendIcon/>}>
-                            Send
-                        </Button>
-                    </Container>
+                <Container sx={{
+                    maxHeight: "50px",
+                    position: "static",
+                    bottom: "0",
+                    alignItems: "flex-start",
+                    flexDirection: "row",
+                    display: "flex",
+                    justifyContent: "center"
+                }}>
+                    <TextField InputProps={{style: {color: "primary"}}}
+                               InputLabelProps={{style: {color: "primary"}}}
+                               label="Write Message..." variant="standard"
+                               sx={{minWidth: "50%", mb: 1}} color="primary"/>
+                    <Button sx={{maxHeight: "45px"}} variant="contained" endIcon={<SendIcon/>}>
+                        Send
+                    </Button>
+                </Container>
             </Container>
 
         </div>
