@@ -1,23 +1,15 @@
-import os
 from abc import ABC, abstractmethod
 from contextlib import AbstractContextManager
 
-import mysql.connector as connector
+import mysql.connector
 
 
 class Mapper(AbstractContextManager, ABC):
     def __init__(self):
-        self._cnx = None
+        self._cnx = mysql.connector.connect(user='root', password='SoPra_2023', host='127.0.0.1', database='sopra_robn')
 
     def __enter__(self):
-
-        if os.getenv('GAE_ENV', '').startswith('standard'):
-
-            self._cnx = connector.connect(user='root', password='SoPra_2023')
-
-        else:
-            self._cnx = connector.connect(user='root', password='SoPra_2023', host='127.0.0.1:3306',
-                                          database='SoPraDatabase')
+        self._cnx = mysql.connector.connect(user='root', password='SoPra_2023', host='127.0.0.1', database='sopra_robn')
 
         return self
 

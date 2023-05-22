@@ -1,14 +1,13 @@
-from server.bo import BusinessObject as bo
+from server.bo.BusinessObject import BusinessObject
+from server.bo.Property import Property
+from server.bo.TextProperty import TextProperty
+from server.bo.SelectionProperty import SelectionProperty
+from server.bo.Information import Information
 
-
-class Profile(bo):
+class Profile(BusinessObject):
     def __init__(self):
-        super().__init__()
-        self.__information = ""
-        self.personal_profile = bool
+        super().__init__("Profile", [4001, 5000])
+        self.assigned_infos = []
 
-    def display_information(self):
-        return self.__information
+        # todo personal profile bool
 
-    def get_personal_information(self):
-        return self.__information
