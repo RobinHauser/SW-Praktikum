@@ -80,9 +80,9 @@ class Administration():
         result = mapper.find_by_id(id)
         return result
 
-    def create_bookmarklist(self, id):
+    def add_user_to_bookmarklist(self, user_id, payload):
         with BookmarklistMapper() as mapper:
-            return mapper.insert(id)
+            return mapper.insert(user_id, payload)
 
     def delete_bookmarklist(self, id):
         with BookmarklistMapper() as mapper:

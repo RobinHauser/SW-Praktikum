@@ -66,22 +66,25 @@ class BookmarklistMapper(Mapper):
         cursor.close()
         return result
 
-    def insert(self, user_id, bookmarklist):
+    def insert(self, user_id, payload):
+        """
+        Adding a user to the bookmark list of a user
+        :param user_id: the unique id of the user with the bookmark list
+        :param payload: the dic of the user to be added
+        :return: the added user
+        """
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(BookmarklistID) AS maxid FROM bookmarklist ")
-        tuples = cursor.fetchall()
+        cursor.execute(f'SELECT BookmarklistID FROM bookmarklist WHERE UserID = {user_id}')
 
-        for (maxid) in tuples:
-            bookmarklist.set_id(maxid[0] + 1)
+        bookmarklist_id = cursor.fetchall()[0][0]
+        boomarked_user_id = int(payload.get('id'))
 
-        command = "INSERT INTO bookmarklist (UserID,BookmarklistID) VALUES (%s, %s)"
-        data = (user_id, bookmarklist.get_id())  # TODO: ist user_id richtig übergeben?
-        cursor.execute(command, data)
+        cursor.execute(f'INSERT INTO bookmark (BookmarklistID, BookmarkedUserID) VALUES ({bookmarklist_id}, {boomarked_user_id})')
 
         self._cnx.commit()
         cursor.close()
 
-        return bookmarklist
+        return payload
 
     def update(self, bookmarklist):
         cursor = self._cnx.cursor()

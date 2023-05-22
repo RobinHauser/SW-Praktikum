@@ -62,22 +62,39 @@ bookmarklist = api.inherit('Bookmarklist', bo, {
 
 
 @bookmarklist_namespace.route('/<int:user_id>')
+@bookmarklist_namespace.response(500, 'TBD')
+@bookmarklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@bookmarklist_namespace.response(200, 'TBD')
 class Bookmarklist_api(Resource):
 
     def get(self, user_id):
+        """
+        Getting the bookmark list of a specific user
+        :param user_id: the id of the user we want the bookmarklist from
+        :return: Returning a list of all bookmarked users. If there is no bookmarked user it will return an empty list.
+        """
         adm = Administration()
         response = adm.get_bookmarklist_by_user_id(user_id)
         return response
 
-    def post(self):
+    def post(self, user_id):
+        """
+        Adding a new user to the users bookmarklist
+        :param user_id: the id of the user we want to add another user to his bookmarklist
+        :return: the user that was added to the bookmarklist
+        """
         adm = Administration()
-        response = adm.create_bookmarklist(user_id)
+        response = adm.add_user_to_bookmarklist(user_id, api.payload)
         return response
 
-    def delete(self):
+    def delete(self, user_id):
+        """
 
+        :param user_id: the id
+        :return:
+        """
         adm = Administration()
-        response = adm.delete_bookmarklist(bookmarklist_id)
+        response = adm.delete_bookmarklist(user_id)
         return response
 
 
