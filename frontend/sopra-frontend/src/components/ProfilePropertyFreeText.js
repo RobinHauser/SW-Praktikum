@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
 
 /**
- * @author [Björn Till]
+ * @author [Björn Till](https://github.com/BjoernTill)
  */
 
 class ProfilePropertyFreeText extends Component {
