@@ -12,7 +12,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 
 /**
- * @author [Björn Till]
+ * @author [Björn Till](https://github.com/BjoernTill)
  */
 
 class ProfilePropertySelect extends Component {

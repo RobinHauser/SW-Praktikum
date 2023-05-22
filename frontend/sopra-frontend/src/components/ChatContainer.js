@@ -13,17 +13,27 @@ import MessageRight from "./MessageRight"
 import * as React from "react";
 import Button from "@mui/material/Button";
 import SendIcon from '@mui/icons-material/Send';
+
 /**
  * *
  * @author [Jannik Haug](https://github.com/JannikHaug)
  */
-export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
+export default function ChatContainer() {
     const navigate = useNavigate()
+    const messagesEndRef = React.useRef();
 
-    //TODO this is here just wor testing
-    const messageObjectLeft = ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"];
-    const messageObjectRight = ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"];
+    const messageArrayLeft = ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"]
+    const messageArrayRight = ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"]
 
+    React.useEffect(() => {
+        scrollToBottom(); // DOM node
+    });
+
+    function scrollToBottom() {
+        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
+    }
+
+    // Quelle für das automatische nach unten Scrollen: https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
     return (
         <div className="App">
             <Container style={{
@@ -31,21 +41,21 @@ export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
                 maxWidth: "100%",
                 top: "0",
                 width: "100vh",
-                height: "100vh",
+                height: "90vh",
                 minHeight: "90vh"
             }}>
-                <Paper style={{background: "#f5f5f5"}}>
+                <Paper style={{maxHeight: "90vh"}}>
                     <Box style={{alignItems: "center"}} sx={{mb: 1}}>
-                        <Paper style={{display: "flex", alignItems: "center", background: "#37474f"}}
-                               sx={{minHeight: 50}}>
-                            <Tooltip title="zurrück zur Übersicht" fontSize="large" sx={{color: "white"}}>
+                        <Paper style={{display: "flex", alignItems: "center"}}
+                               sx={{minHeight: 50}} elevation={5}>
+                            <Tooltip title="zurück zur Übersicht" fontSize="large" sx={{color: "black"}}>
                                 <IconButton onClick={() => navigate(('/conversationOverview'))}>
                                     <KeyboardDoubleArrowLeftIcon></KeyboardDoubleArrowLeftIcon>
                                 </IconButton>
                             </Tooltip>
                             <div style={{display: "flex", alignItems: "center"}}>
                                 <Avatar src={placeHolderImage}></Avatar>
-                                <Typography style={{color: "white"}} noWrap={false}
+                                <Typography style={{color: "black"}} noWrap={false}
                                             sx={{ml: 2, fontSize: 20, wordBreak: 'break-all'}}> placeholder
                                     name</Typography>
                             </div>
@@ -54,42 +64,46 @@ export default function ChatContainer({messageArrayLeft, messageArrayRight}) {
 
                     <List style={{
                         position: "relative",
-                        height: "calc(100vh - 130px)", //Idee inspiriert durch: https://www.jimlynchcodes.com/blog/the-css-calc-function-for-a-more-consistent-responsive-design (Abgerufen am 30.04.2023)
+                        height: "calc(100vh - 210px)", //Idee inspiriert durch: https://www.jimlynchcodes.com/blog/the-css-calc-function-for-a-more-consistent-responsive-design (Abgerufen am 30.04.2023)
                         overflow: "auto",
                     }}>
 
                         <Container>
-                            {messageObjectLeft.map((text) => (
+                            {messageArrayLeft.map((text) => (
                                 <Box>
                                     <MessageLeft message={text}></MessageLeft>
                                 </Box>
                             ))}
-                            {messageObjectRight.map((text) => (
+                            {messageArrayRight.map((text) => (
                                 <Box>
                                     <MessageRight message={text}></MessageRight>
                                 </Box>
                             ))}
                         </Container>
+                        <div ref={messagesEndRef}/>
+
                     </List>
-                    <Container sx={{
-                        maxHeight: "50px",
-                        position: "fixed",
-                        bottom: "0",
-                        alignItems: "left",
-                        flexDirection: "row",
-                        display: "flex",
-                        justifyContent: "start"
-                    }}>
-                        <TextField InputProps={{style: {color: "primary"}}}
-                                   InputLabelProps={{style: {color: "primary"}}}
-                                   label="Write Message..." variant="standard"
-                                   sx={{minWidth: "50%", mb: 1}} color="primary"/>
-                        <Button sx={{maxHeight: "45px"}} variant="contained" endIcon={<SendIcon/>}>
-                            Send
-                        </Button>
-                    </Container>
+
                 </Paper>
+                <Container sx={{
+                    maxHeight: "50px",
+                    position: "static",
+                    bottom: "0",
+                    alignItems: "flex-start",
+                    flexDirection: "row",
+                    display: "flex",
+                    justifyContent: "center"
+                }}>
+                    <TextField InputProps={{style: {color: "primary"}}}
+                               InputLabelProps={{style: {color: "primary"}}}
+                               label="Write Message..." variant="standard"
+                               sx={{minWidth: "50%", mb: 1}} color="primary"/>
+                    <Button sx={{maxHeight: "45px"}} variant="contained" endIcon={<SendIcon/>}>
+                        Send
+                    </Button>
+                </Container>
             </Container>
+
         </div>
     );
 }
