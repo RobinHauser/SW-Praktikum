@@ -21,7 +21,6 @@ class BookmarklistMapper(Mapper):
         result = []
         cursor = self._cnx.cursor()
 
-        # Bookmarklist anhand der UserID abrufen
         command = "SELECT * FROM bookmarklist WHERE UserID={}".format(user_id)
         cursor.execute(command)
         bookmarklist_tuple = cursor.fetchone()

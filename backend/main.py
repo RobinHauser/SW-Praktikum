@@ -96,22 +96,39 @@ class Bookmarklist_api(Resource):
         return response
 
 
-@blocklist_namespace.route()
+@blocklist_namespace.route('/<int:user_id>')
+@blocklist_namespace.response(500, 'TBD')
+@blocklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@blocklist_namespace.response(200, 'TBD')
 class Blocklist_api(Resource):
-    @api.marshal_list_with(user)
-    def get(self):
+    def get(self, user_id):
+        """
+        Getting list of all blocked users of a user
+        :param user_id: the id of the user we want the blocklist from
+        :return: Returning a list of all blocked users. If there is no blocked user it will return an empty list.
+        """
         adm = Administration()
         response = adm.get_blocklist_by_user_id(user_id)
         return response
 
-    def post(self):
+    def post(self, user_id):
+        """
+        Adding a new user to the users blocklist
+        :param user_id: the id of the user we want to add another user to his blocklist
+        :return: the user that was added to the blocklist
+        """
         adm = Administration()
-        response = adm.create_blocklist_for_user(user_id)
+        response = adm.add_user_to_blocklist(user_id, api.payload)
         return response
 
-    def delete(self):
+    def delete(self, user_id):
+        """
+        Removing a user from the users blocklist
+        :param user_id: the id of the user we want to remove a user from his blocklist
+        :return: the user that was removed from the blocklist
+        """
         adm = Administration()
-        response = adm.delete_blocklist(blocklist_id)
+        response = adm.delete_blocklist(user_id, api.payload)
         return response
 
 
