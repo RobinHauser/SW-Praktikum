@@ -6,13 +6,13 @@ import SignIn from "./pages/SignIn";
 import ConversationOverview from "./pages/ConversationOverview"
 import BookmarkList from "./pages/BookmarkList";
 import BlockList from "./pages/BlockList";
-import SearchProfile from "./pages/SearchProfile";
 import React from 'react';
 import {initializeApp} from 'firebase/app';
 import {getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup} from "firebase/auth";
 import firebaseConfig from './firebaseconfig'
-import ConversationOverviewItem from "./components/ConversationOverviewItem";
 import ChatContainer from "./components/ChatContainer";
+import SearchProfileOverview from "./pages/SearchProfileOverview";
+import SearchProfile from "./pages/SearchProfile";
 
 class App extends React.Component {
 
@@ -100,9 +100,10 @@ class App extends React.Component {
                         <Route path={'/profile'} element={<Secured user={currentUser}><Profile avatar={profileImageURL} name={profileDisplayName} email={profileEmail}/> </Secured>}/>
                         <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList avatar={profileImageURL}/> </Secured>}/>
                         <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList avatar={profileImageURL}/> </Secured>}/>
-                        <Route path={'/searchProfile'} element={<Secured user={currentUser}><SearchProfile avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/searchProfileOverview'} element={<Secured user={currentUser}><SearchProfileOverview avatar={profileImageURL}/> </Secured>}/>
                         <Route path={'/conversationOverview'} element={<Secured user={currentUser}><ConversationOverview avatar={profileImageURL}/> </Secured>}/>
                         <Route path={'/chat'} element={<Secured user={currentUser}><ChatContainer avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/searchProfile'} element={<Secured user={currentUser}><SearchProfile avatar={profileImageURL}/> </Secured>}/>
                     </Route>
                 </Routes>
             </BrowserRouter>
