@@ -23,9 +23,9 @@ export default class BlockList extends React.Component{
 
     getBlocklist = () => {
         SopraDatingAPI.getAPI().getBlocklist(1)
-            .then(BlocklistBOs =>
+            .then(UserBOs =>
                 this.setState({
-                    blocklist: BlocklistBOs,
+                    blocklist: UserBOs,
                     error: null
                 }))
             .catch(e =>
@@ -38,7 +38,7 @@ export default class BlockList extends React.Component{
     }
 
     componentDidMount() {
-        this.getBlocklist()
+        this.getBlocklist();
     }
 
     removeUserHandler = (removedUser) => {

@@ -11,12 +11,60 @@ import {Link} from "react-router-dom";
 import ChatIcon from "@mui/icons-material/Chat";
 import Box from "@mui/material/Box";
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
+import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
  * @author [Jannik Haug]
  */
 class BookmarkProfileCard extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            addingError: null,
+            deletingError: null
+        }
+    }
+
+    blockUser = () => {
+        const { user } = this.props;
+        SopraDatingAPI.getAPI().addUserToBlocklist(user).then(() => {
+            this.setState({
+                addingError: null
+            })
+            this.props.onUserRemoved(user);
+        }).catch(e =>
+            this.setState({
+                addingError: e
+            })
+        );
+
+        this.setState({
+            addingError: null
+        })
+    }
+    
+    removeUserFromBookmarklist = () => {
+        const { user } = this.props;
+        SopraDatingAPI.getAPI().removeUserFromBookmarklist(user.getUserID()).then(() => {
+            this.setState({
+                deletingError: null
+            })
+            this.props.onUserRemoved(user);
+        }).catch(e =>
+            this.setState({
+                deletingError: e
+            })
+        );
+
+        this.setState({
+            deletingError: null
+        })
+    }
+
     render() {
+        const{ user }=this.props;
 
         return (
             <div>
@@ -36,7 +84,7 @@ class BookmarkProfileCard extends Component {
                     <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                            Hans Jürgen
+                            {user.getDisplayname()}
                         </Typography>
                         <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
                             Alter:
@@ -61,11 +109,11 @@ class BookmarkProfileCard extends Component {
                         </Typography>
                         <Box sx={{marginTop: 5, display: 'flex', justifyContent: 'space-between'}}>
                         <Tooltip title="User blockieren">
-                            <BlockIcon onClick={() => alert("User wurde blockiert")}
+                            <BlockIcon onClick={() => this.blockUser()}
                                        sx={{cursor: 'pointer', width: 35, height: 35}}></BlockIcon>
                         </Tooltip>
                         <Tooltip title="User von Merkliste entfernen">
-                            <HeartBrokenIcon onClick={() => alert("User wurde von der Merkliste entfernt")}
+                            <HeartBrokenIcon onClick={() => this.removeUserFromBookmarklist()}
                                           sx={{cursor: 'pointer', width: 35, height: 35}}></HeartBrokenIcon>
                         </Tooltip>
                         <Tooltip title="Zum Chat">
