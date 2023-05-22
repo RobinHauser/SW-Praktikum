@@ -1,8 +1,6 @@
-from src.server.bo.User import User
-from src.server.bo.Bookmarklist import Bookmarklist
-from src.server.db.Mapper import Mapper
-
 import json
+
+from src.server.db.Mapper import Mapper
 
 
 class BookmarklistMapper(Mapper):
@@ -12,20 +10,7 @@ class BookmarklistMapper(Mapper):
         pass
 
     def find_all(self):
-        result = []
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT * FROM bookmarklist")
-        tuples = cursor.fetchall()
-
-        for (id) in tuples:
-            bookmarklist = Bookmarklist()
-            bookmarklist.set_id(id)
-            result.append(bookmarklist)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
+        pass
 
     def find_by_id(self, user_id):
         """
@@ -77,9 +62,10 @@ class BookmarklistMapper(Mapper):
         cursor.execute(f'SELECT BookmarklistID FROM bookmarklist WHERE UserID = {user_id}')
 
         bookmarklist_id = cursor.fetchall()[0][0]
-        boomarked_user_id = int(payload.get('id'))
+        bookmarked_user_id = int(payload.get('id'))
 
-        cursor.execute(f'INSERT INTO bookmark (BookmarklistID, BookmarkedUserID) VALUES ({bookmarklist_id}, {boomarked_user_id})')
+        cursor.execute(
+            f'INSERT INTO bookmark (BookmarklistID, BookmarkedUserID) VALUES ({bookmarklist_id}, {bookmarked_user_id})')
 
         self._cnx.commit()
         cursor.close()
@@ -87,24 +73,29 @@ class BookmarklistMapper(Mapper):
         return payload
 
     def update(self, bookmarklist):
+        pass
+
+    def delete(self, user_id, payload):
+        """
+        Removing a user from the bookmark list of a user
+        :param user_id: the unique id of the user with the bookmark list
+        :param payload: the dic of the user to be deleted
+        :return: the removed user
+        """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE bookmarklist SET BookmarklistID=%s WHERE BookmarklistID=%s"
-        data = (bookmarklist.get_id(), bookmarklist.get_id())
-        cursor.execute(command, data)
+        cursor.execute(f'SELECT BookmarklistID FROM bookmarklist WHERE UserID = {user_id}')
+
+        bookmarklist_id = cursor.fetchall()[0][0]
+        bookmarked_user_id = int(payload.get('id'))
+
+        cursor.execute(
+            f'DELETE FROM bookmark WHERE BookmarklistID = {bookmarklist_id} AND BookmarkedUserID = {bookmarked_user_id}')
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, bookmarklist):
-        cursor = self._cnx.cursor()
-
-        command = "DELETE FROM bookmarklist WHERE BookmarklistID={}".format(
-            bookmarklist.get_id())  # TODO: .get_id()? oder bookmarklist
-        cursor.execute(command)
-
-        self._cnx.commit()
-        cursor.close()
+        return payload
 
     def find_by_email(self, email):
         pass

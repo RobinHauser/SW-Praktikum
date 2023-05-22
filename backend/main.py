@@ -1,9 +1,7 @@
 from flask import Flask
-
 from flask_restx import Resource, Api, Namespace, fields
 
 from backend.src.server.Administration import Administration
-
 
 app = Flask(__name__)
 
@@ -89,12 +87,12 @@ class Bookmarklist_api(Resource):
 
     def delete(self, user_id):
         """
-
-        :param user_id: the id
-        :return:
+        Removing a user from the users bookmarklist
+        :param user_id: the id of the user we want to remove a user from his bookmarklist
+        :return: the user that was removed to the bookmarklist
         """
         adm = Administration()
-        response = adm.delete_bookmarklist(user_id)
+        response = adm.remove_user_from_bookmarklist(user_id, api.payload)
         return response
 
 

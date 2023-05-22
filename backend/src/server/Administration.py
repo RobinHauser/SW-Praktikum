@@ -75,18 +75,17 @@ class Administration():
         Bookmarklist Methoden
     '''
 
-    def get_bookmarklist_by_user_id(self, id):
-        mapper = BookmarklistMapper()
-        result = mapper.find_by_id(id)
-        return result
+    def get_bookmarklist_by_user_id(self, user_id):
+        with BookmarklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
 
     def add_user_to_bookmarklist(self, user_id, payload):
         with BookmarklistMapper() as mapper:
             return mapper.insert(user_id, payload)
 
-    def delete_bookmarklist(self, id):
+    def remove_user_from_bookmarklist(self, user_id, payload):
         with BookmarklistMapper() as mapper:
-            return mapper.delete(id)
+            return mapper.delete(user_id, payload)
 
 
     '''
