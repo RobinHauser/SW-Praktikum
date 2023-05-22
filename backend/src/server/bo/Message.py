@@ -1,4 +1,4 @@
-from server.bo import BusinessObject as bo
+from server.bo.BusinessObject import BusinessObject as bo
 from server.bo.User import User
 
 
