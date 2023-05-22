@@ -1,12 +1,17 @@
-from bo.BusinessObject import BusinessObject
-from bo.Blocklist import Blocklist
-from bo.Bookmarklist import Bookmarklist
-from bo.SelectionProperty import SelectionProperty
-from bo.Information import Information
-from bo.ProfileOLD import Profile
-from bo.Property import Property
-from bo.TextProperty import TextProperty
-from bo.User import User
+from server.bo.BusinessObject import BusinessObject
+from server.bo.Blocklist import Blocklist
+from server.bo.Bookmarklist import Bookmarklist
+from server.bo.SelectionProperty import SelectionProperty
+from server.bo.Information import Information
+from server.bo.Profile import Profile
+from server.bo.Property import Property
+from server.bo.TextProperty import TextProperty
+from server.bo.User import User
+from server.db.BlocklistMapper import BlocklistMapper
+from server.db.BookmarklistMapper import BookmarklistMapper
+from server.db.ProfileMapper import ProfileMapper
+from server.db.UserMapper import UserMapper
+
 
 #todo alle mapper importieren
 
@@ -70,4 +75,59 @@ class Administration():
     def get_profile_by_id(self, id):
         with ProfileMapper() as mapper:
             return mapper.find_by_id(id)
+
+
+
+    '''
+        Bookmarklist Methoden
+    '''
+
+    def get_bookmarklist_by_user_id(self, id):
+        mapper = BookmarklistMapper()
+        result = mapper.find_by_id(id)
+        return result
+
+    def create_bookmarklist(self, id):
+        with BookmarklistMapper() as mapper:
+            return mapper.insert(id)
+
+    def delete_bookmarklist(self, id):
+        with BookmarklistMapper() as mapper:
+            return mapper.delete(id)
+
+
+    '''
+        Blocklist Methoden
+    '''
+
+    def get_blocklist_by_user_id(self, id):
+        with BlocklistMapper() as mapper:
+            return mapper.find_by_id(id)
+
+    def create_blocklist_for_user(self, id):
+        with BlocklistMapper() as mapper:
+            return mapper.insert(id)
+
+    def delete_blocklist(self, id):
+        with BlocklistMapper() as mapper:
+            return mapper.delete(id)
+
+
+    '''
+       Chat Methoden
+    '''
+
+    def get_chat_by_user_id(self, user_id):
+        pass
+
+
+
+
+
+
+
+
+    def get_profile_by_user_id(self):
+        with ProfileMapper() as mapper:
+            return mapper.find_by_id()
 

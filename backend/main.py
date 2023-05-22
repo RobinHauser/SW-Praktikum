@@ -1,7 +1,10 @@
 from flask import Flask, request
 
-from flask_restx import Api, Resource, Namespace, fields
+from flask_restx import Api, Resource, fields, Namespace
 
+from server.Administration import Administration
+
+import json
 
 app = Flask(__name__)
 
@@ -11,15 +14,13 @@ api = Api(app,
           description='This is the API for the sopra dating-app',
           doc='/swagger-ui')
 
-__pre_url = "/api/v1/"
-
 # Creating the namespaces
-bookmarklist_namespace = Namespace(name="Bookmarklist", description="This is the Bookmarklist")
-blocklist_namespace = Namespace(name="Blocklist", description="This is the Blockmarklist")
-chat_namespace = Namespace(name="Chat", description="This is the Chat")
-message_namespace = Namespace(name="Message", description="This is the Message")
-profile_namespace = Namespace(name="Profile", description="This is the Profile")
-search_profile_namespace = Namespace(name="Search Profile", description="This is the Search Profile")
+bookmarklist_namespace = Namespace(name="bookmarklist", description="This is the Bookmarklist")
+blocklist_namespace = Namespace(name="blocklist", description="This is the Blockmarklist")
+chat_namespace = Namespace(name="chat", description="This is the Chat")
+message_namespace = Namespace(name="message", description="This is the Message")
+profile_namespace = Namespace(name="profile", description="This is the Profile")
+search_profile_namespace = Namespace(name="search-profile", description="This is the Search Profile")
 
 # Adding the namespaces to the api
 api.add_namespace(bookmarklist_namespace)
@@ -56,38 +57,58 @@ property = api.inherit('Property', bo, {
     'Information1': fields.Nested(information)
 })
 
+bookmarklist = api.inherit('Bookmarklist', bo, {
+    'user': fields.Nested(user)
+})
 
-@bookmarklist_namespace.route(__pre_url + 'bookmarklist')
+
+@bookmarklist_namespace.route('/<int:user_id>')
 class Bookmarklist_api(Resource):
-    @api.marshal_list_with(message)
-    def get(self):
-        pass
+
+    #@api.marshal_list_with(bookmarklist)
+    def get(self, user_id):
+        adm = Administration()
+        response = adm.get_bookmarklist_by_user_id(user_id)
+        x = response[0]
+        return x.toJSON()
 
     def post(self):
-        pass
+        adm = Administration()
+        response = adm.create_bookmarklist(user_id)
+        return response
 
     def delete(self):
-        pass
+
+        adm = Administration()
+        response = adm.delete_bookmarklist(bookmarklist_id)
+        return response
 
 
-@blocklist_namespace.route(__pre_url + 'blocklist')
+@blocklist_namespace.route()
 class Blocklist_api(Resource):
     @api.marshal_list_with(user)
-
     def get(self):
-        pass
+        adm = Administration()
+        response = adm.get_blocklist_by_user_id(user_id)
+        return response
 
     def post(self):
-        pass
+        adm = Administration()
+        response = adm.create_blocklist_for_user(user_id)
+        return response
 
     def delete(self):
-        pass
+        adm = Administration()
+        response = adm.delete_blocklist(blocklist_id)
+        return response
 
 
-@chat_namespace.route(__pre_url + 'chat')
+@chat_namespace.route()
 class Chat_api(Resource):
     def get(self):
-        pass
+        adm = Administration()
+        response = adm.get_chat_by_user_id(user_id)
+        return response
 
     def post(self):
         pass
@@ -96,7 +117,7 @@ class Chat_api(Resource):
         pass
 
 
-@message_namespace.route(__pre_url + 'message')
+@message_namespace.route()
 class Message_api(Resource):
     def get(self):
         pass
@@ -105,16 +126,18 @@ class Message_api(Resource):
         pass
 
 
-@profile_namespace.route(__pre_url + 'profile')
+@profile_namespace.route()
 class Profile_api(Resource):
     def get(self):
-        pass
+        adm = Administration()
+        response = adm.get_profile_by_user_id()
+        return response
 
     def put(self):
         pass
 
 
-@search_profile_namespace.route(__pre_url + 'search-profile')
+@search_profile_namespace.route()
 class Search_profile_api(Resource):
     def get(self):
         pass

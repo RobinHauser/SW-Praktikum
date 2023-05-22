@@ -1,4 +1,4 @@
-from BusinessObject import BusinessObject
+from server.bo.BusinessObject import BusinessObject
 
 class Bookmarklist(BusinessObject):
     def __init__(self):

@@ -1,4 +1,4 @@
-from server.bo import ProfileOLD
+from server.bo.Profile import Profile
 from server.db import Mapper
 
 

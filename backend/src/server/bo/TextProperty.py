@@ -1,6 +1,6 @@
-from BusinessObject import BusinessObject
-from Property import Property
-from Information import Information
+from server.bo.BusinessObject import BusinessObject
+from server.bo.Property import Property
+from server.bo.Information import Information
 
 class TextProperty(Property):
     def __init__(self, value):

@@ -1,4 +1,4 @@
-from BusinessObject import BusinessObject
+from server.bo.BusinessObject import BusinessObject
 
 class Blocklist(BusinessObject):
     def __init__(self):
