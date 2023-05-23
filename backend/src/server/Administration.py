@@ -1,16 +1,9 @@
-from server.bo.BusinessObject import BusinessObject
-from server.bo.Blocklist import Blocklist
-from server.bo.Bookmarklist import Bookmarklist
-from server.bo.SelectionProperty import SelectionProperty
-from server.bo.Information import Information
-from server.bo.Profile import Profile
-from server.bo.Property import Property
-from server.bo.TextProperty import TextProperty
-from server.bo.User import User
-from server.db.BlocklistMapper import BlocklistMapper
-from server.db.BookmarklistMapper import BookmarklistMapper
-from server.db.ProfileMapper import ProfileMapper
-from server.db.UserMapper import UserMapper
+from backend.src.server.bo.Profile import Profile
+from backend.src.server.bo.User import User
+from backend.src.server.db.BlocklistMapper import BlocklistMapper
+from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
+from backend.src.server.db.ProfileMapper import ProfileMapper
+from backend.src.server.db.UserMapper import UserMapper
 
 
 #todo alle mapper importieren
@@ -82,35 +75,34 @@ class Administration():
         Bookmarklist Methoden
     '''
 
-    def get_bookmarklist_by_user_id(self, id):
-        mapper = BookmarklistMapper()
-        result = mapper.find_by_id(id)
-        return result
-
-    def create_bookmarklist(self, id):
+    def get_bookmarklist_by_user_id(self, user_id):
         with BookmarklistMapper() as mapper:
-            return mapper.insert(id)
+            return mapper.find_by_id(user_id)
 
-    def delete_bookmarklist(self, id):
+    def add_user_to_bookmarklist(self, user_id, payload):
         with BookmarklistMapper() as mapper:
-            return mapper.delete(id)
+            return mapper.insert(user_id, payload)
+
+    def remove_user_from_bookmarklist(self, user_id, payload):
+        with BookmarklistMapper() as mapper:
+            return mapper.delete(user_id, payload)
 
 
     '''
         Blocklist Methoden
     '''
 
-    def get_blocklist_by_user_id(self, id):
+    def get_blocklist_by_user_id(self, user_id):
         with BlocklistMapper() as mapper:
-            return mapper.find_by_id(id)
+            return mapper.find_by_id(user_id)
 
-    def create_blocklist_for_user(self, id):
+    def add_user_to_blocklist(self, user_id, payload):
         with BlocklistMapper() as mapper:
-            return mapper.insert(id)
+            return mapper.insert(user_id, payload)
 
-    def delete_blocklist(self, id):
+    def delete_blocklist(self, user_id, payload):
         with BlocklistMapper() as mapper:
-            return mapper.delete(id)
+            return mapper.delete(user_id, payload)
 
 
     '''

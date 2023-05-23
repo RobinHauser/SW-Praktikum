@@ -1,8 +1,6 @@
 import json
 
-from server.bo.User import User
-from server.bo.Bookmarklist import Bookmarklist
-from server.db.Mapper import Mapper
+from backend.src.server.db.Mapper import Mapper
 
 
 class BookmarklistMapper(Mapper):
@@ -12,92 +10,92 @@ class BookmarklistMapper(Mapper):
         pass
 
     def find_all(self):
+        pass
+
+    def find_by_id(self, user_id):
+        """
+        Returns a list of all other users a user(with a user_id) has on his bookmark list
+        :param user_id: the unique id of the user
+        :return: a list of all bookmarked users. If there is no bookmarked user it will return an empty list.
+        """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * FROM bookmarklist")
-        tuples = cursor.fetchall()
 
-        for (id) in tuples:
-            bookmarklist = Bookmarklist()
-            bookmarklist.set_id(id)
-            result.append(bookmarklist)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def find_by_id(self, id):
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT * FROM bookmarklist WHERE UserID={}".format(id)
+        command = "SELECT * FROM bookmarklist WHERE UserID={}".format(user_id)
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        bookmarklist_tuple = cursor.fetchone()
 
-        v1 = tuples[0]
-        v3 = v1[0]
-        command2 = "SELECT * FROM bookmark WHERE BookmarklistID={}".format(v3)
-        cursor.execute(command2)
-        tuples2 = cursor.fetchall()
+        if bookmarklist_tuple is not None:
+            bookmarklist_id = bookmarklist_tuple[0]
 
-        v2 = tuples2[0]
-        v4 = v2[2]
-        command3 = "SELECT * FROM user WHERE UserID={}".format(v4)
-        cursor.execute(command3)
-        tuples3 = cursor.fetchall()
+            # Retrieve bookmarklist by UserID
+            command2 = "SELECT * FROM bookmark WHERE BookmarklistID={}".format(bookmarklist_id)
+            cursor.execute(command2)
+            bookmarks = cursor.fetchall()
 
+            if bookmarks is not None:
+                user_ids = [bookmark[2] for bookmark in bookmarks]
 
-        try:
-            (id, email, firstname, lastname) = tuples3[0]
-            bookmarklist = User()
-            bookmarklist.set_email(email)
-            bookmarklist.set_firstname(firstname)
-            bookmarklist.set_lastname(lastname)
-            result.append(bookmarklist)
-        except IndexError:
-            result = None
+                # Retrieve user by UserID
+                command3 = "SELECT * FROM user WHERE UserID IN ({})".format(','.join(str(uid) for uid in user_ids))
+                cursor.execute(command3)
+                users = cursor.fetchall()
 
-        self._cnx.commit()
+                # Form the user into a json and add it to the list
+                for user in users:
+                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}", ' \
+                            f'"profileImageURL": "{user[4]}", "profileID": "{user[5]}", "bookmarklistID": "{user[6]}", "blocklistID": "{user[7]}"}}'
+                    userJSON = json.loads(jsstr)
+                    result.append(userJSON)
+
         cursor.close()
-
         return result
 
-    def insert(self, user_id, bookmarklist):
+    def insert(self, user_id, payload):
+        """
+        Adding a user to the bookmark list of a user
+        :param user_id: the unique id of the user with the bookmark list
+        :param payload: the dic of the user to be added
+        :return: the added user
+        """
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(BookmarklistID) AS maxid FROM bookmarklist ")
-        tuples = cursor.fetchall()
+        cursor.execute(f'SELECT BookmarklistID FROM bookmarklist WHERE UserID = {user_id}')
 
-        for (maxid) in tuples:
-            bookmarklist.set_id(maxid[0] + 1)
+        bookmarklist_id = cursor.fetchall()[0][0]
+        bookmarked_user_id = int(payload.get('id'))
 
-        command = "INSERT INTO bookmarklist (UserID,BookmarklistID) VALUES (%s, %s)"
-        data = (user_id, bookmarklist.get_id())  # TODO: ist user_id richtig übergeben?
-        cursor.execute(command, data)
+        cursor.execute(
+            f'INSERT INTO bookmark (BookmarklistID, BookmarkedUserID) VALUES ({bookmarklist_id}, {bookmarked_user_id})')
 
         self._cnx.commit()
         cursor.close()
 
-        return bookmarklist
+        return payload
 
     def update(self, bookmarklist):
+        pass
+
+    def delete(self, user_id, payload):
+        """
+        Removing a user from the bookmark list of a user
+        :param user_id: the unique id of the user with the bookmark list
+        :param payload: the dic of the user to be deleted
+        :return: the removed user
+        """
         cursor = self._cnx.cursor()
 
-        command = "UPDATE bookmarklist SET BookmarklistID=%s WHERE BookmarklistID=%s"
-        data = (bookmarklist.get_id(), bookmarklist.get_id())
-        cursor.execute(command, data)
+        cursor.execute(f'SELECT BookmarklistID FROM bookmarklist WHERE UserID = {user_id}')
+
+        bookmarklist_id = cursor.fetchall()[0][0]
+        bookmarked_user_id = int(payload.get('id'))
+
+        cursor.execute(
+            f'DELETE FROM bookmark WHERE BookmarklistID = {bookmarklist_id} AND BookmarkedUserID = {bookmarked_user_id}')
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, bookmarklist):
-        cursor = self._cnx.cursor()
-
-        command = "DELETE FROM bookmarklist WHERE BookmarklistID={}".format(
-            bookmarklist.get_id())  # TODO: .get_id()? oder bookmarklist
-        cursor.execute(command)
-
-        self._cnx.commit()
-        cursor.close()
+        return payload
 
     def find_by_email(self, email):
         pass

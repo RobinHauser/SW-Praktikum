@@ -20,12 +20,12 @@ export default class BlockListItem extends React.Component{
 
     removeUser = () => {
         const { user } = this.props;
-        SopraDatingAPI.getAPI().removeUserFromBlocklist(user.getUserID()).then(() => {
+        SopraDatingAPI.getAPI().removeUserFromBlocklist(user).then(() => {
             this.setState({
                 deletingInProgress: false,
                 deletingError: null
             })
-            // console.log(user);
+            console.log(user);
             this.props.onUserRemoved(user);
         }).catch(e =>
             this.setState({
