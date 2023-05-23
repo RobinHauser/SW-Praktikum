@@ -14,15 +14,14 @@ class Chat extends Component {
     {
         super(props);
         this.state = {
-            messageObjectLeft: ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"],
-            messageObjectRight: ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"]
+            messageArrayLeft: ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"],
+            messageArrayRight: ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"]
         };
     }
     render() {
     return (
         <div className="App">
-            <AppHeader></AppHeader>
-            <ChatContainer messageArrayLeft={this.state.messageObjectLeft} messageArrayRight={this.state.messageObjectRight}></ChatContainer>
+            <ChatContainer></ChatContainer>
         </div>
     )
         ;

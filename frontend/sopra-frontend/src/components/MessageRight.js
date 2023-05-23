@@ -9,8 +9,7 @@ import {Component} from "react";
  */
 class MessageRight extends Component {
     render() {
-        const {message} = this.props;
-
+        const {message, avatarLink} = this.props;
         return (
             <div>
                 <ListItem>
@@ -18,7 +17,7 @@ class MessageRight extends Component {
                         <Typography noWrap={false} sx={{m: 2, wordBreak: "break-word"}}>{message}</Typography>
                         <Typography fontSize={12} style={{textAlign: "left"}}> 01.01.2000</Typography>
                     </Paper>
-                    <Avatar src={placeHolderImage}></Avatar>
+                    <Avatar src={avatarLink}></Avatar>
                 </ListItem>
             </div>
         );
