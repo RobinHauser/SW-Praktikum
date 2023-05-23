@@ -5,7 +5,7 @@ import ProfileCard from "./ProfileCard";
 
 export default function GridContainer() {
     return (
-        <Box sx={{display: 'flex', justifyContent: 'center'}}>
+        <Box >
             <Grid
                 container
                 spacing={{xs: 10, md: 10}}
