@@ -1,6 +1,6 @@
 import json
 
-from src.server.db.Mapper import Mapper
+from backend.src.server.db.Mapper import Mapper
 
 
 class BookmarklistMapper(Mapper):
@@ -43,7 +43,8 @@ class BookmarklistMapper(Mapper):
 
                 # Form the user into a json and add it to the list
                 for user in users:
-                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "firstname": "{user[2]}", "lastname": "{user[3]}"}}'
+                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "profileImageURL' \
+                            f'": "{user[3]}"}}'
                     userJSON = json.loads(jsstr)
                     result.append(userJSON)
 

@@ -1,7 +1,7 @@
 import json
 
-from src.server.bo import Blocklist
-from src.server.db import Mapper
+from backend.src.server.bo import Blocklist
+from backend.src.server.db import Mapper
 
 Blocklist = Blocklist.Blocklist
 
@@ -59,7 +59,8 @@ class BlocklistMapper(Mapper.Mapper):
 
                 # Form the user into a json and add it to the list
                 for user in users:
-                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "firstname": "{user[2]}", "lastname": "{user[3]}"}}'
+                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "profileImageURL' \
+                            f'": "{user[3]}"}}'
                     userJSON = json.loads(jsstr)
                     result.append(userJSON)
 

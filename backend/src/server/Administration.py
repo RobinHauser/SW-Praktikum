@@ -1,9 +1,9 @@
-from src.server.bo.Profile import Profile
-from src.server.bo.User import User
-from src.server.db.BlocklistMapper import BlocklistMapper
-from src.server.db.BookmarklistMapper import BookmarklistMapper
-from src.server.db.ProfileMapper import ProfileMapper
-from src.server.db.UserMapper import UserMapper
+from backend.src.server.bo.Profile import Profile
+from backend.src.server.bo.User import User
+from backend.src.server.db.BlocklistMapper import BlocklistMapper
+from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
+from backend.src.server.db.ProfileMapper import ProfileMapper
+from backend.src.server.db.UserMapper import UserMapper
 
 
 #todo alle mapper importieren
