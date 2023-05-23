@@ -15,13 +15,28 @@ module.exports = SetupEndpoint({
         params: '/blocklist/{id}',
         requests: [{
                 method: 'GET',
-                response: '/response-files/sopra-dating/blocklist.json'
+                response: '/response-files/sopra-dating/userList.json'
         },
             {
                 method: 'DELETE',
                 response: '/response-files/sopra-dating/deleteMichi.json'
             }
         ]
+    }, {
+        params: '/blocklist',
+        requests: [{
+            method: 'POST',
+            response: '/response-files/sopra-dating/userList.json'
+        }]
+    }, {
+        params: '/bookmarklist/{id}',
+        requests: [{
+            method: 'GET',
+            response: '/response-files/sopra-dating/userList.json'
+        }, {
+            method: 'DELETE',
+            response: '/response-files/sopra-dating/userList.json'
+        }]
     }]
 });
 
