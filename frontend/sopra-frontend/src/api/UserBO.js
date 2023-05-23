@@ -31,7 +31,7 @@ export default class UserBO extends BusinessObject {
   /**
    * Sets the ID of this UserBO.
    *
-   * @param {*} userID - the new userid of this UserBO.
+   * @param {*} userID - the new userID of this UserBO.
    */
   setUserID(userID) {
     this.userID = userID;
@@ -41,7 +41,7 @@ export default class UserBO extends BusinessObject {
    * Gets the userID of this UserBO.
    */
   getUserID() {
-    return this.id;
+    return this.userID;
   }
 
   /**

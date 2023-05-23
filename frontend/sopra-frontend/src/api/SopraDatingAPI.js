@@ -17,7 +17,7 @@ export default class SopraDatingAPI {
     #SopraDatingServerBaseURL = 'http://127.0.0.1:5000';
 
     // Local http-fake-backend
-    //#SopraDatingServerBaseURL = 'http://localhost:5000'
+    // #SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
 
     // Bookmarklist related
@@ -158,10 +158,14 @@ export default class SopraDatingAPI {
         })
     }
 
-    removeUserFromBlocklist(blockID) {
-        return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(blockID), {
+    removeUserFromBlocklist(user) {
+        return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(user), {
             method: 'DELETE',
-            body: JSON.stringify(blockID)
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
         }).then((responseJSON) => {
             let userBOs = UserBO.fromJSON(responseJSON)[0];
             // console.info(userBOs);

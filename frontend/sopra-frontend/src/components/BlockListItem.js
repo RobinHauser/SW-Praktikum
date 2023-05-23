@@ -25,7 +25,7 @@ export default class BlockListItem extends React.Component{
                 deletingInProgress: false,
                 deletingError: null
             })
-            console.log(user);
+            // console.log(user);
             this.props.onUserRemoved(user);
         }).catch(e =>
             this.setState({
