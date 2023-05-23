@@ -25,10 +25,10 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist`;
     };
     #getBookmarklistURL = (bookmarklistID) => {
-        return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${bookmarklistID}`;
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist/${bookmarklistID}`;
     };
     #removeUserFromBookmarklistURL = (bookmarkID) => {
-        return `${this.#SopraDatingServerBaseURL}/bookmarklist?id=${bookmarkID}`;
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist/${bookmarkID}`;
     };
 
     // Blocklist related
@@ -109,14 +109,25 @@ export default class SopraDatingAPI {
     }
 
     getBookmarklist(bookmarklistID) {
-        return  this.#fetchAdvanced(this.#getBookmarklistURL(bookmarklistID)).then((responseJSON) => {
-            return responseJSON
+        return this.#fetchAdvanced(this.#getBookmarklistURL(bookmarklistID))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                // console.log(blocklistBOs)
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
         })
     }
 
     removeUserFromBookmarklist(bookmarkID) {
         return this.#fetchAdvanced(this.#removeUserFromBookmarklistURL(bookmarkID), {
             method: 'DELETE'
+        }).then((responseJSON) => {
+            let userBOs = UserBO.fromJSON(responseJSON)[0];
+            // console.info(userBOs);
+            return new Promise(function (resolve) {
+               resolve(userBOs);
+            })
         })
     }
 
@@ -128,16 +139,21 @@ export default class SopraDatingAPI {
                 'Content-type': 'application/json'
             },
             body: JSON.stringify(userBO)
+        }).then((responseJSON) => {
+            let userBO = UserBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(userBO)
+            })
         })
     }
 
     getBlocklist(userID) {
         return this.#fetchAdvanced(this.#getBlocklistURL(userID))
             .then((responseJSON) => {
-                let blocklistBOs = UserBO.fromJSON(responseJSON);
+                let userBOs = UserBO.fromJSON(responseJSON);
                 // console.log(blocklistBOs)
                 return new Promise(function (resolve) {
-                    resolve(blocklistBOs)
+                    resolve(userBOs)
                 })
         })
     }
