@@ -12,9 +12,9 @@ import SopraDatingAPI from "../api/SopraDatingAPI";
  * @author [Michael Bergdolt]
  */
 
-export default class bookmarkList extends React.Component{
+export default class bookmarkList extends React.Component {
 
-     constructor(props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -24,7 +24,7 @@ export default class bookmarkList extends React.Component{
     }
 
     getBookmarklist = () => {
-         SopraDatingAPI.getAPI().getBookmarklist(this.props.user.uid)
+        SopraDatingAPI.getAPI().getBookmarklist(this.props.user.uid)
             .then(UserBOs =>
                 this.setState({
                     error: null,
@@ -34,8 +34,8 @@ export default class bookmarkList extends React.Component{
                 this.setState({
                     error: e,
                     bookmarklist: []
-                    })
-                )
+                })
+            )
         ;
     }
 
@@ -44,34 +44,35 @@ export default class bookmarkList extends React.Component{
     }
 
     addUserToBlocklistHandler = (addedUser) => {
-         this.setState({
-             bookmarklist: this.state.bookmarklist.filter(user => user.getUserID() !== addedUser.getUserID())
-         })
+        this.setState({
+            bookmarklist: this.state.bookmarklist.filter(user => user.getUserID() !== addedUser.getUserID())
+        })
     }
 
     render() {
-         const { bookmarklist } = this.state;
+        const {bookmarklist} = this.state;
 
         return (
             <div className="App">
                 <AppHeader avatar={this.props.avatar}></AppHeader>
                 <Container style={{marginTop: '50px'}}>
-                            <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                <Grid
-                    container
-                    spacing={{xs: 10, md: 10}}
-                    columns={{xs: 4, sm: 8, md: 12}}>
-                    {bookmarklist.length > 0 ? (
-                        bookmarklist.map((bookmarklistItem) => (
-                            <Grid xs={4} sm={4} md={4} key={bookmarklistItem.getUserID()}>
-                                <BookmarkProfileCard key={bookmarklistItem.getUserID()} user={bookmarklistItem} onUserRemoved={this.addUserToBlocklistHandler}></BookmarkProfileCard>
-                            </Grid>
-                        ))
-                        ) : (
-                            <p>Du hast deiner Merkliste noch keine Profile hinzugefügt</p>
-                    )}
-                </Grid>
-            </Box>
+                    <Box>
+                        <Grid
+                            container
+                            spacing={{xs: 10, md: 10}}
+                            columns={{xs: 4, sm: 8, md: 12}}>
+                            {bookmarklist.length > 0 ? (
+                                bookmarklist.map((bookmarklistItem) => (
+                                    <Grid xs={4} sm={4} md={4} key={bookmarklistItem.getUserID()}>
+                                        <BookmarkProfileCard key={bookmarklistItem.getUserID()} user={bookmarklistItem}
+                                                             onUserRemoved={this.addUserToBlocklistHandler}></BookmarkProfileCard>
+                                    </Grid>
+                                ))
+                            ) : (
+                                <p>Du hast deiner Merkliste noch keine Profile hinzugefügt</p>
+                            )}
+                        </Grid>
+                    </Box>
                 </Container>
             </div>
         )

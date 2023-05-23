@@ -13,7 +13,7 @@ class ConversationOverview extends Component {
     render() {
         return (
             <div className="App">
-                <AppHeader></AppHeader>
+                <AppHeader avatar={this.props.avatar}></AppHeader>
                 <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px'}}>
                     <h3> Meine Chats</h3>
                 </Container>
