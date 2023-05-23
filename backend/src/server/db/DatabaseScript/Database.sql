@@ -19,7 +19,21 @@ create table user
     UserID          int           not null primary key,
     Email           varchar(100)  not null,
     Displayname     nvarchar(100) not null,
-    ProfileImageURL nvarchar(200) not null
+    DateOfBirth     nvarchar(100) not null,
+    ProfileImageURL nvarchar(200) not null,
+    BlocklistID     int           not null,
+    BookmarklistID  int           not null,
+    ProfileID       int           not null
+
+    /*
+    constraint fk_blocklist_property
+        foreign key (BlocklistID) references blocklist (BlocklistID),
+    constraint fk_bookmarklist_property
+        foreign key (BookmarklistID) references bookmarklist (BookmarklistID),
+    constraint fk_profile_property
+        foreign key (ProfileID) references profile (ProfileID)
+
+     */
 );
 
 create table blocklist
@@ -121,21 +135,23 @@ create table view
         foreign key (ViewedListID) references viewedlist (ViewedListID)
 );
 
+
+
 -- --------------------------------------------------------------------------------------
 
 -- user erstellen
-insert into user (UserID, Email, Displayname, ProfileImageURL)
-values (1001, 'ek103@hdm-stuttgart.de', 'Elias Konson', 'https://tbd.de');
-insert into user (UserID, Email, Displayname, ProfileImageURL)
-values (1002, 'rh086@hdm-stuttgart.de', 'Robin Hauser', 'https://tbd.de');
-insert into user (UserID, Email, Displayname, ProfileImageURL)
-values (1003, 'bt036@hdm-stuttgart.de', 'Björn Till', 'https://tbd.de');
-insert into user (UserID, Email, Displayname, ProfileImageURL)
-values (1004, 'tk172@hdm-stuttgart.de', 'Theo Klautke', 'https://tbd.de');
-insert into user (UserID, Email, Displayname, ProfileImageURL)
-values (1005, 'mb396@hdm-stuttgart.de', 'Michael Bergdolt', 'https://tbd.de');
-insert into user (UserID, Email, Displayname, ProfileImageURL)
-values (1006, 'haug.jannik@gmail.com', 'Jannik Haug', 'https://tbd.de');
+insert into user (UserID, Email, Displayname, DateOfBirth, ProfileImageURL, ProfileID, BookmarklistID, BlocklistID)
+values (1001, 'ek103@hdm-stuttgart.de', 'Elias Konson','03.02.2000', 'https://tbd.de', 4001, 2001, 3001);
+insert into user (UserID, Email, Displayname, DateOfBirth, ProfileImageURL, ProfileID, BookmarklistID, BlocklistID)
+values (1002, 'rh086@hdm-stuttgart.de', 'Robin Hauser','03.12.2002', 'https://tbd.de', 4002, 2002, 3002);
+insert into user (UserID, Email, Displayname, DateOfBirth, ProfileImageURL, ProfileID, BookmarklistID, BlocklistID)
+values (1003, 'bt036@hdm-stuttgart.de', 'Björn Till','31.12.2000', 'https://tbd.de', 4003, 2003, 3003);
+insert into user (UserID, Email, Displayname, DateOfBirth, ProfileImageURL, ProfileID, BookmarklistID, BlocklistID)
+values (1004, 'tk172@hdm-stuttgart.de', 'Theo Klautke','08.08.2001', 'https://tbd.de', 4004, 2004, 3004);
+insert into user (UserID, Email, Displayname, DateOfBirth, ProfileImageURL, ProfileID, BookmarklistID, BlocklistID)
+values (1005, 'mb396@hdm-stuttgart.de', 'Michael Bergdolt','31.12.2000', 'https://tbd.de', 4005, 2005, 3005);
+insert into user (UserID, Email, Displayname, DateOfBirth, ProfileImageURL, ProfileID, BookmarklistID, BlocklistID)
+values (1006, 'haug.jannik@gmail.com', 'Jannik Haug','09.12.2000', 'https://tbd.de', 4006, 2006, 3006);
 
 -- blocklisten erstellen / zuweisen
 insert into blocklist (BlocklistID, UserID)

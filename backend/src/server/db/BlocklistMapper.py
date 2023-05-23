@@ -12,21 +12,7 @@ class BlocklistMapper(Mapper.Mapper):
         super().__init__()
 
     def find_all(self):
-
-        result = []
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT * FROM blocklist")
-        tuples = cursor.fetchall()
-
-        for (id) in tuples:
-            blocklist = Blocklist()
-            blocklist.set_id(id)
-            result.append(blocklist)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
+        pass
 
     def find_by_id(self, user_id):
         """
@@ -59,8 +45,8 @@ class BlocklistMapper(Mapper.Mapper):
 
                 # Form the user into a json and add it to the list
                 for user in users:
-                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "profileImageURL' \
-                            f'": "{user[3]}"}}'
+                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}", ' \
+                            f'"profileImageURL": "{user[4]}", "profileID": "{user[5]}", "bookmarklistID": "{user[6]}", "blocklistID": "{user[7]}"}}'
                     userJSON = json.loads(jsstr)
                     result.append(userJSON)
 
