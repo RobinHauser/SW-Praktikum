@@ -41,7 +41,7 @@ export default class UserBO extends BusinessObject {
    * Gets the userID of this UserBO.
    */
   getUserID() {
-    return this.userID;
+    return this.id;
   }
 
   /**

@@ -1,9 +1,16 @@
-from flask import Flask
+import json
+
+from flask import Flask, Request, request
 from flask_restx import Resource, Api, Namespace, fields
+from flask_cors import CORS
+
 
 from backend.src.server.Administration import Administration
 
+
 app = Flask(__name__)
+
+CORS(app, resources=r'/*')
 
 api = Api(app,
           version='1.0',
@@ -128,7 +135,10 @@ class Blocklist_api(Resource):
         :return: the user that was removed from the blocklist
         """
         adm = Administration()
-        response = adm.delete_blocklist(user_id, api.payload)
+
+        user_id = user_id
+
+        response = adm.delete_blocklist(user_id, json.loads(request.data))
         return response
 
 
