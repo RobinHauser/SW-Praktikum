@@ -33,14 +33,6 @@ class Mapper(AbstractContextManager, ABC):
         pass
 
     @abstractmethod
-    def find_by_name(self, name):
-        pass
-
-    @abstractmethod
-    def find_by_email(self, email):
-        pass
-
-    @abstractmethod
     def insert(self, object):
         pass
 

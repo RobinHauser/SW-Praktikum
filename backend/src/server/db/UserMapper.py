@@ -12,14 +12,13 @@ class UserMapper(Mapper.Mapper):
         cursor.execute("SELECT * FROM user")
         tuples = cursor.fetchall()
 
-        for (first_name, last_name, email, g_id, date_of_birth, owner) in tuples:
+        for (userid, email, displayname, avatarurl) in tuples:
             user = User()
-            user.set_first_name(first_name)
-            user.set_last_name(last_name)
             user.set_email(email)
-            user.set_g_id(g_id)
-            user.set_date_of_birth(date_of_birth)
-            user.set_owner(owner)
+            user.set_displayname(displayname)
+            user.set_avatarurl(avatarurl)
+            #user.set_g_id(g_id)
+            #user.set_date_of_birth(date_of_birth)
             result.append(user)
 
         self._cnx.commit()
@@ -30,14 +29,17 @@ class UserMapper(Mapper.Mapper):
     def find_by_id(self, id):
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM user WHERE id={}".format(id)
+        command = "SELECT * FROM user WHERE UserID={}".format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         try:
-            (id, first_name, last_name, email, g_id, date_of_birth, owner) = tuples[0]
+            (userid, email, displayname, avatarurl) = tuples[0]
             user = User()
-            user.set_id(id)
+            user.set_id(userid)
+            user.set_email(email)
+            user.set_displayname(displayname)
+            user.set_avatarurl(avatarurl)
             result = user
         except IndexError:
             result = None
@@ -50,14 +52,13 @@ class UserMapper(Mapper.Mapper):
     def find_by_name(self, name):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM user WHERE first_name LIKE '{}' OR last_name LIKE '{}'".format(name, name)
+        command = "SELECT * FROM user WHERE Displayname LIKE '{}'".format(name)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (first_name, last_name) in tuples:
+        for (displayname) in tuples:
             user = User()
-            user.set_first_name(first_name)
-            user.set_last_name(last_name)
+            user.set_displayname(displayname)
 
         self._cnx.commit()
         cursor.close()
@@ -74,7 +75,6 @@ class UserMapper(Mapper.Mapper):
         try:
             (email) = tuples[0]
             user = User()
-
             user.set_email(email)
             result = user
         except IndexError:
