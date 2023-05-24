@@ -130,3 +130,5 @@ class UserMapper(Mapper.Mapper):
         cursor.close()
 
         return user
+
+#todo umwandlungen in json?

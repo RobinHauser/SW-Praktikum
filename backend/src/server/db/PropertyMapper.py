@@ -51,7 +51,7 @@ class PropertyMapper(Mapper.Mapper):
     def find_by_name(self, name):
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM property WHERE PropertyID LIKE '{}'".format(name)
+        command = "SELECT * FROM property WHERE Value LIKE '{}'".format(name)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -101,3 +101,4 @@ class PropertyMapper(Mapper.Mapper):
         command = "DELETE FROM property WHERE PropertyID={}".format(property.get_id())
 
 
+#todo umwandlungen in json?
