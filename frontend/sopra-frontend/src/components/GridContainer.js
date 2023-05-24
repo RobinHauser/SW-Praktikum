@@ -64,11 +64,17 @@ export default class GridContainer extends React.Component{
                         open={open}
                         onClose={this.handleCloseSearchprofile}
                     >
-                        <MenuItem onClick = {() => this.handleSearchprofileItemClick("Keine Auswahl")}>
+                        <MenuItem
+                            onClick = {() => this.handleSearchprofileItemClick("Keine Auswahl")}
+                            sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
+                        >
                             Keine Auswahl
                         </MenuItem>
                         {searchprofiles.map((searchprofileItem) => (
-                            <MenuItem onClick = {() => this.handleSearchprofileItemClick(searchprofileItem)}>
+                            <MenuItem
+                                onClick = {() => this.handleSearchprofileItemClick(searchprofileItem)}
+                                sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
+                            >
                                 {searchprofileItem}
                             </MenuItem>
                         ))}
