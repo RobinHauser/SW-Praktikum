@@ -4,7 +4,6 @@ from backend.src.server.db.BlocklistMapper import BlocklistMapper
 from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
 from backend.src.server.db.ProfileMapper import ProfileMapper
 from backend.src.server.db.UserMapper import UserMapper
-from backend.src.server.db.ChatMapper import ChatMapper
 from backend.src.server.db.MessageMapper import MessageMapper
 
 
