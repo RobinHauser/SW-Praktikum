@@ -1,5 +1,5 @@
-from server.bo import BusinessObject as bo
-from server.bo.User import User
+from src.server.bo.BusinessObject import BusinessObject as bo
+from src.server.bo.User import User
 
 
 class Message(bo.BusinessObject):

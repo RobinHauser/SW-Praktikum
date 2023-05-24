@@ -1,6 +1,5 @@
-from BusinessObject import BusinessObject
-from Property import Property
-from Information import Information
+from src.server.bo.Property import Property
+from src.server.bo.Information import Information
 
 class SelectionProperty(Property):
     def __init__(self, value, options):

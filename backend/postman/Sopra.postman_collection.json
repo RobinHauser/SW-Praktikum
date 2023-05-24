@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "6ea5f88a-0f09-4a00-b7a6-e5e8f9b28501",
+		"name": "Sopra",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23178657"
+	},
+	"item": [
+		{
+			"name": "Bookmarklist",
+			"item": [
+				{
+					"name": "Get User bookmarklist",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"user\": \"this is a user\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/bookmarklist/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"bookmarklist",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User to bookmarklist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1001\",\n        \"email\": \"ek103@hdm-stuttgart.de\",\n        \"firstname\": \"Elias\",\n        \"lastname\": \"Konson\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/bookmarklist/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"bookmarklist",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user from bookmarklist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1001\",\n        \"email\": \"ek103@hdm-stuttgart.de\",\n        \"firstname\": \"Elias\",\n        \"lastname\": \"Konson\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/bookmarklist/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"bookmarklist",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Blocklist",
+			"item": [
+				{
+					"name": "Get User blocklist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/blocklist/1005",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"blocklist",
+								"1005"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User to blocklist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1004\",\n        \"email\": \"tk172@hdm-stuttgart.de\",\n        \"firstname\": \"Theo\",\n        \"lastname\": \"Klautke\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/blocklist/1005",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"blocklist",
+								"1005"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User from blocklist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1004\",\n        \"email\": \"tk172@hdm-stuttgart.de\",\n        \"firstname\": \"Theo\",\n        \"lastname\": \"Klautke\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/blocklist/1005",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"blocklist",
+								"1005"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

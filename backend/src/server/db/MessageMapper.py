@@ -1,6 +1,6 @@
-from server.bo import Message
-from server.db import Mapper
-
+from src.server.bo import Message
+from src.server.db import Mapper
+Message = Message.Message
 
 class MessageMapper(Mapper.Mapper):
 
@@ -30,7 +30,7 @@ class MessageMapper(Mapper.Mapper):
     def find_by_id(self, id):
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM message WHERE id={}".format(id)
+        command = "SELECT * FROM message WHERE MessageID={}".format(id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -49,7 +49,7 @@ class MessageMapper(Mapper.Mapper):
 
     def insert(self, message):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM message")
+        cursor.execute("SELECT MAX(MessageID) AS maxid FROM message")
         tuples = cursor.fetchall()
 
         for (maxid) in tuples:
@@ -79,7 +79,7 @@ class MessageMapper(Mapper.Mapper):
     def delete(self, message):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM message WHERE id={}".format(message.get_id())
+        command = "DELETE FROM message WHERE MessageID={}".format(message.get_id())
         cursor.execute(command)
 
         self._cnx.commit()

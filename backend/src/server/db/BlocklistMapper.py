@@ -1,5 +1,9 @@
-from server.db import Mapper
-from server.bo import Blocklist
+import json
+
+from backend.src.server.bo import Blocklist
+from backend.src.server.db import Mapper
+
+Blocklist = Blocklist.Blocklist
 
 
 class BlocklistMapper(Mapper.Mapper):
@@ -8,87 +12,95 @@ class BlocklistMapper(Mapper.Mapper):
         super().__init__()
 
     def find_all(self):
+        pass
 
+    def find_by_id(self, user_id):
+        """
+        Returns a list of all other users a user(with a user_id) has blocked
+        :param user_id: the unique id of the user
+        :return: a list of all blocked users. If there is no blocked user it will return an empty list.
+        """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * FROM blocklist")
-        tuples = cursor.fetchall()
 
-        for (id) in tuples:
-            blocklist = Blocklist()
-            blocklist.set_id(id)
-            result.append(blocklist)
+        command = "SELECT * FROM blocklist WHERE UserID={}".format(user_id)
+        cursor.execute(command)
+        blocklist_tuple = cursor.fetchone()
 
+        if blocklist_tuple is not None:
+            blocklist_id = blocklist_tuple[0]
 
-        self._cnx.commit()
+            # Retrieve bookmarklist by UserID
+            command2 = "SELECT * FROM block WHERE BlocklistID={}".format(blocklist_id)
+            cursor.execute(command2)
+            blocks = cursor.fetchall()
+
+            if blocks is not None:
+                user_ids = [block[2] for block in blocks]
+
+                # Retrieve user by UserID
+                command3 = "SELECT * FROM user WHERE UserID IN ({})".format(','.join(str(uid) for uid in user_ids))
+                cursor.execute(command3)
+                users = cursor.fetchall()
+
+                # Form the user into a json and add it to the list
+                for user in users:
+                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}", ' \
+                            f'"profileImageURL": "{user[4]}", "profileID": "{user[5]}", "bookmarklistID": "{user[6]}", "blocklistID": "{user[7]}"}}'
+                    userJSON = json.loads(jsstr)
+                    result.append(userJSON)
+
         cursor.close()
-
         return result
 
-    def find_by_id(self, id):
-
-        result = None
+    def insert(self, user_id, payload):
+        """
+        Adding a user to the blocklist of a user
+        :param user_id: the unique id of the user with the bookmark list
+        :param payload: the dic of the user to be added
+        :return: the added user
+        """
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM blocklist WHERE id={}".format(id)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
+        cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')
 
-        try:
-            (id) = tuples[0]
-            blocklist = Blocklist()
-            blocklist.set_id(id)
-            result = blocklist
-        except IndexError:
-            result = None
+        blocklist_id = cursor.fetchall()[0][0]
+        blocked_user_id = int(payload.get('id'))
+
+        cursor.execute(
+            f'INSERT INTO block (BlocklistID, BlockedUserID) VALUES ({blocklist_id}, {blocked_user_id})')
 
         self._cnx.commit()
         cursor.close()
 
-        return result
+        return payload
 
-    def insert(self, Blocklist):
+    def update(self, blocklist):
+        pass
+
+    def delete(self, user_id, payload):
+        """
+        Removing a user from the blocklist of a user
+        :param user_id: the unique id of the user with the blocklist
+        :param payload: the dic of the user to be deleted
+        :return: the removed user
+        """
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM blocklist ")
-        tuples = cursor.fetchall()
 
-        for (maxid) in tuples:
-            Blocklist.set_id(maxid[0] + 1)
+        cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')
 
-        command = "INSERT INTO blocklist (id) VALUES (%s)"
-        data = (Blocklist.get_id())
-        cursor.execute(command, data)
+        blocklist_id = cursor.fetchall()[0][0]
+        blocked_user_id = int(payload.get('id'))
+
+        cursor.execute(
+            f'DELETE FROM block WHERE BlocklistID = {blocklist_id} AND BlockedUserID = {blocked_user_id}')
 
         self._cnx.commit()
         cursor.close()
 
-        return Blocklist
-
-    def update(self, Blocklist):
-        cursor = self._cnx.cursor()
-
-        command = "UPDATE blocklist SET id=%s WHERE id=%s"
-        data = (Blocklist.get_id(), Blocklist.get_id())
-        cursor.execute(command, data)
-
-        self._cnx.commit()
-        cursor.close()
-
-    def delete(self, Blocklist):
-        cursor = self._cnx.cursor()
-
-        command = "DELETE FROM blocklist WHERE id={}".format(Blocklist.get_id())
-        cursor.execute(command)
-
-        self._cnx.commit()
-        cursor.close()
+        return payload
 
     def find_by_email(self, email):
         pass
 
     def find_by_name(self, name):
         pass
-
-
-
-
-

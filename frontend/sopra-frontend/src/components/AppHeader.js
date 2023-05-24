@@ -12,15 +12,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
+import {getAuth, signOut} from "firebase/auth";
 
-const settings = ['Profil', 'Ausloggen'];
-
-export default function AppHeader() {
+export default function AppHeader(props) {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
     const navigate = useNavigate()
-
 
 
     const handleOpenNavMenu = (event) => {
@@ -41,6 +39,27 @@ export default function AppHeader() {
     function navigateToProfilePage() {
         navigate('/profile')
     }
+    function navigateToConversationOverviewPage() {
+        navigate('/conversationOverview')
+    }
+    function navigateToBookmarkListPage() {
+        navigate(('/bookmarklist'))
+    }
+
+    function navigateToBlockListPage() {
+        navigate(('/blockList'))
+    }
+
+    function navigateToSearchProfileOverviewPage() {
+        navigate(('/searchProfileOverview'))
+    }
+
+    function handleSignOutButtonClicked() {
+        const auth = getAuth();
+        signOut(auth).then(
+            //TODO clear cookies
+        );
+    }
 
     return (
         <AppBar position="static">
@@ -50,7 +69,7 @@ export default function AppHeader() {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/"
+                        href="/main"
                         sx={{
                             display: {xs: 'none', md: 'flex'},
                             fontWeight: 700,
@@ -88,18 +107,31 @@ export default function AppHeader() {
                             sx={{
                                 display: {xs: 'block', md: 'none'},
                             }}>
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseNavMenu()
+                                navigateToBookmarkListPage()
+                            }}>
                                 <Typography textAlign="center">Merkliste</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseNavMenu()
+                                navigateToBlockListPage()
+                            }}>
                                 <Typography textAlign="center">Blockliste</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseNavMenu()
+                                navigateToSearchProfileOverviewPage()
+                            }}>
                                 <Typography textAlign="center">Suchprofil</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseNavMenu()
+                                navigateToConversationOverviewPage()
+                            }}>
                                 <Typography textAlign="center">Chat</Typography>
                             </MenuItem>
+
                         </Menu>
                     </Box>
                     <Typography
@@ -120,16 +152,25 @@ export default function AppHeader() {
                     >
                     </Typography>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex', marginLeft: '50px'}}}>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={() => {
+                            handleCloseNavMenu()
+                            navigateToBookmarkListPage()
+                        }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Merkliste
                         </Button>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={() => {
+                            handleCloseNavMenu()
+                            navigateToBlockListPage()
+                        }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Blockliste
                         </Button>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={() => {
+                            handleCloseNavMenu()
+                            navigateToSearchProfileOverviewPage()
+                        }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Suchprofil
                         </Button>
-                        <Button onClick={handleCloseNavMenu} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={navigateToConversationOverviewPage} sx={{my: 2, color: 'white', display: 'block'}}>
                             chat
                         </Button>
                     </Box>
@@ -137,7 +178,7 @@ export default function AppHeader() {
                     <Box sx={{flexGrow: 0}}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                <Avatar src={props.avatar}/>
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -156,13 +197,16 @@ export default function AppHeader() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}>
 
-                            <MenuItem onClick={ () => {
+                            <MenuItem onClick={() => {
                                 handleCloseUserMenu()
                                 navigateToProfilePage()
                             }}>
                                 <Typography textAlign="center">Profil</Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseUserMenu}>
+                            <MenuItem onClick={() => {
+                                handleCloseUserMenu()
+                                handleSignOutButtonClicked()
+                            }}>
                                 <Typography textAlign="center">Ausloggen</Typography>
                             </MenuItem>
                         </Menu>
