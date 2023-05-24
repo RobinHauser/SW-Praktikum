@@ -2,6 +2,7 @@ from src.server.bo import Message
 from src.server.db import Mapper
 Message = Message.Message
 
+
 class MessageMapper(Mapper.Mapper):
 
     def __init__(self):
@@ -27,43 +28,44 @@ class MessageMapper(Mapper.Mapper):
 
         return result
 
-    def find_by_id(self, id):
+    def find_by_id(self, chat_id):
         result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM message WHERE MessageID={}".format(id)
+        command = "SELECT * FROM chatrelation WHERE ChatID={}".format(chat_id)
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        message_tuple = cursor.fetchone()
 
-        try:
-            (id) = tuples[0]
-            message = Message()
-            message.set_id(id)
-            result = message
-        except IndexError:
-            result = None
+        if message_tuple is not None:
+            message_id = message_tuple[0]
+
+            command2 = "SELECT * FROM message WHERE MessgeID={}".format(message_id)
+            cursor.execute(command2)
+            messages = cursor.fetchall()
+
+            if messages is not None:
+                message_body = []
+
+                for message in messages:
+                    jsstr = f'{{"MessageID": "{message_body[0]}", "Sender": "{message_body[1]}", "Content": "{message_body[2]}", "TimeStamp": "{message_body[3]}"}}'
+                    messageJSON = json.loads(jsstr)
+                    result.append(messageJSON)
+
 
         self._cnx.commit()
         cursor.close()
 
         return result
 
-    def insert(self, message):
+    def insert(self, user_id, payload):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(MessageID) AS maxid FROM message")
-        tuples = cursor.fetchall()
 
-        for (maxid) in tuples:
-            message.set_id(maxid[0] + 1)
-
-        command = "INSERT INTO message (id, timestamp, message_content, sender, receiver) VALUES (%s,%s,%s,%s,%s)"
-        data = (message.get_id(), message.get_timestamp(), message.get_message_content(), message.get_sender(),
-                message.get_receiver())
+        command = "INSERT INTO message (id, Sender, Content, Timestamp) VALUES (%s, %s, %s, %s, %s)"
+        data = (payload.get('id'), user_id, payload.get('content'), payload.get('timestamp'))
         cursor.execute(command, data)
-
         self._cnx.commit()
         cursor.close()
 
-        return message
+        return payload
 
     def update(self, message):
         cursor = self._cnx.cursor()

@@ -145,8 +145,11 @@ class Blocklist_api(Resource):
 @chat_namespace.route()
 class Chat_api(Resource):
     def get(self):
+
         adm = Administration()
+
         response = adm.get_chat_by_user_id(user_id)
+
         return response
 
     def post(self):
@@ -158,11 +161,18 @@ class Chat_api(Resource):
 
 @message_namespace.route()
 class Message_api(Resource):
-    def get(self):
-        pass
+    def get(self, chat_id):
 
-    def post(self):
-        pass
+        adm = Administration()
+        response = adm.get_messages_by_chat_id(chat_id)
+        return response
+
+    def post(self, user_id):
+
+        adm = Administration()
+        response = adm.add_message_to_chat(user_id, api.payload)
+        return response
+
 
 
 @profile_namespace.route()

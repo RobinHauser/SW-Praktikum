@@ -4,6 +4,8 @@ from backend.src.server.db.BlocklistMapper import BlocklistMapper
 from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
 from backend.src.server.db.ProfileMapper import ProfileMapper
 from backend.src.server.db.UserMapper import UserMapper
+from backend.src.server.db.ChatMapper import ChatMapper
+from backend.src.server.db.MessageMapper import MessageMapper
 
 
 #todo alle mapper importieren
@@ -110,12 +112,21 @@ class Administration():
     '''
 
     def get_chat_by_user_id(self, user_id):
-        pass
+        with ChatMapper() as mapper:
+            return mapper.find_by_id(user_id)
 
 
+    '''
+         Message Methoden
+    '''
 
+    def add_message_to_chat(self, user_id, payload):
+        with MessageMapper() as mapper:
+            return mapper.insert(user_id, payload)
 
-
+    def get_messages_by_chat_id(self, user_id):
+        with MessageMapper() as mapper:
+            return mapper.find_by_id(user_id)
 
 
 
