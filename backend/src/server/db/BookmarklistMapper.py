@@ -43,7 +43,9 @@ class BookmarklistMapper(Mapper):
 
                 # Form the user into a json and add it to the list
                 for user in users:
-                    jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}"}}'
+                    jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}"' \
+                            f', "ProfileIMGURL": "{user[4]}"}}'
+
                     userJSON = json.loads(jsstr)
                     result.append(userJSON)
 
