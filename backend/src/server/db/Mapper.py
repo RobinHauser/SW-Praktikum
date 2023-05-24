@@ -13,7 +13,7 @@ class Mapper(AbstractContextManager, ABC):
 
         if os.getenv('GAE_ENV', '').startswith('standard'):
 
-            self._cnx = connector.connect(user='root', password='SoPra_2023')
+            self._cnx = connector.connect(user='root', password='SoPra_2023') #todo ergänzen aus der vorlesung
 
         else:
             self._cnx = connector.connect(user='root', password='sopra', host='127.0.0.1:3306',

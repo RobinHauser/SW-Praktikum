@@ -123,3 +123,4 @@ class UserMapper(Mapper.Mapper):
 
         self._cnx.commit()
         cursor.close()
+
