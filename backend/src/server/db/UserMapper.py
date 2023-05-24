@@ -14,6 +14,7 @@ class UserMapper(Mapper.Mapper):
 
         for (userid, email, displayname, avatarurl) in tuples:
             user = User()
+            user.set_id(userid)
             user.set_email(email)
             user.set_displayname(displayname)
             user.set_avatarurl(avatarurl)
@@ -56,9 +57,16 @@ class UserMapper(Mapper.Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (displayname) in tuples:
+        try:
+            (userid, email, displayname, avatarurl) = tuples[0]
             user = User()
+            user.set_id(userid)
+            user.set_email(email)
             user.set_displayname(displayname)
+            user.set_avatarurl(avatarurl)
+            result = user
+        except IndexError:
+            result = None
 
         self._cnx.commit()
         cursor.close()
@@ -73,9 +81,12 @@ class UserMapper(Mapper.Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (email) = tuples[0]
+            (userid, email, displayname, avatarurl) = tuples[0]
             user = User()
+            user.set_id(userid)
             user.set_email(email)
+            user.set_displayname(displayname)
+            user.set_avatarurl(avatarurl)
             result = user
         except IndexError:
             result = None
@@ -87,15 +98,9 @@ class UserMapper(Mapper.Mapper):
 
     def insert(self, user):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM user ")
-        tuples = cursor.fetchall()
 
-        for (maxid) in tuples:
-            user.set_id(maxid[0] + 1)
-
-        command = "INSERT INTO user (id, first_name, last_name, email, g_id, date_of_birth, owner) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        data = (user.get_id(), user.get_first_name(), user.get_last_name(), user.get_email(), user.get_g_id(),
-                user.get_date_of_birth(), user.get_owner())
+        command = "INSERT INTO user (userid, email, displayname, avatarurl) VALUES (%s,%s,%s,%s)"
+        data = (user.get_id(), user.get_email(), user.get_displayname(), user.get_avatarurl())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -106,21 +111,22 @@ class UserMapper(Mapper.Mapper):
     def update(self, user):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE user SET first_name=%s, last_name=%s, email=%s, g_id=%s, date_of_birth=%s, owner=%s WHERE id=%s"
-        data = (
-        user.get_first_name(), user.get_last_name(), user.get_email(), user.get_g_id(), user.get_date_of_birth(),
-        user.get_owner(), user.get_id())
+        command = "UPDATE user SET Email=%s, Displayname=%s, AvatarURL=%s WHERE UserID=%s"
+        data = (user.get_email(), user.get_displayname(), user.get_avatarurl())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
+        return user
+
     def delete(self, user):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM user WHERE id={}".format(user.get_id())
+        command = "DELETE FROM user WHERE UserID={}".format(user.get_id())
         cursor.execute(command)
 
         self._cnx.commit()
         cursor.close()
 
+        return user

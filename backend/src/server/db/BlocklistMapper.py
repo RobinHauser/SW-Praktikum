@@ -30,7 +30,7 @@ class BlocklistMapper(Mapper.Mapper):
         if blocklist_tuple is not None:
             blocklist_id = blocklist_tuple[0]
 
-            # Retrieve bookmarklist by UserID
+            # Retrieve blocklist by UserID
             command2 = "SELECT * FROM block WHERE BlocklistID={}".format(blocklist_id)
             cursor.execute(command2)
             blocks = cursor.fetchall()
