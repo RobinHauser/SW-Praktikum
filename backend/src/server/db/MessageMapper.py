@@ -53,8 +53,8 @@ class MessageMapper(Mapper.Mapper):
                 for message in v1:
                     for i in message:
                         jsstr = f'{{"MessageID": "{i[0]}", "Sender": "{i[1]}", "Content": "{i[2]}", "TimeStamp": "{i[3]}"}}'
-                        messageJSON = json.loads(jsstr)
-                        result.append(messageJSON)
+                        message_json = json.loads(jsstr)
+                        result.append(message_json)
 
 
         self._cnx.commit()
@@ -62,12 +62,15 @@ class MessageMapper(Mapper.Mapper):
 
         return result
 
-    def insert(self, user_id, payload):
+    def insert(self, chat_id, payload):
         cursor = self._cnx.cursor()
 
-        command = "INSERT INTO message (id, Sender, Content, Timestamp) VALUES (%s, %s, %s, %s, %s)"
-        data = (payload.get('id'), user_id, payload.get('content'), payload.get('timestamp'))
+        command = "INSERT INTO message (Sender, Content, Timestamp) VALUES (%s, %s, %s)"
+        data = (payload.get('user_id'), payload.get('content'), payload.get('timestamp'))
         cursor.execute(command, data)
+
+
+
         self._cnx.commit()
         cursor.close()
 

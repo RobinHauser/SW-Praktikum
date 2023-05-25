@@ -119,9 +119,9 @@ class Administration():
          Message Methoden
     '''
 
-    def add_message_to_chat(self, user_id, payload):
+    def add_message_to_chat(self, chat_id, payload):
         with MessageMapper() as mapper:
-            return mapper.insert(user_id, payload)
+            return mapper.insert(chat_id, payload)
 
     def get_messages_by_chat_id(self, user_id):
         with MessageMapper() as mapper:

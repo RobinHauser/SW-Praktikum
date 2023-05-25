@@ -167,7 +167,7 @@ class Message_api(Resource):
         response = adm.get_messages_by_chat_id(chat_id)
         return response
 
-    def post(self, user_id):
+    def post(self, chat_id):
 
         adm = Administration()
         response = adm.add_message_to_chat(user_id, api.payload)

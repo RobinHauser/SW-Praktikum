@@ -61,7 +61,7 @@ class BlocklistMapper(Mapper.Mapper):
         :return: the added user
         """
         cursor = self._cnx.cursor()
-        cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')
+        cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')   #TODO BlocklistID schon vorher gesetzt?
 
         blocklist_id = cursor.fetchall()[0][0]
         blocked_user_id = int(payload.get('id'))
