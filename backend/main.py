@@ -159,7 +159,7 @@ class Chat_api(Resource):
         pass
 
 
-@message_namespace.route()
+@message_namespace.route('/<int:chat_id>')
 class Message_api(Resource):
     def get(self, chat_id):
 

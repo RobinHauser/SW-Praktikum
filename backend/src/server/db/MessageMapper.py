@@ -1,5 +1,6 @@
 from src.server.bo import Message
 from src.server.db import Mapper
+import json
 Message = Message.Message
 
 
@@ -29,26 +30,31 @@ class MessageMapper(Mapper.Mapper):
         return result
 
     def find_by_id(self, chat_id):
-        result = None
+        result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM chatrelation WHERE ChatID={}".format(chat_id)
+        command = "SELECT * FROM chatcontainer WHERE ChatID={}".format(chat_id)
         cursor.execute(command)
-        message_tuple = cursor.fetchone()
+        message_tuple = cursor.fetchall()
+
 
         if message_tuple is not None:
-            message_id = message_tuple[0]
+            messaage = []
+            for i in message_tuple:
+                messaage.append(i[2])
+            v1 = []
+            for i in messaage:
+                command2 = "SELECT * FROM message WHERE MessageID={}".format(i)
+                cursor.execute(command2)
+                messages = cursor.fetchall()
+                v1.append(messages)
 
-            command2 = "SELECT * FROM message WHERE MessgeID={}".format(message_id)
-            cursor.execute(command2)
-            messages = cursor.fetchall()
 
-            if messages is not None:
-                message_body = []
-
-                for message in messages:
-                    jsstr = f'{{"MessageID": "{message_body[0]}", "Sender": "{message_body[1]}", "Content": "{message_body[2]}", "TimeStamp": "{message_body[3]}"}}'
-                    messageJSON = json.loads(jsstr)
-                    result.append(messageJSON)
+            if v1 is not None:
+                for message in v1:
+                    for i in message:
+                        jsstr = f'{{"MessageID": "{i[0]}", "Sender": "{i[1]}", "Content": "{i[2]}", "TimeStamp": "{i[3]}"}}'
+                        messageJSON = json.loads(jsstr)
+                        result.append(messageJSON)
 
 
         self._cnx.commit()

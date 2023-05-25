@@ -276,3 +276,34 @@ VALUES (4001, 5005); -- elias hat rote haare
 insert into info_assignment (ProfileID, InformationID)
 VALUES (4004, 5012); -- theo ist über 2 meter
 
+
+
+-- Messages befüllen
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20001, 1004, 'Hallo', '2023-02-10 12:00:00');
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20002, 1003, 'Heyy', '2023-02-10 12:00:00');
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20003, 1004, 'Wie gehts dir', '2023-02-10 12:01:00');
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20004, 1003, 'Gut soweit und dir?', '2023-02-10 12:01:00');
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20005, 1004, 'Gut, danke der Nachfrage', '2023-02-10 12:05:00');
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20006, 1004, 'Lass treffen?', '2023-02-10 12:10:00');
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20007, 1003, 'WTF?', '2023-02-10 12:20:00');
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20008, 1004, 'Ja so auf entspannt', '2023-02-10 12:40:00');
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20009, 1003, 'Achso ja oke', '2023-02-10 12:50:00');
+INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20010, 1003, '20Uhr kannst mich abholen', '2023-02-10 12:56:00');
+
+
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20001);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20002);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20003);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20004);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20005);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20006);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20007);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20008);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20009);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20010);
+
+
+
+INSERT INTO chatrelation (ChatID, UserID, UserID2) VALUES (30001, 1004, 1003);
+
+
