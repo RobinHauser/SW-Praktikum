@@ -62,13 +62,25 @@ class MessageMapper(Mapper.Mapper):
 
         return result
 
-    def insert(self, chat_id, payload):
+    def insert(self, user_id, payload):     # TODO Cahnge to Chat ID when CHATMAPPER is finished
         cursor = self._cnx.cursor()
 
         command = "INSERT INTO message (Sender, Content, Timestamp) VALUES (%s, %s, %s)"
-        data = (payload.get('user_id'), payload.get('content'), payload.get('timestamp'))
+        data = (user_id, payload.get('Content'), payload.get('TimeStamp'))
         cursor.execute(command, data)
 
+
+
+        command1 = f' SELECT MessageID FROM message WHERE Sender={user_id}'
+        cursor.execute(command1)
+        message_id = cursor.fetchall()
+
+
+
+        command2 = "INSERT INTO chatcontainer (ChatID, MessageID) VALUES (%s, %s)"
+        print(message_id[-1][0])
+        data2 = (int(payload.get('ChatID')), message_id[-1][0])
+        cursor.execute(command2, data2)
 
 
         self._cnx.commit()
