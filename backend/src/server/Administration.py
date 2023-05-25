@@ -1,12 +1,12 @@
-from bo.BusinessObject import BusinessObject
-from bo.Blocklist import Blocklist
-from bo.Bookmarklist import Bookmarklist
-from bo.SelectionProperty import SelectionProperty
-from bo.Information import Information
-from bo.Profile import Profile
-from bo.Property import Property
-from bo.TextProperty import TextProperty
-from bo.User import User
+from backend.src.server.bo.Profile import Profile
+from backend.src.server.bo.User import User
+from backend.src.server.bo.Information import Information
+from backend.src.server.db.BlocklistMapper import BlocklistMapper
+from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
+from backend.src.server.db.ProfileMapper import ProfileMapper
+from backend.src.server.db.UserMapper import UserMapper
+from backend.src.server.db.InformationMapper import InformationMapper
+
 
 #todo alle mapper importieren
 
@@ -59,7 +59,7 @@ class Administration():
     Profile Methoden
     '''
 
-    def create_profile(self, information, personal_profile):
+    def create_profile(self, information, personal_profile): #todo create profile for user
         profile = Profile()
         profile.set_information(information)
         profile.set_personal_profile(personal_profile)
@@ -71,3 +71,93 @@ class Administration():
         with ProfileMapper() as mapper:
             return mapper.find_by_id(id)
 
+    # create profile for user
+    # get profile by id
+    # get all profiles of user
+    # update profile
+    # delete profile
+    # add info to profile
+    # remove info from profile
+    # get infos from profile
+
+
+
+    '''
+        Bookmarklist Methoden
+    '''
+
+    def get_bookmarklist_by_user_id(self, user_id):
+        with BookmarklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
+
+    def add_user_to_bookmarklist(self, user_id, payload):
+        with BookmarklistMapper() as mapper:
+            return mapper.insert(user_id, payload)
+
+    def remove_user_from_bookmarklist(self, user_id, payload):
+        with BookmarklistMapper() as mapper:
+            return mapper.delete(user_id, payload)
+
+
+    '''
+        Blocklist Methoden
+    '''
+
+    def get_blocklist_by_user_id(self, user_id):
+        with BlocklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
+
+    def add_user_to_blocklist(self, user_id, payload):
+        with BlocklistMapper() as mapper:
+            return mapper.insert(user_id, payload)
+
+    def delete_blocklist(self, user_id, payload):
+        with BlocklistMapper() as mapper:
+            return mapper.delete(user_id, payload)
+
+
+    '''
+       Chat Methoden
+    '''
+
+    def get_chat_by_user_id(self, user_id):
+        pass
+
+
+
+
+
+
+
+
+    def get_profile_by_user_id(self):
+        with ProfileMapper() as mapper:
+            return mapper.find_by_id()
+
+
+
+'''
+Information-Methoden
+'''
+
+    def create_info(self, property_id, value):
+        information = Information()
+        information.set_property(property_id)
+        information.set_value(value)
+
+        with InformationMapper() as mapper:
+            return mapper.insert(information)
+
+
+    def add_info_to_profile(self, profile_id, payload): #siehe profile mehoden
+        pass
+        # überprüfen ob es sich bei der jeweiligen property dieses info-objekts
+        # um dropdown oder um freitext handelt.
+        # wenn dropdown: hole das info-objekt aus der datenbank (mapper find_by_id)
+        # wenn freitext: zuerst create_info,
+        # hole dann dieses info-objekt aus der datenbank (mapper find_by_id)
+
+    # update info
+    # delete info
+    # get info by id
+    # get all infos

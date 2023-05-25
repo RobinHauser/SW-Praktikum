@@ -102,3 +102,4 @@ class PropertyMapper(Mapper.Mapper):
 
 
 #todo umwandlungen in json?
+

@@ -1,12 +1,12 @@
-from BusinessObject import BusinessObject
+from server.bo.BusinessObject import BusinessObject
 import datetime
 
 class User (BusinessObject):
     def __init__(self):
         super().__init__("User", [1001, 2000])
         self.__email = ""
-        self.displayname = ""
-        self.avatarurl = ""
+        self.__displayname = ""
+        self.__avatarurl = ""
         #self.__birthdate = datetime.date(1111, 11, 11) #yyyy mm dd
         #self.__google_id = 0
 
