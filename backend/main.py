@@ -152,8 +152,11 @@ class Chat_api(Resource):
 
         return response
 
-    def post(self):
-        pass
+    def post(self, user_id):
+
+        adm = Administration()
+        response = adm.add_chat_to_user(user_id, api.payload)
+        return response
 
     def delete(self):
         pass

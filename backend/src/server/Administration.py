@@ -115,6 +115,10 @@ class Administration():
         with ChatMapper() as mapper:
             return mapper.find_all(user_id)
 
+    def add_chat_to_user(self, user_id, payload):
+        with ChatMapper() as mapper:
+            return mapper.insert(user_id, payload)
+
 
     '''
          Message Methoden
