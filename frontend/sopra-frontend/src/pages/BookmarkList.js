@@ -24,7 +24,7 @@ export default class bookmarkList extends React.Component {
     }
 
     getBookmarklist = () => {
-        SopraDatingAPI.getAPI().getBookmarklist(this.props.user.uid)
+        SopraDatingAPI.getAPI().getBookmarklist(this.props.user.getUserID())
             .then(UserBOs =>
                 this.setState({
                     error: null,

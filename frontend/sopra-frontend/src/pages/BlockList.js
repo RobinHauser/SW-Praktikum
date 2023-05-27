@@ -22,7 +22,7 @@ export default class BlockList extends React.Component{
     }
 
     getBlocklist = () => {
-        SopraDatingAPI.getAPI().getBlocklist(1)
+        SopraDatingAPI.getAPI().getBlocklist(this.props.user.getUserID())
             .then(UserBOs =>
                 this.setState({
                     blocklist: UserBOs,

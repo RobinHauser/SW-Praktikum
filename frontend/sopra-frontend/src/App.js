@@ -13,6 +13,7 @@ import firebaseConfig from './firebaseconfig'
 import ChatContainer from "./components/ChatContainer";
 import SearchProfileOverview from "./pages/SearchProfileOverview";
 import SearchProfile from "./pages/SearchProfile";
+import SopraDatingAPI from "./api/SopraDatingAPI";
 
 class App extends React.Component {
 
@@ -23,7 +24,8 @@ class App extends React.Component {
             currentUser: null,
             appError: null,
             authError: null,
-            authLoading: false
+            authLoading: false,
+            user: null
         };
     }
 
@@ -69,6 +71,8 @@ class App extends React.Component {
                         profileEmail: user.toJSON().email,
                         authError: null,
                         authLoading: false
+                    }, () => {
+                        this.getUser();
                     });
                 }).catch(e => {
                     this.setState({
@@ -87,8 +91,27 @@ class App extends React.Component {
         });
     }
 
+    /**
+     * Getter for the current User
+     */
+    getUser = () => {
+        SopraDatingAPI.getAPI().getUser(this.state.profileEmail)
+            .then(UserBO =>
+                this.setState({
+                    appError: null,
+                    user: UserBO[0]
+                }))
+            .catch(e =>
+                this.setState({
+                    appError: e,
+                    user: null
+                })
+            )
+        ;
+    }
+
     render() {
-        const {currentUser, profileImageURL, profileDisplayName, profileEmail} = this.state;
+        const {currentUser, profileImageURL, profileDisplayName, profileEmail, user} = this.state;
 
         return (
             <BrowserRouter>
@@ -98,8 +121,8 @@ class App extends React.Component {
                         <Route path={'/*'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
                         <Route path={'/main'} element={<Secured user={currentUser}><Main avatar={profileImageURL}/> </Secured>}/>
                         <Route path={'/profile'} element={<Secured user={currentUser}><Profile avatar={profileImageURL} name={profileDisplayName} email={profileEmail}/> </Secured>}/>
-                        <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList avatar={profileImageURL} user={currentUser}/> </Secured>}/>
-                        <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList avatar={profileImageURL} user={user}/> </Secured>}/>
+                        <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList avatar={profileImageURL} user={user}/> </Secured>}/>
                         <Route path={'/searchProfileOverview'} element={<Secured user={currentUser}><SearchProfileOverview avatar={profileImageURL}/> </Secured>}/>
                         <Route path={'/conversationOverview'} element={<Secured user={currentUser}><ConversationOverview avatar={profileImageURL}/> </Secured>}/>
                         <Route path={'/chat'} element={<Secured user={currentUser}><ChatContainer avatar={profileImageURL}/> </Secured>}/>

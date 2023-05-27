@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {FormControlLabel, Switch} from "@mui/material";
+import {Switch} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
@@ -17,7 +17,7 @@ export default class GridContainer extends React.Component{
         this.state = {
             anchorEl: null,
             selectedSearchprofile: null,
-            searchprofiles: ["Blond zwischen 1,8 und 2 m", "Suchprofil 2", "Suchprofil 4"],
+            searchprofiles: ["Suchprofil 1", "Suchprofil 2", "Suchprofil 3"],
             showOnlyNewUser: false
         };
     }

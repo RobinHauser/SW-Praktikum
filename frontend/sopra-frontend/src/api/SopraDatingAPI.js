@@ -14,18 +14,23 @@ export default class SopraDatingAPI {
     static #api = null;
 
     // Local Python backend
-    #SopraDatingServerBaseURL = 'http://127.0.0.1:5000';
+    // #SopraDatingServerBaseURL = 'http://127.0.0.1:5000';
 
     // Local http-fake-backend
-    // #SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
+    #SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
+
+    // User related
+    #getUserURL = (email) => {
+        return `${this.#SopraDatingServerBaseURL}/user/${email}`
+    };
 
     // Bookmarklist related
     #addUserToBookmarklistURL = () => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist`;
     };
-    #getBookmarklistURL = (bookmarklistID) => {
-        return `${this.#SopraDatingServerBaseURL}/bookmarklist/${bookmarklistID}`;
+    #getBookmarklistURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist/${userID}`;
     };
     #removeUserFromBookmarklistURL = (bookmarkID) => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist/${bookmarkID}`;
@@ -97,6 +102,17 @@ export default class SopraDatingAPI {
         }
         )
 
+    getUser(email) {
+        return this.#fetchAdvanced(this.#getUserURL(email))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                // console.log(blocklistBOs)
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
+
     addUserToBookmarklist(userBO) {
         return this.#fetchAdvanced(this.#addUserToBookmarklistURL(), {
             method: 'POST',
@@ -108,8 +124,8 @@ export default class SopraDatingAPI {
         })
     }
 
-    getBookmarklist(bookmarklistID) {
-        return this.#fetchAdvanced(this.#getBookmarklistURL(bookmarklistID))
+    getBookmarklist(userID) {
+        return this.#fetchAdvanced(this.#getBookmarklistURL(userID))
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 // console.log(blocklistBOs)
