@@ -46,8 +46,8 @@ class BlocklistMapper(Mapper.Mapper):
 
                 # Form the user into a json and add it to the list
                 for user in users:
-                    jsstr = f'{{"id": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}", ' \
-                            f'"profileImageURL": "{user[4]}", "profileID": "{user[5]}", "bookmarklistID": "{user[6]}", "blocklistID": "{user[7]}"}}'
+                    jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}"' \
+                            f', "ProfileIMGURL": "{user[4]}"}}'
                     userJSON = json.loads(jsstr)
                     result.append(userJSON)
 
@@ -62,7 +62,7 @@ class BlocklistMapper(Mapper.Mapper):
         :return: the added user
         """
         cursor = self._cnx.cursor()
-        cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')
+        cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')   #TODO BlocklistID schon vorher gesetzt?
 
         blocklist_id = cursor.fetchall()[0][0]
         blocked_user_id = int(payload.get('id'))

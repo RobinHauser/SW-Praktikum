@@ -142,27 +142,40 @@ class Blocklist_api(Resource):
         return response
 
 
-@chat_namespace.route()
+@chat_namespace.route('/<int:user_id>')
 class Chat_api(Resource):
-    def get(self):
+    def get(self, user_id):
+
         adm = Administration()
+
         response = adm.get_chat_by_user_id(user_id)
+
         return response
 
-    def post(self):
-        pass
+    def post(self, user_id):
+
+        adm = Administration()
+        response = adm.add_chat_to_user(user_id, api.payload)
+        return response
 
     def delete(self):
         pass
 
 
-@message_namespace.route()
+@message_namespace.route('/<int:id>')
 class Message_api(Resource):
-    def get(self):
-        pass
+    def get(self, id):          # Chat ID
 
-    def post(self):
-        pass
+        adm = Administration()
+        response = adm.get_messages_by_chat_id(id)
+        return response
+
+    def post(self, id):     # User ID
+
+        adm = Administration()
+        response = adm.add_message_to_chat(id, api.payload)
+        return response
+
 
 
 @profile_namespace.route()

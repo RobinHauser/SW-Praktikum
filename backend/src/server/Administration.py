@@ -6,8 +6,13 @@ from backend.src.server.db.BlocklistMapper import BlocklistMapper
 from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
 from backend.src.server.db.ProfileMapper import ProfileMapper
 from backend.src.server.db.UserMapper import UserMapper
+
 from backend.src.server.db.InformationMapper import InformationMapper
 from backend.src.server.db.PropertyMapper import PropertyMapper
+
+from backend.src.server.db.MessageMapper import MessageMapper
+from backend.src.server.db.ChatMapper import ChatMapper
+
 
 
 #todo alle mapper importieren
@@ -228,4 +233,33 @@ class Administration():
     def delete_blocklist(self, user_id, payload):
         with BlocklistMapper() as mapper:
             return mapper.delete(user_id, payload)
+
+    '''
+       Chat Methoden
+    '''
+
+    def get_chat_by_user_id(self, user_id):
+        with ChatMapper() as mapper:
+            return mapper.find_all(user_id)
+
+    def add_chat_to_user(self, user_id, payload):
+        with ChatMapper() as mapper:
+            return mapper.insert(user_id, payload)
+
+
+    '''
+         Message Methoden
+    '''
+
+
+    def get_messages_by_chat_id(self, chat_id):
+        with MessageMapper() as mapper:
+            return mapper.find_by_id(chat_id)
+
+
+    def add_message_to_chat(self, user_id, payload):
+        with MessageMapper() as mapper:
+            return mapper.insert(user_id, payload)
+
+
 
