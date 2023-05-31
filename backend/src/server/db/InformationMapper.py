@@ -8,8 +8,10 @@ delete: deleting an information object from a profile
 
 import json
 
-from backend.src.server.bo import Blocklist
-from backend.src.server.db import Mapper
+from server.bo import Information
+from server.db import Mapper
+
+Information = Information.Information
 
 class InformationMapper(Mapper):
 
@@ -17,75 +19,132 @@ class InformationMapper(Mapper):
         super().__init__()
 
     def find_all(self):
-        pass
-
-    def find_by_id(self, profile_id):
         """
-        Returns a list of all information objects assigned to the profile
-        :param profile_id: the unique id of the profile
-        :return: a list of all information objects. If there is no information, it will return an empty list.
+        Finds all existing information objects
+        :return: all existing information objects
         """
         result = []
         cursor = self._cnx.cursor()
-
-        # Retrieve assigned infos by ProfileID
-        command = "SELECT * FROM info_assignment WHERE ProfileID={}".format(profile_id)
+        command = "SELECT * FROM information"
         cursor.execute(command)
-        assignments = cursor.fetchall()
+        tuples = cursor.fetchall()
 
-        if assignments is not None:
-            info_ids = [assignment[2] for assignment in assignments]
+        for (id, property_id, value) in tuples:
+            information = Information()
+            information.set_id()
+            information.set_property(property_id)
+            information.set_value(value)
+            result.append(information)
 
-            #Retrieve infos by InformationID
-            command2 = "SELECT * FROM information WHERE InformationID IN ({})".format(','.join(str(infid) for infid in info_ids))
-            cursor.execute(command2)
-            infos = cursor.fetchall()
-
-            # Form infos into a json and add them to the list
-            for info in infos:
-                jsstr = f'{{"id": "{info[0]}", "property_id": "{info[1]}", "value": "{info[2]}"}}' #todo evtl auch properties rausholen und die values als string geben?
-                infoJSON = json.loads(jsstr)
-                result.append(infoJSON)
-
+        self._cnx.commit()
         cursor.close()
+
         return result
 
-    def insert(self, profile_id, payload): #todo GEHÖRT WSL. ZU PROFILE MAPPER. insert info ist einfach neue info
+    def find_by_id(self, id):
         """
-        Adding an information to a profile
-        :param profile_id: the unique id of the profile we are adding infos to
-        :param payload: the dic of the info to be added
-        :return: the added info
+        Finds an information object by its ID
+        :return: information object with the given ID
         """
+        result = None
         cursor = self._cnx.cursor()
+        command = "SELECT * FROM information WHERE InformationID={}".format(id)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
 
-        profile = profile_id
-        info = int(payload.get('id'))
-
-        cursor.execute(f'INSERT INTO info_assignment (ProfileID, InformationID) VALUES ({profile}, {info})')
+        try:
+            (info_id, property_id, value) = tuples[0]
+            info = Information()
+            info.set_id(id)
+            info.set_property(property_id)
+            info.set_value(value)
+            result = info
+        except IndexError:
+            result = None
 
         self._cnx.commit()
         cursor.close()
 
-        return payload
+        return result
 
-    def delete(self, profile_id, payload): #todo GEHÖRT WSL. ZU PROFILE MAPPER. delete info ist einfach info löschen
+    def find_by_property(self, property):
         """
-        Removing an information from a profile
-        :param profile_id: the unique id of the profile
-        :param payload: the dic of the info that will be deleted
-        :return: the removed info
+        Finds all information objects that are assigned to a given property
+        :return: a list of information objects with the given PropertyID
         """
+        result = []
         cursor = self._cnx.cursor()
+        command = "SELECT * FROM information WHERE PropertyID={}".format(property.get_id())
+        cursor.execute(command)
+        tuples = cursor.fetchall()
 
-        profile = profile_id
-        info = int(payload.get('id'))
-
-        cursor.execute(f'DELETE FROM info_assignment WHERE ProfileID = {profile} AND InformationID = {info}')
+        for (id, property_id, value) in tuples:
+            information = Information()
+            information.set_id()
+            information.set_property(property_id)
+            information.set_value(value)
+            result.append(information)
 
         self._cnx.commit()
         cursor.close()
 
-        return payload
+        return result
 
-        #todo es fehlt delete info und delete profile
+    def insert(self, info):
+        """
+        Inserts a new information object in the system
+        :param info: new information object
+        :return: inserted information object
+        """
+        cursor = self._cnx.cursor()
+        command = "INSERT INTO information (InformationID, PropertyID, Value) VALUES (%s,%s,%s)"
+        data = (info.get_id(), info.get_property(), info.get_value())
+        cursor.execute(command, data)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return info
+
+    def update(self, info):
+        """
+        Updating information object
+        :param info: information object to be updated
+        :return: updated information object
+        """
+        cursor = self._cnx.cursor()
+        command = "UPDATE information SET PropertyID=%s, Value=%s WHERE InformationID = %s"
+        data = (info.get_property(), info.get_value(), info.get_id())
+        cursor.execute(command, data)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return info
+
+    def delete(self, info):
+        """
+        Deleting information object
+        :param info: information object to be deleted
+        :return: deleted information object
+        """
+        cursor = self._cnx.cursor()
+
+        command = "DELETE FROM information WHERE InformationID={}".format(info.get_id())
+        cursor.execute(command)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return info
+
+
+    #
+    # def add_info_to_profile(self, profile_id, payload): #siehe profile mehoden
+    #     pass
+    #     # überprüfen ob es sich bei der jeweiligen property dieses info-objekts
+    #     # um dropdown oder um freitext handelt.
+    #     # wenn dropdown: hole das info-objekt aus der datenbank (mapper find_by_id)
+    #     # wenn freitext: zuerst create_info,
+    #     # hole dann dieses info-objekt aus der datenbank (mapper find_by_id)
+    #

@@ -1,6 +1,7 @@
 from server.bo import Property
 from server.db import Mapper as Mapper
 
+Property = Property.Property
 
 class PropertyMapper(Mapper.Mapper):
     def __init__(self):
@@ -16,8 +17,8 @@ class PropertyMapper(Mapper.Mapper):
             property = Property()
             property.set_id(property_id)
             property.set_value(value)
-            property.set_description(description)
-            property.set_is_dropdown(is_dropdown)
+            property.set_explanation(description)
+            property.set_is_selection(is_dropdown)
             result.append(property)
 
             self._cnx.commit()
@@ -37,8 +38,8 @@ class PropertyMapper(Mapper.Mapper):
             property = Property()
             property.set_id(property_id)
             property.set_value(value)
-            property.set_description(description)
-            property.set_is_dropdown(is_dropdown)
+            property.set_explanation(description)
+            property.set_is_selection(is_dropdown)
             result = property
         except IndexError:
             result = None
@@ -60,8 +61,8 @@ class PropertyMapper(Mapper.Mapper):
             property = Property()
             property.set_id(property_id)
             property.set_value(value)
-            property.set_description(description)
-            property.set_is_dropdown(is_dropdown)
+            property.set_explanation(description)
+            property.set_is_selection(is_dropdown)
             result = property
         except IndexError:
             result = None
@@ -71,11 +72,12 @@ class PropertyMapper(Mapper.Mapper):
 
         return result
 
+
     def insert(self, property):
         cursor = self._cnx.cursor()
 
-        command = "INSERT INTO property (propertyid, value, description, is_dropdown) VALUES (%s,%s,%s,%s)"
-        data = (property.get_id(), property.get_value(), property.get_description(), property.get_is_dropdown())
+        command = "INSERT INTO property (propertyid, value, IsSelection, Explanation) VALUES (%s,%s,%s,%s)"
+        data = (property.get_id(), property.get_value(), property.get_is_selection(), property.get_explanation())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -86,8 +88,8 @@ class PropertyMapper(Mapper.Mapper):
     def update(self, property):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE property SET Value=%s, Description=%s, is_Dropdown=%r"
-        data = (property.get_value(), property.get_description(), property.get_is_dropdown())
+        command = "UPDATE property SET Value=%s, IsSelection=%r, Explanation=%s WHERE PropertyID=%s"
+        data = (property.get_value(), property.get_is_selection(), property.get_explanation(), property.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -99,7 +101,10 @@ class PropertyMapper(Mapper.Mapper):
         cursor = self._cnx.cursor()
 
         command = "DELETE FROM property WHERE PropertyID={}".format(property.get_id())
+        cursor.execute(command)
+
+        self._cnx.commit()
+        cursor.close()
 
 
-#todo umwandlungen in json?
 
