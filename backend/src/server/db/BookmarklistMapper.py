@@ -103,3 +103,5 @@ class BookmarklistMapper(Mapper):
 
     def find_by_name(self, name):
         pass
+
+#todo delete bookmarklist

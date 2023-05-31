@@ -1,5 +1,5 @@
-from src.server.bo import User
-from src.server.db import Mapper as Mapper
+from server.bo import User
+from server.db import Mapper as Mapper
 
 
 class UserMapper(Mapper.Mapper):
@@ -12,14 +12,14 @@ class UserMapper(Mapper.Mapper):
         cursor.execute("SELECT * FROM user")
         tuples = cursor.fetchall()
 
-        for (first_name, last_name, email, g_id, date_of_birth, owner) in tuples:
+        for (userid, email, displayname, avatarurl) in tuples:
             user = User()
-            user.set_first_name(first_name)
-            user.set_last_name(last_name)
+            user.set_id(userid)
             user.set_email(email)
-            user.set_g_id(g_id)
-            user.set_date_of_birth(date_of_birth)
-            user.set_owner(owner)
+            user.set_displayname(displayname)
+            user.set_avatarurl(avatarurl)
+            #user.set_g_id(g_id)
+            #user.set_date_of_birth(date_of_birth)
             result.append(user)
 
         self._cnx.commit()
@@ -35,9 +35,12 @@ class UserMapper(Mapper.Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, first_name, last_name, email, g_id, date_of_birth, owner) = tuples[0]
+            (userid, email, displayname, avatarurl) = tuples[0]
             user = User()
-            user.set_id(id)
+            user.set_id(userid)
+            user.set_email(email)
+            user.set_displayname(displayname)
+            user.set_avatarurl(avatarurl)
             result = user
         except IndexError:
             result = None
@@ -50,14 +53,20 @@ class UserMapper(Mapper.Mapper):
     def find_by_name(self, name):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM user WHERE Firstname LIKE '{}' OR Lastname LIKE '{}'".format(name, name)
+        command = "SELECT * FROM user WHERE Displayname LIKE '{}'".format(name)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (first_name, last_name) in tuples:
+        try:
+            (userid, email, displayname, avatarurl) = tuples[0]
             user = User()
-            user.set_first_name(first_name)
-            user.set_last_name(last_name)
+            user.set_id(userid)
+            user.set_email(email)
+            user.set_displayname(displayname)
+            user.set_avatarurl(avatarurl)
+            result = user
+        except IndexError:
+            result = None
 
         self._cnx.commit()
         cursor.close()
@@ -72,10 +81,12 @@ class UserMapper(Mapper.Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (email) = tuples[0]
+            (userid, email, displayname, avatarurl) = tuples[0]
             user = User()
-
+            user.set_id(userid)
             user.set_email(email)
+            user.set_displayname(displayname)
+            user.set_avatarurl(avatarurl)
             result = user
         except IndexError:
             result = None
@@ -87,15 +98,9 @@ class UserMapper(Mapper.Mapper):
 
     def insert(self, user):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(UserID) AS maxid FROM user ")
-        tuples = cursor.fetchall()
 
-        for (maxid) in tuples:
-            user.set_id(maxid[0] + 1)
-
-        command = "INSERT INTO user (UserID, Firstname, Lastname, email) VALUES (%s,%s,%s,%s)"
-        data = (user.get_id(), user.get_first_name(), user.get_last_name(), user.get_email(), user.get_g_id(),
-                user.get_date_of_birth(), user.get_owner())
+        command = "INSERT INTO user (userid, email, displayname, avatarurl) VALUES (%s,%s,%s,%s)"
+        data = (user.get_id(), user.get_email(), user.get_displayname(), user.get_avatarurl())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -106,14 +111,14 @@ class UserMapper(Mapper.Mapper):
     def update(self, user):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE user SET Firstname=%s, Lastname=%s, email=%s WHERE UserID=%s"
-        data = (
-        user.get_first_name(), user.get_last_name(), user.get_email(), user.get_g_id(), user.get_date_of_birth(),
-        user.get_owner(), user.get_id())
+        command = "UPDATE user SET Email=%s, Displayname=%s, AvatarURL=%s WHERE UserID=%s"
+        data = (user.get_email(), user.get_displayname(), user.get_avatarurl())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
+
+        return user
 
     def delete(self, user):
         cursor = self._cnx.cursor()
@@ -123,3 +128,7 @@ class UserMapper(Mapper.Mapper):
 
         self._cnx.commit()
         cursor.close()
+
+        return user
+
+#todo umwandlungen in json?
