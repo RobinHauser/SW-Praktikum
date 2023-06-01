@@ -1,23 +1,35 @@
-from src.server.bo import Information
-from src.server.db import Mapper
+"""
+get: getting a list of all information objects of a profile
+
+post: adding a new information object to a profile
+
+delete: deleting an information object from a profile
+"""
+from backend.src.server.bo.Information import Information
+from backend.src.server.db.Mapper import Mapper
 
 
-class InformationMapper(Mapper.Mapper):
+class InformationMapper(Mapper):
 
     def __init__(self):
         super().__init__()
 
     def find_all(self):
+        """
+        Finds all existing information objects
+        :return: all existing information objects
+        """
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * FROM information")
+        command = "SELECT * FROM information"
+        cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, name, type) in tuples:
+        for (id, property_id, value) in tuples:
             information = Information()
-            information.set_id(id)
-            information.set_name(name)
-            information.set_type(type)
+            information.set_id()
+            information.set_property(property_id)
+            information.set_value(value)
             result.append(information)
 
         self._cnx.commit()
@@ -26,6 +38,10 @@ class InformationMapper(Mapper.Mapper):
         return result
 
     def find_by_id(self, id):
+        """
+        Finds an information object by its ID
+        :return: information object with the given ID
+        """
         result = None
         cursor = self._cnx.cursor()
         command = "SELECT * FROM information WHERE InformationID={}".format(id)
@@ -33,12 +49,12 @@ class InformationMapper(Mapper.Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, name, type) = tuples[0]
-            information = Information()
-            information.set_id(id)
-            information.set_name(name)
-            information.set_type(type)
-            result = information
+            (info_id, property_id, value) = tuples[0]
+            info = Information()
+            info.set_id(id)
+            info.set_property(property_id)
+            info.set_value(value)
+            result = info
         except IndexError:
             result = None
 
@@ -47,42 +63,84 @@ class InformationMapper(Mapper.Mapper):
 
         return result
 
-    def insert(self, information):
+    def find_by_property(self, property):
+        """
+        Finds all information objects that are assigned to a given property
+        :return: a list of information objects with the given PropertyID
+        """
+        result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(InformationID) AS maxid FROM information ")
+        command = "SELECT * FROM information WHERE PropertyID={}".format(property.get_id())
+        cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (maxid) in tuples:
-            information.set_id(maxid[0] + 1)
+        for (id, property_id, value) in tuples:
+            information = Information()
+            information.set_id()
+            information.set_property(property_id)
+            information.set_value(value)
+            result.append(information)
 
-        command = "INSERT INTO information (informationid) VALUES (%s)"
-        data = (information.get_id())
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def insert(self, info):
+        """
+        Inserts a new information object in the system
+        :param info: new information object
+        :return: inserted information object
+        """
+        cursor = self._cnx.cursor()
+        command = "INSERT INTO information (InformationID, PropertyID, Value) VALUES (%s,%s,%s)"
+        data = (info.get_id(), info.get_property(), info.get_value())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-    def update(self, information):
-        cursor = self._cnx.cursor()
+        return info
 
-        command = "UPDATE information SET InformationID=%s WHERE InformationID=%s"
-        data = (information.get_name(), information.get_type(), information.get_id())
+    def update(self, info):
+        """
+        Updating information object
+        :param info: information object to be updated
+        :return: updated information object
+        """
+        cursor = self._cnx.cursor()
+        command = "UPDATE information SET PropertyID=%s, Value=%s WHERE InformationID = %s"
+        data = (info.get_property(), info.get_value(), info.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, information):
+        return info
+
+    def delete(self, info):
+        """
+        Deleting information object
+        :param info: information object to be deleted
+        :return: deleted information object
+        """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM information WHERE InformationID={}".format(information.get_id())
+        command = "DELETE FROM information WHERE InformationID={}".format(info.get_id())
         cursor.execute(command)
 
         self._cnx.commit()
         cursor.close()
 
-    def find_by_name(self, name):
-        pass
+        return info
 
-    def find_by_email(self, email):
-        pass
+
+    #
+    # def add_info_to_profile(self, profile_id, payload): #siehe profile mehoden
+    #     pass
+    #     # überprüfen ob es sich bei der jeweiligen property dieses info-objekts
+    #     # um dropdown oder um freitext handelt.
+    #     # wenn dropdown: hole das info-objekt aus der datenbank (mapper find_by_id)
+    #     # wenn freitext: zuerst create_info,
+    #     # hole dann dieses info-objekt aus der datenbank (mapper find_by_id)
+    #

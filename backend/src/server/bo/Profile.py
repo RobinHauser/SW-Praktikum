@@ -1,9 +1,22 @@
-from src.server.bo.BusinessObject import BusinessObject
+from backend.src.server.bo.BusinessObject import BusinessObject
+
 
 class Profile(BusinessObject):
     def __init__(self):
         super().__init__("Profile", [4001, 5000])
-        self.assigned_infos = []
+        self.__user_id = 0
+        self.__is_personal = True
+        #self.assigned_infos = []
 
-        # todo personal profile bool
+    def get_user_id(self):
+        return self.__user_id
+
+    def set_user_id(self, user_id):
+        self.__user_id = user_id
+
+    def get_is_personal(self):
+        return self.__is_personal
+
+    def set_is_personal(self, is_personal):
+        self.__is_personal = is_personal
 

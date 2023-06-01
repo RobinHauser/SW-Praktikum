@@ -2,9 +2,10 @@ from src.server.bo.BusinessObject import BusinessObject as bo
 from src.server.bo.User import User
 
 
-class Message(bo.BusinessObject):
+class Message(bo):
     def __init__(self):
         super().__init__()
+        # TODO: MessageID setzen
         self.__timestamp = ""
         self.__message_content = ""
         self.__sender = User.get_id()
