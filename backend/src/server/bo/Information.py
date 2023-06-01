@@ -1,4 +1,5 @@
-from server.bo import BusinessObject
+from backend.src.server.bo.BusinessObject import BusinessObject
+
 
 class Information(BusinessObject):
     def __init__(self):

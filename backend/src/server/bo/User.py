@@ -1,5 +1,5 @@
-from server.bo.BusinessObject import BusinessObject
-import datetime
+from backend.src.server.bo.BusinessObject import BusinessObject
+
 
 class User (BusinessObject):
     def __init__(self):

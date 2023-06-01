@@ -1,8 +1,7 @@
-from server.bo import User
-from server.db import Mapper as Mapper
+from backend.src.server.db.Mapper import Mapper
 
 
-class UserMapper(Mapper.Mapper):
+class UserMapper(Mapper):
     def __init__(self):
         super().__init__()
 

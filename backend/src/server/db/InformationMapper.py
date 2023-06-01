@@ -5,13 +5,9 @@ post: adding a new information object to a profile
 
 delete: deleting an information object from a profile
 """
+from backend.src.server.bo.Information import Information
+from backend.src.server.db.Mapper import Mapper
 
-import json
-
-from server.bo import Information
-from server.db import Mapper
-
-Information = Information.Information
 
 class InformationMapper(Mapper):
 
