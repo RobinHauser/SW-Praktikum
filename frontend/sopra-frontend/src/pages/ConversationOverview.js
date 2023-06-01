@@ -11,13 +11,15 @@ class ConversationOverview extends Component {
         }
     }
     render() {
+        const avatarLink = this.props.avatar
+        const currentUser = 1005    /*this.props.currentUser*/
         return (
             <div className="App">
                 <AppHeader avatar={this.props.avatar}></AppHeader>
                 <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px'}}>
                     <h3> Meine Chats</h3>
                 </Container>
-                <ConversationOverviewContainer name={this.state.nameArray}>
+                <ConversationOverviewContainer currentUser={currentUser} avatarLink={avatarLink} name={this.state.nameArray}>
 
                 </ConversationOverviewContainer>
             </div>

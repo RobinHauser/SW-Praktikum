@@ -9,13 +9,13 @@ module.exports = SetupEndpoint({
     urls: [{
         params: '/user',
         requests: [
-            { response: '/response-files/sopra-dating/user.json' }
+            {response: '/response-files/sopra-dating/user.json'}
         ]
     }, {
         params: '/blocklist/{id}',
         requests: [{
-                method: 'GET',
-                response: '/response-files/sopra-dating/userList.json'
+            method: 'GET',
+            response: '/response-files/sopra-dating/userList.json'
         },
             {
                 method: 'DELETE',
@@ -36,6 +36,18 @@ module.exports = SetupEndpoint({
         }, {
             method: 'DELETE',
             response: '/response-files/sopra-dating/userList.json'
+        }]
+    }, {
+        params: '/message/{id}',
+        requests: [{
+            method: 'GET',
+            response: '/response-files/sopra-dating/messageList.json'
+        }]
+    },{
+        params: '/conversationoverview/{id}',
+        requests: [{
+            method: 'GET',
+            response: '/response-files/sopra-dating/chatUserList.json'
         }]
     }]
 });
