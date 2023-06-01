@@ -14,18 +14,14 @@ from backend.src.server.db.MessageMapper import MessageMapper
 from backend.src.server.db.ChatMapper import ChatMapper
 
 
-
-#todo alle mapper importieren
-
-
 class Administration():
     def __init__(self):
         pass
 
-
     '''
     User - Methoden
     '''
+
     def create_user(self, firstname, lastname, email, birthdate, google_id):
         user = User()
         user.set_firstname(firstname)
@@ -53,14 +49,13 @@ class Administration():
         with UserMapper() as mapper:
             return mapper.find_by_email(email)
 
-    def update_user(self, user): #das selbe wie save user
+    def update_user(self, user):  # das selbe wie save user
         with UserMapper() as mapper:
             return mapper.update(user)
 
     def delete_user(self, user):
         with UserMapper() as mapper:
             mapper.delete(user)
-
 
     '''
     Profile Methoden
@@ -123,7 +118,6 @@ class Administration():
 
             mapper.delete(profile)
 
-
     '''
     Information-Methoden
     '''
@@ -161,7 +155,6 @@ class Administration():
 
             mapper.delete(info)
 
-
     '''
     Property Methoden
     '''
@@ -174,7 +167,6 @@ class Administration():
 
         with PropertyMapper() as mapper:
             return mapper.insert(property)
-
 
     def get_all_properties(self):
         with PropertyMapper() as mapper:
@@ -206,16 +198,18 @@ class Administration():
     '''
 
     def get_bookmarklist_by_user_id(self, user_id):
-        with BookmarklistMapper() as mapper:
-            return mapper.find_by_id(user_id)
+        mapper = BookmarklistMapper()
+        return mapper.find_by_id(user_id)
+
 
     def add_user_to_bookmarklist(self, user_id, payload):
-        with BookmarklistMapper() as mapper:
-            return mapper.insert(user_id, payload)
+        mapper = BookmarklistMapper
+        return mapper.delete(user_id, payload)
+
 
     def remove_user_from_bookmarklist(self, user_id, payload):
-        with BookmarklistMapper() as mapper:
-            return mapper.delete(user_id, payload)
+        mapper = BookmarklistMapper
+        return mapper.delete(user_id, payload)
 
 
     '''
@@ -246,20 +240,14 @@ class Administration():
         with ChatMapper() as mapper:
             return mapper.insert(user_id, payload)
 
-
     '''
          Message Methoden
     '''
-
 
     def get_messages_by_chat_id(self, chat_id):
         with MessageMapper() as mapper:
             return mapper.find_by_id(chat_id)
 
-
     def add_message_to_chat(self, user_id, payload):
         with MessageMapper() as mapper:
             return mapper.insert(user_id, payload)
-
-
-

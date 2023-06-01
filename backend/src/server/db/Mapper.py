@@ -2,27 +2,21 @@ import os
 from abc import ABC, abstractmethod
 from contextlib import AbstractContextManager
 
+import mysql
 import mysql.connector as connector
 
 
 class Mapper(AbstractContextManager, ABC):
+
     def __init__(self):
-        self._cnx = None
+        self._cnx = mysql.connector.connect(user='root', password='SoPra_2023', host='127.0.0.1', database='sopra_robn')
 
     def __enter__(self):
-
-        if os.getenv('GAE_ENV', '').startswith('standard'):
-
-            self._cnx = connector.connect(user='root', password='SoPra_2023') #todo ergänzen aus der vorlesung
-
-        else:
-            self._cnx = connector.connect(user='root', password='sopra', host='127.0.0.1:3306',
-                                          database='SoPraDatabase')
-
-        return self
+        self._cnx = mysql.connector.connect(user='root', password='SoPra_2023', host='127.0.0.1', database='sopra_robn')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._cnx.close()
+
 
     @abstractmethod
     def find_all(self):
@@ -42,4 +36,12 @@ class Mapper(AbstractContextManager, ABC):
 
     @abstractmethod
     def delete(self, object):
+        pass
+
+    @abstractmethod
+    def find_by_name(self, name):
+        pass
+
+    @abstractmethod
+    def find_by_email(self, email):
         pass
