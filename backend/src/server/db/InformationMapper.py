@@ -8,10 +8,10 @@ delete: deleting an information object from a profile
 
 import json
 
-from server.bo import Information
-from server.db import Mapper
+from server.bo.Information import Information
+from server.db.Mapper import Mapper
 
-Information = Information.Information
+# Information = Information.Information
 
 class InformationMapper(Mapper):
 

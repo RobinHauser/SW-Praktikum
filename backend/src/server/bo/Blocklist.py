@@ -1,4 +1,4 @@
-from src.server.bo.BusinessObject import BusinessObject
+from backend.src.server.bo.BusinessObject import BusinessObject
 
 class Blocklist(BusinessObject):
     def __init__(self):

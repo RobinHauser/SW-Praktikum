@@ -180,9 +180,14 @@ class Message_api(Resource):
 
 @profile_namespace.route()
 class Profile_api(Resource):
-    def get(self):
+    def get(self, user):
+        """
+        Returns the personal profile of the specified user
+        :param user: the user whose personal profile we want to get
+        :return: the personal profile of the given user
+        """
         adm = Administration()
-        response = adm.get_profile_by_user_id()
+        response = adm.get_personal_profile_of_user(user)
         return response
 
     def put(self):

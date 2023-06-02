@@ -58,15 +58,42 @@ class ProfileMapper(Mapper.Mapper):
 
         return result
 
-    def find_by_owner(self, owner_id):
+    def find_personal_profile_of_owner(self, owner_id):
         """
-        Returns all profiles belonging to a given user
+        Returns the personal profile of the given user
         :param owner_id: id of the user
-        :return: all profiles belonging to the user
+        :return: personal profile of the user
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM profile WHERE UserID={}".format(owner_id)
+        command = "SELECT * FROM profile WHERE UserID={} AND IsPersonal = 1".format(owner_id)
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        try:
+            (profile_id, user_id, is_personal) = tuples[0]
+            profile = Profile()
+            profile.set_id(profile_id)
+            profile.set_user_id(user_id)
+            profile.set_is_personal(is_personal)
+            result = profile
+        except IndexError:
+            result = None
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_search_profiles_of_owner(self, owner_id):
+        """
+        Returns all search profiles belonging to a given user
+        :param owner_id: id of the user
+        :return: all search profiles belonging to the user
+        """
+        result = []
+        cursor = self._cnx.cursor()
+        command = "SELECT * FROM profile WHERE UserID={} AND IsPersonal = 0".format(owner_id)
         cursor.execute(command)
         tuples = cursor.fetchall()
 

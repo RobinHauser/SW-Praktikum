@@ -1,7 +1,7 @@
 from server.bo import User
 from server.db import Mapper as Mapper
 
-
+User = User.User
 class UserMapper(Mapper.Mapper):
     def __init__(self):
         super().__init__()

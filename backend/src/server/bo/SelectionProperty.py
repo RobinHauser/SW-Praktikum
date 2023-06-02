@@ -1,5 +1,5 @@
-from src.server.bo.Property import Property
-from src.server.bo.Information import Information
+from backend.src.server.bo.Property import Property
+from backend.src.server.bo.Information import Information
 
 class SelectionProperty(Property):
     def __init__(self, value, options):

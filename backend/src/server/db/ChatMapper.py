@@ -1,5 +1,5 @@
-from src.server.bo import Chat
-from src.server.db import Mapper
+from backend.src.server.bo import Chat
+from backend.src.server.db import Mapper
 import json
 
 

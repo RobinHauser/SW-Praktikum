@@ -26,13 +26,11 @@ class Administration():
     '''
     User - Methoden
     '''
-    def create_user(self, firstname, lastname, email, birthdate, google_id):
+    def create_user(self, email, displayname, avatar_url):
         user = User()
-        user.set_firstname(firstname)
-        user.set_lastname(lastname)
         user.set_email(email)
-        user.set_birthdate(birthdate)
-        user.set_google_id(google_id)
+        user.set_displayname(displayname)
+        user.set_avatarurl(avatar_url)
 
         with UserMapper() as mapper:
             return mapper.insert(user)
@@ -66,12 +64,22 @@ class Administration():
     Profile Methoden
     '''
 
-    def create_profile_for_user(self, user):
+    def create_personal_profile_for_user(self, user):
         with ProfileMapper() as mapper:
             if user is not None:
                 profile = Profile()
                 profile.set_user_id(user.get_id())
                 profile.set_is_personal(1)
+                return mapper.insert(profile)
+            else:
+                return None
+
+    def create_search_profile_for_user(self, user):
+        with ProfileMapper() as mapper:
+            if user is not None:
+                profile = Profile()
+                profile.set_user_id(user.get_id())
+                profile.set_is_personal(0)
                 return mapper.insert(profile)
             else:
                 return None
@@ -84,10 +92,17 @@ class Administration():
         with ProfileMapper() as mapper:
             return mapper.find_by_id(id)
 
-    def get_profiles_of_user(self, user):
+    def get_personal_profile_of_user(self, user):
         with ProfileMapper() as mapper:
             if user is not None:
-                return mapper.find_by_owner(user.get_id())
+                return mapper.find_personal_profile_of_owner(user.get_id())
+            else:
+                return None
+
+    def get_search_profiles_of_user(self, user):
+        with ProfileMapper() as mapper:
+            if user is not None:
+                return mapper.find_search_profiles_of_owner(user.get_id())
             else:
                 return None
 
