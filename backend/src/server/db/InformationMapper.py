@@ -31,7 +31,7 @@ class InformationMapper(Mapper):
 
         for (id, property_id, value) in tuples:
             information = Information()
-            information.set_id()
+            information.set_id(id)
             information.set_property(property_id)
             information.set_value(value)
             result.append(information)

@@ -1,8 +1,10 @@
 from server.db import Mapper
 from server.bo import Profile
+from server.bo import Information
 import json
 
 Profile = Profile.Profile
+Information = Information.Information
 
 class ProfileMapper(Mapper.Mapper):
 
@@ -123,7 +125,7 @@ class ProfileMapper(Mapper.Mapper):
         cursor.execute(command)
         assignments = cursor.fetchall()
 
-        if assignments is not None:
+        if assignments:
             profile_ids = [assignment[1] for assignment in assignments]
             profile_ids = list(set(profile_ids)) #Removing duplicate entries
 
@@ -204,15 +206,15 @@ class ProfileMapper(Mapper.Mapper):
         cursor = self._cnx.cursor()
 
         # Retrieve assigned infos by ProfileID
-        command = "SELECT * FROM info_assignment WHERE ProfileID={}".format(profile.get_id)
+        command = "SELECT * FROM info_assignment WHERE ProfileID={}".format(profile.get_id())
         cursor.execute(command)
         assignments = cursor.fetchall()
 
-        if assignments is not None:
+        if assignments:
             info_ids = [assignment[2] for assignment in assignments]
 
             #Retrieve infos by InformationID
-            command2 = "SELECT * FROM information WHERE InformationID IN ({})".format(','.join(str(infid) for infid in info_ids))
+            command2 = "SELECT * FROM information WHERE InformationID IN ({})".format(', '.join(str(infid) for infid in info_ids))
             cursor.execute(command2)
             infos = cursor.fetchall()
 
@@ -227,42 +229,39 @@ class ProfileMapper(Mapper.Mapper):
 
         return result
 
-    def add_info(self, profile, payload): #todo evtl überarbeiten: Unterschied, ob Selection oder Text?
+    def add_info(self, profile, info): #todo evtl überarbeiten: Unterschied, ob Selection oder Text?
         """
         Adding an information to a profile
         :param profile: the profile we are adding infos to
-        :param payload: the dic of the info to be added
+        :param info: the info to be added
         :return: the added info
         """
         cursor = self._cnx.cursor()
 
-
-        info = int(payload.get('id'))
-
-        cursor.execute(f'INSERT INTO info_assignment (ProfileID, InformationID) VALUES ({profile.get_id()}, {info})')
+        command = "INSERT INTO info_assignment (ProfileID, InformationID) VALUES ({}, {})".format(profile.get_id(), info.get_id())
+        cursor.execute(command)
 
         self._cnx.commit()
         cursor.close()
 
-        return payload
+        return info
 
-    def remove_info(self, profile, payload):
+    def remove_info(self, profile, info):
         """
         Removing an information from a profile
         :param profile: the profile we are deleting an info from
-        :param payload: the dic of the info that will be deleted
+        :param info: the info that will be deleted
         :return: the removed info
         """
         cursor = self._cnx.cursor()
 
-        info = int(payload.get('id'))
-
-        cursor.execute(f'DELETE FROM info_assignment WHERE ProfileID = {profile.get_id()} AND InformationID = {info}')
+        command = "DELETE FROM info_assignment WHERE ProfileID = {} AND InformationID = {}".format(profile.get_id(), info.get_id())
+        cursor.execute(command)
 
         self._cnx.commit()
         cursor.close()
 
-        return payload
+        return info
 
     def update_info(self, profile, assignment):
         """

@@ -132,9 +132,9 @@ class Administration():
     def delete_profile(self, profile):
         with ProfileMapper() as mapper:
             infos = self.get_infos_from_profile(profile)
-            if infos is not None:
-                for info in infos:
-                    self.remove_info_from_profile(profile, info)
+            # if infos is not None:
+            for info in infos:
+                self.remove_info_from_profile(profile, info)
 
             mapper.delete(profile)
 
