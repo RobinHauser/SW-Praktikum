@@ -2,7 +2,7 @@ from backend.src.server.bo.BusinessObject import BusinessObject
 
 class Information(BusinessObject):
     def __init__(self):
-        super().__init__("Information", [5001, 6000])
+        super().__init__()
         self.__property_id = 0
         self.__value = ""
 

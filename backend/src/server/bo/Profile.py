@@ -6,7 +6,7 @@ from Information import Information
 
 class Profile(BusinessObject):
     def __init__(self):
-        super().__init__("Profile", [4001, 5000])
+        super().__init__()
         self.__user_id = 0
         self.__is_personal = True
         #self.assigned_infos = []

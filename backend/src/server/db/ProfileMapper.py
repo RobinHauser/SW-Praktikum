@@ -156,6 +156,18 @@ class ProfileMapper(Mapper.Mapper):
         """
         cursor = self._cnx.cursor()
 
+        #ID Handling with specified ID range
+        cursor.execute("SELECT MAX(ProfileID) AS maxid FROM profile")
+        tuples = cursor.fetchall()
+
+        for maxid in tuples:
+            if maxid[0] is not None:
+                if maxid[0]+1 > 5000:
+                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
+                profile.set_id(maxid[0]+1)
+            else:
+                profile.set_id(4001)
+
         command = "INSERT INTO profile (ProfileID, UserID, IsPersonal) VALUES (%s,%s,%s)"
         data = (profile.get_id(), profile.get_user_id(), profile.get_is_personal())
         cursor.execute(command, data)
@@ -216,13 +228,15 @@ class ProfileMapper(Mapper.Mapper):
             #Retrieve infos by InformationID
             command2 = "SELECT * FROM information WHERE InformationID IN ({})".format(', '.join(str(infid) for infid in info_ids))
             cursor.execute(command2)
-            infos = cursor.fetchall()
+            tuples = cursor.fetchall()
 
-            # Form infos into a json and add them to the list
-            for info in infos:
-                jsstr = f'{{"id": "{info[0]}", "property_id": "{info[1]}", "value": "{info[2]}"}}' #todo evtl auch properties rausholen und die values als string geben?
-                infoJSON = json.loads(jsstr)
-                result.append(infoJSON)
+            for (id, property_id, value) in tuples:
+                info = Information()
+                info.set_id(id)
+                info.set_property(property_id)
+                info.set_value(value)
+                result.append(info)
+
 
         self._cnx.commit()
         cursor.close()
@@ -237,6 +251,7 @@ class ProfileMapper(Mapper.Mapper):
         :return: the added info
         """
         cursor = self._cnx.cursor()
+
 
         command = "INSERT INTO info_assignment (ProfileID, InformationID) VALUES ({}, {})".format(profile.get_id(), info.get_id())
         cursor.execute(command)

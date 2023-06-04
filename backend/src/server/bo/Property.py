@@ -2,7 +2,7 @@ from server.bo.BusinessObject import BusinessObject
 
 class Property(BusinessObject):
     def __init__(self):
-        super().__init__("Property", [6001, 7000])
+        super().__init__()
         self.__value = ""
         self.__explanation = ""
         self.__is_selection = False

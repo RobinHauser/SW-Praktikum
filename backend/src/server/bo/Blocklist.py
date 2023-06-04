@@ -2,7 +2,7 @@ from backend.src.server.bo.BusinessObject import BusinessObject
 
 class Blocklist(BusinessObject):
     def __init__(self):
-        super().__init__("Blocklist", [3001, 4000])
+        super().__init__()
         self.__owner_id = 0
         self.__blocked_users = []
 

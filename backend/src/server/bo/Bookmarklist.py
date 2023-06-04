@@ -2,7 +2,7 @@ from backend.src.server.bo.BusinessObject import BusinessObject
 
 class Bookmarklist(BusinessObject):
     def __init__(self):
-        super().__init__("Bookmarklist", [2001, 3000])
+        super().__init__()
         self.__owner_id = 0
         self.__bookmarked_users = []
 

@@ -3,7 +3,7 @@ import datetime
 
 class User (BusinessObject):
     def __init__(self):
-        super().__init__("User", [1001, 2000])
+        super().__init__()
         self.__email = ""
         self.__displayname = ""
         self.__avatarurl = ""

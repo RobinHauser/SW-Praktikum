@@ -97,6 +97,18 @@ class InformationMapper(Mapper):
         :return: inserted information object
         """
         cursor = self._cnx.cursor()
+        # ID Handling with specified ID range
+        cursor.execute("SELECT MAX(InformationID) AS maxid FROM information")
+        tuples = cursor.fetchall()
+
+        for maxid in tuples:
+            if maxid[0] is not None:
+                if maxid[0]+1 > 6000:
+                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
+                info.set_id(maxid[0]+1)
+            else:
+                info.set_id(5001)
+
         command = "INSERT INTO information (InformationID, PropertyID, Value) VALUES (%s,%s,%s)"
         data = (info.get_id(), info.get_property(), info.get_value())
         cursor.execute(command, data)

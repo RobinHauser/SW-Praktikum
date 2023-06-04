@@ -76,6 +76,18 @@ class PropertyMapper(Mapper.Mapper):
     def insert(self, property):
         cursor = self._cnx.cursor()
 
+        # ID Handling with specified ID range
+        cursor.execute("SELECT MAX(PropertyID) AS maxid FROM property")
+        tuples = cursor.fetchall()
+
+        for maxid in tuples:
+            if maxid[0] is not None:
+                if maxid[0]+1 > 7000:
+                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
+                property.set_id(maxid[0]+1)
+            else:
+                property.set_id(6001)
+
         command = "INSERT INTO property (propertyid, value, IsSelection, Explanation) VALUES (%s,%s,%s,%s)"
         data = (property.get_id(), property.get_value(), property.get_is_selection(), property.get_explanation())
         cursor.execute(command, data)
