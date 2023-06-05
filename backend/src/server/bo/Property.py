@@ -1,22 +1,19 @@
-from BusinessObject import BusinessObject
+from src.server.bo.BusinessObject import BusinessObject
 
 class Property(BusinessObject):
-    def __init__(self, info):
+    def __init__(self):
         super().__init__("Property", [6001, 7000])
-        self.info = info
+        self.value = ""
+        self.description = ""
 
-    def set_info(self, info):
-        self.info = info
+    def set_value(self, value):
+        self.value = value
 
-    def get_info(self):
-        return self.info
+    def get_value(self):
+        return self.value
 
-    def __str__(self):
-        return "Property: {}, {}".format(self._id, self.info)
+    def set_description(self, description):
+        self.description = description
 
-    @staticmethod
-    def from_dict(dictionary=dict()):
-        obj = Property()
-        obj.set_id(dictionary["id"])
-        obj.set_info(dictionary["info"])
-        return obj
+    def get_description(self):
+        return self.description

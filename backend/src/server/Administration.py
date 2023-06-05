@@ -1,8 +1,14 @@
-from server.bo import User
-from server.db import UserMapper
-from server.db import ProfileMapper
-from server.bo import Profile
+from backend.src.server.bo.Profile import Profile
+from backend.src.server.bo.User import User
+from backend.src.server.db.BlocklistMapper import BlocklistMapper
+from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
+from backend.src.server.db.ProfileMapper import ProfileMapper
+from backend.src.server.db.UserMapper import UserMapper
+from backend.src.server.db.MessageMapper import MessageMapper
+from backend.src.server.db.ChatMapper import ChatMapper
 
+
+#todo alle mapper importieren
 
 
 class Administration():
@@ -10,16 +16,16 @@ class Administration():
         pass
 
 
-    #User Anlegen, und in der Datenbank speichern
-
-    def create_user(self, first_name, last_name, email, g_id, date_of_birth, owner_id):
+    '''
+    User - Methoden
+    '''
+    def create_user(self, firstname, lastname, email, birthdate, google_id):
         user = User()
-        user.set_first_name(first_name)
-        user.set_last_name(last_name)
+        user.set_firstname(firstname)
+        user.set_lastname(lastname)
         user.set_email(email)
-        user.set_g_id(g_id)
-        user.set_date_of_birth(date_of_birth)
-        user.set_owner(owner_id)
+        user.set_birthdate(birthdate)
+        user.set_google_id(google_id)
 
         with UserMapper() as mapper:
             return mapper.insert(user)
@@ -40,7 +46,7 @@ class Administration():
         with UserMapper() as mapper:
             return mapper.find_by_email(email)
 
-    def update_user(self, user):
+    def update_user(self, user): #das selbe wie save user
         with UserMapper() as mapper:
             mapper.update(user)
 
@@ -49,7 +55,9 @@ class Administration():
             mapper.delete(user)
 
 
-    #Profile Anlegen, und in der Datenbank speichern
+    '''
+    Profile Methoden
+    '''
 
     def create_profile(self, information, personal_profile):
         profile = Profile()
@@ -62,4 +70,77 @@ class Administration():
     def get_profile_by_id(self, id):
         with ProfileMapper() as mapper:
             return mapper.find_by_id(id)
+
+
+
+    '''
+        Bookmarklist Methoden
+    '''
+
+    def get_bookmarklist_by_user_id(self, user_id):
+        with BookmarklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
+
+    def add_user_to_bookmarklist(self, user_id, payload):
+        with BookmarklistMapper() as mapper:
+            return mapper.insert(user_id, payload)
+
+    def remove_user_from_bookmarklist(self, user_id, payload):
+        with BookmarklistMapper() as mapper:
+            return mapper.delete(user_id, payload)
+
+
+    '''
+        Blocklist Methoden
+    '''
+
+    def get_blocklist_by_user_id(self, user_id):
+        with BlocklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
+
+    def add_user_to_blocklist(self, user_id, payload):
+        with BlocklistMapper() as mapper:
+            return mapper.insert(user_id, payload)
+
+    def delete_blocklist(self, user_id, payload):
+        with BlocklistMapper() as mapper:
+            return mapper.delete(user_id, payload)
+
+
+    '''
+       Chat Methoden
+    '''
+
+    def get_chat_by_user_id(self, user_id):
+        with ChatMapper() as mapper:
+            return mapper.find_all(user_id)
+
+    def add_chat_to_user(self, user_id, payload):
+        with ChatMapper() as mapper:
+            return mapper.insert(user_id, payload)
+
+
+    '''
+         Message Methoden
+    '''
+
+
+    def get_messages_by_chat_id(self, chat_id):
+        with MessageMapper() as mapper:
+            return mapper.find_by_id(chat_id)
+
+
+    def add_message_to_chat(self, user_id, payload):
+        with MessageMapper() as mapper:
+            return mapper.insert(user_id, payload)
+
+
+
+    '''
+        Profile Methoden
+    '''
+
+    def get_profile_by_user_id(self):
+        with ProfileMapper() as mapper:
+            return mapper.find_by_id()
 

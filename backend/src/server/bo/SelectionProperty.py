@@ -1,8 +1,7 @@
-from BusinessObject import BusinessObject
-from Property import Property
-from Information import Information
+from src.server.bo.Property import Property
+from src.server.bo.Information import Information
 
-class DropdownProperty(Property):
+class SelectionProperty(Property):
     def __init__(self, value, options):
         info = Information(value)
         self.options = options
