@@ -1,12 +1,10 @@
 import json
 
-from flask import Flask, Request, request
-from flask_restx import Resource, Api, Namespace, fields
+from flask import Flask, request
 from flask_cors import CORS
-
+from flask_restx import Resource, Api, Namespace, fields
 
 from backend.src.server.Administration import Administration
-
 
 app = Flask(__name__)
 
@@ -145,7 +143,6 @@ class Blocklist_api(Resource):
 @chat_namespace.route('/<int:user_id>')
 class Chat_api(Resource):
     def get(self, user_id):
-
         adm = Administration()
 
         response = adm.get_chat_by_user_id(user_id)
@@ -153,7 +150,6 @@ class Chat_api(Resource):
         return response
 
     def post(self, user_id):
-
         adm = Administration()
         response = adm.add_chat_to_user(user_id, api.payload)
         return response
@@ -164,44 +160,85 @@ class Chat_api(Resource):
 
 @message_namespace.route('/<int:id>')
 class Message_api(Resource):
-    def get(self, id):          # Chat ID
+    def get(self, id):  # Chat ID
 
         adm = Administration()
         response = adm.get_messages_by_chat_id(id)
         return response
 
-    def post(self, id):     # User ID
+    def post(self, id):  # User ID
 
         adm = Administration()
         response = adm.add_message_to_chat(id, api.payload)
         return response
 
 
-
-@profile_namespace.route()
+@profile_namespace.route('/<int:id>')
 class Profile_api(Resource):
-    def get(self):
+    def get(self, id):
+        """
+        Get the profile associated to the given user_id
+        HINT: The user_id can be of the own profile or of another profile
+        :param id: this is the id of the user we want the id from
+        :return: returns the profile of the associated user_id
+        """
         adm = Administration()
-        response = adm.get_profile_by_user_id()
+        response = adm.get_profile_by_user_id(id)  # TODO Methos need to be implemented
         return response
 
-    def put(self):
-        pass
+    def put(self, id):
+        """
+        Update the profile of the associated user with the user_id and the new profile
+        :param id: this is the id of the user we want to update the profile
+        :return: returns the updated profile
+        """
+        adm = Administration()
+        response = adm.update_profile_by_id(id, api.payload)  # TODO Methos need to be implemented
+        return response
 
 
-@search_profile_namespace.route()
+@search_profile_namespace.route('/<int:id>')
 class Search_profile_api(Resource):
-    def get(self):
-        pass
+    def get(self, id):
+        """
+        Get a list of all searchProfiles from a user
+        :param id: this is the id of the user we want to get the searchProfiles from
+        :return: returns a list of all searchProfiles of a user
+        """
+        adm = Administration()
+        response = adm.get_search_profiles_by_user_id(id)  # TODO Methos need to be implemented
+        return response
 
-    def put(self):
-        pass
+    def put(self, id):
+        """
+        Update a search profile
+        :param id: this is the id of the user we want to update a searchProfile
+        :return: returns the updated search profile
+        """
+        adm = Administration()
+        # HINT: Welches SearchProfile geupdated werden soll, steht in dem updated profile (payload) drinnen, da beide die selbe id haben
+        response = adm.update_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
+        return response
 
-    def delete(self):
-        pass
+    def delete(self, id):
+        """
+        Remove a  search profile from the searchProfile list
+        :param id: this is the id of the user we want to remove a searchProfile
+        :return: returns the removed search profile
+        """
+        adm = Administration()
+        response = adm.remove_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
+        return response
 
-    def post(self):
-        pass
+    def post(self, id):
+        """
+        Add a new search profile to the searchProfile list
+        :param id: this is the id of the user we want to add a new searchProfile
+        :return: returns the added search profile
+        """
+        adm = Administration()
+        response = adm.add_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
+        return response
 
 
 if __name__ == '__main__':
