@@ -201,16 +201,13 @@ class Administration():
         mapper = BookmarklistMapper()
         return mapper.find_by_id(user_id)
 
-
     def add_user_to_bookmarklist(self, user_id, payload):
         mapper = BookmarklistMapper
         return mapper.delete(user_id, payload)
 
-
     def remove_user_from_bookmarklist(self, user_id, payload):
         mapper = BookmarklistMapper
         return mapper.delete(user_id, payload)
-
 
     '''
         Blocklist Methoden
