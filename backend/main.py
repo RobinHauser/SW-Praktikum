@@ -4,6 +4,7 @@ from flask import Flask, request
 from flask_cors import CORS
 from flask_restx import Resource, Api, Namespace, fields
 
+from backend.SecurityDecorator import secured
 from backend.src.server.Administration import Administration
 
 app = Flask(__name__)
@@ -37,11 +38,10 @@ bo = api.model('BusinessObject', {
 })
 
 user = api.inherit('User', bo, {
-    'firstname': fields.String(attribute='firstname', description='This is the firstname of the user '),
-    'lastname': fields.String(attribute='lastname', description='This is the lastname of the user '),
-    'email': fields.String(attribute='email', description='This is the email of the user '),
-    'birthdate': fields.Date(attribute='birth_date', description='This is the birthday of the user '),
-    'google_id': fields.String(attribute='gender', description='This is the google id of the user '),
+    'UserID': fields.String(attribute='UserID', description='This is the id of the user'),
+    'email': fields.String(attribute='email', description='This is the email of the user'),
+    'displayname': fields.String(attribute='displayname', description='This is the full name of the user'),
+    'ProfileIMGURL': fields.String(attribute='ProfileIMGURL', description='This is the URL to the profileImage of the profile'),
 })
 
 message = api.inherit('Message', bo, {
@@ -59,7 +59,11 @@ property = api.inherit('Property', bo, {
     'Information1': fields.Nested(information)
 })
 
-bookmarklist = api.inherit('Bookmarklist', bo, {
+bookmarklist = api.inherit('Bookmarklist', {
+    'user': fields.Nested(user)
+})
+
+blocklist = api.inherit('Blocklist', {
     'user': fields.Nested(user)
 })
 
@@ -70,6 +74,7 @@ bookmarklist = api.inherit('Bookmarklist', bo, {
 @bookmarklist_namespace.response(200, 'TBD')
 class Bookmarklist_api(Resource):
 
+    @secured
     def get(self, user_id):
         """
         Getting the bookmark list of a specific user
@@ -80,6 +85,7 @@ class Bookmarklist_api(Resource):
         response = adm.get_bookmarklist_by_user_id(user_id)
         return response
 
+    @secured
     def post(self, user_id):
         """
         Adding a new user to the users bookmarklist
@@ -90,6 +96,7 @@ class Bookmarklist_api(Resource):
         response = adm.add_user_to_bookmarklist(user_id, api.payload)
         return response
 
+    @secured
     def delete(self, user_id):
         """
         Removing a user from the users bookmarklist
@@ -106,6 +113,7 @@ class Bookmarklist_api(Resource):
 @blocklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @blocklist_namespace.response(200, 'TBD')
 class Blocklist_api(Resource):
+    @secured
     def get(self, user_id):
         """
         Getting list of all blocked users of a user
@@ -116,7 +124,9 @@ class Blocklist_api(Resource):
         response = adm.get_blocklist_by_user_id(user_id)
         return response
 
+    @secured
     def post(self, user_id):
+
         """
         Adding a new user to the users blocklist
         :param user_id: the id of the user we want to add another user to his blocklist
@@ -126,6 +136,7 @@ class Blocklist_api(Resource):
         response = adm.add_user_to_blocklist(user_id, api.payload)
         return response
 
+    @secured
     def delete(self, user_id):
         """
         Removing a user from the users blocklist
@@ -242,4 +253,4 @@ class Search_profile_api(Resource):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=8000, debug=True)
