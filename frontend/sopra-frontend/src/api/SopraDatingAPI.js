@@ -25,6 +25,11 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/user/${email}`
     };
 
+    // Main Page related
+    #getUserListBySearchprofileURL = (searchProfileID) => {
+        return `${this.#SopraDatingServerBaseURL}/userList/${searchProfileID}`;
+    };
+
     // Bookmarklist related
     #addUserToBookmarklistURL = () => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist`;
@@ -104,6 +109,17 @@ export default class SopraDatingAPI {
 
     getUser(email) {
         return this.#fetchAdvanced(this.#getUserURL(email))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                // console.log(blocklistBOs)
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
+
+    getUserListBySearchprofile(searchProfileID=1) {
+        return this.#fetchAdvanced(this.#getUserListBySearchprofileURL(searchProfileID))
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 // console.log(blocklistBOs)

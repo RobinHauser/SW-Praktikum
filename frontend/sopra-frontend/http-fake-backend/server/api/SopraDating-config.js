@@ -37,6 +37,12 @@ module.exports = SetupEndpoint({
             method: 'DELETE',
             response: '/response-files/sopra-dating/userList.json'
         }]
+    }, {
+        params: '/userList/{id}',
+        requests: [{
+            method: 'GET',
+            response: '/response-files/sopra-dating/userLIst.json'
+        }]
     }]
 });
 

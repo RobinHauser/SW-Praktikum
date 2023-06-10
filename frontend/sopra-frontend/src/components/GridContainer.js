@@ -10,6 +10,7 @@ import {Switch} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
+import SopraDatingAPI from "../api/SopraDatingAPI";
 
 export default class GridContainer extends React.Component{
     constructor(props) {
@@ -18,8 +19,27 @@ export default class GridContainer extends React.Component{
             anchorEl: null,
             selectedSearchprofile: null,
             searchprofiles: ["Suchprofil 1", "Suchprofil 2", "Suchprofil 3"],
+            userList: [],
             showOnlyNewUser: false
         };
+    }
+
+    componentDidMount() {
+        this.getUserListBySearchprofile();
+    }
+
+    getUserListBySearchprofile = (searchProfileID) => {
+        SopraDatingAPI.getAPI().getUserListBySearchprofile(searchProfileID)
+            .then(UserBOs => {
+                this.setState({
+                    userList: UserBOs
+                });
+            })
+            .catch(e =>
+                this.setState({
+                    userList: []
+                })
+            )
     }
 
     handleSearchProfileMenuClick = (event) => {
@@ -41,7 +61,7 @@ export default class GridContainer extends React.Component{
     }
 
     render() {
-        const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser } = this.state;
+        const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList } = this.state;
         const open = Boolean(anchorEl)
 
         return (
@@ -74,6 +94,7 @@ export default class GridContainer extends React.Component{
                             <MenuItem
                                 onClick = {() => this.handleSearchprofileItemClick(searchprofileItem)}
                                 sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
+                                key={1} // Todo key dynamisch einlesen
                             >
                                 {searchprofileItem}
                             </MenuItem>
@@ -106,11 +127,15 @@ export default class GridContainer extends React.Component{
                     sx={{marginTop: "0px"}}
                     spacing={{xs: 10, md: 10}}
                     columns={{xs: 4, sm: 8, md: 12}}>
-                    {Array.from(Array(9)).map((_, index) => (
-                        <Grid xs={4} sm={4} md={4} key={index}>
-                            <ProfileCard></ProfileCard>
-                        </Grid>
-                    ))}
+                    {userList.length > 0 ? (
+                        userList.map((userListItem) => (
+                            <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>
+                                <ProfileCard key={userListItem.getUserID()} user={userListItem}></ProfileCard>
+                            </Grid>
+                        ))
+                        ) : (
+                            <p>Noch keine anderen Benutzer vorhanden</p>
+                    )}
                 </Grid>
             </Box>
     );
