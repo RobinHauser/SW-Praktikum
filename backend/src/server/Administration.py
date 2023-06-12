@@ -218,12 +218,12 @@ class Administration():
         return blocklistmapper.find_by_id(user_id)
 
     def add_user_to_blocklist(self, user_id, payload):
-        with BlocklistMapper() as mapper:
-            return mapper.insert(user_id, payload)
+        blocklistmapper = BlocklistMapper()
+        return blocklistmapper.insert(user_id, payload)
 
     def delete_blocklist(self, user_id, payload):
-        with BlocklistMapper() as mapper:
-            return mapper.delete(user_id, payload)
+        blocklistmapper = BlocklistMapper()
+        return blocklistmapper.delete(user_id, payload)
 
     '''
        Chat Methoden
