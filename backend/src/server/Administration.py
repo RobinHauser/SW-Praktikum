@@ -256,3 +256,11 @@ class Administration():
     def get_viewed_list_by_user_id(self, user_id):
         viewedMapper = ViewedMapper()
         return viewedMapper.find_by_id(user_id)
+
+    def add_user_to_viewedList(self, user_id, payload):
+        viewedMapper = ViewedMapper()
+        return viewedMapper.insert(user_id, payload)
+
+    def remove_user_to_viewedList(self, user_id, payload):
+        viewedMapper = ViewedMapper()
+        return viewedMapper.delete(user_id, payload)

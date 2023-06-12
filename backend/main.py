@@ -151,13 +151,38 @@ class Blocklist_api(Resource):
 
 @view_namespace.route('/<int:user_id>')
 class View_api(Resource):
+    #@secured
     def get(self, user_id):
+        """
+        get a list of users the given user has been seen
+        :param user_id: the id of the user we want to get the viewed list of
+        :return: return a list of all users the user hass been seen
+        """
         adm = Administration()
         response = adm.get_viewed_list_by_user_id(user_id)
         return response
 
+    #@secured
     def post(self, user_id):
-        pass
+        """
+        Add a new user to the viewed list
+        :param user_id: the id of the user we want to add another user to his viewed list
+        :return: the added user
+        """
+        adm = Administration()
+        response = adm.add_user_to_viewedList(user_id, api.payload)
+        return response
+
+    #@secured
+    def delete(self, user_id):
+        """
+        Remove a user from a viewed list
+        :param user_id: the id of the user we want to remove another user to his viewed list
+        :return: the removed user
+        """
+        adm = Administration()
+        response = adm.remove_user_to_viewedList(user_id, api.payload)
+        return response
 
 
 @chat_namespace.route('/<int:user_id>')
