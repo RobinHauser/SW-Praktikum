@@ -201,32 +201,29 @@ class Administration():
         mapper = BookmarklistMapper()
         return mapper.find_by_id(user_id)
 
-
     def add_user_to_bookmarklist(self, user_id, payload):
-        mapper = BookmarklistMapper
-        return mapper.delete(user_id, payload)
-
+        bookmarklistmapper = BookmarklistMapper()
+        return bookmarklistmapper.insert(user_id, payload)
 
     def remove_user_from_bookmarklist(self, user_id, payload):
-        mapper = BookmarklistMapper
-        return mapper.delete(user_id, payload)
-
+        bookmarklistmapper = BookmarklistMapper()
+        return bookmarklistmapper.delete(user_id, payload)
 
     '''
         Blocklist Methoden
     '''
 
     def get_blocklist_by_user_id(self, user_id):
-        with BlocklistMapper() as mapper:
-            return mapper.find_by_id(user_id)
+        blocklistmapper = BlocklistMapper()
+        return blocklistmapper.find_by_id(user_id)
 
     def add_user_to_blocklist(self, user_id, payload):
-        with BlocklistMapper() as mapper:
-            return mapper.insert(user_id, payload)
+        blocklistmapper = BlocklistMapper()
+        return blocklistmapper.insert(user_id, payload)
 
     def delete_blocklist(self, user_id, payload):
-        with BlocklistMapper() as mapper:
-            return mapper.delete(user_id, payload)
+        blocklistmapper = BlocklistMapper()
+        return blocklistmapper.delete(user_id, payload)
 
     '''
        Chat Methoden

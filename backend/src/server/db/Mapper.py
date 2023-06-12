@@ -27,7 +27,7 @@ class Mapper(AbstractContextManager, ABC):
         pass
 
     @abstractmethod
-    def insert(self, object):
+    def insert(self, object, payload):
         pass
 
     @abstractmethod
@@ -35,7 +35,7 @@ class Mapper(AbstractContextManager, ABC):
         pass
 
     @abstractmethod
-    def delete(self, object):
+    def delete(self, object, payload):
         pass
 
     @abstractmethod
