@@ -214,8 +214,8 @@ class Administration():
     '''
 
     def get_blocklist_by_user_id(self, user_id):
-        with BlocklistMapper() as mapper:
-            return mapper.find_by_id(user_id)
+        blocklistmapper = BlocklistMapper()
+        return blocklistmapper.find_by_id(user_id)
 
     def add_user_to_blocklist(self, user_id, payload):
         with BlocklistMapper() as mapper:
