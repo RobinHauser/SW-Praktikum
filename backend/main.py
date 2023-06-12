@@ -24,6 +24,7 @@ chat_namespace = Namespace(name="chat", description="This is the Chat")
 message_namespace = Namespace(name="message", description="This is the Message")
 profile_namespace = Namespace(name="profile", description="This is the Profile")
 search_profile_namespace = Namespace(name="search-profile", description="This is the Search Profile")
+view_namespace = Namespace(name="view", description="tbd")
 
 # Adding the namespaces to the api
 api.add_namespace(bookmarklist_namespace)
@@ -32,6 +33,7 @@ api.add_namespace(chat_namespace)
 api.add_namespace(message_namespace)
 api.add_namespace(profile_namespace)
 api.add_namespace(search_profile_namespace)
+api.add_namespace(view_namespace)
 
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='id', description='This is the unique identifier of an business-object ')
@@ -136,7 +138,7 @@ class Blocklist_api(Resource):
         response = adm.add_user_to_blocklist(user_id, api.payload)
         return response
 
-    @secured
+    #@secured
     def delete(self, user_id):
         """
         Removing a user from the users blocklist
@@ -144,10 +146,42 @@ class Blocklist_api(Resource):
         :return: the user that was removed from the blocklist
         """
         adm = Administration()
-
-        user_id = user_id
-
         response = adm.delete_blocklist(user_id, json.loads(request.data))
+        return response
+
+@view_namespace.route('/<int:user_id>')
+class View_api(Resource):
+    #@secured
+    def get(self, user_id):
+        """
+        get a list of users the given user has been seen
+        :param user_id: the id of the user we want to get the viewed list of
+        :return: return a list of all users the user hass been seen
+        """
+        adm = Administration()
+        response = adm.get_viewed_list_by_user_id(user_id)
+        return response
+
+    #@secured
+    def post(self, user_id):
+        """
+        Add a new user to the viewed list
+        :param user_id: the id of the user we want to add another user to his viewed list
+        :return: the added user
+        """
+        adm = Administration()
+        response = adm.add_user_to_viewedList(user_id, api.payload)
+        return response
+
+    #@secured
+    def delete(self, user_id):
+        """
+        Remove a user from a viewed list
+        :param user_id: the id of the user we want to remove another user to his viewed list
+        :return: the removed user
+        """
+        adm = Administration()
+        response = adm.remove_user_to_viewedList(user_id, api.payload)
         return response
 
 
