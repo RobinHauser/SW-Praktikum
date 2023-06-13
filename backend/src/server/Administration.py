@@ -231,8 +231,10 @@ class Administration():
     '''
 
     def get_chat_by_user_id(self, user_id):
-        with ChatMapper() as mapper:
-            return mapper.find_all(user_id)
+        chatlistmapper = ChatMapper()
+        return chatlistmapper.find_all(user_id)
+        #with ChatMapper() as mapper:
+            #return chatlistmapper.find_all(user_id)
 
     def add_chat_to_user(self, user_id, payload):
         with ChatMapper() as mapper:
@@ -243,12 +245,16 @@ class Administration():
     '''
 
     def get_messages_by_chat_id(self, chat_id):
-        with MessageMapper() as mapper:
-            return mapper.find_by_id(chat_id)
+        messagemapper = MessageMapper()
+        return messagemapper.find_by_id(chat_id)
+        #with MessageMapper() as mapper:
+            #return mapper.find_by_id(chat_id)
 
     def add_message_to_chat(self, user_id, payload):
-        with MessageMapper() as mapper:
-            return mapper.insert(user_id, payload)
+        messagemapper = MessageMapper()
+        return messagemapper.insert(user_id, payload)
+        #with MessageMapper() as mapper:
+           #return mapper.insert(user_id, payload)
 
     '''
         View Methoden

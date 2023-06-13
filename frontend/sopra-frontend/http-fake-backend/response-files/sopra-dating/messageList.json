@@ -1,9 +1,9 @@
 [
   {
-    "messageID": 1006,
-    "senderID:": 1005,
-    "content": "Hallo, wie gehts?",
-    "timeStamp": "2010-10-10 12:13:14"
+    "MessageID": 1006,
+    "SenderID:": 1005,
+    "Content": "Hallo, wie gehts?",
+    "TimeStamp": "2010-10-10 12:13:14"
   },
   {
     "messageID": 1007,

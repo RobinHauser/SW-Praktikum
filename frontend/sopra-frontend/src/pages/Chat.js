@@ -38,7 +38,7 @@ class Chat extends Component {
     }
 
     componentDidMount() {
-        this.getMessageList();
+        //this.getMessageList();
         console.log(this.messageList)
         console.log("test")
     }

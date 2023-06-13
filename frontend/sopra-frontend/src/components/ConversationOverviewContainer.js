@@ -18,7 +18,7 @@ class ConversationOverviewContainer extends Component {
         };
         }
         getChatUserList = () => {
-        SopraDatingAPI.getAPI().getUserChats(1)
+        SopraDatingAPI.getAPI().getUserChats(1005)
             .then(user =>
                 this.setState({
                     chatList: user,
@@ -34,13 +34,14 @@ class ConversationOverviewContainer extends Component {
     }
     componentDidMount() {
         this.getChatUserList()
-        console.log(SopraDatingAPI.getAPI().getUserChats(1))
+        console.log(SopraDatingAPI.getAPI().getUserChats(1005))
     }
     render() {
         const {currentUser, avatarLink} = this.props;
         const {chatList} = this.state;
         console.log(avatarLink)
         console.log(currentUser)
+        console.log(chatList)
         return (
             <div>
                 <Grid

@@ -31,7 +31,7 @@ class ChatMapper(Mapper.Mapper):
                         cursor.execute(command2)
                         user_tuple = cursor.fetchall()
                         for user in user_tuple:
-                            jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}","ProfileIMGURL": "{user[3]}", "ChatID": "{i[0]}"}}'
+                            jsstr = f'{{"userID": "{user[0]}", "email": "{user[1]}", "displayName": "{user[2]}","profileImgUrl": "{user[3]}", "chatID": "{i[0]}"}}'
                             user_json = json.loads(jsstr)
                             result.append(user_json)
 

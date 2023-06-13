@@ -8,17 +8,17 @@ export default class MessageBO extends BusinessObject {
   /**
    * Constructs a new MessageBO object.
    *
-   * @param {*} messageID - message Content
-   * @param {*} senderID - timeStamp
-   * @param {*} content - ID of Message Sender
-   * @param {*} timeStamp - ID of Message Receiver
+   * @param {*} MessageID - message Content
+   * @param {*} Sender - timeStamp
+   * @param {*} Content - ID of Message Sender
+   * @param {*} TimeStamp - ID of Message Receiver
    */
-  constructor(messageID, senderID, content, timeStamp) {
+  constructor(MessageID, Sender, Content, TimeStamp) {
     super();
-    this.messageID = messageID;
-    this.senderID = senderID;
-    this.content = content;
-    this.timeStamp = timeStamp;
+    this.messageID = MessageID;
+    this.senderID = Sender;
+    this.content = Content;
+    this.timeStamp = TimeStamp;
   }
   /**
    * Sets the message content of this MessageBO.

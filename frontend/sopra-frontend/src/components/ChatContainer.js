@@ -4,7 +4,7 @@ import {List, Paper, TextField} from "@mui/material";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import placeHolderImage from "../static/images/profileImagePlaceholder.jpeg";
 import Typography from "@mui/material/Typography";
@@ -16,6 +16,7 @@ import SendIcon from '@mui/icons-material/Send';
 import AppHeader from "./AppHeader";
 import {Component} from "react";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import MessageBO from "../api/MessageBO";
 
 /**
  * *
@@ -26,15 +27,17 @@ class ChatContainer extends Component {
         super(props);
         this.state = {
             messageList: [],
-            error: null
+            error: null,
+            chatPartner: null,
+
         };
          this.messagesEndRef = React.createRef();
         //this.messageArrayLeft = ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"]
         //this.messageArrayRight = ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"]
     }
 
-    getMessageList = () => {
-        SopraDatingAPI.getAPI().getChatMessages(1)
+    getMessageList = (id) => {
+        SopraDatingAPI.getAPI().getChatMessages(id)
             .then(messages =>
                 this.setState({
                     messageList: messages,
@@ -48,10 +51,18 @@ class ChatContainer extends Component {
             )
         ;
     }
-
+    sendMessage = (messageBo) => {
+        SopraDatingAPI.getAPI().addMessage(1004,messageBo)
+            .then(()=>{
+                console.log(messageBo)
+            })
+    }
     componentDidMount() {
-        this.getMessageList()
-        console.log(SopraDatingAPI.getAPI().getChatMessages(1))
+        const urlChatId = window.location.pathname.split('/')
+        const chatId = urlChatId[2]
+        const otherUserId = urlChatId[3]
+        console.log(otherUserId)
+        this.getMessageList(chatId)
         this.scrollToBottom()
     }
 
@@ -65,10 +76,9 @@ class ChatContainer extends Component {
 
     render() {
         const avatarLink = this.props.avatar
-        const currentUser = 1005    /*this.props.currentUser*/
-        const {messageList} = this.state;
-        console.log(avatarLink)
-        console.log(currentUser)
+        const currentUser = 1004    /*this.props.currentUser*/
+        const {messageList} = this.state
+
 
         return (
             <div className="App">
@@ -138,7 +148,12 @@ class ChatContainer extends Component {
                                    InputLabelProps={{style: {color: "primary"}}}
                                    label="Write Message..." variant="standard"
                                    sx={{minWidth: "50%", mb: 1}} color="primary"/>
-                        <Button sx={{maxHeight: "45px"}} variant="contained" endIcon={<SendIcon/>}>
+                        <Button sx={{maxHeight: "45px"}} variant="contained" endIcon={<SendIcon/>} onClick={() => this.sendMessage(
+    {
+        "Content": "Ups",
+        "TimeStamp": "2023-02-10 12:54:00",
+        "ChatID": 30001
+    })}>
                             Send
                         </Button>
                     </Container>

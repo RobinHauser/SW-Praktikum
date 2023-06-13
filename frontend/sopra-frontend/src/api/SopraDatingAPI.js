@@ -16,10 +16,10 @@ export default class SopraDatingAPI {
     static #api = null;
 
     // Local Python backend
-    //#SopraDatingServerBaseURL = 'http://127.0.0.1:5000';
+    #SopraDatingServerBaseURL = 'http://127.0.0.1:8000';
 
     // Local http-fake-backend
-    #SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
+    //#SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
 
     // Bookmarklist related
@@ -39,15 +39,16 @@ export default class SopraDatingAPI {
     #removeUserFromBlocklistURL = (blockID) => `${this.#SopraDatingServerBaseURL}/blocklist/1005`; //TODO change ID
 
     // Chat related
-    #addUserToChatURL = () => `${this.#SopraDatingServerBaseURL}/conversationoverview`;
+    #addUserToChatURL = () => `${this.#SopraDatingServerBaseURL}/chat`;
     #getUserChatsURL = (userID) => {
-        return `${this.#SopraDatingServerBaseURL}/conversationoverview/1005`; //TODO change ID
+        return `${this.#SopraDatingServerBaseURL}/chat/1005`; //TODO change ID
     }
     #removeChatURL = (chatID) => `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${chatID}`;
 
     // Message related
-    #addMessageURl = () => `${this.#SopraDatingServerBaseURL}/message`;
-    #getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message/1005`; //TODO change ID
+    #addMessageURl = (userID) => `${this.#SopraDatingServerBaseURL}/message/${userID}`;
+    //#getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message/30001`; //TODO change ID
+    #getChatMessagesURL = (chatID) => `http://127.0.0.1:8000/message/${chatID}`; //TODO change ID
 
     // Profile related
     #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
@@ -204,18 +205,24 @@ export default class SopraDatingAPI {
         })
     }
 
-    addMessage(messageBO) {
-        return this.#fetchAdvanced(this.#addMessageURl(), {
+    addMessage(userID, messageBO) {
+        return this.#fetchAdvanced(this.#addMessageURl(userID), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json'
             },
             body: JSON.stringify(messageBO)
+        }).then((responseJSON) => {
+            let userBO = UserBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(userBO)
+            })
         })
     }
 
     getChatMessages(chatID) {
+        console.log("test:"+ this.#getChatMessagesURL(chatID))
         return this.#fetchAdvanced(this.#getChatMessagesURL(chatID))
             .then((responseJSON) => {
                 let messageBOs = MessageBO.fromJSON(responseJSON);
