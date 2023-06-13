@@ -35,7 +35,7 @@ class ProfileCard extends Component {
 
     render() {
         const {openDialog} = this.state;
-        const {user} = this.props;
+        const {showedUser, onUserRemoved} = this.props;
 
         return (
             <div>
@@ -57,7 +57,7 @@ class ProfileCard extends Component {
                     <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                            {user.getDisplayname()}
+                            {showedUser.getDisplayname()}
                         </Typography>
                         <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
                             Alter:
@@ -84,7 +84,11 @@ class ProfileCard extends Component {
                 </Card>
                 <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
 
-                    <ExtendedProfileCard user={user}></ExtendedProfileCard>
+                    <ExtendedProfileCard
+                        showedUser={showedUser}
+                        onUserRemoved={onUserRemoved}
+                        user={this.props.user}>
+                    </ExtendedProfileCard>
                 </Dialog>
             </div>
         )

@@ -8,7 +8,7 @@ export default function Main(props) {
         <div className="App">
             <AppHeader avatar={props.avatar}></AppHeader>
             <Container style={{marginTop: '10px'}}>
-                <GridContainer></GridContainer>
+                <GridContainer user={props.user}></GridContainer>
             </Container>
         </div>
     );

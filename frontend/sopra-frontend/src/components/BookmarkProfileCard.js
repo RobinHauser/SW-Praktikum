@@ -60,8 +60,8 @@ class BookmarkProfileCard extends Component {
     }
     
     removeUserFromBookmarklist = () => {
-        const { bookmarkedUser } = this.props;
-        SopraDatingAPI.getAPI().removeUserFromBookmarklist(bookmarkedUser.getUserID()).then(() => {
+        const { bookmarkedUser, user } = this.props;
+        SopraDatingAPI.getAPI().removeUserFromBookmarklist(user.getUserID(), bookmarkedUser).then(() => {
             this.setState({
                 deletingError: null
             })

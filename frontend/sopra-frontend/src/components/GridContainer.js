@@ -61,6 +61,12 @@ export default class GridContainer extends React.Component{
         }))
     }
 
+    handleRemoveUser = (blockedUser) => {
+        this.setState({
+            userList: this.state.userList.filter(user => user.getUserID() !== blockedUser.getUserID())
+        })
+    }
+
     render() {
         const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList } = this.state;
         const open = Boolean(anchorEl)
@@ -131,7 +137,12 @@ export default class GridContainer extends React.Component{
                     {userList.length > 0 ? (
                         userList.map((userListItem) => (
                             <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>
-                                <ProfileCard key={userListItem.getUserID()} user={userListItem}></ProfileCard>
+                                <ProfileCard
+                                    key={userListItem.getUserID()}
+                                    user={this.props.user}
+                                    showedUser={userListItem}
+                                    onUserRemoved={this.handleRemoveUser}>
+                                </ProfileCard>
                             </Grid>
                         ))
                         ) : (

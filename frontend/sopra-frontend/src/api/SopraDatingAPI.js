@@ -27,18 +27,18 @@ export default class SopraDatingAPI {
 
     // Main Page related
     #getUserListBySearchprofileURL = (searchProfileID) => {
-        return `${this.#SopraDatingServerBaseURL}/userList/${searchProfileID}`;
+        return `http://localhost:8081/api/v1/userList/${searchProfileID}`; //Todo set Base URL Back to variable
     };
 
     // Bookmarklist related
-    #addUserToBookmarklistURL = () => {
-        return `${this.#SopraDatingServerBaseURL}/bookmarklist`;
+    #addUserToBookmarklistURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist/${userID}`;
     };
     #getBookmarklistURL = (userID) => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist/${userID}`;
     };
-    #removeUserFromBookmarklistURL = (bookmarkID) => {
-        return `${this.#SopraDatingServerBaseURL}/bookmarklist/${bookmarkID}`;
+    #removeUserFromBookmarklistURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist/${userID}`;
     };
 
     // Blocklist related
@@ -129,14 +129,19 @@ export default class SopraDatingAPI {
         })
     }
 
-    addUserToBookmarklist(userBO) {
-        return this.#fetchAdvanced(this.#addUserToBookmarklistURL(), {
+    addUserToBookmarklist(userID, userBO) {
+        return this.#fetchAdvanced(this.#addUserToBookmarklistURL(userID), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json',
             },
             body: JSON.stringify(userBO)
+        }).then((responseJSON) => {
+            let userBO = UserBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(userBO)
+            })
         })
     }
 
