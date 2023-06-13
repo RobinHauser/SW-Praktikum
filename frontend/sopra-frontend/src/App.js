@@ -14,6 +14,7 @@ import ChatContainer from "./components/ChatContainer";
 import SearchProfileOverview from "./pages/SearchProfileOverview";
 import SearchProfile from "./pages/SearchProfile";
 import SopraDatingAPI from "./api/SopraDatingAPI";
+import UserBO from "./api/UserBO";
 
 class App extends React.Component {
 
@@ -95,19 +96,33 @@ class App extends React.Component {
      * Getter for the current User
      */
     getUser = () => {
-        SopraDatingAPI.getAPI().getUser(this.state.profileEmail)
-            .then(UserBO =>
-                this.setState({
-                    appError: null,
-                    user: UserBO[0]
-                }))
-            .catch(e =>
-                this.setState({
-                    appError: e,
-                    user: null
-                })
-            )
-        ;
+        // Todo Sobald die Schnittstelle getUser steht kommentiertes auskommentieren, rest löschen!!!
+        let testUser = UserBO.fromJSON(
+                {
+                "UserID": "1005",
+	            "displayname": "Michi B",
+                "email": "michaelbergdolt20@gmail.com",
+	            "dateOfBirth": "20.03.2003"
+                }
+        );
+        this.setState({
+            user: testUser[0]
+        })
+
+        // SopraDatingAPI.getAPI().getUser(this.state.profileEmail)
+        //     .then(UserBO => {
+        //         console.log(UserBO)
+        //         this.setState({
+        //             appError: null,
+        //             user: UserBO[0]
+        //         })
+        //     }).catch(e =>
+        //         this.setState({
+        //             appError: e,
+        //             user: null
+        //         })
+        //     )
+        // ;
     }
 
     render() {

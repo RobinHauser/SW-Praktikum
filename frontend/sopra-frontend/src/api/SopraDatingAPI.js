@@ -169,7 +169,6 @@ export default class SopraDatingAPI {
     }
 
     addUserToBlocklist(userID, userBO) {
-        console.log(userBO)
         return this.#fetchAdvanced(this.#addUserToBlocklistURL(userID), {
             method: 'POST',
             headers: {
