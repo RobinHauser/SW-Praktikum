@@ -84,7 +84,8 @@ class PropertyMapper(Mapper.Mapper):
             if maxid[0] is not None:
                 if maxid[0]+1 > 7000:
                     raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
-                property.set_id(maxid[0]+1)
+                else:
+                    property.set_id(maxid[0]+1)
             else:
                 property.set_id(6001)
 

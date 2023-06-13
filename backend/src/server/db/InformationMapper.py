@@ -105,7 +105,8 @@ class InformationMapper(Mapper):
             if maxid[0] is not None:
                 if maxid[0]+1 > 6000:
                     raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
-                info.set_id(maxid[0]+1)
+                else:
+                    info.set_id(maxid[0]+1)
             else:
                 info.set_id(5001)
 

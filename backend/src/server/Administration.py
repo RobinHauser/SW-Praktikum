@@ -1,3 +1,4 @@
+from backend.src.server.bo.BusinessObject import BusinessObject
 from backend.src.server.bo.Profile import Profile
 from backend.src.server.bo.User import User
 from backend.src.server.bo.Property import Property
@@ -275,6 +276,5 @@ class Administration():
     def add_message_to_chat(self, user_id, payload):
         with MessageMapper() as mapper:
             return mapper.insert(user_id, payload)
-
 
 

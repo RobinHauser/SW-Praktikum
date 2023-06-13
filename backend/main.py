@@ -8,6 +8,7 @@ from flask_cors import CORS
 from backend.src.server.Administration import Administration
 
 
+
 app = Flask(__name__)
 
 CORS(app, resources=r'/*')
@@ -35,7 +36,7 @@ api.add_namespace(profile_namespace)
 api.add_namespace(search_profile_namespace)
 
 bo = api.model('BusinessObject', {
-    'id': fields.Integer(attribute='id', description='This is the unique identifier of an business-object ')
+    'id': fields.Integer(attribute='_id', description='This is the unique identifier of an business-object ')
 })
 
 user = api.inherit('User', bo, {
@@ -63,6 +64,18 @@ property = api.inherit('Property', bo, {
 
 bookmarklist = api.inherit('Bookmarklist', bo, {
     'user': fields.Nested(user)
+})
+
+# profile = api.inherit('Profile', bo, {
+#     'profile_id': fields.String(attribute='profile_id', description='this the profile id'),
+#     'user_id': fields.String(attribute='user_id', description='this the user id'),
+#     'is_personal': fields.String(attribute='is_personal', description='this the boolean')
+# })
+
+profile = api.inherit('Profile', bo, {
+    # 'profile_id': fields.Integer(attribute = '_id',description='This is the unique identifier of aprofile '),
+    'user_id': fields.Integer(attribute='_user_id', description='This is the unique identifier of a profiles user '),
+    'is_personal': fields.Boolean(attribute='_is_personal', description='This is the unique identifier of a bool ')
 })
 
 
@@ -178,17 +191,43 @@ class Message_api(Resource):
 
 
 
-@profile_namespace.route()
-class Profile_api(Resource):
-    def get(self, user):
-        """
-        Returns the personal profile of the specified user
-        :param user: the user whose personal profile we want to get
-        :return: the personal profile of the given user
-        """
+"""
+NUR TEST
+"""
+class Profile:
+    def __init__(self, profile_id, user_id, is_personal):
+        self.profile_id = profile_id
+        self.user_id = user_id
+        self.is_personal = is_personal
+
+@profile_namespace.route('/profiles')
+class ProfileList(Resource):
+    @profile_namespace.marshal_list_with(profile)
+    def get(self):
+
+        # profileList = ProfileList()
+        # print(profileList.get())
+
         adm = Administration()
-        response = adm.get_personal_profile_of_user(user)
+        response = adm.get_all_profiles()
+
+        # response = get_profiles()
+
         return response
+
+#LÖSCHEN DANACH, NUR TEST
+def get_profiles():
+    return [
+        Profile(profile_id=1, user_id=1, is_personal=True),
+        Profile(profile_id=2, user_id=2, is_personal=False)
+    ]
+
+# @profile_namespace.marshal_list_with(profile)
+# class Profile_api(Resource):
+#     def get(self):
+#         adm = Administration()
+#         response = adm.get_all_profiles()
+#         return response
 
     def put(self):
         pass
@@ -211,3 +250,4 @@ class Search_profile_api(Resource):
 
 if __name__ == '__main__':
     app.run()
+
