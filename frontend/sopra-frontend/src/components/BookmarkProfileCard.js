@@ -28,12 +28,26 @@ class BookmarkProfileCard extends Component {
     }
 
     blockUser = () => {
-        const { user } = this.props;
-        SopraDatingAPI.getAPI().addUserToBlocklist(user).then(() => {
+        const { bookmarkedUser, user } = this.props;
+        SopraDatingAPI.getAPI().addUserToBlocklist(user.getUserID(), bookmarkedUser).then(() => {
             this.setState({
                 addingError: null
             })
-            this.props.onUserRemoved(user);
+            this.props.onUserRemoved(bookmarkedUser);
+        }).catch(e =>
+            this.setState({
+                addingError: e
+            })
+        );
+
+        this.setState({
+            addingError: null
+        })
+
+        SopraDatingAPI.getAPI().removeUserFromBookmarklist(user.getUserID(), bookmarkedUser).then(() => {
+            this.setState({
+                addingError: null
+            })
         }).catch(e =>
             this.setState({
                 addingError: e
@@ -46,12 +60,12 @@ class BookmarkProfileCard extends Component {
     }
     
     removeUserFromBookmarklist = () => {
-        const { user } = this.props;
-        SopraDatingAPI.getAPI().removeUserFromBookmarklist(user.getUserID()).then(() => {
+        const { bookmarkedUser } = this.props;
+        SopraDatingAPI.getAPI().removeUserFromBookmarklist(bookmarkedUser.getUserID()).then(() => {
             this.setState({
                 deletingError: null
             })
-            this.props.onUserRemoved(user);
+            this.props.onUserRemoved(bookmarkedUser);
         }).catch(e =>
             this.setState({
                 deletingError: e
@@ -64,7 +78,7 @@ class BookmarkProfileCard extends Component {
     }
 
     render() {
-        const{ user }=this.props;
+        const{ bookmarkedUser }=this.props;
 
         return (
             <div>
@@ -84,7 +98,7 @@ class BookmarkProfileCard extends Component {
                     <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                            {user.getDisplayname()}
+                            {bookmarkedUser.getDisplayname()}
                         </Typography>
                         <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
                             Alter:

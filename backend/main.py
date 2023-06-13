@@ -76,7 +76,7 @@ blocklist = api.inherit('Blocklist', {
 @bookmarklist_namespace.response(200, 'TBD')
 class Bookmarklist_api(Resource):
 
-    @secured
+    #@secured
     def get(self, user_id):
         """
         Getting the bookmark list of a specific user
@@ -98,7 +98,7 @@ class Bookmarklist_api(Resource):
         response = adm.add_user_to_bookmarklist(user_id, api.payload)
         return response
 
-    @secured
+    #@secured
     def delete(self, user_id):
         """
         Removing a user from the users bookmarklist
@@ -197,6 +197,7 @@ class Chat_api(Resource):
     def post(self, user_id):
         adm = Administration()
         response = adm.add_chat_to_user(user_id, api.payload)
+
         return response
 
     def delete(self):
