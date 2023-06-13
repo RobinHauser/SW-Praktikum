@@ -6,11 +6,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {Switch} from "@mui/material";
+import {ListItem, ListItemText, Switch} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import Typography from "@mui/material/Typography";
 
 export default class GridContainer extends React.Component{
     constructor(props) {
@@ -134,7 +135,11 @@ export default class GridContainer extends React.Component{
                             </Grid>
                         ))
                         ) : (
-                            <p>Noch keine anderen Benutzer vorhanden</p>
+                            <ListItem>
+                                <ListItemText sx={{ textAlign: 'center' }}>
+                                    <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>
+                                </ListItemText>
+                            </ListItem>
                     )}
                 </Grid>
             </Box>

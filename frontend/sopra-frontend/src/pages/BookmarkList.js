@@ -5,6 +5,8 @@ import Grid from "@mui/material/Unstable_Grid2";
 import * as React from "react";
 import BookmarkProfileCard from "../components/BookmarkProfileCard";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import {ListItem, ListItemText} from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 /**
  * Shows the Bookmarklist with all Profiles, that are Bookmarked by the User
@@ -64,12 +66,19 @@ export default class bookmarkList extends React.Component {
                             {bookmarklist.length > 0 ? (
                                 bookmarklist.map((bookmarklistItem) => (
                                     <Grid xs={4} sm={4} md={4} key={bookmarklistItem.getUserID()}>
-                                        <BookmarkProfileCard key={bookmarklistItem.getUserID()} user={bookmarklistItem}
-                                                             onUserRemoved={this.addUserToBlocklistHandler}></BookmarkProfileCard>
+                                        <BookmarkProfileCard key={bookmarklistItem.getUserID()}
+                                                             user={this.props.user}
+                                                             bookmarkedUser={bookmarklistItem}
+                                                             onUserRemoved={this.addUserToBlocklistHandler}>
+                                        </BookmarkProfileCard>
                                     </Grid>
                                 ))
                             ) : (
-                                <p>Du hast deiner Merkliste noch keine Profile hinzugefügt</p>
+                                <ListItem>
+                                    <ListItemText sx={{ textAlign: 'center' }}>
+                                        <Typography variant="body1">Keine Nutzer auf der Merkliste</Typography>
+                                    </ListItemText>
+                                </ListItem>
                             )}
                         </Grid>
                     </Box>
