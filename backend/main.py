@@ -156,6 +156,7 @@ class Chat_api(Resource):
 
         adm = Administration()
         response = adm.add_chat_to_user(user_id, api.payload)
+
         return response
 
     def delete(self):
