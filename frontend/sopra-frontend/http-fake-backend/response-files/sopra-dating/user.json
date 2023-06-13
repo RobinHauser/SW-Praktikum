@@ -1,11 +1,8 @@
 [
   {
-	"id": 6001,
-	"firstName": "Björn",
-	"lastName": "Till",
-	"email": "Björn.till@gmail.com",
-	"dateOfBirth": "31.12.2000",
-	"blocklistID": 2001,
-	"bookmarklistID": 4001
+	"UserID": "1005",
+	"displayname": "Michi B",
+	"email": "michaelbergdolt20@gmail.com",
+	"dateOfBirth": "20.03.2003"
   }
 ]

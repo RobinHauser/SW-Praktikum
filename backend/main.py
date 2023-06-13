@@ -98,7 +98,7 @@ class Bookmarklist_api(Resource):
         response = adm.add_user_to_bookmarklist(user_id, api.payload)
         return response
 
-    @secured
+    #@secured
     def delete(self, user_id):
         """
         Removing a user from the users bookmarklist

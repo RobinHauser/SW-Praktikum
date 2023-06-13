@@ -14,27 +14,37 @@ export default class SopraDatingAPI {
     static #api = null;
 
     // Local Python backend
-    #SopraDatingServerBaseURL = 'http://127.0.0.1:5000';
+    #SopraDatingServerBaseURL = 'http://127.0.0.1:8000';
 
     // Local http-fake-backend
     // #SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
 
+    // User related
+    #getUserURL = (email) => {
+        return `http://localhost:8081/api/v1/user/${email}` //Todo set Base URL Back to variable
+    };
+
+    // Main Page related
+    #getUserListBySearchprofileURL = (searchProfileID) => {
+        return `${this.#SopraDatingServerBaseURL}/userList/${searchProfileID}`;
+    };
+
     // Bookmarklist related
     #addUserToBookmarklistURL = () => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist`;
     };
-    #getBookmarklistURL = (bookmarklistID) => {
-        return `${this.#SopraDatingServerBaseURL}/bookmarklist/${bookmarklistID}`;
+    #getBookmarklistURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/bookmarklist/${userID}`;
     };
     #removeUserFromBookmarklistURL = (bookmarkID) => {
         return `${this.#SopraDatingServerBaseURL}/bookmarklist/${bookmarkID}`;
     };
 
     // Blocklist related
-    #addUserToBlocklistURL = () => `${this.#SopraDatingServerBaseURL}/blocklist/1005`; //TODO change ID
-    #getBlocklistURL = (blocklistID) => `${this.#SopraDatingServerBaseURL}/blocklist/1005`; //TODO change ID
-    #removeUserFromBlocklistURL = (blockID) => `${this.#SopraDatingServerBaseURL}/blocklist/1005`; //TODO change ID
+    #addUserToBlocklistURL = (userID) => `${this.#SopraDatingServerBaseURL}/blocklist/${userID}`;
+    #getBlocklistURL = (userID) => `${this.#SopraDatingServerBaseURL}/blocklist/${userID}`;
+    #removeUserFromBlocklistURL = (userID) => `${this.#SopraDatingServerBaseURL}/blocklist/${userID}`;
 
     // Chat related
     #addUserToChatURL = () => `${this.#SopraDatingServerBaseURL}/conversationoverview`;
@@ -97,6 +107,28 @@ export default class SopraDatingAPI {
         }
         )
 
+    getUser(email) {
+        return this.#fetchAdvanced(this.#getUserURL(email))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                // console.log(blocklistBOs)
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
+
+    getUserListBySearchprofile(searchProfileID=1) {
+        return this.#fetchAdvanced(this.#getUserListBySearchprofileURL(searchProfileID))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                // console.log(blocklistBOs)
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
+
     addUserToBookmarklist(userBO) {
         return this.#fetchAdvanced(this.#addUserToBookmarklistURL(), {
             method: 'POST',
@@ -108,8 +140,8 @@ export default class SopraDatingAPI {
         })
     }
 
-    getBookmarklist(bookmarklistID) {
-        return this.#fetchAdvanced(this.#getBookmarklistURL(bookmarklistID))
+    getBookmarklist(userID) {
+        return this.#fetchAdvanced(this.#getBookmarklistURL(userID))
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 // console.log(blocklistBOs)
@@ -119,9 +151,14 @@ export default class SopraDatingAPI {
         })
     }
 
-    removeUserFromBookmarklist(bookmarkID) {
-        return this.#fetchAdvanced(this.#removeUserFromBookmarklistURL(bookmarkID), {
-            method: 'DELETE'
+    removeUserFromBookmarklist(userID, userBO) {
+        return this.#fetchAdvanced(this.#removeUserFromBookmarklistURL(userID), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(userBO)
         }).then((responseJSON) => {
             let userBOs = UserBO.fromJSON(responseJSON)[0];
             // console.info(userBOs);
@@ -131,8 +168,8 @@ export default class SopraDatingAPI {
         })
     }
 
-    addUserToBlocklist(userBO) {
-        return this.#fetchAdvanced(this.#addUserToBlocklistURL(), {
+    addUserToBlocklist(userID, userBO) {
+        return this.#fetchAdvanced(this.#addUserToBlocklistURL(userID), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
@@ -158,14 +195,14 @@ export default class SopraDatingAPI {
         })
     }
 
-    removeUserFromBlocklist(user) {
-        return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(user), {
+    removeUserFromBlocklist(userID, userBO) {
+        return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(userID), {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json'
             },
-            body: JSON.stringify(user)
+            body: JSON.stringify(userBO)
         }).then((responseJSON) => {
             let userBOs = UserBO.fromJSON(responseJSON)[0];
             // console.info(userBOs);
