@@ -12,37 +12,28 @@ class ChatMapper(Mapper.Mapper):
     def find_all(self, user_id):
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute(f'SELECT ChatID FROM chatrelation WHERE UserID={user_id} OR UserID2={user_id}')
+        cursor.execute(f'SELECT ChatID FROM chatrelation WHERE UserID={user_id}')
         tuples = cursor.fetchall()
 
         if tuples is not None:
             for i in tuples:
 
-                command = f'SELECT UserID FROM chatrelation WHERE ChatID={i[0]} AND UserID2={user_id}'
+                command = f'SELECT UserID FROM chatrelation WHERE ChatID={i[0]} AND UserID != {user_id}'
                 cursor.execute(command)
                 chat_tuple2 = cursor.fetchall()
 
-                command1 = f'SELECT UserID2 FROM chatrelation WHERE ChatID={i[0]} AND UserID={user_id}'
-                cursor.execute(command1)
-                chat_tuple1 = cursor.fetchall()
-
-                chat_tuple = chat_tuple1 + chat_tuple2
+                chat_tuple = chat_tuple2
 
 
                 if chat_tuple is not None:
                     for j in chat_tuple:
-                        if j[0] != user_id:
-                            command2 = f'SELECT * FROM user WHERE UserID={j[0]}'
-                            cursor.execute(command2)
-                            user_tuple = cursor.fetchall()
-                            for user in user_tuple:
-                                jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}"' \
-                                        f', "ProfileIMGURL": "{user[4]}", "ChatID": "{i[0]}"}}'
-                                user_json = json.loads(jsstr)
-                                result.append(user_json)
-
-
-
+                        command2 = f'SELECT * FROM user WHERE UserID={j[0]}'
+                        cursor.execute(command2)
+                        user_tuple = cursor.fetchall()
+                        for user in user_tuple:
+                            jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}","ProfileIMGURL": "{user[3]}", "ChatID": "{i[0]}"}}'
+                            user_json = json.loads(jsstr)
+                            result.append(user_json)
 
         self._cnx.commit()
         cursor.close()
@@ -56,30 +47,41 @@ class ChatMapper(Mapper.Mapper):
         result = []
         cursor = self._cnx.cursor()
 
-        cursor.execute(f'SELECT ChatID FROM chatrelation WHERE UserID={user_id} OR UserID2={user_id}')
+        cursor.execute(f'SELECT ChatID FROM chatrelation')
         tuples = cursor.fetchall()
+        if len(tuples) == 0:
+            chatid = 30001
+            command1 = f'INSERT INTO chatrelation (ChatID ,UserID) VALUES (%s, %s) '  # TODO add insert Method
+            data = (chatid, payload.get('UserID'))
+            command2 = f'INSERT INTO chatrelation (ChatID, UserID) VALUES (%s, %s)'
+            data2 = (chatid, user_id)
+            cursor.execute(command1, data)
+            cursor.execute(command2, data2)
 
-        if tuples is not None:
-            for i in tuples:
+        else:
+            chatid = tuples[-1][0] + 1
+            cursor.execute(f'SELECT ChatID FROM chatrelation WHERE UserID={user_id}')
+            v1 = cursor.fetchall()
+            for i in v1:
+                cursor.execute(f'SELECT UserID FROM chatrelation WHERE ChatID={i[0]} AND UserID != {user_id}')
+                v2 = cursor.fetchall()
 
-                command = f'SELECT UserID FROM chatrelation WHERE ChatID={i[0]} AND UserID2={user_id}'
-                cursor.execute(command)
-                chat_tuple2 = cursor.fetchall()
+            try:
+                for i in v2:
+                    if int(i[0]) == int(payload.get('UserID')):
+                        raise IndexError
+            except IndexError:
+                return result.append("Chat already exists")
 
-                command1 = f'SELECT UserID2 FROM chatrelation WHERE ChatID={i[0]} AND UserID={user_id}'
-                cursor.execute(command1)
-                chat_tuple1 = cursor.fetchall()
+            else:
+                command1 = f'INSERT INTO chatrelation (ChatID ,UserID) VALUES (%s, %s) '
+                data = (chatid, payload.get('UserID'))
+                command2 = f'INSERT INTO chatrelation (ChatID, UserID) VALUES (%s, %s)'
+                data2 = (chatid, user_id)
+                cursor.execute(command1, data)
+                cursor.execute(command2, data2)
 
-                chat_tuple = chat_tuple1 + chat_tuple2
-
-                for i in chat_tuple:
-                    if int(i[0]) != int(payload.get('UserID')):
-
-                        command = "INSERT INTO chatrelation (UserID, UserID2) VALUES (%s, %s)"  #TODO add insert Method
-                        data = (user_id, payload.get('UserID'))
-                        cursor.execute(command, data)
-                    else:
-                        pass
+        json.dumps(result)
 
         self._cnx.commit()
         cursor.close()
