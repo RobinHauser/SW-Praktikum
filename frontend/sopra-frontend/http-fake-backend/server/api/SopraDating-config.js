@@ -7,15 +7,15 @@ const prefix = "/sopra-dating"
 module.exports = SetupEndpoint({
     name: 'v1',
     urls: [{
-        params: '/user',
+        params: `/user/{email}`,
         requests: [
-            {response: '/response-files/sopra-dating/user.json'}
+            { response: '/response-files/sopra-dating/user.json' }
         ]
     }, {
         params: '/blocklist/{id}',
         requests: [{
-            method: 'GET',
-            response: '/response-files/sopra-dating/userList.json'
+                method: 'GET',
+                response: '/response-files/sopra-dating/userList.json'
         },
             {
                 method: 'DELETE',
@@ -48,6 +48,12 @@ module.exports = SetupEndpoint({
         requests: [{
             method: 'GET',
             response: '/response-files/sopra-dating/chatUserList.json'
+        }]
+    }, {
+        params: '/userList/{id}',
+        requests: [{
+            method: 'GET',
+            response: '/response-files/sopra-dating/userLIst.json'
         }]
     }]
 });

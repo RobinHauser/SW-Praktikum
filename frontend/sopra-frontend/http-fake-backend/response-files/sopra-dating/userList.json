@@ -25,5 +25,14 @@
 		"blocklistID": 3004,
 		"bookmarklistID": 4004,
 		"profileID": 8004
+	},
+	{
+		"userID": 2000,
+		"displayname": "Lewis Hamilton",
+		"email": "lewis.hamilton@gmail.com",
+		"dateOfBirth": "30.2.1999",
+		"blocklistID": 3006,
+		"bookmarklistID": 3006,
+		"profileID": 8006
 	}
 ]

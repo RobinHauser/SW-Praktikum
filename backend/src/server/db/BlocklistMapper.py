@@ -64,7 +64,7 @@ class BlocklistMapper(Mapper.Mapper):
         cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')   #TODO BlocklistID schon vorher gesetzt?
 
         blocklist_id = cursor.fetchall()[0][0]
-        blocked_user_id = int(payload.get('id'))
+        blocked_user_id = int(payload.get('UserID'))
 
         cursor.execute(
             f'INSERT INTO block (BlocklistID, BlockedUserID) VALUES ({blocklist_id}, {blocked_user_id})')
@@ -89,7 +89,7 @@ class BlocklistMapper(Mapper.Mapper):
         cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')
 
         blocklist_id = cursor.fetchall()[0][0]
-        blocked_user_id = int(payload.get('id'))
+        blocked_user_id = int(payload.get('UserID'))
 
         cursor.execute(
             f'DELETE FROM block WHERE BlocklistID = {blocklist_id} AND BlockedUserID = {blocked_user_id}')
