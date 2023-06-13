@@ -12,6 +12,7 @@ from backend.src.server.db.PropertyMapper import PropertyMapper
 
 from backend.src.server.db.MessageMapper import MessageMapper
 from backend.src.server.db.ChatMapper import ChatMapper
+from backend.src.server.db.ViewedMapper import ViewedMapper
 
 
 class Administration():
@@ -248,3 +249,18 @@ class Administration():
     def add_message_to_chat(self, user_id, payload):
         with MessageMapper() as mapper:
             return mapper.insert(user_id, payload)
+
+    '''
+        View Methoden
+    '''
+    def get_viewed_list_by_user_id(self, user_id):
+        viewedMapper = ViewedMapper()
+        return viewedMapper.find_by_id(user_id)
+
+    def add_user_to_viewedList(self, user_id, payload):
+        viewedMapper = ViewedMapper()
+        return viewedMapper.insert(user_id, payload)
+
+    def remove_user_to_viewedList(self, user_id, payload):
+        viewedMapper = ViewedMapper()
+        return viewedMapper.delete(user_id, payload)

@@ -56,7 +56,6 @@ class MessageMapper(Mapper.Mapper):
                         message_json = json.loads(jsstr)
                         result.append(message_json)
 
-
         self._cnx.commit()
         cursor.close()
 

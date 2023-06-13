@@ -166,7 +166,7 @@ create table chatcontainer
 create table viewedlist
 (
     ViewedListID int not null
-        primary key,
+        primary key AUTO_INCREMENT,
     UserID     int not null,
     constraint fk_viewedlist_user
         foreign key (UserID) references user (UserID)
@@ -175,7 +175,7 @@ create table viewedlist
 create table view
 (
     ViewID     int not null
-        primary key,
+        primary key AUTO_INCREMENT,
     ViewedListID int not null,
     UserID     int null,
     constraint fk_view_viewedlist
@@ -282,7 +282,6 @@ INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20008, 1004,
 INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20009, 1003, 'Achso ja oke', '2023-02-10 12:50:00');
 INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20010, 1003, '20Uhr kannst mich abholen', '2023-02-10 12:56:00');
 
-
 INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20001);
 INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20002);
 INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20003);
@@ -293,10 +292,23 @@ INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20007);
 INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20008);
 INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20009);
 INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20010);
-
-
-
 INSERT INTO chatrelation (ChatID, UserID, UserID2) VALUES (30001, 1004, 1003);
+
+
+INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15001, 1001);
+INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15002, 1002);
+INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15003, 1003);
+INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15004, 1004);
+INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15005, 1005);
+INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15006, 1006);
+
+
+INSERT INTO view (ViewID, ViewedListID, UserID) VALUES (16001, 15001, 1004);
+INSERT INTO view (ViewID, ViewedListID, UserID) VALUES (16002, 15004, 1002);
+INSERT INTO view (ViewID, ViewedListID, UserID) VALUES (16003, 15004, 1003);
+
+
+
 
 
 
