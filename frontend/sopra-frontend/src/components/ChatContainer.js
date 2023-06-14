@@ -4,9 +4,8 @@ import {List, Paper, TextField} from "@mui/material";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {Link} from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import placeHolderImage from "../static/images/profileImagePlaceholder.jpeg";
 import Typography from "@mui/material/Typography";
 import MessageLeft from "./MessageLeft";
 import MessageRight from "./MessageRight"
@@ -16,7 +15,7 @@ import SendIcon from '@mui/icons-material/Send';
 import AppHeader from "./AppHeader";
 import {Component} from "react";
 import SopraDatingAPI from "../api/SopraDatingAPI";
-import MessageBO from "../api/MessageBO";
+
 
 /**
  * *
@@ -29,11 +28,14 @@ class ChatContainer extends Component {
             messageList: [],
             error: null,
             chatPartner: null,
+            currentTime: null,
+            messageText: '',
+            chatId: null,
+            currentUser: this.props.user.getUserID()
 
         };
-         this.messagesEndRef = React.createRef();
-        //this.messageArrayLeft = ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"]
-        //this.messageArrayRight = ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"]
+        this.messagesEndRef = React.createRef();
+
     }
 
     getMessageList = (id) => {
@@ -51,24 +53,57 @@ class ChatContainer extends Component {
             )
         ;
     }
+
+    buttonSendFunction() {
+        const content = this.state.messageText
+        const dateTime = this.getFormatedDateTime()
+        const chatId = this.state.chatId
+        var messageBo = {
+            "Content": `${content}`,
+            "TimeStamp": `${dateTime}`,
+            "ChatID": chatId
+        }
+        this.sendMessage(messageBo)
+        this.setState({messageText: ''})
+        setTimeout(() => {
+            this.getMessageList(this.state.chatId)
+        }, 100)
+
+
+    }
+
     sendMessage = (messageBo) => {
-        SopraDatingAPI.getAPI().addMessage(1004,messageBo)
-            .then(()=>{
-                console.log(messageBo)
+        SopraDatingAPI.getAPI().addMessage(this.state.currentUser, messageBo)
+            .then(() => {
             })
     }
+
     componentDidMount() {
-        const urlChatId = window.location.pathname.split('/')
-        const chatId = urlChatId[2]
-        const otherUserId = urlChatId[3]
-        console.log(otherUserId)
-        this.getMessageList(chatId)
+        this.getChatId()
+        this.getMessageList(this.state.chatId)
         this.scrollToBottom()
+    }
+
+    getFormatedDateTime() {
+        var dateTime = new Date().toISOString()
+        dateTime = dateTime.replace('T', ' ')
+        dateTime = dateTime.substring(0, dateTime.length - 5)
+        return dateTime
     }
 
     componentDidUpdate() {
         this.scrollToBottom()
     }
+
+    getChatId() {
+        const urlChatId = window.location.pathname.split('/')
+        this.state.chatId = urlChatId[2]
+    }
+
+    handleInputChange = (event) => {
+        this.setState({messageText: event.target.value})
+    }
+
 
     scrollToBottom() {
         this.messagesEndRef.current?.scrollIntoView(); // Quelle für das automatische nach unten Scrollen: https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
@@ -76,9 +111,8 @@ class ChatContainer extends Component {
 
     render() {
         const avatarLink = this.props.avatar
-        const currentUser = 1004    /*this.props.currentUser*/
+        const currentUser = parseInt(this.props.user.getUserID())
         const {messageList} = this.state
-
 
         return (
             <div className="App">
@@ -120,9 +154,12 @@ class ChatContainer extends Component {
                                 {messageList.length > 0 ? (
                                     messageList.map((MessageBO) => (
                                         MessageBO.getSenderID() === currentUser ? (
-                                            <MessageRight content={MessageBO.getContent()} timeStamp={MessageBO.getTimeStamp()} avatarLink={avatarLink}></MessageRight>
+                                            <MessageRight content={MessageBO.getContent()}
+                                                          timeStamp={MessageBO.getTimeStamp()}
+                                                          avatarLink={avatarLink}></MessageRight>
                                         ) : (
-                                            <MessageLeft content={MessageBO.getContent()} timeStamp={MessageBO.getTimeStamp()}></MessageLeft>
+                                            <MessageLeft content={MessageBO.getContent()}
+                                                         timeStamp={MessageBO.getTimeStamp()}></MessageLeft>
                                         )
                                     ))
                                 ) : (
@@ -144,16 +181,12 @@ class ChatContainer extends Component {
                         display: "flex",
                         justifyContent: "center"
                     }}>
-                        <TextField InputProps={{style: {color: "primary"}}}
+                        <TextField value={this.state.messageText} InputProps={{style: {color: "primary"}}}
                                    InputLabelProps={{style: {color: "primary"}}}
                                    label="Write Message..." variant="standard"
-                                   sx={{minWidth: "50%", mb: 1}} color="primary"/>
-                        <Button sx={{maxHeight: "45px"}} variant="contained" endIcon={<SendIcon/>} onClick={() => this.sendMessage(
-    {
-        "Content": "Ups",
-        "TimeStamp": "2023-02-10 12:54:00",
-        "ChatID": 30001
-    })}>
+                                   sx={{minWidth: "50%", mb: 1}} color="primary" onChange={this.handleInputChange}/>
+                        <Button sx={{maxHeight: "45px"}} variant="contained" endIcon={<SendIcon/>}
+                                onClick={() => this.buttonSendFunction()}>
                             Send
                         </Button>
                     </Container>

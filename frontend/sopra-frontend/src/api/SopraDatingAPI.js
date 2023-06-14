@@ -51,7 +51,7 @@ export default class SopraDatingAPI {
     // Chat related
     #addUserToChatURL = () => `${this.#SopraDatingServerBaseURL}/chat`;
     #getUserChatsURL = (userID) => {
-        return `${this.#SopraDatingServerBaseURL}/chat/1005`; //TODO change ID
+        return `${this.#SopraDatingServerBaseURL}/chat/${userID}`; //TODO change ID
     }
     #removeChatURL = (chatID) => `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${chatID}`;
 

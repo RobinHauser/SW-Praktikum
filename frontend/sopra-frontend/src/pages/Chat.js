@@ -1,6 +1,5 @@
 import * as React from "react";
 import ChatContainer from "../components/ChatContainer";
-import AppHeader from "../components/AppHeader";
 import {Component} from "react";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 
@@ -16,8 +15,7 @@ class Chat extends Component {
         this.state = {
             messageList: [],
             error: null,
-            messageArrayLeft: ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"],
-            messageArrayRight: ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"]
+            user: this.props.user
         };
     }
 
@@ -38,9 +36,7 @@ class Chat extends Component {
     }
 
     componentDidMount() {
-        //this.getMessageList();
-        console.log(this.messageList)
-        console.log("test")
+
     }
 
     render() {

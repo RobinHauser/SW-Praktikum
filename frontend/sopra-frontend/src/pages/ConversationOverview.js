@@ -12,7 +12,7 @@ class ConversationOverview extends Component {
     }
     render() {
         const avatarLink = this.props.avatar
-        const currentUser = 1005    /*this.props.currentUser*/
+        const currentUser = this.props.user.getUserID()
         return (
             <div className="App">
                 <AppHeader avatar={this.props.avatar}></AppHeader>
