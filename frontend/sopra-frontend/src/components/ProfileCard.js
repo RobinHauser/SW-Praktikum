@@ -7,6 +7,7 @@ import Avatar from "@mui/material/Avatar";
 import {Component} from "react";
 import Dialog from "@mui/material/Dialog";
 import ExtendedProfileCard from "./ExtendedProfileCard";
+import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
  * @author [Jannik Haug, Theo Klautke]
@@ -18,6 +19,7 @@ class ProfileCard extends Component {
         this.state = {
             openDialog: false,
             selectedValue: null,
+            addingError: null
         };
 
         this.handleOpenDialog = this.handleOpenDialog.bind(this);
@@ -25,7 +27,22 @@ class ProfileCard extends Component {
 
     }
 
+    addUserToViewedList = () => {
+        const { user, showedUser} = this.props
+        SopraDatingAPI.getAPI().addUserToViewedlist(user.getUserID(), showedUser)
+            .then(() => {
+                this.setState({
+                    addingError: null
+                });
+            }).catch(e => {
+                this.setState({
+                    addingError: e
+                });
+            });
+    }
+
     handleOpenDialog() {
+        this.addUserToViewedList()
         this.setState({openDialog: true});
     }
 

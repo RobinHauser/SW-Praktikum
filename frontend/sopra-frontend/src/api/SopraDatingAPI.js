@@ -78,6 +78,9 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
 
+    // viewedList related
+    #addUserToViewedlistURL = (userID)=>`${this.#SopraDatingServerBaseURL}/view/${userID}`;
+
     // similarityMeasure related
 
 
@@ -316,6 +319,22 @@ export default class SopraDatingAPI {
     deleteSearchProfile(searchprofileID) {
         return this.#fetchAdvanced(this.#deleteSearchProfileURL(searchprofileID), {
             method: 'DELETE'
+        })
+    }
+
+    addUserToViewedlist(userID, userBO) {
+        return this.#fetchAdvanced(this.#addUserToViewedlistURL(userID), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(userBO)
+        }).then((responseJSON) => {
+            let userBO = UserBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(userBO)
+            })
         })
     }
 }
