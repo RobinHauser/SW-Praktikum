@@ -121,12 +121,12 @@ class ProfileMapper(Mapper.Mapper):
         cursor = self._cnx.cursor()
 
         # Retrieve all profile IDs with the info
-        command = "SELECT * FROM info_assignment WHERE InformationID={}".format(information.get_id())
+        command = "SELECT * FROM information WHERE InformationID={}".format(information.get_id())
         cursor.execute(command)
-        assignments = cursor.fetchall()
+        infos = cursor.fetchall()
 
-        if assignments:
-            profile_ids = [assignment[1] for assignment in assignments]
+        if infos:
+            profile_ids = [info[1] for info in infos]
             profile_ids = list(set(profile_ids)) #Removing duplicate entries
 
             # Retrieve Profiles by ProfileID
@@ -219,24 +219,16 @@ class ProfileMapper(Mapper.Mapper):
         cursor = self._cnx.cursor()
 
         # Retrieve assigned infos by ProfileID
-        command = "SELECT * FROM info_assignment WHERE ProfileID={}".format(profile.get_id())
+        command = "SELECT * FROM information WHERE ProfileID={}".format(profile.get_id())
         cursor.execute(command)
-        assignments = cursor.fetchall()
+        tuples = cursor.fetchall()
 
-        if assignments:
-            info_ids = [assignment[2] for assignment in assignments]
-
-            #Retrieve infos by InformationID
-            command2 = "SELECT * FROM information WHERE InformationID IN ({})".format(', '.join(str(infid) for infid in info_ids))
-            cursor.execute(command2)
-            tuples = cursor.fetchall()
-
-            for (id, property_id, value) in tuples:
-                info = Information()
-                info.set_id(id)
-                info.set_property(property_id)
-                info.set_value(value)
-                result.append(info)
+        for (id, profile_id, value_id) in tuples:
+            info = Information()
+            info.set_id(id)
+            info.set_profile_id(profile_id)
+            info.set_value_id(value_id)
+            result.append(info)
 
 
         self._cnx.commit()
@@ -244,47 +236,47 @@ class ProfileMapper(Mapper.Mapper):
 
         return result
 
-    def add_info(self, profile, info): #todo evtl überarbeiten: Unterschied, ob Selection oder Text?
-        """
-        Adding an information to a profile
-        :param profile: the profile we are adding infos to
-        :param info: the info to be added
-        :return: the added info
-        """
-        cursor = self._cnx.cursor()
+    # def add_info(self, profile, info): #todo evtl überarbeiten: Unterschied, ob Selection oder Text?
+    #     """
+    #     Adding an information to a profile
+    #     :param profile: the profile we are adding infos to
+    #     :param info: the info to be added
+    #     :return: the added info
+    #     """
+    #     cursor = self._cnx.cursor()
+    #
+    #
+    #     command = "INSERT INTO information (ProfileID, ValueID) VALUES ({}, {})".format(profile.get_id(), info.get_id())
+    #     cursor.execute(command)
+    #
+    #     self._cnx.commit()
+    #     cursor.close()
+    #
+    #     return info
 
+    # def remove_info(self, profile, info):
+    #     """
+    #     Removing an information from a profile
+    #     :param profile: the profile we are deleting an info from
+    #     :param info: the info that will be deleted
+    #     :return: the removed info
+    #     """
+    #     cursor = self._cnx.cursor()
+    #
+    #     command = "DELETE FROM info_assignment WHERE ProfileID = {} AND InformationID = {}".format(profile.get_id(), info.get_id())
+    #     cursor.execute(command)
+    #
+    #     self._cnx.commit()
+    #     cursor.close()
+    #
+    #     return info
 
-        command = "INSERT INTO info_assignment (ProfileID, InformationID) VALUES ({}, {})".format(profile.get_id(), info.get_id())
-        cursor.execute(command)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return info
-
-    def remove_info(self, profile, info):
-        """
-        Removing an information from a profile
-        :param profile: the profile we are deleting an info from
-        :param info: the info that will be deleted
-        :return: the removed info
-        """
-        cursor = self._cnx.cursor()
-
-        command = "DELETE FROM info_assignment WHERE ProfileID = {} AND InformationID = {}".format(profile.get_id(), info.get_id())
-        cursor.execute(command)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return info
-
-    def update_info(self, profile, assignment):
-        """
-        Updating / changing an information object belonging to the given profile
-        :param profile:
-        :param assignment:
-        :return:
-        """
-        #todo
-        pass
+    # def update_info(self, profile, assignment):
+    #     """
+    #     Updating / changing an information object belonging to the given profile
+    #     :param profile:
+    #     :param assignment:
+    #     :return:
+    #     """
+    #     #todo
+    #     pass

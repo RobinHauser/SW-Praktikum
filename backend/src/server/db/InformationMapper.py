@@ -29,11 +29,11 @@ class InformationMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, property_id, value) in tuples:
+        for (id, profile_id, value_id) in tuples:
             information = Information()
             information.set_id(id)
-            information.set_property(property_id)
-            information.set_value(value)
+            information.set_profile_id(profile_id)
+            information.set_value_id(value_id)
             result.append(information)
 
         self._cnx.commit()
@@ -53,11 +53,11 @@ class InformationMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (info_id, property_id, value) = tuples[0]
+            (info_id, profile_id, value_id) = tuples[0]
             info = Information()
             info.set_id(id)
-            info.set_property(property_id)
-            info.set_value(value)
+            info.set_profile_id(profile_id)
+            info.set_value_id(value_id)
             result = info
         except IndexError:
             result = None
@@ -74,16 +74,25 @@ class InformationMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM information WHERE PropertyID={}".format(property.get_id())
+        command = "SELECT * FROM property_assignment WHERE PropertyID={}".format(property.get_id())
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        assignments = cursor.fetchall()
 
-        for (id, property_id, value) in tuples:
-            information = Information()
-            information.set_id()
-            information.set_property(property_id)
-            information.set_value(value)
-            result.append(information)
+        if assignments:
+            value_ids = [ass[0] for ass in assignments]
+
+            #Retrieve Informations by ValueID
+            command2 = "SELECT * FROM information WHERE ValueID IN ({})".format(
+                ','.join(str(v_id) for v_id in value_ids))
+            cursor.execute(command2)
+            tuples = cursor.fetchall()
+
+            for (id, profile_id, value_id) in tuples:
+                information = Information()
+                information.set_id()
+                information.set_profile_id(profile_id)
+                information.set_value_id(value_id)
+                result.append(information)
 
         self._cnx.commit()
         cursor.close()
@@ -110,8 +119,8 @@ class InformationMapper(Mapper):
             else:
                 info.set_id(5001)
 
-        command = "INSERT INTO information (InformationID, PropertyID, Value) VALUES (%s,%s,%s)"
-        data = (info.get_id(), info.get_property(), info.get_value())
+        command = "INSERT INTO information (InformationID, ProfileID, ValueID) VALUES (%s,%s,%s)"
+        data = (info.get_id(), info.get_profile_id(), info.get_value_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -126,8 +135,8 @@ class InformationMapper(Mapper):
         :return: updated information object
         """
         cursor = self._cnx.cursor()
-        command = "UPDATE information SET PropertyID=%s, Value=%s WHERE InformationID = %s"
-        data = (info.get_property(), info.get_value(), info.get_id())
+        command = "UPDATE information SET ProfileID=%s, ValueID=%s WHERE InformationID = %s"
+        data = (info.get_profile_id(), info.get_value_id(), info.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -153,7 +162,7 @@ class InformationMapper(Mapper):
 
 
     #
-    # def add_info_to_profile(self, profile_id, payload): #siehe profile mehoden
+    # def add_info_to_profile(self, profile_id, payload): #siehe profile methoden
     #     pass
     #     # überprüfen ob es sich bei der jeweiligen property dieses info-objekts
     #     # um dropdown oder um freitext handelt.

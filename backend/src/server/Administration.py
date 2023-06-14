@@ -7,6 +7,7 @@ from backend.src.server.db.BlocklistMapper import BlocklistMapper
 from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
 from backend.src.server.db.ProfileMapper import ProfileMapper
 from backend.src.server.db.UserMapper import UserMapper
+from backend.src.server.db.SelectionPropertyMapper import SelectionPropertyMapper
 
 from backend.src.server.db.InformationMapper import InformationMapper
 from backend.src.server.db.PropertyMapper import PropertyMapper
@@ -144,10 +145,10 @@ class Administration():
     Information-Methoden
     '''
 
-    def create_info(self, property_id, value):
+    def create_info(self, profile_id, value_id):
         information = Information()
-        information.set_property(property_id)
-        information.set_value(value)
+        information.set_profile_id(profile_id)
+        information.set_value_id(value_id)
 
         with InformationMapper() as mapper:
             return mapper.insert(information)
@@ -184,9 +185,9 @@ class Administration():
 
     def create_property(self, value, is_selection, explanation):
         property = Property()
-        property.set_value(value)
+        property.set_name(value)
         property.set_is_selection(is_selection)
-        property.set_explanation(explanation)
+        property.set_description(explanation)
 
         with PropertyMapper() as mapper:
             return mapper.insert(property)
@@ -278,3 +279,17 @@ class Administration():
             return mapper.insert(user_id, payload)
 
 
+    """
+    dewdsfs
+    """
+    def get_selection_props(self):
+        with SelectionPropertyMapper() as mapper:
+            return mapper.find_all()
+
+    def get_selec_by_id(self, id):
+        with SelectionPropertyMapper() as mapper:
+            return mapper.find_by_id(id)
+
+    def get_selec_name(self, name):
+        with SelectionPropertyMapper() as mapper:
+            return mapper.find_by_name(name)
