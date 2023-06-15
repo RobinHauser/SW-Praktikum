@@ -62,7 +62,7 @@ class ProfileCard extends Component {
                       title="Mehr Infos & Interaktionen"
 
                       sx={{
-                          borderTop: 3,
+                          border: 3,
                           borderBottom: 3,
                           borderRadius: 2,
                           borderColor: "#eceff1",

@@ -38,6 +38,18 @@ module.exports = SetupEndpoint({
             response: '/response-files/sopra-dating/userList.json'
         }]
     }, {
+        params: '/message/{id}',
+        requests: [{
+            method: 'GET',
+            response: '/response-files/sopra-dating/messageList.json'
+        }]
+    },{
+        params: '/conversationoverview/{id}',
+        requests: [{
+            method: 'GET',
+            response: '/response-files/sopra-dating/chatUserList.json'
+        }]
+    }, {
         params: '/userList/{id}',
         requests: [{
             method: 'GET',

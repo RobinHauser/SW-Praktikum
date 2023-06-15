@@ -1,30 +1,35 @@
 import * as React from "react";
 import ChatContainer from "../components/ChatContainer";
-import AppHeader from "../components/AppHeader";
 import {Component} from "react";
 
 /**
- * *
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which renders the ChatContainer component
  */
 
 class Chat extends Component {
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
         this.state = {
-            messageArrayLeft: ["Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad", "Hallo wie gehts?", "Danke mir auch", "Ja das ist schön", "Heute gehe ich ins Freibad"],
-            messageArrayRight: ["Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino", "Hi mir gehts gut und dir?", "Super das freut mich", "Was machst du heute?", "Wow das ist cool. Ich gehe ins Kino"]
+            messageList: [],
+            error: null,
+            user: this.props.user
         };
     }
+
+    /**
+     * Renders the class component
+     * @returns Chat - the rendered component
+     */
     render() {
-    return (
-        <div className="App">
-            <ChatContainer></ChatContainer>
-        </div>
-    )
-        ;
+        return (
+            <div className="App">
+                <ChatContainer></ChatContainer>
+            </div>
+        )
+            ;
+    }
 }
-}
+
 export default Chat

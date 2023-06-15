@@ -1,0 +1,34 @@
+[
+  {
+    "userID": 1001,
+    "email": "totowolff@gmail.com",
+    "displayName": "Toto Wolff",
+    "dateOfBirth": "GEBURTSTAG",
+    "profileImgUrl": "tbd",
+    "chatID": 30001
+  },
+  {
+    "userID": 1002,
+    "email": "maxverstappen@gmail.com",
+    "displayName": "Max Verstappen",
+    "dateOfBirth": "GEBURTSTAG",
+    "profileImgUrl": "tbd",
+    "chatID": 30002
+  },
+  {
+    "userID": 1003,
+    "email": "lewishamilton@gmail.com",
+    "displayName": "Lewis Hamilton",
+    "dateOfBirth": "GEBURTSTAG",
+    "profileImgUrl": "tbd",
+    "chatID": 30003
+  },
+  {
+    "userID": 1004,
+    "email": "fernandoalonso@gmail.com",
+    "displayName": "Fernando Alonso",
+    "dateOfBirth": "GEBURTSTAG",
+    "profileImgUrl": "tbd",
+    "chatID": 30004
+  }
+]
