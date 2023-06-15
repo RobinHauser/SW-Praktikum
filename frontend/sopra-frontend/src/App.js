@@ -97,32 +97,31 @@ class App extends React.Component {
      */
     getUser = () => {
         // Todo kommentiertes löschen sobald Schnittstelle läuft
-        let testUser = UserBO.fromJSON(
-                {
-                "UserID": "1005",
-	            "displayname": "Michi B",
-                "email": "michaelbergdolt20@gmail.com",
-	            "dateOfBirth": "20.03.2003"
-                }
-        );
-        this.setState({
-            user: testUser[0]
-        })
+        // let testUser = UserBO.fromJSON(
+        //         {
+        //         "UserID": "1005",
+	    //         "displayname": "Michi B",
+        //         "email": "michaelbergdolt20@gmail.com",
+	    //         "dateOfBirth": "20.03.2003"
+        //         }
+        // );
+        // this.setState({
+        //     user: testUser[0]
+        // })
 
-        // SopraDatingAPI.getAPI().getUser(this.state.profileEmail)
-        //     .then(UserBO => {
-        //         console.log(UserBO)
-        //         this.setState({
-        //             appError: null,
-        //             user: UserBO[0]
-        //         })
-        //     }).catch(e =>
-        //         this.setState({
-        //             appError: e,
-        //             user: null
-        //         })
-        //     )
-        // ;
+        SopraDatingAPI.getAPI().getUser(this.state.profileEmail)
+            .then(UserBO => {
+                this.setState({
+                    appError: null,
+                    user: UserBO[0]
+                })
+            }).catch(e =>
+                this.setState({
+                    appError: e,
+                    user: null
+                })
+            )
+        ;
     }
 
     render() {
