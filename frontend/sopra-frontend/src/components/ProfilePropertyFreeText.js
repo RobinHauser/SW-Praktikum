@@ -10,6 +10,9 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from '@mui/material/TextField';
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RemoveCircleSharpIcon from "@mui/icons-material/RemoveCircleSharp";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -46,18 +49,29 @@ class ProfilePropertyFreeText extends Component {
         const {openDialog} = this.state;
         return (
             <div>
-                <ListItem
-                    sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}
-                    secondaryAction={
+               <ListItem
+                    sx={{ '&:hover': { bgcolor: '#c6e2ff' }, borderRadius: '10px' }}
+               >
+                    <ListItemText primary={`Eigenschaft ${value}: Value`} />
+                    <ListItemSecondaryAction>
                         <Tooltip title="Freitext-Eigenschaft bearbeiten">
-                            <IconButton onClick={this.handleOpenDialog}>
-                                <BorderColorSharpIcon/>
-                            </IconButton>
+                          <IconButton onClick={this.handleOpenDialog}>
+                            <BorderColorSharpIcon />
+                          </IconButton>
                         </Tooltip>
-                    }
-                >
-                    <ListItemText primary={`Eigenschaft ${value}: Value`}/>
-                </ListItem>
+                        <Tooltip title="Eigenschaft aus Profil entfernen">
+                          <IconButton onClick={this.handleRemoveItemClick}>
+                            <RemoveCircleSharpIcon/>
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Eigenschaft aus App löschen">
+                          <IconButton onClick={this.handleDeleteItemClick}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+
 
                 <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
                     <DialogTitle>{`Eigenschaft ${value}`}</DialogTitle>
