@@ -65,13 +65,13 @@ class ChatMapper(Mapper.Mapper):
             for i in v1:
                 cursor.execute(f'SELECT UserID FROM chatrelation WHERE ChatID={i[0]} AND UserID != {user_id}')
                 v2 = cursor.fetchall()
-
-            try:
-                for i in v2:
-                    if int(i[0]) == int(payload.get('UserID')):
-                        raise IndexError
-            except IndexError:
-                return result.append("Chat already exists")
+                try:
+                    for i in v2:
+                        if int(i[0]) == int(payload.get('UserID')):
+                            raise IndexError
+                except IndexError:
+                    result.append("Chat already exists")
+                    return IndexError
 
             else:
                 command1 = f'INSERT INTO chatrelation (ChatID ,UserID) VALUES (%s, %s) '

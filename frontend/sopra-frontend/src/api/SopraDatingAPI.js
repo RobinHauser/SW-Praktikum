@@ -49,7 +49,7 @@ export default class SopraDatingAPI {
     #removeUserFromBlocklistURL = (userID) => `${this.#SopraDatingServerBaseURL}/blocklist/${userID}`;
 
     // Chat related
-    #addUserToChatURL = () => `${this.#SopraDatingServerBaseURL}/chat`;
+    #addUserToChatURL = (userID) => `${this.#SopraDatingServerBaseURL}/chat/${userID}`;
     #getUserChatsURL = (userID) => {
         return `${this.#SopraDatingServerBaseURL}/chat/${userID}`; //TODO change ID
     }
@@ -215,14 +215,14 @@ export default class SopraDatingAPI {
         })
     }
 
-    addUserToChat(userBO) {
-        return this.#fetchAdvanced(this.#addUserToChatURL(), {
+    addUserToChat(ownUserId ,partnerUserId) {
+        return this.#fetchAdvanced(this.#addUserToChatURL(ownUserId), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json'
             },
-            body: JSON.stringify(userBO)
+            body: JSON.stringify(partnerUserId)
         })
     }
 
