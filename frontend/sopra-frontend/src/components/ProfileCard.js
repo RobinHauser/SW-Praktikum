@@ -10,7 +10,7 @@ import ExtendedProfileCard from "./ExtendedProfileCard";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
- * @author [Jannik Haug, Theo Klautke]
+ * @author [Jannik Haug, Theo Klautke, Michael Bergdolt]
  * Diaologhandling von Björn Till übernommen
  */
 class ProfileCard extends Component {

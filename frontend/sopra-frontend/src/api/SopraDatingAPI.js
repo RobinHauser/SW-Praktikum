@@ -80,6 +80,7 @@ export default class SopraDatingAPI {
 
     // viewedList related
     #addUserToViewedlistURL = (userID)=>`${this.#SopraDatingServerBaseURL}/view/${userID}`;
+    #getViewedlistURL = (userID) => `${this.#SopraDatingServerBaseURL}/view/${userID}`
 
     // similarityMeasure related
 
@@ -335,6 +336,16 @@ export default class SopraDatingAPI {
             return new Promise(function (resolve) {
                 resolve(userBO)
             })
+        })
+    }
+
+    getViewedlist(userID) {
+        return this.#fetchAdvanced(this.#getViewedlistURL(userID))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
         })
     }
 }
