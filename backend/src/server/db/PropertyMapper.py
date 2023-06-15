@@ -25,10 +25,10 @@ class PropertyMapper(Mapper.Mapper):
             property.set_description(description)
             result.append(property)
 
-            self._cnx.commit()
-            cursor.close()
+        self._cnx.commit()
+        cursor.close()
 
-            return result
+        return result
 
     def find_by_id(self, id):
         """

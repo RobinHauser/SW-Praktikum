@@ -2,16 +2,18 @@ from backend.src.server.bo.BusinessObject import BusinessObject
 from backend.src.server.bo.Profile import Profile
 from backend.src.server.bo.User import User
 from backend.src.server.bo.Property import Property
+from backend.src.server.bo.SelectionProperty import SelectionProperty
+from backend.src.server.bo.TextProperty import TextProperty
 from backend.src.server.bo.Information import Information
+
 from backend.src.server.db.BlocklistMapper import BlocklistMapper
 from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
 from backend.src.server.db.ProfileMapper import ProfileMapper
 from backend.src.server.db.UserMapper import UserMapper
 from backend.src.server.db.SelectionPropertyMapper import SelectionPropertyMapper
-
+from backend.src.server.db.TextPropertyMapper import TextPropertyMapper
 from backend.src.server.db.InformationMapper import InformationMapper
 from backend.src.server.db.PropertyMapper import PropertyMapper
-
 from backend.src.server.db.MessageMapper import MessageMapper
 from backend.src.server.db.ChatMapper import ChatMapper
 
@@ -123,13 +125,13 @@ class Administration():
             else:
                 return None
 
-    def add_info_to_profile(self, profile, info):
-        with ProfileMapper() as mapper:
-            return mapper.add_info(profile, info)
+    # def add_info_to_profile(self, profile, info): # OLD & WRONG
+    #     with ProfileMapper() as mapper:
+    #         return mapper.add_info(profile, info)
 
-    def remove_info_from_profile(self, profile, info):
-        with ProfileMapper() as mapper:
-            return mapper.remove_info(profile, info)
+    # def remove_info_from_profile(self, profile, info): # OLD & WRONG
+    #     with ProfileMapper() as mapper:
+    #         return mapper.remove_info(profile, info)
 
     def delete_profile(self, profile):
         with ProfileMapper() as mapper:
@@ -280,16 +282,85 @@ class Administration():
 
 
     """
-    dewdsfs
+    SelectionProperty Methoden
     """
-    def get_selection_props(self):
+    def create_selection_property(self, name, description, selections):
+        sel_prop = SelectionProperty()
+        sel_prop.set_name(name)
+        sel_prop.set_is_selection(1)
+        sel_prop.set_description(description)
+        sel_prop.set_selections(selections)
+
+        with SelectionPropertyMapper() as mapper:
+            return mapper.insert(sel_prop)
+
+    def get_all_selection_properties(self):
         with SelectionPropertyMapper() as mapper:
             return mapper.find_all()
 
-    def get_selec_by_id(self, id):
+    def get_selection_property_by_id(self, id):
         with SelectionPropertyMapper() as mapper:
             return mapper.find_by_id(id)
 
-    def get_selec_name(self, name):
+    def get_selection_property_by_name(self, name):
         with SelectionPropertyMapper() as mapper:
             return mapper.find_by_name(name)
+
+    def update_selection_property(self, sel_prop):
+        with SelectionPropertyMapper() as mapper:
+            return mapper.update(sel_prop)
+
+    def delete_selection_property(self, sel_prop):
+        #Deleting info objects of that selection property first
+        infos = self.get_infos_of_property(sel_prop)
+        if infos is not None:
+            for info in infos:
+                self.delete_info(info)
+
+        with SelectionPropertyMapper() as mapper:
+            return mapper.delete(sel_prop)
+
+    """
+    TextProperty Methoden
+    """
+    def create_text_property(self, name, description):
+        text_prop = TextProperty()
+        text_prop.set_name(name)
+        text_prop.set_is_selection(0)
+        text_prop.set_description(description)
+
+        with TextPropertyMapper() as mapper:
+            return mapper.insert(text_prop)
+
+    def get_all_text_properties(self):
+        with TextPropertyMapper() as mapper:
+            return mapper.find_all()
+
+    def get_text_property_by_id(self, id):
+        with TextPropertyMapper() as mapper:
+            return mapper.find_by_id(id)
+
+    def get_text_property_by_name(self, name):
+        with TextPropertyMapper() as mapper:
+            return mapper.find_by_name(name)
+
+    def update_text_property(self, text_prop):
+        with TextPropertyMapper() as mapper:
+            return mapper.update(text_prop)
+
+    def delete_text_property(self, text_prop):
+        # Deleting info objects of that selection property first
+        infos = self.get_infos_of_property(text_prop)
+        if infos is not None:
+            for info in infos:
+                self.delete_info(info)
+        with TextPropertyMapper() as mapper:
+            return mapper.delete(text_prop)
+
+    def add_text_entry(self, text_prop, entry):
+        with TextPropertyMapper() as mapper:
+            return mapper.insert_entry(text_prop, entry)
+
+    def update_text_entry(self, info, entry):
+        with TextPropertyMapper() as mapper:
+            return mapper.update_entry(info, entry)
