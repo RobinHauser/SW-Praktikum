@@ -54,6 +54,7 @@ export default class bookmarkList extends React.Component {
     render() {
         const {bookmarklist} = this.state;
 
+
         return (
             <div className="App">
                 <AppHeader avatar={this.props.avatar}></AppHeader>

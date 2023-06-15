@@ -7,6 +7,8 @@
  */
 import UserBO from "./UserBO";
 import MessageBO from "./MessageBO";
+import chatb from "./ChatBO";
+import ChatBO from "./ChatBO";
 
 export default class SopraDatingAPI {
 
@@ -17,7 +19,7 @@ export default class SopraDatingAPI {
     #SopraDatingServerBaseURL = 'http://127.0.0.1:8000';
 
     // Local http-fake-backend
-    // #SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
+    //#SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
 
     // User related
@@ -47,15 +49,16 @@ export default class SopraDatingAPI {
     #removeUserFromBlocklistURL = (userID) => `${this.#SopraDatingServerBaseURL}/blocklist/${userID}`;
 
     // Chat related
-    #addUserToChatURL = () => `${this.#SopraDatingServerBaseURL}/conversationoverview`;
+    #addUserToChatURL = (userID) => `${this.#SopraDatingServerBaseURL}/chat/${userID}`;
     #getUserChatsURL = (userID) => {
-        return `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${userID}`;
+        return `${this.#SopraDatingServerBaseURL}/chat/${userID}`; //TODO change ID
     }
     #removeChatURL = (chatID) => `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${chatID}`;
 
     // Message related
-    #addMessageURl = () => `${this.#SopraDatingServerBaseURL}/message`;
-    #getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message?id=${chatID}`;
+    #addMessageURl = (userID) => `${this.#SopraDatingServerBaseURL}/message/${userID}`;
+    //#getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message/30001`; //TODO change ID
+    #getChatMessagesURL = (chatID) => `http://127.0.0.1:8000/message/${chatID}`; //TODO change ID
 
     // Profile related
     #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
@@ -68,13 +71,13 @@ export default class SopraDatingAPI {
     #getSearchProfilesURL = (userID) => {
         return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${userID}`;
     }
-    #addSearchProfileURL = ()=> {
+    #addSearchProfileURL = () => {
         return `${this.#SopraDatingServerBaseURL}/searchprofile`;
     }
-    #updateSearchProfileURL = (searchprofileID)=> {
+    #updateSearchProfileURL = (searchprofileID) => {
         return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
-    #deleteSearchProfileURL = (searchprofileID)=> {
+    #deleteSearchProfileURL = (searchprofileID) => {
         return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
 
@@ -82,10 +85,10 @@ export default class SopraDatingAPI {
 
 
     /**
-   * Get the Singleton instance
-   *
-   * @public
-   */
+     * Get the Singleton instance
+     *
+     * @public
+     */
     static getAPI() {
         if (this.#api == null) {
             this.#api = new SopraDatingAPI();
@@ -94,17 +97,17 @@ export default class SopraDatingAPI {
     }
 
     /**
-   *  Returns a json object.
-   *  fetchAdvanced throws an Error also an server status errors
-   */
+     *  Returns a json object.
+     *  fetchAdvanced throws an Error also an server status errors
+     */
     #fetchAdvanced = (url, init) => fetch(url, init)
         .then(res => {
-            // The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
-            if (!res.ok) {
-                throw Error(`${res.status} ${res.statusText}`);
+                // The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
+                if (!res.ok) {
+                    throw Error(`${res.status} ${res.statusText}`);
+                }
+                return res.json();
             }
-            return res.json();
-        }
         )
 
     getUser(email) {
@@ -148,7 +151,7 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
-        })
+            })
     }
 
     removeUserFromBookmarklist(userID, userBO) {
@@ -163,7 +166,7 @@ export default class SopraDatingAPI {
             let userBOs = UserBO.fromJSON(responseJSON)[0];
             // console.info(userBOs);
             return new Promise(function (resolve) {
-               resolve(userBOs);
+                resolve(userBOs);
             })
         })
     }
@@ -192,7 +195,7 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
-        })
+            })
     }
 
     removeUserFromBlocklist(userID, userBO) {
@@ -207,25 +210,29 @@ export default class SopraDatingAPI {
             let userBOs = UserBO.fromJSON(responseJSON)[0];
             // console.info(userBOs);
             return new Promise(function (resolve) {
-               resolve(userBOs);
+                resolve(userBOs);
             })
         })
     }
 
-    addUserToChat(userBO) {
-        return this.#fetchAdvanced(this.#addUserToChatURL(), {
+    addUserToChat(ownUserId ,partnerUserId) {
+        return this.#fetchAdvanced(this.#addUserToChatURL(ownUserId), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json'
             },
-            body: JSON.stringify(userBO)
+            body: JSON.stringify(partnerUserId)
         })
     }
 
     getUserChats(userID) {
         return this.#fetchAdvanced(this.#getUserChatsURL(userID)).then((responseJSON) => {
-            return responseJSON
+            let chatBOs = ChatBO.fromJSON(responseJSON);
+            console.log("chatBOS:", chatBOs)
+            return new Promise(function (resolve) {
+                resolve(chatBOs)
+            })
         })
     }
 
@@ -235,18 +242,24 @@ export default class SopraDatingAPI {
         })
     }
 
-    addMessage(messageBO) {
-        return this.#fetchAdvanced(this.#addMessageURl(), {
+    addMessage(userID, messageBO) {
+        return this.#fetchAdvanced(this.#addMessageURl(userID), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json'
             },
             body: JSON.stringify(messageBO)
+        }).then((responseJSON) => {
+            let userBO = UserBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(userBO)
+            })
         })
     }
 
     getChatMessages(chatID) {
+        console.log("test:"+ this.#getChatMessagesURL(chatID))
         return this.#fetchAdvanced(this.#getChatMessagesURL(chatID))
             .then((responseJSON) => {
                 let messageBOs = MessageBO.fromJSON(responseJSON);
@@ -254,7 +267,7 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(messageBOs)
                 })
-        })
+            })
     }
 
     getProfile(userID) {
