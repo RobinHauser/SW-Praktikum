@@ -25,8 +25,8 @@ class MessageLeft extends Component {
                         <Typography noWrap={false} sx={{m: 2}}>{content}</Typography>
                         <Typography fontSize={12} sx={{
                             textAlign: "right",
-                            marginRight: 10,
-                            marginBottom: 3
+                            marginRight: 3,
+                            marginBottom: 1
                         }}>{timeStamp}</Typography>
                     </Paper>
                 </ListItem>
