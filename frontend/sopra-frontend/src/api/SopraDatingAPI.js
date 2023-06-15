@@ -24,7 +24,7 @@ export default class SopraDatingAPI {
 
     // User related
     #getUserURL = (email) => {
-        return `http://localhost:8081/api/v1/user/${email}` //Todo set Base URL Back to variable
+        return `${this.#SopraDatingServerBaseURL}/init-user/${email}`;
     };
 
     // Main Page related

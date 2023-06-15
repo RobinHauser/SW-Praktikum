@@ -96,7 +96,7 @@ class App extends React.Component {
      * Getter for the current User
      */
     getUser = () => {
-        // Todo Sobald die Schnittstelle getUser steht kommentiertes auskommentieren, rest löschen!!!
+        // Todo kommentiertes löschen sobald Schnittstelle läuft
         let testUser = UserBO.fromJSON(
                 {
                 "UserID": "1005",
