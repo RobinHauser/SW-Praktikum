@@ -10,17 +10,19 @@ class UserMapper(Mapper):
         result = []
         cursor = self._cnx.cursor()
         cursor.execute("SELECT * FROM user")
-        tuples = cursor.fetchall()
+        users = cursor.fetchall()
 
-        for (userid, email, displayname, avatarurl) in tuples:
-            user = User()
-            user.set_id(userid)
-            user.set_email(email)
-            user.set_displayname(displayname)
-            user.set_avatarurl(avatarurl)
-            #user.set_g_id(g_id)
-            #user.set_date_of_birth(date_of_birth)
-            result.append(user)
+        for user_from_list in users:
+            try:
+                user = User()
+                user.set_user_id(user_from_list[0])
+                user.set_email(user_from_list[1])
+                user.set_displayname(user_from_list[2])
+                user.set_avatarurl(user_from_list[3])
+                result.append(user_from_list)
+            except IndexError:
+                result = None
+
 
         self._cnx.commit()
         cursor.close()
@@ -28,19 +30,22 @@ class UserMapper(Mapper):
         return result
 
     def find_by_id(self, id):
-        result = None
+        """
+        Get user by id
+        :param email: the email of the user we want to find
+        :return: the found user
+        """
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM user WHERE UserID={}".format(id)
+        command = f'SELECT * FROM user WHERE UserID = {id}'
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        tuples = cursor.fetchone()
 
         try:
-            (userid, email, displayname, avatarurl) = tuples[0]
             user = User()
-            user.set_id(userid)
-            user.set_email(email)
-            user.set_displayname(displayname)
-            user.set_avatarurl(avatarurl)
+            user.set_user_id(tuples[0])
+            user.set_email(tuples[1])
+            user.set_displayname(tuples[2])
+            user.set_avatarurl(tuples[3])
             result = user
         except IndexError:
             result = None
@@ -134,4 +139,4 @@ class UserMapper(Mapper):
 
         return user
 
-#todo umwandlungen in json?
+# todo umwandlungen in json?
