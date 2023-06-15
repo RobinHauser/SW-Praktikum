@@ -1,3 +1,4 @@
+from backend.src.server.bo.User import User
 from backend.src.server.db.Mapper import Mapper
 
 
@@ -73,19 +74,17 @@ class UserMapper(Mapper):
         return result
 
     def find_by_email(self, email):
-        result = None
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM user WHERE email LIKE '{}'".format(email)
+        command = f'SELECT * FROM user WHERE Email = "{email}"'
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        tuples = cursor.fetchone()
 
         try:
-            (userid, email, displayname, avatarurl) = tuples[0]
             user = User()
-            user.set_id(userid)
-            user.set_email(email)
-            user.set_displayname(displayname)
-            user.set_avatarurl(avatarurl)
+            user.set_user_id(tuples[0])
+            user.set_email(tuples[1])
+            user.set_displayname(tuples[2])
+            user.set_avatarurl(tuples[3])
             result = user
         except IndexError:
             result = None

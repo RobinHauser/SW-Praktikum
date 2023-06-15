@@ -47,8 +47,9 @@ class Administration():
             return mapper.find_all()
 
     def get_user_by_email(self, email):
-        with UserMapper() as mapper:
-            return mapper.find_by_email(email)
+        user_mapper = UserMapper()
+        return user_mapper.find_by_email(email)
+
 
     def update_user(self, user):  # das selbe wie save user
         with UserMapper() as mapper:
