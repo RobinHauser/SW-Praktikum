@@ -74,6 +74,11 @@ class UserMapper(Mapper):
         return result
 
     def find_by_email(self, email):
+        """
+        Get user by email
+        :param email: the email of the user we want to find
+        :return: the found user
+        """
         cursor = self._cnx.cursor()
         command = f'SELECT * FROM user WHERE Email = "{email}"'
         cursor.execute(command)
