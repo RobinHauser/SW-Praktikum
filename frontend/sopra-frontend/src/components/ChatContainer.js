@@ -5,7 +5,6 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import {Link} from "react-router-dom";
-import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import MessageLeft from "./MessageLeft";
 import MessageRight from "./MessageRight"
@@ -15,12 +14,14 @@ import SendIcon from '@mui/icons-material/Send';
 import AppHeader from "./AppHeader";
 import {Component} from "react";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import CachedIcon from '@mui/icons-material/Cached';
 
 
 /**
- * *
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which includes the complete chat ui with messages, textfield and a send button.
  */
+
 class ChatContainer extends Component {
     constructor(props) {
         super(props);
@@ -35,9 +36,13 @@ class ChatContainer extends Component {
 
         };
         this.messagesEndRef = React.createRef();
-
     }
 
+    /**
+     * Gets all messages of the given chatid
+     * @param {int} id - current chat id
+     *
+     */
     getMessageList = (id) => {
         SopraDatingAPI.getAPI().getChatMessages(id)
             .then(messages =>
@@ -54,6 +59,11 @@ class ChatContainer extends Component {
         ;
     }
 
+    /**
+     * This function fills a messageBo with the written text of the text field, current date and time and chatid.
+     * Then triggers the sendMessage function and gives the messageBo as a parameter.
+     * After sending, it waits for a timeout of 100 ms and then retrieves all messages again.
+     */
     buttonSendFunction() {
         const content = this.state.messageText
         const dateTime = this.getFormatedDateTime()
@@ -72,18 +82,22 @@ class ChatContainer extends Component {
 
     }
 
+    /**
+     * Sends a messageBo with the current User to add a message to the Database
+     * @param {Object} messageBo -Object for sending a message
+     * @property {string} messageBo.content - The content written by the user
+     * @property {string} messageBo.timeStamp - Time of sending the message
+     * @property {int} messageBo.chatId - The id of the current chat
+     */
     sendMessage = (messageBo) => {
         SopraDatingAPI.getAPI().addMessage(this.state.currentUser, messageBo)
             .then(() => {
             })
     }
 
-    componentDidMount() {
-        this.getChatId()
-        this.getMessageList(this.state.chatId)
-        this.scrollToBottom()
-    }
-
+    /**
+     * Gets the current time and date and formats it into sql datetime format
+     */
     getFormatedDateTime() {
         var dateTime = new Date().toISOString()
         dateTime = dateTime.replace('T', ' ')
@@ -91,24 +105,53 @@ class ChatContainer extends Component {
         return dateTime
     }
 
-    componentDidUpdate() {
-        this.scrollToBottom()
-    }
-
+    /**
+     * Gets the current chat ID
+     */
     getChatId() {
         const urlChatId = window.location.pathname.split('/')
         this.state.chatId = urlChatId[2]
     }
 
+    /**
+     * Gets the current text, written in the text field
+     * @param {Object} event
+     */
     handleInputChange = (event) => {
         this.setState({messageText: event.target.value})
     }
 
-
+    /**
+     * Scrolls the message list to the bottem (newest message)
+     * Reference: https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
+     */
     scrollToBottom() {
-        this.messagesEndRef.current?.scrollIntoView(); // Quelle für das automatische nach unten Scrollen: https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
+        this.messagesEndRef.current?.scrollIntoView();
     }
 
+    /**
+     * Called after the component did mount.
+     * It retrieves the current chat ID, all messages of the current chat and scrolls to the newest message
+     */
+    componentDidMount() {
+        this.getChatId()
+        this.getMessageList(this.state.chatId)
+        this.scrollToBottom()
+    }
+
+    /**
+     * Called after the component did update.
+     * It scrolls to the newest message
+     */
+    componentDidUpdate() {
+        this.scrollToBottom()
+    }
+
+    /**
+     * Renders the class component
+     * @returns ChatContainer - the rendered component
+     * Reference for list height calculation: https://www.jimlynchcodes.com/blog/the-css-calc-function-for-a-more-consistent-responsive-design
+     */
     render() {
         const avatarLink = this.props.avatar
         const currentUser = parseInt(this.props.user.getUserID())
@@ -125,10 +168,15 @@ class ChatContainer extends Component {
                     height: "90vh",
                     minHeight: "90vh"
                 }}>
-                    <Paper style={{maxHeight: "90vh"}}>
-                        <Box style={{alignItems: "center"}} sx={{mb: 1}}>
-                            <Paper style={{display: "flex", alignItems: "center"}}
-                                   sx={{minHeight: 50}} elevation={5}>
+                    <Paper sx={{maxHeight: "90vh"}}>
+                        <Box sx={{mb: 1, alignItems: "center"}}>
+                            <Paper
+                                sx={{
+                                    minHeight: 50,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between"
+                                }} elevation={5}>
                                 <Tooltip title="zurück zur Übersicht" fontSize="large" sx={{color: "black"}}>
                                     <Link to="/ConversationOverview">
                                         <IconButton>
@@ -137,17 +185,26 @@ class ChatContainer extends Component {
                                     </Link>
                                 </Tooltip>
                                 <div style={{display: "flex", alignItems: "center"}}>
-                                    <Avatar></Avatar>
-                                    <Typography style={{color: "black"}} noWrap={false}
-                                                sx={{ml: 2, fontSize: 20, wordBreak: 'break-all'}}> placeholder
-                                        name</Typography>
+                                    <Typography noWrap={false}
+                                                sx={{
+                                                    ml: 2,
+                                                    fontSize: 20,
+                                                    wordBreak: 'break-all',
+                                                    color: "black"
+                                                }}> </Typography>
                                 </div>
+                                <Tooltip title="Nachrichten laden" fontSize="large"
+                                         sx={{color: "white", marginRight: 3}}>
+                                    <Button variant="contained" onClick={() => this.getMessageList(this.state.chatId)}>
+                                        <CachedIcon></CachedIcon>
+                                    </Button>
+                                </Tooltip>
                             </Paper>
                         </Box>
 
-                        <List style={{
+                        <List sx={{
                             position: "relative",
-                            height: "calc(100vh - 210px)", //Idee inspiriert durch: https://www.jimlynchcodes.com/blog/the-css-calc-function-for-a-more-consistent-responsive-design (Abgerufen am 30.04.2023)
+                            height: "calc(100vh - 210px)",
                             overflow: "auto",
                         }}>
                             <Container>
@@ -172,24 +229,27 @@ class ChatContainer extends Component {
                         </List>
 
                     </Paper>
-                    <Container sx={{
-                        maxHeight: "50px",
-                        position: "static",
-                        bottom: "0",
-                        alignItems: "flex-start",
-                        flexDirection: "row",
-                        display: "flex",
-                        justifyContent: "center"
-                    }}>
-                        <TextField value={this.state.messageText} InputProps={{style: {color: "primary"}}}
-                                   InputLabelProps={{style: {color: "primary"}}}
-                                   label="Write Message..." variant="standard"
-                                   sx={{minWidth: "50%", mb: 1}} color="primary" onChange={this.handleInputChange}/>
-                        <Button sx={{maxHeight: "45px"}} variant="contained" endIcon={<SendIcon/>}
-                                onClick={() => this.buttonSendFunction()}>
-                            Send
-                        </Button>
-                    </Container>
+                    <Paper elevation={1} sx={{borderRadius: "0 0 10px 10px"}}>
+                        <Container sx={{
+                            maxHeight: "50px",
+                            position: "static",
+                            bottom: "0",
+                            alignItems: "flex-start",
+                            flexDirection: "row",
+                            display: "flex",
+                            justifyContent: "center",
+                        }}>
+
+                            <TextField value={this.state.messageText} InputProps={{style: {color: "primary"}}}
+                                       InputLabelProps={{style: {color: "primary"}}}
+                                       label="Write Message..." variant="standard"
+                                       sx={{minWidth: "50%", mb: 1}} color="primary" onChange={this.handleInputChange}/>
+                            <Button sx={{maxHeight: "45px", marginTop: 1}} variant="contained" endIcon={<SendIcon/>}
+                                    onClick={() => this.buttonSendFunction()}>
+                                Send
+                            </Button>
+                        </Container>
+                    </Paper>
                 </Container>
 
             </div>

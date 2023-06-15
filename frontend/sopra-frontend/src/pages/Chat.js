@@ -1,11 +1,10 @@
 import * as React from "react";
 import ChatContainer from "../components/ChatContainer";
 import {Component} from "react";
-import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
- * *
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which renders the ChatContainer component
  */
 
 class Chat extends Component {
@@ -19,26 +18,10 @@ class Chat extends Component {
         };
     }
 
-    getMessageList = () => {
-        SopraDatingAPI.getAPI().getChatMessages()
-            .then(messages =>
-                this.setState({
-                    messageList: messages,
-                    error: null
-                }))
-            .catch(e =>
-                this.setState({
-                    messageList: [],
-                    error: e
-                })
-            )
-        ;
-    }
-
-    componentDidMount() {
-
-    }
-
+    /**
+     * Renders the class component
+     * @returns Chat - the rendered component
+     */
     render() {
         return (
             <div className="App">

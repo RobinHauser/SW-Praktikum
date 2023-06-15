@@ -7,10 +7,14 @@ import {Link} from "react-router-dom";
 import {Component} from "react";
 
 /**
- * *
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which shows a chat user partner as a ListItem.
  */
 class ConversationOverviewItem extends Component {
+    /**
+     * Renders the class component
+     * @returns ConversationOverviewItem - the rendered component
+     */
     render() {
         const {name, chatBo} = this.props;
         const chatID = chatBo.getChatID();
@@ -24,9 +28,10 @@ class ConversationOverviewItem extends Component {
                     justifyContent: "space-between",
                     border: 1,
                     borderRadius: 3,
+                    width: 500,
                     borderColor: "#cfd8dc",
                     ':hover': {boxShadow: 2}
-                }} style={{width: 500}}>
+                }}>
                     <div style={{display: "flex", alignItems: "center"}}>
                         <Avatar src={placeHolderImage}></Avatar>
                         <ListItemText noWrap={false} sx={{ml: 2, fontSize: 20, wordBreak: 'break-all'}}
@@ -35,7 +40,6 @@ class ConversationOverviewItem extends Component {
                     <Link to={`/chat/${chatID}/${userID}`}>
                         <Tooltip title="zum Chat" fontSize="large" sx={{color: "#2979ff"}}>
                             <KeyboardDoubleArrowRightIcon>
-                                test
                             </KeyboardDoubleArrowRightIcon>
                         </Tooltip>
                     </Link>
