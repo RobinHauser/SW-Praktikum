@@ -338,6 +338,12 @@ class User_api(Resource):
         adm = Administration()
         return adm.delete_user(id, api.payload)
 
+    @user_namespace.marshal_with(user, code=200)
+    @user_namespace.expect(user)
+    def put(self, id):
+        adm = Administration()
+        return adm.update_user(id, api.payload)
+
 
 
 

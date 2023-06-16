@@ -44,9 +44,14 @@ class Administration():
         return user_mapper.find_by_email(email)
 
 
-    def update_user(self, user):  # das selbe wie save user
-        with UserMapper() as mapper:
-            return mapper.update(user)
+    def update_user(self, id, payload):  # das selbe wie save user
+        user = User()
+        user.set_user_id(payload['UserID'])
+        user.set_email(payload['email'])
+        user.set_avatarurl(payload['ProfileIMGURL'])
+        user.set_displayname(payload['displayname'])
+        user_mapper = UserMapper()
+        return user_mapper.update(user)
 
     def delete_user(self, id, payload):
         user = User()
