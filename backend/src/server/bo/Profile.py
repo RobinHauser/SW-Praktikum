@@ -1,8 +1,5 @@
-from BusinessObject import BusinessObject
-from Property import Property
-from TextProperty import TextProperty
-from SelectionProperty import SelectionProperty
-from Information import Information
+from backend.src.server.bo.BusinessObject import BusinessObject
+
 
 class Profile(BusinessObject):
     def __init__(self):

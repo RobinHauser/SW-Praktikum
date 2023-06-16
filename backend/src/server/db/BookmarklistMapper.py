@@ -43,8 +43,8 @@ class BookmarklistMapper(Mapper):
 
                 # Form the user into a json and add it to the list
                 for user in users:
-                    jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}"' \
-                            f', "ProfileIMGURL": "{user[4]}"}}'
+                    jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}"' \
+                            f', "ProfileIMGURL": "{user[3]}"}}'
 
                     userJSON = json.loads(jsstr)
                     result.append(userJSON)
@@ -88,7 +88,7 @@ class BookmarklistMapper(Mapper):
         cursor.execute(f'SELECT BookmarklistID FROM bookmarklist WHERE UserID = {user_id}')
 
         bookmarklist_id = cursor.fetchall()[0][0]
-        bookmarked_user_id = int(payload.get('id'))
+        bookmarked_user_id = int(payload.get('UserID'))
 
         cursor.execute(
             f'DELETE FROM bookmark WHERE BookmarklistID = {bookmarklist_id} AND BookmarkedUserID = {bookmarked_user_id}')

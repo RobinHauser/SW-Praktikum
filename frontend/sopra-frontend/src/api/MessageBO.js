@@ -8,33 +8,32 @@ export default class MessageBO extends BusinessObject {
   /**
    * Constructs a new MessageBO object.
    *
-   * @param {*} messageContent - message Content
-   * @param {*} timeStamp - timeStamp
-   * @param {*} senderID - ID of Message Sender
-   * @param {*} receiverID - ID of Message Receiver
+   * @param {*} MessageID - message Content
+   * @param {*} Sender - timeStamp
+   * @param {*} Content - ID of Message Sender
+   * @param {*} TimeStamp - ID of Message Receiver
    */
-  constructor(messageContent, timeStamp, senderID, receiverID) {
+  constructor(MessageID, Sender, Content, TimeStamp) {
     super();
-    this.messageContent = messageContent;
-    this.timeStamp = timeStamp;
-    this.senderID = senderID;
-    this.receiverID = receiverID;
+    this.messageID = MessageID;
+    this.senderID = Sender;
+    this.content = Content;
+    this.timeStamp = TimeStamp;
   }
-
   /**
    * Sets the message content of this MessageBO.
    *
-   * @param {*} messageContent - the new message content of this BlocklistBO.
+   * @param {*} content - the new message content of this BlocklistBO.
    */
-  setMessageContent(messageContent) {
-    this.messageContent = messageContent;
+  setContent(content) {
+    this.content = content;
   }
 
   /**
    * Gets the message content of this MessageBO.
    */
-  getMessageContent() {
-    return this.messageContent;
+  getContent() {
+    return this.content;
   }
 
   /**
@@ -69,20 +68,20 @@ export default class MessageBO extends BusinessObject {
     return this.senderID;
   }
 
-  /**
-   * Sets the receiver ID of this MessageBO.
+    /**
+   * Sets the message ID of this MessageBO.
    *
-   * @param {*} receiverID - the new receiver ID of this MessageBO.
+   * @param {*} messageID - the new sender ID of this MessageBO.
    */
-  setReceiverID(receiverID) {
-    this.receiverID = receiverID;
+  setMessageID(messageID) {
+    this.messageID = messageID;
   }
 
   /**
-   * Gets the receiver ID of this MessageBO.
+   * Gets the message ID of this MessageBO.
    */
-  getReceiverID() {
-    return this.receiverID;
+  getMessageID() {
+    return this.messageID;
   }
 
   /**

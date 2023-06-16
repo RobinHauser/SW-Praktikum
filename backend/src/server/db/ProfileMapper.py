@@ -1,8 +1,7 @@
-from server.db import Mapper
-from server.bo import Profile
 import json
 
-Profile = Profile.Profile
+from backend.src.server.db import Mapper
+from backend.src.server.bo.Profile import Profile
 
 class ProfileMapper(Mapper.Mapper):
 

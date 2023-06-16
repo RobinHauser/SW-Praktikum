@@ -19,6 +19,8 @@ import {Link} from "react-router-dom";
 class ExtendedProfileCard extends Component {
 
     render() {
+        const{user} = this.props;
+
         return (
             <Box sx={{width: 400}}>
                 <DialogContent>
@@ -27,7 +29,7 @@ class ExtendedProfileCard extends Component {
                     <List>
                         <ListItem sx={{textAlign: "center", borderBottom: 1, borderColor: "#37474f"}}>
                             <Typography gutterBottom variant="h5" component="div">
-                                Hans Jürgen
+                                {user.getDisplayname()}
                             </Typography>
                         </ListItem>
                         <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>

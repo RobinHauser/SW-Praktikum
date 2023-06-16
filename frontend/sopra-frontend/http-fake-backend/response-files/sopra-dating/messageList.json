@@ -1,0 +1,44 @@
+[
+  {
+    "MessageID": 1006,
+    "SenderID:": 1005,
+    "Content": "Hallo, wie gehts?",
+    "TimeStamp": "2010-10-10 12:13:14"
+  },
+  {
+    "messageID": 1007,
+    "senderID:": 1006,
+    "content": "Gut und dir?",
+    "timeStamp": "2010-10-10 12:14:14"
+  },
+    {
+    "messageID": 1008,
+    "senderID": 1005,
+    "content": "Ja mir auch. Was geht heute so?",
+    "timeStamp": "2010-10-10 12:15:14"
+  },
+    {
+    "messageID": 1009,
+    "senderID": 1006,
+    "content": "Wollte nachher spazieren gehen. Willst du mit?",
+    "timeStamp": "2010-10-10 12:16:14"
+  },
+  {
+    "messageID": 1010,
+    "senderID": 1005,
+    "content": "Nein",
+    "timeStamp": "2010-10-10 12:17:14"
+  }
+]
+
+
+
+
+
+
+
+
+
+
+
+

@@ -52,10 +52,9 @@ class MessageMapper(Mapper.Mapper):
             if v1 is not None:
                 for message in v1:
                     for i in message:
-                        jsstr = f'{{"MessageID": "{i[0]}", "Sender": "{i[1]}", "Content": "{i[2]}", "TimeStamp": "{i[3]}"}}'
+                        jsstr = f'{{"messageID": {i[0]}, "senderID": {i[1]}, "content": "{i[2]}", "timeStamp": "{i[3]}"}}'
                         message_json = json.loads(jsstr)
                         result.append(message_json)
-
 
         self._cnx.commit()
         cursor.close()
