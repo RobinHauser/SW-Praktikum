@@ -75,7 +75,7 @@ bookmarklist = api.inherit('Bookmarklist', bo, {
 profile = api.inherit('Profile', bo, {
     # 'profile_id': fields.Integer(attribute = '_id',description='This is the unique identifier of aprofile '),
     'user_id': fields.Integer(attribute='_user_id', description='This is the unique identifier of a profiles user '),
-    'is_personal': fields.Boolean(attribute='_is_personal', description='This is the unique identifier of a bool ')
+    'is_personal': fields.Boolean(attribute=lambda x: x.get_is_personal(), description='This is the unique identifier of a bool ')
 })
 
 

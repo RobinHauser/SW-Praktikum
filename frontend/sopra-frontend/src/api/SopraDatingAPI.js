@@ -48,7 +48,7 @@ export default class SopraDatingAPI {
     #getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message?id=${chatID}`;
 
     // Profile related
-    #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
+    #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile/${userID}`;
     #updateProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
 
     // SearchProfile related

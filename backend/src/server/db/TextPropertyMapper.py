@@ -178,7 +178,7 @@ class TextPropertyMapper(Mapper.Mapper):
         inserts a new freetext entry into occupancy & property_assignment
         :param text_prop: text property the entry will belong to
         :param entry: entered freetext by the user
-        :return: input entry
+        :return: id of the created entry
         """
         cursor = self._cnx.cursor()
 
@@ -207,7 +207,7 @@ class TextPropertyMapper(Mapper.Mapper):
         self._cnx.commit()
         cursor.close()
 
-        return entry
+        return max_id
 
     def update_entry(self, info, entry): #todo maybe belongs to infomapper
         """
@@ -226,5 +226,4 @@ class TextPropertyMapper(Mapper.Mapper):
         cursor.close()
 
         return entry
-
 

@@ -92,6 +92,10 @@ class Administration():
         with ProfileMapper() as mapper:
             return mapper.find_all()
 
+    def get_all_personal_profiles(self):
+        with ProfileMapper() as mapper:
+            return mapper.find_all_personal()
+
     def get_profile_by_id(self, id):
         with ProfileMapper() as mapper:
             return mapper.find_by_id(id)
@@ -99,61 +103,54 @@ class Administration():
     def get_personal_profile_of_user(self, user):
         with ProfileMapper() as mapper:
             if user is not None:
-                return mapper.find_personal_profile_of_owner(user.get_id())
+                return mapper.find_personal_profile_of_owner(user)
             else:
                 return None
 
     def get_search_profiles_of_user(self, user):
         with ProfileMapper() as mapper:
             if user is not None:
-                return mapper.find_search_profiles_of_owner(user.get_id())
+                return mapper.find_search_profiles_of_owner(user)
             else:
                 return None
 
     def get_profiles_with_information(self, info):
         with ProfileMapper() as mapper:
-            return mapper.find_by_information(info)
-
-    def update_profile(self, profile):
-        with ProfileMapper() as mapper:
-            return mapper.update(profile)
-
-    def get_infos_from_profile(self, profile):
-        with ProfileMapper() as mapper:
-            if profile is not None:
-                return mapper.find_all_infos(profile)
+            if info is not None:
+                return mapper.find_by_information(info)
             else:
                 return None
 
-    # def add_info_to_profile(self, profile, info): # OLD & WRONG
-    #     with ProfileMapper() as mapper:
-    #         return mapper.add_info(profile, info)
-
-    # def remove_info_from_profile(self, profile, info): # OLD & WRONG
-    #     with ProfileMapper() as mapper:
-    #         return mapper.remove_info(profile, info)
+    def update_profile(self, profile):
+        with ProfileMapper() as mapper:
+            if profile is not None:
+                return mapper.update(profile)
+            else:
+                return None
 
     def delete_profile(self, profile):
         with ProfileMapper() as mapper:
-            infos = self.get_infos_from_profile(profile)
-            # if infos is not None:
-            for info in infos:
-                self.remove_info_from_profile(profile, info)
+            if profile is not None:
+                infos = self.get_infos_from_profile(profile)
+                # if infos is not None:
+                for info in infos:
+                    self.delete_info(info)
 
-            mapper.delete(profile)
+                return mapper.delete(profile)
 
 
     '''
     Information-Methoden
     '''
 
-    def create_info(self, profile_id, value_id):
-        information = Information()
-        information.set_profile_id(profile_id)
-        information.set_value_id(value_id)
-
+    def create_info(self, profile, value_id):
         with InformationMapper() as mapper:
-            return mapper.insert(information)
+            if profile is not None:
+                information = Information()
+                information.set_profile_id(profile.get_id())
+                information.set_value_id(value_id)
+
+                return mapper.insert(information)
 
     def get_all_infos(self):
         with InformationMapper() as mapper:
@@ -167,18 +164,22 @@ class Administration():
         with InformationMapper() as mapper:
             return mapper.find_by_property(property)
 
+    def get_infos_from_profile(self, profile):
+        with InformationMapper() as mapper:
+            if profile is not None:
+                return mapper.find_by_profile(profile)
+            else:
+                return None
+
     def update_info(self, info):
         with InformationMapper() as mapper:
-            return mapper.update(info)
+            if info is not None:
+                return mapper.update(info)
 
     def delete_info(self, info):
         with InformationMapper() as mapper:
-            profiles = self.get_profiles_with_information(info)
-            if profiles is not None:
-                for profile in profiles:
-                    self.remove_info_from_profile(profile, info)
-
-            mapper.delete(info)
+            if info is not None:
+                return mapper.delete(info)
 
 
     '''
@@ -357,9 +358,14 @@ class Administration():
         with TextPropertyMapper() as mapper:
             return mapper.delete(text_prop)
 
-    def add_text_entry(self, text_prop, entry):
+    def add_text_entry(self, text_prop, entry): #only to be used in create_text_entry_for_profile
         with TextPropertyMapper() as mapper:
-            return mapper.insert_entry(text_prop, entry)
+            if text_prop is not None:
+                return mapper.insert_entry(text_prop, entry)
+
+    def create_text_entry_for_profile(self, profile, text_prop, entry):
+        value_id = self.add_text_entry(text_prop, entry)
+        self.create_info(profile, value_id)
 
     def update_text_entry(self, info, entry):
         with TextPropertyMapper() as mapper:

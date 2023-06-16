@@ -8,7 +8,7 @@ class Profile(BusinessObject):
     def __init__(self):
         super().__init__()
         self._user_id = 0
-        self._is_personal = True
+        self.__is_personal = True
         #self.assigned_infos = []
 
     def get_user_id(self):
@@ -18,9 +18,9 @@ class Profile(BusinessObject):
         self._user_id = user_id
 
     def get_is_personal(self):
-        return self._is_personal
+        return self.__is_personal
 
     def set_is_personal(self, is_personal):
-        self._is_personal = is_personal
+        self.__is_personal = is_personal
 
 

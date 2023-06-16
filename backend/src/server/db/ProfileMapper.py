@@ -21,12 +21,49 @@ class ProfileMapper(Mapper.Mapper):
         cursor.execute("SELECT * FROM profile")
         tuples = cursor.fetchall()
 
-        for (profile_id, user_id, is_personal) in tuples:
-            profile = Profile()
-            profile.set_id(profile_id)
-            profile.set_user_id(user_id)
-            profile.set_is_personal(is_personal)
-            result.append(profile)
+        for (profile_id, is_personal) in tuples:
+            # Retrieving the user_id attribute for the profile object
+            command = "SELECT * FROM profile_relation WHERE ProfileID={}".format(profile_id)
+            cursor.execute(command)
+            relations = cursor.fetchall()
+            if relations:
+                user_id = relations[0][1]
+
+                profile = Profile()
+                profile.set_id(profile_id)
+                profile.set_user_id(user_id)
+                profile.set_is_personal(is_personal)
+
+                result.append(profile)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_all_personal(self):
+        """
+        Finds all personal profiles in the system
+        :return: all existing personal profiles
+        """
+        result = []
+        cursor = self._cnx.cursor()
+        cursor.execute("SELECT * FROM profile WHERE IsPersonal = 1")
+        tuples = cursor.fetchall()
+
+        for (profile_id, is_personal) in tuples:
+            # Retrieving the user_id attribute for the profile object
+            command = "SELECT * FROM profile_relation WHERE ProfileID={}".format(profile_id)
+            cursor.execute(command)
+            relations = cursor.fetchall()
+            if relations:
+                user_id = relations[0][1]
+
+                profile = Profile()
+                profile.set_id(profile_id)
+                profile.set_user_id(user_id)
+                profile.set_is_personal(is_personal)
+                result.append(profile)
 
         self._cnx.commit()
         cursor.close()
@@ -46,12 +83,19 @@ class ProfileMapper(Mapper.Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (profile_id, user_id, is_personal) = tuples[0]
-            profile = Profile()
-            profile.set_id(profile_id)
-            profile.set_user_id(user_id)
-            profile.set_is_personal(is_personal)
-            result = profile
+            (profile_id, is_personal) = tuples[0]
+            # Retrieving the user_id attribute for the profile object
+            command = "SELECT * FROM profile_relation WHERE ProfileID={}".format(profile_id)
+            cursor.execute(command)
+            relations = cursor.fetchall()
+            if relations:
+                user_id = relations[0][1]
+
+                profile = Profile()
+                profile.set_id(profile_id)
+                profile.set_user_id(user_id)
+                profile.set_is_personal(is_personal)
+                result = profile
         except IndexError:
             result = None
 
@@ -60,51 +104,69 @@ class ProfileMapper(Mapper.Mapper):
 
         return result
 
-    def find_personal_profile_of_owner(self, owner_id):
+    def find_personal_profile_of_owner(self, owner):
         """
         Returns the personal profile of the given user
-        :param owner_id: id of the user
+        :param owner: user the personal profile belongs to
         :return: personal profile of the user
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM profile WHERE UserID={} AND IsPersonal = 1".format(owner_id)
+        command = "SELECT * FROM profile_relation WHERE UserID={}".format(owner.get_id())
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        relations = cursor.fetchall()
 
-        try:
-            (profile_id, user_id, is_personal) = tuples[0]
-            profile = Profile()
-            profile.set_id(profile_id)
-            profile.set_user_id(user_id)
-            profile.set_is_personal(is_personal)
-            result = profile
-        except IndexError:
-            result = None
+        if relations:
+            profile_ids = [rel[0] for rel in relations]
+
+            # Retrieve profiles by ProfileID
+            command2 = "SELECT * FROM profile WHERE IsPersonal = 1 AND ProfileID IN ({})".format(
+                ','.join(str(p_id) for p_id in profile_ids))
+            cursor.execute(command2)
+            tuples = cursor.fetchall()
+
+            try:
+                (profile_id, is_personal) = tuples[0]
+                profile = Profile()
+                profile.set_id(profile_id)
+                profile.set_user_id(owner.get_id())
+                profile.set_is_personal(is_personal)
+                result = profile
+            except IndexError:
+                result = None
 
         self._cnx.commit()
         cursor.close()
 
         return result
 
-    def find_search_profiles_of_owner(self, owner_id):
+    def find_search_profiles_of_owner(self, owner):
         """
         Returns all search profiles belonging to a given user
-        :param owner_id: id of the user
+        :param owner: user the search profiles belong to
         :return: all search profiles belonging to the user
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM profile WHERE UserID={} AND IsPersonal = 0".format(owner_id)
+        command = "SELECT * FROM profile_relation WHERE UserID={}".format(owner.get_id())
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        relations = cursor.fetchall()
 
-        for (profile_id, user_id, is_personal) in tuples:
-            profile = Profile()
-            profile.set_id(profile_id)
-            profile.set_user_id(user_id)
-            profile.set_is_personal(is_personal)
-            result.append(profile)
+        if relations:
+            profile_ids = [rel[0] for rel in relations]
+
+            # Retrieve profiles by ProfileID
+            command2 = "SELECT * FROM profile WHERE IsPersonal = 0 AND ProfileID IN ({})".format(
+                ','.join(str(p_id) for p_id in profile_ids))
+            cursor.execute(command2)
+            tuples = cursor.fetchall()
+
+            for (profile_id, is_personal) in tuples:
+                profile = Profile()
+                profile.set_id(profile_id)
+                profile.set_user_id(owner.get_id())
+                profile.set_is_personal(is_personal)
+                result.append(profile)
 
         self._cnx.commit()
         cursor.close()
@@ -127,7 +189,7 @@ class ProfileMapper(Mapper.Mapper):
 
         if infos:
             profile_ids = [info[1] for info in infos]
-            profile_ids = list(set(profile_ids)) #Removing duplicate entries
+            #profile_ids = list(set(profile_ids)) #Removing duplicate entries
 
             # Retrieve Profiles by ProfileID
             command2 = "SELECT * FROM profile WHERE ProfileID IN ({})".format(
@@ -135,12 +197,19 @@ class ProfileMapper(Mapper.Mapper):
             cursor.execute(command2)
             tuples = cursor.fetchall()
 
-            for (profile_id, user_id, is_personal) in tuples:
-                profile = Profile()
-                profile.set_id(profile_id)
-                profile.set_user_id(user_id)
-                profile.set_is_personal(is_personal)
-                result.append(profile)
+            for (profile_id, is_personal) in tuples:
+                #Retrieving the user_id attribute for the profile object
+                command = "SELECT * FROM profile_relation WHERE ProfileID={}".format(profile_id)
+                cursor.execute(command)
+                relations = cursor.fetchall()
+                if relations:
+                    user_id = relations[0][1]
+
+                    profile = Profile()
+                    profile.set_id(profile_id)
+                    profile.set_user_id(user_id)
+                    profile.set_is_personal(is_personal)
+                    result.append(profile)
 
             self._cnx.commit()
             cursor.close()
@@ -169,9 +238,13 @@ class ProfileMapper(Mapper.Mapper):
             else:
                 profile.set_id(4001)
 
-        command = "INSERT INTO profile (ProfileID, UserID, IsPersonal) VALUES (%s,%s,%s)"
-        data = (profile.get_id(), profile.get_user_id(), profile.get_is_personal())
+        command = "INSERT INTO profile (ProfileID, IsPersonal) VALUES (%s,%s)"
+        data = (profile.get_id(), profile.get_is_personal())
         cursor.execute(command, data)
+
+        command2 = "INSERT INTO profile_relation (ProfileID, UserID) VALUES (%s, %s)"
+        data = (profile.get_id(), profile.get_user_id())
+        cursor.execute(command2, data)
 
         self._cnx.commit()
         cursor.close()
@@ -199,8 +272,11 @@ class ProfileMapper(Mapper.Mapper):
         """
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM profile WHERE ProfileID={}".format(profile.get_id())
+        command = "DELETE FROM profile_relation WHERE ProfileID={}".format(profile.get_id())
         cursor.execute(command)
+
+        command2 = "DELETE FROM profile WHERE ProfileID={}".format(profile.get_id())
+        cursor.execute(command2)
 
         self._cnx.commit()
         cursor.close()
@@ -209,32 +285,7 @@ class ProfileMapper(Mapper.Mapper):
 
 
 
-    def find_all_infos(self, profile):
-        """
-        Returns a list of all information objects assigned to the profile
-        :param profile: the unique id of the profile
-        :return: a list of all information objects assigned to the profile. If there is no information, it will return an empty list.
-        """
-        result = []
-        cursor = self._cnx.cursor()
 
-        # Retrieve assigned infos by ProfileID
-        command = "SELECT * FROM information WHERE ProfileID={}".format(profile.get_id())
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, profile_id, value_id) in tuples:
-            info = Information()
-            info.set_id(id)
-            info.set_profile_id(profile_id)
-            info.set_value_id(value_id)
-            result.append(info)
-
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
 
     # def add_info(self, profile, info): #todo evtl überarbeiten: Unterschied, ob Selection oder Text?
     #     """

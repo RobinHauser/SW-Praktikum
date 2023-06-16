@@ -69,8 +69,9 @@ class InformationMapper(Mapper):
 
     def find_by_property(self, property):
         """
-        Finds all information objects that are assigned to a given property
-        :return: a list of information objects with the given PropertyID
+        Returns all information objects assigned to the given property
+        :param property: property object of the needed infos
+        :return: a list of information objects assigned to the property
         """
         result = []
         cursor = self._cnx.cursor()
@@ -89,10 +90,37 @@ class InformationMapper(Mapper):
 
             for (id, profile_id, value_id) in tuples:
                 information = Information()
-                information.set_id()
+                information.set_id(id)
                 information.set_profile_id(profile_id)
                 information.set_value_id(value_id)
                 result.append(information)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_profile(self, profile):
+        """
+        Returns a list of all information objects assigned to the profile
+        :param profile: the unique id of the profile
+        :return: a list of all information objects assigned to the profile. If there is no information, it will return an empty list.
+        """
+        result = []
+        cursor = self._cnx.cursor()
+
+        # Retrieve assigned infos by ProfileID
+        command = "SELECT * FROM information WHERE ProfileID={}".format(profile.get_id())
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (id, profile_id, value_id) in tuples:
+            info = Information()
+            info.set_id(id)
+            info.set_profile_id(profile_id)
+            info.set_value_id(value_id)
+            result.append(info)
+
 
         self._cnx.commit()
         cursor.close()
