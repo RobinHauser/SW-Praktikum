@@ -219,7 +219,7 @@ class TextPropertyMapper(Mapper.Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE occupancies SET Value=%s WHERE ValueID=%s"
-        data = (entry, info.get_value_id())
+        data = (entry, info.get_value())
         cursor.execute(command, data)
 
         self._cnx.commit()

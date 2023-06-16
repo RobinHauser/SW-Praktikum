@@ -1,3 +1,5 @@
+import json
+
 from backend.src.server.bo.SelectionProperty import SelectionProperty
 from backend.src.server.db import Mapper as Mapper
 
@@ -321,3 +323,36 @@ class SelectionPropertyMapper(Mapper.Mapper):
         cursor.close()
 
         return sel_prop
+
+    def retrieve_selections(self, sel_prop):
+        """
+        returns all selectable options of a selection property.
+        :param sel_prop: the given selection property
+        :return: a dictionary with all selectable options of that selection property
+        """
+        result = []
+        cursor = self._cnx.cursor()
+
+        # Retrieving property assignments
+        command = "SELECT * FROM property_assignment WHERE PropertyID = {}".format(sel_prop.get_id())
+        cursor.execute(command)
+        assignments = cursor.fetchall()
+
+        if assignments:
+            value_ids = [assignment[0] for assignment in assignments]
+
+            # Retrieving occupancies rows
+            command2 = "SELECT * FROM occupancies WHERE ValueID IN ({})".format(
+                ','.join(str(v_id) for v_id in value_ids))
+            cursor.execute(command2)
+            values = cursor.fetchall()
+
+            for value in values:
+                jsstr = f'{{"ValueID": "{value[0]}", "Value": "{value[1]}"}}'
+                value_json = json.loads(jsstr)
+                result.append(value_json)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result

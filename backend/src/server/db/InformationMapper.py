@@ -33,7 +33,7 @@ class InformationMapper(Mapper):
             information = Information()
             information.set_id(id)
             information.set_profile_id(profile_id)
-            information.set_value_id(value_id)
+            information.set_value(value_id)
             result.append(information)
 
         self._cnx.commit()
@@ -57,7 +57,7 @@ class InformationMapper(Mapper):
             info = Information()
             info.set_id(id)
             info.set_profile_id(profile_id)
-            info.set_value_id(value_id)
+            info.set_value(value_id)
             result = info
         except IndexError:
             result = None
@@ -92,7 +92,7 @@ class InformationMapper(Mapper):
                 information = Information()
                 information.set_id(id)
                 information.set_profile_id(profile_id)
-                information.set_value_id(value_id)
+                information.set_value(value_id)
                 result.append(information)
 
         self._cnx.commit()
@@ -118,7 +118,7 @@ class InformationMapper(Mapper):
             info = Information()
             info.set_id(id)
             info.set_profile_id(profile_id)
-            info.set_value_id(value_id)
+            info.set_value(value_id)
             result.append(info)
 
 
@@ -148,7 +148,7 @@ class InformationMapper(Mapper):
                 info.set_id(5001)
 
         command = "INSERT INTO information (InformationID, ProfileID, ValueID) VALUES (%s,%s,%s)"
-        data = (info.get_id(), info.get_profile_id(), info.get_value_id())
+        data = (info.get_id(), info.get_profile_id(), info.get_value())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -164,7 +164,7 @@ class InformationMapper(Mapper):
         """
         cursor = self._cnx.cursor()
         command = "UPDATE information SET ProfileID=%s, ValueID=%s WHERE InformationID = %s"
-        data = (info.get_profile_id(), info.get_value_id(), info.get_id())
+        data = (info.get_profile_id(), info.get_value(), info.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()

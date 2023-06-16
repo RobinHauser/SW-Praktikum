@@ -7,7 +7,7 @@ from backend.src.server.bo.BusinessObject import BusinessObject
 class Profile(BusinessObject):
     def __init__(self):
         super().__init__()
-        self._user_id = 0
+        self.__user_id = 0
         self.__is_personal = True
         #self.assigned_infos = []
 

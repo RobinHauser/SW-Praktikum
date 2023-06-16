@@ -19,6 +19,7 @@ from backend.src.server.db.ChatMapper import ChatMapper
 from backend.src.server.db.ViewedMapper import ViewedMapper
 
 
+
 class Administration():
     def __init__(self):
         pass
@@ -90,6 +91,7 @@ class Administration():
         with ProfileMapper() as mapper:
             return mapper.find_all()
 
+
     def get_all_personal_profiles(self):
         with ProfileMapper() as mapper:
             return mapper.find_all_personal()
@@ -135,6 +137,8 @@ class Administration():
                     self.delete_info(info)
 
                 return mapper.delete(profile)
+            else:
+                return None
 
 
     '''
@@ -146,7 +150,7 @@ class Administration():
             if profile is not None:
                 information = Information()
                 information.set_profile_id(profile.get_id())
-                information.set_value_id(value_id)
+                information.set_value(value_id)
 
                 return mapper.insert(information)
 
@@ -314,14 +318,22 @@ class Administration():
             return mapper.update(sel_prop)
 
     def delete_selection_property(self, sel_prop):
-        #Deleting info objects of that selection property first
-        infos = self.get_infos_of_property(sel_prop)
-        if infos is not None:
-            for info in infos:
-                self.delete_info(info)
-
         with SelectionPropertyMapper() as mapper:
-            return mapper.delete(sel_prop)
+            if sel_prop is not None:
+                #Deleting info objects of that selection property first
+                infos = self.get_infos_of_property(sel_prop)
+                if infos is not None:
+                    for info in infos:
+                        self.delete_info(info)
+
+                    return mapper.delete(sel_prop)
+            else:
+                return None
+
+    def retrieve_options(self, sel_prop):
+        with SelectionPropertyMapper() as mapper:
+            if sel_prop is not None:
+                return mapper.retrieve_selections(sel_prop)
 
     """
     TextProperty Methoden
@@ -352,13 +364,17 @@ class Administration():
             return mapper.update(text_prop)
 
     def delete_text_property(self, text_prop):
-        # Deleting info objects of that selection property first
-        infos = self.get_infos_of_property(text_prop)
-        if infos is not None:
-            for info in infos:
-                self.delete_info(info)
         with TextPropertyMapper() as mapper:
-            return mapper.delete(text_prop)
+            if text_prop is not None:
+                # Deleting info objects of that selection property first
+                infos = self.get_infos_of_property(text_prop)
+                if infos is not None:
+                    for info in infos:
+                        self.delete_info(info)
+
+                    return mapper.delete(text_prop)
+            else:
+                return None
 
     def add_text_entry(self, text_prop, entry): #only to be used in create_text_entry_for_profile
         with TextPropertyMapper() as mapper:
@@ -366,12 +382,14 @@ class Administration():
                 return mapper.insert_entry(text_prop, entry)
 
     def create_text_entry_for_profile(self, profile, text_prop, entry):
-        value_id = self.add_text_entry(text_prop, entry)
-        self.create_info(profile, value_id)
+        if profile is not None and text_prop is not None:
+            value_id = self.add_text_entry(text_prop, entry)
+            self.create_info(profile, value_id)
 
     def update_text_entry(self, info, entry):
         with TextPropertyMapper() as mapper:
-            return mapper.update_entry(info, entry)
+            if info is not None:
+                return mapper.update_entry(info, entry)
 
 
     '''

@@ -12,6 +12,7 @@ class Mapper(AbstractContextManager, ABC):
 
     def __enter__(self):
         self._cnx = mysql.connector.connect(user='root', password='sopra_2023', host='127.0.0.1', database='datenbank')
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._cnx.close()
@@ -37,10 +38,5 @@ class Mapper(AbstractContextManager, ABC):
     def delete(self, object, payload):
         pass
 
-    @abstractmethod
-    def find_by_name(self, name):
-        pass
 
-    @abstractmethod
-    def find_by_email(self, email):
-        pass
+

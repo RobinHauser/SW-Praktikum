@@ -34,6 +34,7 @@ class ChatMapper(Mapper.Mapper):
                             jsstr = f'{{"userID": "{user[0]}", "email": "{user[1]}", "displayName": "{user[2]}","profileImgUrl": "{user[3]}", "chatID": "{i[0]}"}}'
                             user_json = json.loads(jsstr)
                             result.append(user_json)
+                            #TODO userID mit kleinem oder großem "u"?
 
         self._cnx.commit()
         cursor.close()

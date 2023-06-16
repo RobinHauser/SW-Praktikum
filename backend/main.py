@@ -22,7 +22,7 @@ bookmarklist_namespace = Namespace(name="bookmarklist", description="This is the
 blocklist_namespace = Namespace(name="blocklist", description="This is the Blockmarklist")
 chat_namespace = Namespace(name="chat", description="This is the Chat")
 message_namespace = Namespace(name="message", description="This is the Message")
-profile_namespace = Namespace(name="profile", description="This is the Profile")
+personal_profile_namespace = Namespace(name="personal-profile", description="This is the Profile")
 search_profile_namespace = Namespace(name="search-profile", description="This is the Search Profile")
 view_namespace = Namespace(name="view", description="tbd")
 init_user_namespace = Namespace(name="init-user", description="tbd")
@@ -32,7 +32,7 @@ api.add_namespace(bookmarklist_namespace)
 api.add_namespace(blocklist_namespace)
 api.add_namespace(chat_namespace)
 api.add_namespace(message_namespace)
-api.add_namespace(profile_namespace)
+api.add_namespace(personal_profile_namespace)
 api.add_namespace(search_profile_namespace)
 api.add_namespace(view_namespace)
 api.add_namespace(init_user_namespace)
@@ -56,7 +56,7 @@ message = api.inherit('Message', bo, {
 })
 
 information = api.inherit('Information', bo, {
-    'Haircolor': fields.String(attribute='information', description='This is the information of a property')
+    'profile_id': fields.String(attribute='', description='This is the information of a property')
 })
 
 property = api.inherit('Property', bo, {
@@ -71,15 +71,9 @@ blocklist = api.inherit('Blocklist', {
     'user': fields.Nested(user)
 })
 
-# profile = api.inherit('Profile', bo, {
-#     'profile_id': fields.String(attribute='profile_id', description='this the profile id'),
-#     'user_id': fields.String(attribute='user_id', description='this the user id'),
-#     'is_personal': fields.String(attribute='is_personal', description='this the boolean')
-# })
 
 profile = api.inherit('Profile', bo, {
-    # 'profile_id': fields.Integer(attribute = '_id',description='This is the unique identifier of aprofile '),
-    'user_id': fields.Integer(attribute='_user_id', description='This is the unique identifier of a profiles user '),
+    'user_id': fields.Integer(attribute=lambda x: x.get_user_id(), description='This is the unique identifier of a profiles user '),
     'is_personal': fields.Boolean(attribute=lambda x: x.get_is_personal(), description='This is the unique identifier of a bool ')
 })
 
@@ -233,91 +227,112 @@ class Message_api(Resource):
         return response
 
 
-
-"""
-NUR TEST
-"""
-class Profile:
-    def __init__(self, profile_id, user_id, is_personal):
-        self.profile_id = profile_id
-        self.user_id = user_id
-        self.is_personal = is_personal
-
-@profile_namespace.route('/profiles')
-class ProfileList(Resource):
-    @profile_namespace.marshal_list_with(profile)
+@personal_profile_namespace.route('/personal_profiles')
+class PersonalProfileList_api(Resource):
+    @personal_profile_namespace.marshal_list_with(profile)
     def get(self):
-
-        # profileList = ProfileList()
-        # print(profileList.get())
-
         adm = Administration()
-        response = adm.get_all_profiles()
-
-        # response = get_profiles()
-
+        response = adm.get_all_personal_profiles()
         return response
 
-#LÖSCHEN DANACH, NUR TEST
-def get_profiles():
-    return [
-        Profile(profile_id=1, user_id=1, is_personal=True),
-        Profile(profile_id=2, user_id=2, is_personal=False)
-    ]
-
-# @profile_namespace.marshal_list_with(profile)
-# class Profile_api(Resource):
-#     def get(self):
-#         adm = Administration()
-#         response = adm.get_all_profiles()
-#         return response
-
-    def put(self):
-        pass
-
-
-@search_profile_namespace.route('/<int:id>')
-class Search_profile_api(Resource):
+@personal_profile_namespace.route('/<int:id>')
+class PersonalProfile_api(Resource):
+    @personal_profile_namespace.marshal_with(profile)
     def get(self, id):
         """
-        Get a list of all searchProfiles from a user
-        :param id: this is the id of the user we want to get the searchProfiles from
-        :return: returns a list of all searchProfiles of a user
+        Gets the profile with the given ID
+        :param id: ID of the profile
+        :return: profile with the given ID
         """
         adm = Administration()
-        response = adm.get_search_profiles_by_user_id(id)  # TODO Methos need to be implemented
+        response = adm.get_profile_by_id(id)
         return response
 
-    def put(self, id):
-        """
-        Update a search profile
-        :param id: this is the id of the user we want to update a searchProfile
-        :return: returns the updated search profile
-        """
-        adm = Administration()
-        # HINT: Welches SearchProfile geupdated werden soll, steht in dem updated profile (payload) drinnen, da beide die selbe id haben
-        response = adm.update_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
-        return response
-
-    def delete(self, id):
-        """
-        Remove a  search profile from the searchProfile list
-        :param id: this is the id of the user we want to remove a searchProfile
-        :return: returns the removed search profile
-        """
-        adm = Administration()
-        response = adm.remove_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
-        return response
-
+    @personal_profile_namespace.marshal_with(profile)
     def post(self, id):
         """
-        Add a new search profile to the searchProfile list
-        :param id: this is the id of the user we want to add a new searchProfile
-        :return: returns the added search profile
+        Creates a personal profile for a user specified by the given id
+        :param id: id of the user we create a personal profile for
+        :return: created profile
         """
         adm = Administration()
-        response = adm.add_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
+        user = adm.get_user_by_id(id)
+        response = adm.create_personal_profile_for_user(user)
         return response
+
+    @personal_profile_namespace.marshal_with(profile)
+    def delete(self, id):
+        """
+        Deletes profile with the given id
+        :param id: id of the profile we want to delete
+        :return: deleted profile
+        """
+        adm = Administration()
+        prof = adm.get_profile_by_id(id)
+        response = adm.delete_profile(prof)
+        return response
+
+@personal_profile_namespace.route('/personal/<int:id>')
+class PersonalProfileByUser_api(Resource):
+    @personal_profile_namespace.marshal_with(profile)
+    def get(self, id):
+        """
+        gets the personal profile of the given user id
+        :param id: id of the user we want to get the personal profile from
+        :return: personal profile of user
+        """
+        adm = Administration()
+        user = adm.get_user_by_id(id)
+        response = adm.get_personal_profile_of_user(user)
+        return response
+
+@search_profile_namespace.route('/search/<int:id>')
+class SearchProfilesByUser_api(Resource):
+    @search_profile_namespace.marshal_list_with(profile)
+    def get(self, id):
+        adm = Administration()
+        user = adm.get_user_by_id(id)
+        response = adm.get_search_profiles_of_user(user)
+        return response
+
+@search_profile_namespace.route('/<int:id>')
+class SearchProfile_api(Resource):
+    @search_profile_namespace.marshal_with(profile)
+    def get(self, id):
+        """
+        Gets the (search) profile with the given ID
+        :param id: ID of the (search) profile
+        :return: (search) profile with the given ID
+        """
+        adm = Administration()
+        response = adm.get_profile_by_id(id)
+        return response
+
+    @search_profile_namespace.marshal_with(profile)
+    def post(self, id):
+        """
+        Add a new search profile for a user
+        :param id: id of the user we want to add a new searchProfile for
+        :return: the added search profile
+        """
+        adm = Administration()
+        user = adm.get_user_by_id(id)
+        response = adm.create_search_profile_for_user(user)
+        return response
+
+    @search_profile_namespace.marshal_with(profile)
+    def delete(self, id):
+        """
+        Deletes (search) profile with the given id
+        :param id: id of the (search) profile we want to delete
+        :return: deleted (search) profile
+        """
+        adm = Administration()
+        prof = adm.get_profile_by_id(id)
+        response = adm.delete_profile(prof)
+        return response
+
+
 
 
 @init_user_namespace.route('/<string:email>')
