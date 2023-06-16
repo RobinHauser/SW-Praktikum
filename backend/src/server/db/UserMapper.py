@@ -19,7 +19,7 @@ class UserMapper(Mapper):
                 user.set_email(user_from_list[1])
                 user.set_displayname(user_from_list[2])
                 user.set_avatarurl(user_from_list[3])
-                result.append(user_from_list)
+                result.append(user)
             except IndexError:
                 result = None
 

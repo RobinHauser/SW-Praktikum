@@ -74,10 +74,6 @@ blocklist = api.inherit('Blocklist', {
     'user': fields.Nested(user)
 })
 
-userlist = api.inherit('Userlist', {
-    'users': fields.List(fields.Nested(user)),
-})
-
 
 @bookmarklist_namespace.route('/<int:user_id>')
 @bookmarklist_namespace.response(500, 'TBD')
@@ -313,7 +309,7 @@ class User_api(Resource):
     """
     HINT: The user_id 1000 returns all users
     """
-    @user_namespace.marshal_with(userlist, code=200)
+    @user_namespace.marshal_list_with(user, code=200)
     def get(self, id):
         """
         Get a specific user by user_id
@@ -324,6 +320,7 @@ class User_api(Resource):
         if id == 1000:
             adm = Administration()
             return adm.get_all_users()
+
         else:
             adm = Administration()
             return adm.get_user_by_id(id)
