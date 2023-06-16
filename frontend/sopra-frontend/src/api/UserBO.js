@@ -19,7 +19,7 @@ export default class UserBO extends BusinessObject {
    */
   constructor(userID, displayname, email, dateOfBirth, blocklistID, bookmarklistID, profileID) {
     super();
-    this.userID = userID;
+    this.UserID = userID;
     this.displayname = displayname;
     this.email = email;
     this.dateOfBirth = dateOfBirth;
@@ -34,14 +34,14 @@ export default class UserBO extends BusinessObject {
    * @param {*} userID - the new userID of this UserBO.
    */
   setUserID(userID) {
-    this.userID = userID;
+    this.UserID = userID;
   }
 
   /**
    * Gets the userID of this UserBO.
    */
   getUserID() {
-    return this.userID;
+    return this.UserID;
   }
 
   /**

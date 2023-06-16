@@ -16,10 +16,7 @@ from backend.src.server.db.InformationMapper import InformationMapper
 from backend.src.server.db.PropertyMapper import PropertyMapper
 from backend.src.server.db.MessageMapper import MessageMapper
 from backend.src.server.db.ChatMapper import ChatMapper
-
-
-
-#todo alle mapper importieren
+from backend.src.server.db.ViewedMapper import ViewedMapper
 
 
 class Administration():
@@ -52,10 +49,11 @@ class Administration():
             return mapper.find_all()
 
     def get_user_by_email(self, email):
-        with UserMapper() as mapper:
-            return mapper.find_by_email(email)
+        user_mapper = UserMapper()
+        return user_mapper.find_by_email(email)
 
-    def update_user(self, user): #das selbe wie save user
+
+    def update_user(self, user):  # das selbe wie save user
         with UserMapper() as mapper:
             return mapper.update(user)
 
@@ -226,61 +224,65 @@ class Administration():
     '''
 
     def get_bookmarklist_by_user_id(self, user_id):
-        with BookmarklistMapper() as mapper:
-            return mapper.find_by_id(user_id)
+        mapper = BookmarklistMapper()
+        return mapper.find_by_id(user_id)
 
     def add_user_to_bookmarklist(self, user_id, payload):
-        with BookmarklistMapper() as mapper:
-            return mapper.insert(user_id, payload)
+        bookmarklistmapper = BookmarklistMapper()
+        return bookmarklistmapper.insert(user_id, payload)
 
     def remove_user_from_bookmarklist(self, user_id, payload):
-        with BookmarklistMapper() as mapper:
-            return mapper.delete(user_id, payload)
-
+        bookmarklistmapper = BookmarklistMapper()
+        return bookmarklistmapper.delete(user_id, payload)
 
     '''
         Blocklist Methoden
     '''
 
     def get_blocklist_by_user_id(self, user_id):
-        with BlocklistMapper() as mapper:
-            return mapper.find_by_id(user_id)
+        blocklistmapper = BlocklistMapper()
+        return blocklistmapper.find_by_id(user_id)
 
     def add_user_to_blocklist(self, user_id, payload):
-        with BlocklistMapper() as mapper:
-            return mapper.insert(user_id, payload)
+        blocklistmapper = BlocklistMapper()
+        return blocklistmapper.insert(user_id, payload)
 
     def delete_blocklist(self, user_id, payload):
-        with BlocklistMapper() as mapper:
-            return mapper.delete(user_id, payload)
+        blocklistmapper = BlocklistMapper()
+        return blocklistmapper.delete(user_id, payload)
+
 
     '''
        Chat Methoden
     '''
 
     def get_chat_by_user_id(self, user_id):
-        with ChatMapper() as mapper:
-            return mapper.find_all(user_id)
+        chatlistmapper = ChatMapper()
+        return chatlistmapper.find_all(user_id)
+        #with ChatMapper() as mapper:
+            #return chatlistmapper.find_all(user_id)
 
     def add_chat_to_user(self, user_id, payload):
-        with ChatMapper() as mapper:
-            return mapper.insert(user_id, payload)
-
+        chatmapper = ChatMapper()
+        return chatmapper.insert(user_id, payload)
+        #with ChatMapper() as mapper:
+            #return mapper.insert(user_id, payload)
 
     '''
          Message Methoden
     '''
 
-
     def get_messages_by_chat_id(self, chat_id):
-        with MessageMapper() as mapper:
-            return mapper.find_by_id(chat_id)
-
+        messagemapper = MessageMapper()
+        return messagemapper.find_by_id(chat_id)
+        #with MessageMapper() as mapper:
+            #return mapper.find_by_id(chat_id)
 
     def add_message_to_chat(self, user_id, payload):
-        with MessageMapper() as mapper:
-            return mapper.insert(user_id, payload)
-
+        messagemapper = MessageMapper()
+        return messagemapper.insert(user_id, payload)
+        #with MessageMapper() as mapper:
+           #return mapper.insert(user_id, payload)
 
     """
     SelectionProperty Methoden
@@ -370,3 +372,23 @@ class Administration():
     def update_text_entry(self, info, entry):
         with TextPropertyMapper() as mapper:
             return mapper.update_entry(info, entry)
+
+
+    '''
+        View Methoden
+    '''
+
+
+    def get_viewed_list_by_user_id(self, user_id):
+        viewedMapper = ViewedMapper()
+        return viewedMapper.find_by_id(user_id)
+
+
+    def add_user_to_viewedList(self, user_id, payload):
+        viewedMapper = ViewedMapper()
+        return viewedMapper.insert(user_id, payload)
+
+
+    def remove_user_to_viewedList(self, user_id, payload):
+        viewedMapper = ViewedMapper()
+        return viewedMapper.delete(user_id, payload)

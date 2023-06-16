@@ -1,4 +1,5 @@
-from server.bo.BusinessObject import BusinessObject
+from backend.src.server.bo.BusinessObject import BusinessObject
+
 
 class Property(BusinessObject): #todo abstrakt
     def __init__(self):

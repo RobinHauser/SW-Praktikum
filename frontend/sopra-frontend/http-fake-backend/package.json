@@ -48,7 +48,7 @@
     "eslint-config-hapi": "^11.1.0",
     "eslint-plugin-hapi": "^4.0.0",
     "lab": "^14.3.2",
-    "nodemon": "^1.15.0",
+    "nodemon": "^1.19.4",
     "nsp": "^3.2.1",
     "standard-version": "^4.3.0"
   }

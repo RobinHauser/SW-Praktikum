@@ -1,9 +1,8 @@
-from server.bo import Property
-from server.db import Mapper as Mapper
+from backend.src.server.bo.Property import Property
+from backend.src.server.db.Mapper import Mapper
 
-Property = Property.Property
 
-class PropertyMapper(Mapper.Mapper):
+class PropertyMapper(Mapper):
     def __init__(self):
         super().__init__()
 
