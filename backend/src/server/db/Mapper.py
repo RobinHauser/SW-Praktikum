@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from contextlib import AbstractContextManager
-
 import mysql
 import mysql.connector as connector
 
@@ -12,10 +11,10 @@ class Mapper(AbstractContextManager, ABC):
 
     def __enter__(self):
         self._cnx = mysql.connector.connect(user='root', password='sopra_2023', host='127.0.0.1', database='datenbank')
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._cnx.close()
-
 
     @abstractmethod
     def find_all(self):
