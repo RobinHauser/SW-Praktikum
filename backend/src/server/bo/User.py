@@ -4,10 +4,10 @@ from backend.src.server.bo.BusinessObject import BusinessObject
 class User(BusinessObject):
     def __init__(self):
         super().__init__("User", [1001, 2000])
-        self._user_id = ""
-        self._email = ""
-        self._displayname = ""
-        self._avatarurl = ""
+        self.__user_id = ""
+        self.__email = ""
+        self.__displayname = ""
+        self.__avatarurl = ""
 
     def get_user_id(self):
         return self.__user_id

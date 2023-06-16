@@ -325,6 +325,21 @@ class User_api(Resource):
             adm = Administration()
             return adm.get_user_by_id(id)
 
+    @user_namespace.marshal_with(user, code=200)
+    @user_namespace.expect(user)
+    def post(self, id):
+        adm = Administration()
+        payload = api.payload
+        return adm.add_new_user(payload)
+
+    @user_namespace.marshal_with(user, code=200)
+    @user_namespace.expect(user)
+    def delete(self, id):
+        adm = Administration()
+        return adm.delete_user(id, api.payload)
+
+
+
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

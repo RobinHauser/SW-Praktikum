@@ -1,7 +1,7 @@
 create table user
 (
     UserID    int not null
-        primary key,
+        primary key auto_increment,
     Email     nvarchar(100) not null,
     Displayname nvarchar(100) not null,
     AvatarURL  nvarchar(1000) not null
@@ -282,17 +282,17 @@ INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20008, 1004,
 INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20009, 1003, 'Achso ja oke', '2023-02-10 12:50:00');
 INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20010, 1003, '20Uhr kannst mich abholen', '2023-02-10 12:56:00');
 
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20001);
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20002);
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20003);
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20004);
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20005);
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20006);
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20007);
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20008);
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20009);
-INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20010);
-INSERT INTO chatrelation (ChatID, UserID, UserID2) VALUES (30001, 1004, 1003);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20001);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20002);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20003);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20004);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20005);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20006);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20007);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20008);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20009);
+-- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20010);
+-- INSERT INTO chatrelation (ChatID, UserID, UserID2) VALUES (30001, 1004, 1003);
 
 
 INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15001, 1001);

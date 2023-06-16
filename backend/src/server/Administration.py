@@ -22,17 +22,10 @@ class Administration():
     '''
     User - Methoden
     '''
+    def add_new_user(self, payload):
+        userMapper = UserMapper()
+        return userMapper.insert(payload)
 
-    def create_user(self, firstname, lastname, email, birthdate, google_id):
-        user = User()
-        user.set_firstname(firstname)
-        user.set_lastname(lastname)
-        user.set_email(email)
-        user.set_birthdate(birthdate)
-        user.set_google_id(google_id)
-
-        with UserMapper() as mapper:
-            return mapper.insert(user)
 
     def get_user_by_id(self, id):
         user_mapper = UserMapper()
@@ -55,9 +48,14 @@ class Administration():
         with UserMapper() as mapper:
             return mapper.update(user)
 
-    def delete_user(self, user):
-        with UserMapper() as mapper:
-            mapper.delete(user)
+    def delete_user(self, id, payload):
+        user = User()
+        user.set_user_id(payload['UserID'])
+        user.set_email(payload['email'])
+        user.set_avatarurl(payload['ProfileIMGURL'])
+        user.set_displayname(payload['displayname'])
+        user_mapper = UserMapper()
+        return user_mapper.delete(id, user)
 
     '''
     Profile Methoden

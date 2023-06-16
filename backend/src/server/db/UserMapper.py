@@ -104,17 +104,35 @@ class UserMapper(Mapper):
 
         return result
 
-    def insert(self, user):
+    def insert(self, payload):
+
+        #insert the new User
         cursor = self._cnx.cursor()
-
-        command = "INSERT INTO user (userid, email, displayname, avatarurl) VALUES (%s,%s,%s,%s)"
-        data = (user.get_id(), user.get_email(), user.get_displayname(), user.get_avatarurl())
-        cursor.execute(command, data)
-
+        insert_command = "INSERT INTO user (email, displayname, avatarurl) VALUES (%s, %s, %s)"
+        data = (payload['email'], payload['displayname'], payload['ProfileIMGURL'])
+        cursor.execute(insert_command, data)
         self._cnx.commit()
+
+        #get the user which is inserted
+        email = payload['email']
+        select_command = f"SELECT * FROM user WHERE email = '{email}'"
+        cursor.execute(select_command)
+        user_data = cursor.fetchone()
         cursor.close()
 
-        return user
+        if user_data:
+            user = User()
+            user.set_user_id(user_data[0])
+            user.set_email(user_data[1])
+            user.set_displayname(user_data[2])
+            user.set_avatarurl(user_data[3])
+            return user
+
+        # TODO Insert Bookmarklist
+        # TODO Insert Blocklist
+        # TODO Insert Viewedlist
+
+        return None
 
     def update(self, user):
         cursor = self._cnx.cursor()
@@ -128,15 +146,17 @@ class UserMapper(Mapper):
 
         return user
 
-    def delete(self, user):
+    def delete(self, id, user):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM user WHERE UserID={}".format(user.get_id())
+        command = "DELETE FROM user WHERE UserID={}".format(user.get_user_id())
         cursor.execute(command)
+
+        # TODO Delete Bookmarklist
+        # TODO Delete Blocklist
+        # TODO Delete Viewedlist
 
         self._cnx.commit()
         cursor.close()
 
         return user
-
-# todo umwandlungen in json?
