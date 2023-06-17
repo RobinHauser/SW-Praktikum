@@ -24,11 +24,14 @@ class ProfileCard extends Component {
 
         this.handleOpenDialog = this.handleOpenDialog.bind(this);
         this.handleCloseDialog = this.handleCloseDialog.bind(this);
-
     }
 
+    /**
+     * Adds the user to the viewed user list.
+     * Calls the API to update the viewed user list in the backend.
+     */
     addUserToViewedList = () => {
-        const { user, showedUser} = this.props
+        const { user, showedUser} = this.props;
         SopraDatingAPI.getAPI().addUserToViewedlist(user.getUserID(), showedUser)
             .then(() => {
                 this.setState({
@@ -39,13 +42,20 @@ class ProfileCard extends Component {
                     addingError: e
                 });
             });
-    }
+    };
 
+    /**
+     * Handles the opening of the dialog.
+     * Adds the user to the viewed user list before opening the dialog
+     */
     handleOpenDialog() {
-        this.addUserToViewedList()
+        this.addUserToViewedList();
         this.setState({openDialog: true});
     }
 
+    /**
+     * Handles the closing of the dialog.
+     */
     handleCloseDialog() {
         this.setState({openDialog: false, selectedValue: this.props.value});
     }
@@ -108,7 +118,7 @@ class ProfileCard extends Component {
                     </ExtendedProfileCard>
                 </Dialog>
             </div>
-        )
+        );
     }
 }
 

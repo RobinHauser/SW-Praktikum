@@ -125,9 +125,14 @@ export default class GridContainer extends React.Component{
         await this.getUserListBySearchprofile(1);
 
         const {userList, viewedList, showOnlyNewUser} = this.state
-        const nonViewedList = userList.filter(user =>
-            viewedList.some(viewedUser => user.getUserID() !== viewedUser.getUserID())
-        )
+
+        // If the viewedList is not empty, filter the nonViewedList based on the viewedUsers
+        let nonViewedList = userList;
+        if(viewedList.length > 0) {
+            nonViewedList = userList.filter(user =>
+                viewedList.some(viewedUser => user.getUserID() !== viewedUser.getUserID())
+            )
+        }
 
         // Toggle the showOnlyNewUser state and update the user list accordingly
         this.setState(() => ({

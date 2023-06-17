@@ -7,14 +7,10 @@ import Avatar from "@mui/material/Avatar";
 import {Component} from "react";
 import Tooltip from "@mui/material/Tooltip";
 import BlockIcon from "@mui/icons-material/Block";
-import {Link} from "react-router-dom";
 import ChatIcon from "@mui/icons-material/Chat";
 import Box from "@mui/material/Box";
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 import SopraDatingAPI from "../api/SopraDatingAPI";
-import CachedIcon from "@mui/icons-material/Cached";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 
 /**
  * @author [Jannik Haug]
@@ -27,15 +23,19 @@ class BookmarkProfileCard extends Component {
         this.state = {
             addingError: null,
             deletingError: null
-        }
+        };
     }
 
+    /**
+     * Blocks the user by adding them to the blocklist
+     * Calls the API to remove the user from the bookmarklist and to add it to the blocklist
+     */
     blockUser = () => {
         const {bookmarkedUser, user} = this.props;
         SopraDatingAPI.getAPI().addUserToBlocklist(user.getUserID(), bookmarkedUser).then(() => {
             this.setState({
                 addingError: null
-            })
+            });
             this.props.onUserRemoved(bookmarkedUser);
         }).catch(e =>
             this.setState({
@@ -45,12 +45,12 @@ class BookmarkProfileCard extends Component {
 
         this.setState({
             addingError: null
-        })
+        });
 
         SopraDatingAPI.getAPI().removeUserFromBookmarklist(user.getUserID(), bookmarkedUser).then(() => {
             this.setState({
                 addingError: null
-            })
+            });
         }).catch(e =>
             this.setState({
                 addingError: e
@@ -59,15 +59,19 @@ class BookmarkProfileCard extends Component {
 
         this.setState({
             addingError: null
-        })
-    }
+        });
+    };
 
+    /**
+     * Removes the user from the bookmarklist
+     * Calls the API to remove the user from the bookmarklist
+     */
     removeUserFromBookmarklist = () => {
         const {bookmarkedUser, user} = this.props;
         SopraDatingAPI.getAPI().removeUserFromBookmarklist(user.getUserID(), bookmarkedUser).then(() => {
             this.setState({
                 deletingError: null
-            })
+            });
             this.props.onUserRemoved(bookmarkedUser);
         }).catch(e =>
             this.setState({
@@ -77,9 +81,15 @@ class BookmarkProfileCard extends Component {
 
         this.setState({
             deletingError: null
-        })
-    }
+        });
+    };
 
+    /**
+     * Adds a specific other user to the chats of current user
+     * Calls the API to add the other user to the chats of the current user
+     *
+     * @param {UserBO} userToAdd - the user to add to a chat
+     */
     addUserToChat = (userToAdd) => {
         SopraDatingAPI.getAPI().addUserToChat(this.props.user.getUserID(), userToAdd)
             .then(() => {
@@ -90,6 +100,11 @@ class BookmarkProfileCard extends Component {
             })
     }
 
+    /**
+     * Add a user to the chat
+     *
+     * @param {UserBO} userToAdd - user to add to the chat
+     */
     chatButtonFunction(userToAdd) {
         var addObject = {
             "UserID": userToAdd
@@ -157,7 +172,7 @@ class BookmarkProfileCard extends Component {
                     </CardContent>
                 </Card>
             </div>
-        )
+        );
     }
 }
 

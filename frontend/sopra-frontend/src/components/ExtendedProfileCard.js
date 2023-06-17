@@ -15,9 +15,9 @@ import {Link} from "react-router-dom";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
- * @author [Jannik Haug]
+ * @author [Jannik Haug, Michael Bergdolt]
  */
-class ExtendedProfileCard extends Component {
+class   ExtendedProfileCard extends Component {
     constructor(props) {
         super(props);
 
@@ -27,6 +27,10 @@ class ExtendedProfileCard extends Component {
         }
     }
 
+    /**
+     * Blocks the user by adding them to the blocklist
+     * Calls the API to remove the user from the bookmarklist and to add it to the blocklist
+     */
     blockUser = () => {
         const { showedUser, user } = this.props;
         SopraDatingAPI.getAPI().addUserToBlocklist(user.getUserID(), showedUser).then(() => {
@@ -59,6 +63,10 @@ class ExtendedProfileCard extends Component {
         })
     }
 
+    /**
+     * Adds the user to the bookmarklist
+     * Calls the API to add to the bookmarklist
+     */
     addUserToBookmarklist = () => {
         const { showedUser, user} = this.props;
         SopraDatingAPI.getAPI().addUserToBookmarklist(user.getUserID(), showedUser).then(() => {

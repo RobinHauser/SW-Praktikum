@@ -9,6 +9,7 @@ import UserBO from "./UserBO";
 import MessageBO from "./MessageBO";
 import chatb from "./ChatBO";
 import ChatBO from "./ChatBO";
+import InformationBO from "./InformationBO";
 
 export default class SopraDatingAPI {
 
@@ -63,6 +64,9 @@ export default class SopraDatingAPI {
     // Profile related
     #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
     #updateProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
+
+    // Information related
+    #getSelectionInformationURL = (propertyID) => `${this.#SopraDatingServerBaseURL}/Information/${propertyID}`
 
     // SearchProfile related
     #getSearchProfileURL = (searchprofileID) => {
@@ -275,6 +279,16 @@ export default class SopraDatingAPI {
                 // console.log(messageBOs)
                 return new Promise(function (resolve) {
                     resolve(messageBOs)
+                })
+            })
+    }
+
+    getSelectionInformation(propertyID) {
+        return this.#fetchAdvanced(this.#getSelectionInformationURL(propertyID))
+            .then((responseJSON) => {
+                let informationBOs = InformationBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(informationBOs)
                 })
             })
     }
