@@ -55,9 +55,15 @@ class ProfileCard extends Component {
 
     /**
      * Handles the closing of the dialog.
+     * removes the User from the shown list of profiles if the user only want to see new profiles
      */
     handleCloseDialog() {
+        const { onUserRemoved, showOnlyNewUser, showedUser } = this.props;
         this.setState({openDialog: false, selectedValue: this.props.value});
+
+        if(!showOnlyNewUser) {
+            onUserRemoved(showedUser)
+        }
     }
 
     render() {

@@ -227,6 +227,7 @@ export default class GridContainer extends React.Component{
                                     key={userListItem.getUserID()}
                                     user={this.props.user}
                                     showedUser={userListItem}
+                                    showOnlyNewUser={showOnlyNewUser}
                                     onUserRemoved={this.handleRemoveUser}>
                                 </ProfileCard>
                             </Grid>
