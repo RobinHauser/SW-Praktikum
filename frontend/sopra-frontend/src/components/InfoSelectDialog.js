@@ -39,7 +39,6 @@ class InfoSelectDialog extends Component {
                                 <ListItem
                                     key={property}
                                     button
-                                    onClick={() => handleListItemClick(property)}
                                 >
                                     <ListItemText
                                         sx={{
@@ -48,6 +47,7 @@ class InfoSelectDialog extends Component {
                                             justifyContent: 'center',
                                         }}
                                         primary={property}
+                                        onClick={() => handleListItemClick(property)}
                                     />
                                     <IconButton
                                         edge="end"
@@ -65,7 +65,7 @@ class InfoSelectDialog extends Component {
                                   display: 'flex',
                                   justifyContent: 'center',
                                 }}
-                                primary="Neues Info-Objekt hinzufügen"
+                                primary="Neue Option hinzufügen"
                               />
                             </ListItem>
                         </List>

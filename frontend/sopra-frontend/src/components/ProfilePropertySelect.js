@@ -44,15 +44,17 @@ class ProfilePropertySelect extends Component {
 
     handleCloseDialogInfo() {
         const { isAddingNewProperty } = this.state;
+        console.log(this.state.openDialogSelect)
         if (isAddingNewProperty) {
             this.setState({ isAddingNewProperty: false });
-        }  else {
+        }
+        else {
             this.setState({ openDialogSelect: false });
         }
     }
 
-    handleListItemClick(value) {
-        this.handleCloseDialogInfo(value);
+    handleListItemClick() {
+        this.handleCloseDialogInfo();
     }
 
     handleDeleteItemClick(value) {
