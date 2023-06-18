@@ -1,21 +1,31 @@
 import Typography from "@mui/material/Typography";
 import {ListItem, Paper} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 import {Component} from "react";
+
 /**
- * *
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which shows a message on a Paper as a ListItem.
+ * This ist the component for the right message (a message written by the current user).
+ * Reference for wordBreak in the Typography: https://stackoverflow.com/questions/52260553/after-word-break-align-next-line-to-the-left-rather-than-center
  */
 class MessageRight extends Component {
+    /**
+     * Renders the class component
+     * @returns MessageRight - the rendered component
+     */
     render() {
-        const {message, avatarLink} = this.props;
+        const {content, timeStamp, avatarLink} = this.props;
         return (
             <div>
                 <ListItem>
                     <Paper sx={{my: 1, mr: 1, textAlign: "right", width: "75vh"}} elevation={3}>
-                        <Typography noWrap={false} sx={{m: 2, wordBreak: "break-word"}}>{message}</Typography>
-                        <Typography fontSize={12} style={{textAlign: "left"}}> 01.01.2000</Typography>
+                        <Typography noWrap={false} sx={{m: 2, wordBreak: "break-word"}}>{content}</Typography>
+                        <Typography fontSize={12} sx={{
+                            textAlign: "left",
+                            marginLeft: 10,
+                            marginBottom: 3
+                        }}> {timeStamp}</Typography>
                     </Paper>
                     <Avatar src={avatarLink}></Avatar>
                 </ListItem>
@@ -23,5 +33,5 @@ class MessageRight extends Component {
         );
     }
 }
+
 export default MessageRight;
-// wordBreak inspiriert von: //https://stackoverflow.com/questions/52260553/after-word-break-align-next-line-to-the-left-rather-than-center (Abgerufen am 30.04.2023)

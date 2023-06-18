@@ -25,6 +25,7 @@ message_namespace = Namespace(name="message", description="This is the Message")
 profile_namespace = Namespace(name="profile", description="This is the Profile")
 search_profile_namespace = Namespace(name="search-profile", description="This is the Search Profile")
 view_namespace = Namespace(name="view", description="tbd")
+init_user_namespace = Namespace(name="init-user", description="tbd")
 
 # Adding the namespaces to the api
 api.add_namespace(bookmarklist_namespace)
@@ -34,16 +35,17 @@ api.add_namespace(message_namespace)
 api.add_namespace(profile_namespace)
 api.add_namespace(search_profile_namespace)
 api.add_namespace(view_namespace)
+api.add_namespace(init_user_namespace)
 
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='id', description='This is the unique identifier of an business-object ')
 })
 
-user = api.inherit('User', bo, {
-    'UserID': fields.String(attribute='UserID', description='This is the id of the user'),
-    'email': fields.String(attribute='email', description='This is the email of the user'),
-    'displayname': fields.String(attribute='displayname', description='This is the full name of the user'),
-    'ProfileIMGURL': fields.String(attribute='ProfileIMGURL', description='This is the URL to the profileImage of the profile'),
+user = api.inherit('User', {
+    'UserID': fields.String(attribute=lambda x: x.get_user_id(), description='This is the id of the user'),
+    'email': fields.String(attribute=lambda x: x.get_email(), description='This is the email of the user'),
+    'displayname': fields.String(attribute=lambda x: x.get_displayname(), description='This is the full name of the user'),
+    'ProfileIMGURL': fields.String(attribute=lambda x: x.get_avatarurl(), description='This is the URL to the profileImage of the profile'),
 })
 
 message = api.inherit('Message', bo, {
@@ -76,7 +78,7 @@ blocklist = api.inherit('Blocklist', {
 @bookmarklist_namespace.response(200, 'TBD')
 class Bookmarklist_api(Resource):
 
-    #@secured
+    # @secured
     def get(self, user_id):
         """
         Getting the bookmark list of a specific user
@@ -98,7 +100,7 @@ class Bookmarklist_api(Resource):
         response = adm.add_user_to_bookmarklist(user_id, api.payload)
         return response
 
-    @secured
+    # @secured
     def delete(self, user_id):
         """
         Removing a user from the users bookmarklist
@@ -115,7 +117,7 @@ class Bookmarklist_api(Resource):
 @blocklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @blocklist_namespace.response(200, 'TBD')
 class Blocklist_api(Resource):
-    #@secured
+    # @secured
     def get(self, user_id):
         """
         Getting list of all blocked users of a user
@@ -126,9 +128,8 @@ class Blocklist_api(Resource):
         response = adm.get_blocklist_by_user_id(user_id)
         return response
 
-    #@secured
+    # @secured
     def post(self, user_id):
-
         """
         Adding a new user to the users blocklist
         :param user_id: the id of the user we want to add another user to his blocklist
@@ -138,7 +139,7 @@ class Blocklist_api(Resource):
         response = adm.add_user_to_blocklist(user_id, api.payload)
         return response
 
-    #@secured
+    # @secured
     def delete(self, user_id):
         """
         Removing a user from the users blocklist
@@ -149,9 +150,10 @@ class Blocklist_api(Resource):
         response = adm.delete_blocklist(user_id, json.loads(request.data))
         return response
 
+
 @view_namespace.route('/<int:user_id>')
 class View_api(Resource):
-    #@secured
+    # @secured
     def get(self, user_id):
         """
         get a list of users the given user has been seen
@@ -162,7 +164,7 @@ class View_api(Resource):
         response = adm.get_viewed_list_by_user_id(user_id)
         return response
 
-    #@secured
+    # @secured
     def post(self, user_id):
         """
         Add a new user to the viewed list
@@ -173,7 +175,7 @@ class View_api(Resource):
         response = adm.add_user_to_viewedList(user_id, api.payload)
         return response
 
-    #@secured
+    # @secured
     def delete(self, user_id):
         """
         Remove a user from a viewed list
@@ -285,6 +287,19 @@ class Search_profile_api(Resource):
         adm = Administration()
         response = adm.add_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
         return response
+
+
+@init_user_namespace.route('/<string:email>')
+class Init_user_api(Resource):
+    @init_user_namespace.marshal_with(user, code=200)
+    def get(self, email):
+        """
+        Get the user_id of the given email
+        :param email: the email, we want the user_id from
+        :return: the user of the email
+        """
+        adm = Administration()
+        return adm.get_user_by_email(email)
 
 
 if __name__ == '__main__':

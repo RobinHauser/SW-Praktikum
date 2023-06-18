@@ -19,7 +19,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": 1,\n    \"user\": \"this is a user\"\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -27,7 +27,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/bookmarklist/1004",
+							"raw": "http://127.0.0.1:8000/bookmarklist/1004",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -35,7 +35,7 @@
 								"0",
 								"1"
 							],
-							"port": "5000",
+							"port": "8000",
 							"path": [
 								"bookmarklist",
 								"1004"
@@ -51,7 +51,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"id\": \"1001\",\n        \"email\": \"ek103@hdm-stuttgart.de\",\n        \"firstname\": \"Elias\",\n        \"lastname\": \"Konson\"\n}",
+							"raw": "{\n        \"id\": \"1006\",\n        \"email\": \"bt036@hdm-stuttgart.de\",\n        \"displayname\": \"Hello\",\n        \"ProfileIMGURL\": \"tbd.de\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -59,7 +59,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/bookmarklist/1004",
+							"raw": "http://127.0.0.1:8000/bookmarklist/1004",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -67,7 +67,7 @@
 								"0",
 								"1"
 							],
-							"port": "5000",
+							"port": "8000",
 							"path": [
 								"bookmarklist",
 								"1004"
@@ -83,7 +83,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"id\": \"1001\",\n        \"email\": \"ek103@hdm-stuttgart.de\",\n        \"firstname\": \"Elias\",\n        \"lastname\": \"Konson\"\n}",
+							"raw": "{\n        \"id\": \"1006\",\n        \"email\": \"ek103@hdm-stuttgart.de\",\n        \"displayname\": \"Elias Konson\",\n        \"profileImageURL\": \"https://tbd.de\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -91,7 +91,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/bookmarklist/1004",
+							"raw": "http://127.0.0.1:8000/bookmarklist/1004",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -99,7 +99,7 @@
 								"0",
 								"1"
 							],
-							"port": "5000",
+							"port": "8000",
 							"path": [
 								"bookmarklist",
 								"1004"
@@ -119,7 +119,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://127.0.0.1:5000/blocklist/1005",
+							"raw": "http://127.0.0.1:8000/blocklist/1005",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -127,7 +127,7 @@
 								"0",
 								"1"
 							],
-							"port": "5000",
+							"port": "8000",
 							"path": [
 								"blocklist",
 								"1005"
@@ -143,7 +143,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"id\": \"1004\",\n        \"email\": \"tk172@hdm-stuttgart.de\",\n        \"firstname\": \"Theo\",\n        \"lastname\": \"Klautke\"\n}",
+							"raw": "{\n        \"id\": \"1001\",\n        \"email\": \"ek103@hdm-stuttgart.de\",\n        \"displayname\": \"Elias Konson\",\n        \"profileImageURL\": \"https://tbd.de/\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -151,7 +151,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/blocklist/1005",
+							"raw": "http://127.0.0.1:8000/blocklist/1005",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -159,7 +159,7 @@
 								"0",
 								"1"
 							],
-							"port": "5000",
+							"port": "8000",
 							"path": [
 								"blocklist",
 								"1005"
@@ -175,7 +175,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"id\": \"1004\",\n        \"email\": \"tk172@hdm-stuttgart.de\",\n        \"firstname\": \"Theo\",\n        \"lastname\": \"Klautke\"\n}",
+							"raw": "    {\n        \"id\": \"1004\",\n        \"email\": \"tk172@hdm-stuttgart.de\",\n        \"displayname\": \"Theo Klautke\",\n        \"profileImageURL\": \"https://tbd.de\"\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -183,7 +183,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5000/blocklist/1005",
+							"raw": "http://127.0.0.1:8000/blocklist/1005",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -191,10 +191,130 @@
 								"0",
 								"1"
 							],
-							"port": "5000",
+							"port": "8000",
 							"path": [
 								"blocklist",
 								"1005"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ViewedList",
+			"item": [
+				{
+					"name": "get user viewedlist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/view/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"view",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add user to viewedlist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1006\",\n        \"email\": \"bt036@hdm-stuttgart.de\",\n        \"displayname\": \"Hello\",\n        \"ProfileIMGURL\": \"tbd.de\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/view/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"view",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user from viewedlist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1006\",\n        \"email\": \"bt036@hdm-stuttgart.de\",\n        \"displayname\": \"Hello\",\n        \"ProfileIMGURL\": \"tbd.de\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/view/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"view",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Init_user",
+			"item": [
+				{
+					"name": "Get user id by email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/init-user/tk172@hdm-stuttgart.de",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"init-user",
+								"tk172@hdm-stuttgart.de"
 							]
 						}
 					},

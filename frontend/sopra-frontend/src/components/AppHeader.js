@@ -197,13 +197,13 @@ export default function AppHeader(props) {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}>
 
-                            <MenuItem onClick={() => {
+                            <MenuItem sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }} onClick={() => {
                                 handleCloseUserMenu()
                                 navigateToProfilePage()
                             }}>
                                 <Typography textAlign="center">Profil</Typography>
                             </MenuItem>
-                            <MenuItem onClick={() => {
+                            <MenuItem sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }} onClick={() => {
                                 handleCloseUserMenu()
                                 handleSignOutButtonClicked()
                             }}>

@@ -6,10 +6,8 @@ from backend.src.server.db.BlocklistMapper import BlocklistMapper
 from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
 from backend.src.server.db.ProfileMapper import ProfileMapper
 from backend.src.server.db.UserMapper import UserMapper
-
 from backend.src.server.db.InformationMapper import InformationMapper
 from backend.src.server.db.PropertyMapper import PropertyMapper
-
 from backend.src.server.db.MessageMapper import MessageMapper
 from backend.src.server.db.ChatMapper import ChatMapper
 from backend.src.server.db.ViewedMapper import ViewedMapper
@@ -47,8 +45,9 @@ class Administration():
             return mapper.find_all()
 
     def get_user_by_email(self, email):
-        with UserMapper() as mapper:
-            return mapper.find_by_email(email)
+        user_mapper = UserMapper()
+        return user_mapper.find_by_email(email)
+
 
     def update_user(self, user):  # das selbe wie save user
         with UserMapper() as mapper:
@@ -231,24 +230,32 @@ class Administration():
     '''
 
     def get_chat_by_user_id(self, user_id):
-        with ChatMapper() as mapper:
-            return mapper.find_all(user_id)
+        chatlistmapper = ChatMapper()
+        return chatlistmapper.find_all(user_id)
+        #with ChatMapper() as mapper:
+            #return chatlistmapper.find_all(user_id)
 
     def add_chat_to_user(self, user_id, payload):
-        with ChatMapper() as mapper:
-            return mapper.insert(user_id, payload)
+        chatmapper = ChatMapper()
+        return chatmapper.insert(user_id, payload)
+        #with ChatMapper() as mapper:
+            #return mapper.insert(user_id, payload)
 
     '''
          Message Methoden
     '''
 
     def get_messages_by_chat_id(self, chat_id):
-        with MessageMapper() as mapper:
-            return mapper.find_by_id(chat_id)
+        messagemapper = MessageMapper()
+        return messagemapper.find_by_id(chat_id)
+        #with MessageMapper() as mapper:
+            #return mapper.find_by_id(chat_id)
 
     def add_message_to_chat(self, user_id, payload):
-        with MessageMapper() as mapper:
-            return mapper.insert(user_id, payload)
+        messagemapper = MessageMapper()
+        return messagemapper.insert(user_id, payload)
+        #with MessageMapper() as mapper:
+           #return mapper.insert(user_id, payload)
 
     '''
         View Methoden
