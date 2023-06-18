@@ -18,6 +18,10 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import InfoSelectDialog from "../components/InfoSelectDialog";
 import InfoFreeTextDialog from "../components/InfoFreeTextDialog";
+import Tooltip from "@mui/material/Tooltip";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -36,6 +40,8 @@ class Profile extends Component {
         properties: [],
         newProperty: "",
         isAddingNewProperty: false,
+        anchorEl: null,
+        globalProperties: ["Auswahl-Eigenschaft 1", "Auswahl-Eigenschaft 2", "Auswahl-Eigenschaft 3"],
     };
 
     this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -132,10 +138,30 @@ class Profile extends Component {
         this.handleCloseDialogProp();
     }
 
+    handleGlobalPropertiesMenuClick = (event) => {
+        this.setState({ anchorEl: event.currentTarget });
+    };
+
+     handleCloseGlobalProperties = () => {
+        this.setState({ anchorEl: null });
+    };
+
+     handleGlobalPropertiesItemClickSelect = () => {
+        this.setState({ anchorEl: null });
+        this.handleOpenDialogSelect();
+    };
+
+     handleGlobalPropertiesItemClickFreeText = () => {
+        this.setState({ anchorEl: null });
+        this.handleOpenDialogFreeText();
+    };
+
 
     render() {
         const {value} = this.props;
-        const { openSelectDialog, openFreeTextDialog, openDialogSelect, openDialogFreeText, properties, newProperty, isAddingNewProperty } = this.state;
+        const { openSelectDialog, openFreeTextDialog, openDialogSelect, openDialogFreeText, properties, newProperty,
+            isAddingNewProperty, globalProperties, anchorEl } = this.state;
+        const open = Boolean(anchorEl)
 
         return (
             <div className="App">
@@ -186,6 +212,35 @@ class Profile extends Component {
                     >
                         Auswahl-Eigenschaft hinzufügen
                     </Button>
+
+                    <Tooltip title={"Auswahl-Eigenschaften, die ins Profil geladen werden können."}>
+                        <Button
+                            aria-controls="dropdown-menu"
+                            aria-haspopup="true"
+                            onClick={this.handleGlobalPropertiesMenuClick}
+                            variant="contained"
+                            endIcon={<ArrowDropDownIcon />}
+                            sx={{marginTop: '25px'}}
+                        >
+                            Auswahl-Eigenschaft laden
+                        </Button>
+                    </Tooltip>
+                    <Menu
+                        id="dropdown-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={this.handleCloseGlobalProperties}
+                    >
+                        {globalProperties.map((globalPropertyItem) => (
+                            <MenuItem
+                                onClick = {() => this.handleGlobalPropertiesItemClickSelect(globalPropertyItem)}
+                                sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
+                                key={1} // Todo key dynamisch einlesen
+                            >
+                                {globalPropertyItem}
+                            </MenuItem>
+                        ))}
+                    </Menu>
 
                     <Dialog open={openSelectDialog} onClose={() => this.handleCloseDialogProp(null)}>
                         <DialogTitle>Auswahl-Eigenschaft hinzufügen</DialogTitle>
@@ -256,6 +311,36 @@ class Profile extends Component {
                     >
                       Freitext-Eigenschaft hinzufügen
                     </Button>
+
+                      <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
+                        <Button
+                            aria-controls="dropdown-menu"
+                            aria-haspopup="true"
+                            onClick={this.handleGlobalPropertiesMenuClick}
+                            variant="contained"
+                            endIcon={<ArrowDropDownIcon />}
+                            sx={{marginTop: '25px'}}
+
+                        >
+                            Freitext-Eigenschaft laden
+                        </Button>
+                    </Tooltip>
+                    <Menu
+                        id="dropdown-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={this.handleCloseGlobalProperties}
+                    >
+                        {globalProperties.map((globalPropertyItem) => (
+                            <MenuItem
+                                onClick = {() => this.handleGlobalPropertiesItemClickFreeText(globalPropertyItem)}
+                                sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
+                                key={1}   // Todo key dynamisch einlesen
+                            >
+                                {globalPropertyItem}
+                            </MenuItem>
+                        ))}
+                    </Menu>
 
                     <Dialog open={openFreeTextDialog} onClose={() => this.handleCloseDialogProp(null)}>
                         <DialogTitle>Freitext-Eigenschaft hinzufügen</DialogTitle>

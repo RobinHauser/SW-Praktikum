@@ -7,6 +7,10 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 
+/**
+ * @author [Björn Till](https://github.com/BjoernTill)
+ */
+
 class InfoFreeTextDialog extends Component {
   render() {
     const {

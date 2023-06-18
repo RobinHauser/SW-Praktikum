@@ -11,6 +11,10 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TextField from "@mui/material/TextField";
 
+/**
+ * @author [Björn Till](https://github.com/BjoernTill)
+ */
+
 class InfoSelectDialog extends Component {
   render() {
     const {
