@@ -11,4 +11,5 @@ Die Nutzung dieser Software erfolgt auf eigene Gefahr, eine Haftung jeglicher Ar
 Alle Rechte vorbehalten.
 
 Gruppe 3 - Softwarepraktikum 2023 - Hoschule der Medien, Stuttgart
+
 Michael Bergdolt, Jannik Haug, Robin Hauser, Theo Klautke, Elias Konson, Björn Till
