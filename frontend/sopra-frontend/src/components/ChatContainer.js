@@ -135,7 +135,7 @@ class ChatContainer extends Component {
      * Reference: https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
      */
     scrollToBottom() {
-        this.messagesEndRef.current?.scrollIntoView();
+        this.messagesEndRef.current?.scrollIntoView()
     }
 
     /**
