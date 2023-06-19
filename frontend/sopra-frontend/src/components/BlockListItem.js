@@ -19,14 +19,14 @@ export default class BlockListItem extends React.Component{
     }
 
     removeUser = () => {
-        const { user } = this.props;
-        SopraDatingAPI.getAPI().removeUserFromBlocklist(user).then(() => {
+        const { blockedUser, user } = this.props;
+        SopraDatingAPI.getAPI().removeUserFromBlocklist(user.getUserID(), blockedUser).then(() => {
             this.setState({
                 deletingInProgress: false,
                 deletingError: null
             })
             // console.log(user);
-            this.props.onUserRemoved(user);
+            this.props.onUserRemoved(blockedUser);
         }).catch(e =>
             this.setState({
                 deletingInProgress: false,
@@ -41,7 +41,7 @@ export default class BlockListItem extends React.Component{
         })
     }
     render() {
-        const{user}=this.props;
+        const{blockedUser}=this.props;
 
         return (
             <ListItem
@@ -59,7 +59,7 @@ export default class BlockListItem extends React.Component{
                         <Person2SharpIcon />
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={user.getDisplayname()} />
+                <ListItemText primary={blockedUser.getDisplayname()} />
             </ListItem>
         )
     }

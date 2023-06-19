@@ -1,9 +1,10 @@
 import * as React from 'react'
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
-import {List, ListSubheader} from "@mui/material";
+import {List, ListItem, ListItemText, ListSubheader} from "@mui/material";
 import BlockListItem from "../components/BlockListItem";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import Typography from "@mui/material/Typography";
 
 /**
  * Shows the Blocklist with all Profiles, that are Blocked by the User
@@ -22,7 +23,7 @@ export default class BlockList extends React.Component{
     }
 
     getBlocklist = () => {
-        SopraDatingAPI.getAPI().getBlocklist(1)
+        SopraDatingAPI.getAPI().getBlocklist(this.props.user.getUserID())
             .then(UserBOs =>
                 this.setState({
                     blocklist: UserBOs,
@@ -65,10 +66,18 @@ export default class BlockList extends React.Component{
                     >
                         {blocklist.length > 0 ? (
                             blocklist.map((blocklistItem) => (
-                                <BlockListItem key={blocklistItem.getUserID()} user={blocklistItem} onUserRemoved={this.removeUserHandler}/>
+                                <BlockListItem
+                                    key={blocklistItem.getUserID()}
+                                    user={this.props.user}
+                                    blockedUser={blocklistItem}
+                                    onUserRemoved={this.removeUserHandler}/>
                             ))
                         ) : (
-                            <p>Keine blockierten Benutzer gefunden.</p>
+                            <ListItem>
+                                <ListItemText sx={{ textAlign: 'center' }}>
+                                    <Typography variant="body1">Keine Nutzer blockiert</Typography>
+                                </ListItemText>
+                            </ListItem>
                         )}
                     </List>
                 </Container>

@@ -12,6 +12,9 @@ import ChatIcon from "@mui/icons-material/Chat";
 import Box from "@mui/material/Box";
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import CachedIcon from "@mui/icons-material/Cached";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 
 /**
  * @author [Jannik Haug]
@@ -28,12 +31,26 @@ class BookmarkProfileCard extends Component {
     }
 
     blockUser = () => {
-        const { user } = this.props;
-        SopraDatingAPI.getAPI().addUserToBlocklist(user).then(() => {
+        const {bookmarkedUser, user} = this.props;
+        SopraDatingAPI.getAPI().addUserToBlocklist(user.getUserID(), bookmarkedUser).then(() => {
             this.setState({
                 addingError: null
             })
-            this.props.onUserRemoved(user);
+            this.props.onUserRemoved(bookmarkedUser);
+        }).catch(e =>
+            this.setState({
+                addingError: e
+            })
+        );
+
+        this.setState({
+            addingError: null
+        })
+
+        SopraDatingAPI.getAPI().removeUserFromBookmarklist(user.getUserID(), bookmarkedUser).then(() => {
+            this.setState({
+                addingError: null
+            })
         }).catch(e =>
             this.setState({
                 addingError: e
@@ -44,14 +61,14 @@ class BookmarkProfileCard extends Component {
             addingError: null
         })
     }
-    
+
     removeUserFromBookmarklist = () => {
-        const { user } = this.props;
-        SopraDatingAPI.getAPI().removeUserFromBookmarklist(user.getUserID()).then(() => {
+        const {bookmarkedUser} = this.props;
+        SopraDatingAPI.getAPI().removeUserFromBookmarklist(bookmarkedUser.getUserID()).then(() => {
             this.setState({
                 deletingError: null
             })
-            this.props.onUserRemoved(user);
+            this.props.onUserRemoved(bookmarkedUser);
         }).catch(e =>
             this.setState({
                 deletingError: e
@@ -62,10 +79,26 @@ class BookmarkProfileCard extends Component {
             deletingError: null
         })
     }
+    addUserToChat = (userToAdd) => {
+        SopraDatingAPI.getAPI().addUserToChat(this.props.user.getUserID(), userToAdd)
+            .then(() => {
+                console.log(userToAdd)
+            })
+            .catch(error => {
+                alert("Der User kann nicht erneut einem Chat hinzugefügt werden ")
+            })
+    }
+
+    chatButtonFunction(userToAdd) {
+        var addObject = {
+            "UserID": userToAdd
+        }
+        this.addUserToChat(addObject)
+    }
 
     render() {
-        const{ user }=this.props;
-
+        const {bookmarkedUser} = this.props;
+        const bookMarkedUserId = parseInt(this.props.bookmarkedUser.getUserID())
         return (
             <div>
                 <Card direction="row"
@@ -80,11 +113,11 @@ class BookmarkProfileCard extends Component {
                           ':hover': {boxShadow: 3},
                           minWidth: "300px"
                       }} //Quelle: https://stackoverflow.com/questions/37062176/mui-how-to-animate-card-depth-on-hover
-                      >
+                >
                     <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                            {user.getDisplayname()}
+                            {bookmarkedUser.getDisplayname()}
                         </Typography>
                         <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
                             Alter:
@@ -108,23 +141,18 @@ class BookmarkProfileCard extends Component {
                             Körpergröße:
                         </Typography>
                         <Box sx={{marginTop: 5, display: 'flex', justifyContent: 'space-between'}}>
-                        <Tooltip title="User blockieren">
-                            <BlockIcon onClick={() => this.blockUser()}
-                                       sx={{cursor: 'pointer', width: 35, height: 35}}></BlockIcon>
-                        </Tooltip>
-                        <Tooltip title="User von Merkliste entfernen">
-                            <HeartBrokenIcon onClick={() => this.removeUserFromBookmarklist()}
-                                          sx={{cursor: 'pointer', width: 35, height: 35}}></HeartBrokenIcon>
-                        </Tooltip>
-                        <Tooltip title="Zum Chat">
-                            <Link to="/Chat">
-                                <ChatIcon sx={{cursor: 'pointer', width: 35, height: 35}}>
-                                </ChatIcon>
-                            </Link>
-                        </Tooltip>
-
-
-                    </Box>
+                            <Tooltip title="User blockieren">
+                                <BlockIcon onClick={() => this.blockUser()}
+                                           sx={{cursor: 'pointer', width: 35, height: 35}}></BlockIcon>
+                            </Tooltip>
+                            <Tooltip title="User von Merkliste entfernen">
+                                <HeartBrokenIcon onClick={() => this.removeUserFromBookmarklist()}
+                                                 sx={{cursor: 'pointer', width: 35, height: 35}}></HeartBrokenIcon>
+                            </Tooltip>
+                            <Tooltip title="User zum Chat hinzufügen">
+                                <ChatIcon onClick={() => this.chatButtonFunction(bookMarkedUserId)} sx={{cursor: 'pointer', width: 35, height: 35}}></ChatIcon>
+                            </Tooltip>
+                        </Box>
                     </CardContent>
                 </Card>
             </div>

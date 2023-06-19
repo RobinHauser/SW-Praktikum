@@ -23,6 +23,7 @@ class BlocklistMapper(Mapper.Mapper):
         result = []
         cursor = self._cnx.cursor()
 
+        # Retrieve blocklist by UserID
         command = "SELECT * FROM blocklist WHERE UserID={}".format(user_id)
         cursor.execute(command)
         blocklist_tuple = cursor.fetchone()
@@ -30,7 +31,7 @@ class BlocklistMapper(Mapper.Mapper):
         if blocklist_tuple is not None:
             blocklist_id = blocklist_tuple[0]
 
-            # Retrieve bookmarklist by UserID
+            # Retrieve blocked users by BlocklistID
             command2 = "SELECT * FROM block WHERE BlocklistID={}".format(blocklist_id)
             cursor.execute(command2)
             blocks = cursor.fetchall()
@@ -45,8 +46,7 @@ class BlocklistMapper(Mapper.Mapper):
 
                 # Form the user into a json and add it to the list
                 for user in users:
-                    jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "dateOfBirth": "{user[3]}"' \
-                            f', "ProfileIMGURL": "{user[4]}"}}'
+                    jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "ProfileIMGURL": "{user[3]}"}}'
                     userJSON = json.loads(jsstr)
                     result.append(userJSON)
 
@@ -56,7 +56,7 @@ class BlocklistMapper(Mapper.Mapper):
     def insert(self, user_id, payload):
         """
         Adding a user to the blocklist of a user
-        :param user_id: the unique id of the user with the bookmark list
+        :param user_id: the unique id of the user with the blocklist
         :param payload: the dic of the user to be added
         :return: the added user
         """
@@ -64,7 +64,7 @@ class BlocklistMapper(Mapper.Mapper):
         cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')   #TODO BlocklistID schon vorher gesetzt?
 
         blocklist_id = cursor.fetchall()[0][0]
-        blocked_user_id = int(payload.get('id'))
+        blocked_user_id = int(payload.get('UserID'))
 
         cursor.execute(
             f'INSERT INTO block (BlocklistID, BlockedUserID) VALUES ({blocklist_id}, {blocked_user_id})')
@@ -89,7 +89,7 @@ class BlocklistMapper(Mapper.Mapper):
         cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')
 
         blocklist_id = cursor.fetchall()[0][0]
-        blocked_user_id = int(payload.get('id'))
+        blocked_user_id = int(payload.get('UserID'))
 
         cursor.execute(
             f'DELETE FROM block WHERE BlocklistID = {blocklist_id} AND BlockedUserID = {blocked_user_id}')
@@ -104,3 +104,4 @@ class BlocklistMapper(Mapper.Mapper):
 
     def find_by_name(self, name):
         pass
+
