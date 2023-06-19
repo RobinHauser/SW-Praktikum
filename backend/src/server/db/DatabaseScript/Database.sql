@@ -83,7 +83,7 @@ alter table text_info_assignment AUTO_INCREMENT=10001;
 create table blocklist
 (
     BlocklistID int not null
-        primary key,
+        primary key AUTO_INCREMENT,
     UserID int not null,
     constraint fk_blocklist_user
         foreign key (UserID) references user (UserID)
@@ -105,7 +105,7 @@ alter table block AUTO_INCREMENT=13001;
 create table bookmarklist
 (
     BookmarklistID int not null
-        primary key,
+        primary key AUTO_INCREMENT,
     UserID         int not null,
     constraint fk_bookmarklist_user
         foreign key (UserID) references user (UserID)
