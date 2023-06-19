@@ -93,7 +93,7 @@ class BookmarkProfileCard extends Component {
     addUserToChat = (userToAdd) => {
         SopraDatingAPI.getAPI().addUserToChat(this.props.user.getUserID(), userToAdd)
             .then(() => {
-                console.log(userToAdd)
+                alert("Der User wurde dem Chat hinzugefügt ")
             })
             .catch(error => {
                 alert("Der User kann nicht erneut einem Chat hinzugefügt werden ")
