@@ -13,6 +13,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import BlockIcon from '@mui/icons-material/Block';
 import {Link} from "react-router-dom";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import Grid from "@mui/material/Unstable_Grid2";
 
 /**
  * @author [Jannik Haug, Michael Bergdolt]
@@ -83,7 +84,7 @@ class   ExtendedProfileCard extends Component {
         const{showedUser} = this.props;
 
         return (
-            <Box sx={{width: 400}}>
+            <Box sx={{width: "100%"}}> // Todo gucken ob breite auch mit verschieden großen Strings aus dem Backend gut aussieht
                 <DialogContent>
                     <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
                     <DialogTitle sx={{textAlign: "center"}}>Profil Übersicht </DialogTitle>
@@ -120,7 +121,7 @@ class   ExtendedProfileCard extends Component {
                         </ListItem>
                         <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
                             <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                                Haarfarbe:
+                                Haarfarbe: Brunette
                             </Typography>
                         </ListItem>
                         <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
@@ -149,13 +150,9 @@ class   ExtendedProfileCard extends Component {
                                 </ChatIcon>
                             </Link>
                         </Tooltip>
-
-
                     </Box>
-
                 </DialogContent>
             </Box>
-
         )
     }
 }
