@@ -18,6 +18,9 @@ import DialogActions from "@mui/material/DialogActions";
 import InfoSelectDialog from "../components/InfoSelectDialog";
 import ProfilePropertyFreeText from "../components/ProfilePropertyFreeText";
 import InfoFreeTextDialog from "../components/InfoFreeTextDialog";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 
 
@@ -38,6 +41,10 @@ class SearchProfile extends Component {
         properties: [],
         newProperty: "",
         isAddingNewProperty: false,
+        anchorElSelect: null,
+        anchorElFreeText: null,
+        globalPropertiesSelect: ["Auswahl-Eigenschaft 1", "Auswahl-Eigenschaft 2", "Auswahl-Eigenschaft 3"],
+        globalPropertiesFreeText: ["Freitext-Eigenschaft 1", "Freitext-Eigenschaft 2", "Freitext-Eigenschaft 3"]
     };
 
     this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -133,9 +140,39 @@ class SearchProfile extends Component {
         this.handleCloseDialogFreeText(value);
         this.handleCloseDialogProp();
     }
+
+    handleGlobalPropertiesMenuSelectClick = (event) => {
+        this.setState({ anchorElSelect: event.currentTarget });
+    };
+
+    handleGlobalPropertiesMenuFreeTextClick = (event) => {
+        this.setState({anchorElFreeText: event.currentTarget })
+    }
+
+     handleCloseGlobalPropertiesSelect = () => {
+        this.setState({ anchorElSelect: null });
+    };
+
+    handleCloseGlobalPropertiesFreeText = () => {
+        this.setState({ anchorElFreeText: null });
+    };
+
+     handleGlobalPropertiesItemClickSelect = () => {
+        this.setState({ anchorElSelect: null });
+        this.handleOpenDialogSelect();
+    };
+
+     handleGlobalPropertiesItemClickFreeText = () => {
+        this.setState({ anchorElFreeText: null });
+        this.handleOpenDialogFreeText();
+    };
+
     render() {
         const {value} = this.props;
-        const { openSelectDialog, openFreeTextDialog, openDialogSelect, openDialogFreeText, properties, newProperty, isAddingNewProperty } = this.state;
+        const { openSelectDialog, openFreeTextDialog, openDialogSelect, openDialogFreeText, properties, newProperty,
+                isAddingNewProperty, globalPropertiesSelect, globalPropertiesFreeText, anchorElSelect, anchorElFreeText } = this.state;
+        const openSelect = Boolean(anchorElSelect)
+        const openFreeText = Boolean(anchorElFreeText)
 
         return (
             <div className="App">
@@ -168,6 +205,35 @@ class SearchProfile extends Component {
                     >
                         Auswahl-Eigenschaft hinzufügen
                     </Button>
+
+                    <Tooltip title={"Auswahl-Eigenschaften, die ins Profil geladen werden können."}>
+                        <Button
+                            aria-controls="dropdown-menu"
+                            aria-haspopup="true"
+                            onClick={this.handleGlobalPropertiesMenuSelectClick}
+                            variant="contained"
+                            endIcon={<ArrowDropDownIcon />}
+                            sx={{marginTop: '25px'}}
+                        >
+                            Auswahl-Eigenschaft laden
+                        </Button>
+                    </Tooltip>
+                    <Menu
+                        id="dropdown-menu"
+                        anchorEl={anchorElSelect}
+                        open={openSelect}
+                        onClose={this.handleCloseGlobalPropertiesSelect}
+                    >
+                        {globalPropertiesSelect.map((globalPropertyItemSelect) => (
+                            <MenuItem
+                                onClick={() => this.handleGlobalPropertiesItemClickSelect()}
+                                sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
+                                key={1}
+                            >
+                                {globalPropertyItemSelect}
+                            </MenuItem>
+                        ))}
+                    </Menu>
 
                     <Dialog open={openSelectDialog} onClose={() => this.handleCloseDialogProp(null)}>
                         <DialogTitle>Auswahl-Eigenschaft hinzufügen</DialogTitle>
@@ -232,12 +298,43 @@ class SearchProfile extends Component {
                     </List>
                     <Button
                       onClick={this.handleOpenFreeTextDialog}
-                      sx={{ marginTop: '20px', marginBottom: '50px', fontWeight: 'bold' }}
+                      sx={{ marginTop: '20px', fontWeight: 'bold' }}
                       variant="outlined"
                       startIcon={<AddIcon />}
                     >
                       Freitext-Eigenschaft hinzufügen
                     </Button>
+
+                    <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
+                        <Button
+                            aria-controls="dropdown-menu"
+                            aria-haspopup="true"
+                            onClick={this.handleGlobalPropertiesMenuFreeTextClick}
+                            variant="contained"
+                            endIcon={<ArrowDropDownIcon />}
+                            sx={{marginTop: '25px'}}
+
+                        >
+                            Freitext-Eigenschaft laden
+                        </Button>
+
+                    </Tooltip>
+                    <Menu
+                        id="dropdown-menu"
+                        anchorEl={anchorElFreeText}
+                        open={openFreeText}
+                        onClose={this.handleCloseGlobalPropertiesFreeText}
+                    >
+                        {globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
+                            <MenuItem
+                                onClick = {() => this.handleGlobalPropertiesItemClickFreeText()}
+                                sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
+                                key={1}
+                            >
+                                {globalPropertyItemFreeText}
+                            </MenuItem>
+                        ))}
+                    </Menu>
 
                     <Dialog open={openFreeTextDialog} onClose={() => this.handleCloseDialogProp(null)}>
                         <DialogTitle>Freitext-Eigenschaft hinzufügen</DialogTitle>
@@ -281,7 +378,8 @@ class SearchProfile extends Component {
                                         <Button variant="outlined" sx={{color: "red",
                                                                         borderColor: 'red' ,
                                                                         '&:hover': { background: 'transparent', borderColor: 'red' },
-                                                                        fontWeight: 'bold'}}
+                                                                        fontWeight: 'bold',
+                                                                        marginTop: '50px'}}
                                                 startIcon={<DeleteIcon />}>Suchprofil löschen</Button>
                                     </Tooltip>
                     </Link>

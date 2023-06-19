@@ -40,8 +40,10 @@ class Profile extends Component {
         properties: [],
         newProperty: "",
         isAddingNewProperty: false,
-        anchorEl: null,
-        globalProperties: ["Auswahl-Eigenschaft 1", "Auswahl-Eigenschaft 2", "Auswahl-Eigenschaft 3"],
+        anchorElSelect: null,
+        anchorElFreeText: null,
+        globalPropertiesSelect: ["Auswahl-Eigenschaft 1", "Auswahl-Eigenschaft 2", "Auswahl-Eigenschaft 3"],
+        globalPropertiesFreeText: ["Freitext-Eigenschaft 1", "Freitext-Eigenschaft 2", "Freitext-Eigenschaft 3"]
     };
 
     this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -138,21 +140,29 @@ class Profile extends Component {
         this.handleCloseDialogProp();
     }
 
-    handleGlobalPropertiesMenuClick = (event) => {
-        this.setState({ anchorEl: event.currentTarget });
+    handleGlobalPropertiesMenuSelectClick = (event) => {
+        this.setState({ anchorElSelect: event.currentTarget });
     };
 
-     handleCloseGlobalProperties = () => {
-        this.setState({ anchorEl: null });
+    handleGlobalPropertiesMenuFreeTextClick = (event) => {
+        this.setState({anchorElFreeText: event.currentTarget })
+    }
+
+     handleCloseGlobalPropertiesSelect = () => {
+        this.setState({ anchorElSelect: null });
+    };
+
+    handleCloseGlobalPropertiesFreeText = () => {
+        this.setState({ anchorElFreeText: null });
     };
 
      handleGlobalPropertiesItemClickSelect = () => {
-        this.setState({ anchorEl: null });
+        this.setState({ anchorElSelect: null });
         this.handleOpenDialogSelect();
     };
 
      handleGlobalPropertiesItemClickFreeText = () => {
-        this.setState({ anchorEl: null });
+        this.setState({ anchorElFreeText: null });
         this.handleOpenDialogFreeText();
     };
 
@@ -160,8 +170,9 @@ class Profile extends Component {
     render() {
         const {value} = this.props;
         const { openSelectDialog, openFreeTextDialog, openDialogSelect, openDialogFreeText, properties, newProperty,
-            isAddingNewProperty, globalProperties, anchorEl } = this.state;
-        const open = Boolean(anchorEl)
+                isAddingNewProperty, globalPropertiesSelect, globalPropertiesFreeText, anchorElSelect, anchorElFreeText } = this.state;
+        const openSelect = Boolean(anchorElSelect)
+        const openFreeText = Boolean(anchorElFreeText)
 
         return (
             <div className="App">
@@ -173,7 +184,7 @@ class Profile extends Component {
                     marginBottom: '50px',
                     fontSize: '25px'
                 }}>
-                    Account
+                <Typography sx={{fontSize: 25, color: 'black'}}> Account </Typography>
                 </Container>
 
                 <Card sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '50px'}}>
@@ -189,9 +200,7 @@ class Profile extends Component {
                     </Box>
                 </Card>
                 <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
-                    <ListSubheader sx={{fontSize: 25, color: 'black'}}>
-                                Profil
-                            </ListSubheader>
+                    <Typography sx={{fontSize: 25, color: 'black'}}> Profil </Typography>
                     <List
                         sx={{width: '100%', maxWidth: 700}}
                         subheader={
@@ -217,7 +226,7 @@ class Profile extends Component {
                         <Button
                             aria-controls="dropdown-menu"
                             aria-haspopup="true"
-                            onClick={this.handleGlobalPropertiesMenuClick}
+                            onClick={this.handleGlobalPropertiesMenuSelectClick}
                             variant="contained"
                             endIcon={<ArrowDropDownIcon />}
                             sx={{marginTop: '25px'}}
@@ -227,17 +236,17 @@ class Profile extends Component {
                     </Tooltip>
                     <Menu
                         id="dropdown-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={this.handleCloseGlobalProperties}
+                        anchorEl={anchorElSelect}
+                        open={openSelect}
+                        onClose={this.handleCloseGlobalPropertiesSelect}
                     >
-                        {globalProperties.map((globalPropertyItem) => (
+                        {globalPropertiesSelect.map((globalPropertyItemSelect) => (
                             <MenuItem
-                                onClick = {() => this.handleGlobalPropertiesItemClickSelect(globalPropertyItem)}
+                                onClick={() => this.handleGlobalPropertiesItemClickSelect()}
                                 sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
-                                key={1} // Todo key dynamisch einlesen
+                                key={1}
                             >
-                                {globalPropertyItem}
+                                {globalPropertyItemSelect}
                             </MenuItem>
                         ))}
                     </Menu>
@@ -312,11 +321,11 @@ class Profile extends Component {
                       Freitext-Eigenschaft hinzufügen
                     </Button>
 
-                      <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
+                    <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
                         <Button
                             aria-controls="dropdown-menu"
                             aria-haspopup="true"
-                            onClick={this.handleGlobalPropertiesMenuClick}
+                            onClick={this.handleGlobalPropertiesMenuFreeTextClick}
                             variant="contained"
                             endIcon={<ArrowDropDownIcon />}
                             sx={{marginTop: '25px'}}
@@ -327,17 +336,17 @@ class Profile extends Component {
                     </Tooltip>
                     <Menu
                         id="dropdown-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={this.handleCloseGlobalProperties}
+                        anchorEl={anchorElFreeText}
+                        open={openFreeText}
+                        onClose={this.handleCloseGlobalPropertiesFreeText}
                     >
-                        {globalProperties.map((globalPropertyItem) => (
+                        {globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
                             <MenuItem
-                                onClick = {() => this.handleGlobalPropertiesItemClickFreeText(globalPropertyItem)}
+                                onClick = {() => this.handleGlobalPropertiesItemClickFreeText()}
                                 sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
-                                key={1}   // Todo key dynamisch einlesen
+                                key={1}
                             >
-                                {globalPropertyItem}
+                                {globalPropertyItemFreeText}
                             </MenuItem>
                         ))}
                     </Menu>
@@ -384,5 +393,4 @@ class Profile extends Component {
         );
     }
 }
-
 export default Profile;
