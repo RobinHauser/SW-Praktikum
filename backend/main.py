@@ -193,16 +193,23 @@ class View_api(Resource):
 @chat_namespace.route('/<int:user_id>')
 class Chat_api(Resource):
     def get(self, user_id):
+        """
+        Get the chat associated to a user
+        :param user_id: the id of the user we want to get the chats from
+        :return: chats associated to the user
+        """
         adm = Administration()
-
         response = adm.get_chat_by_user_id(user_id)
-
         return response
 
     def post(self, user_id):
+        """
+        Start a new chat with a user
+        :param user_id: id of the user which starts the chat
+        :return:
+        """
         adm = Administration()
         response = adm.add_chat_to_user(user_id, api.payload)
-
         return response
 
     def delete(self):
@@ -212,13 +219,21 @@ class Chat_api(Resource):
 @message_namespace.route('/<int:id>')
 class Message_api(Resource):
     def get(self, id):  # Chat ID
-
+        """
+        Get all messages associated to a chat
+        :param id: chat_id of the chat we want to get the messages from
+        :return: all messages associated to the chat
+        """
         adm = Administration()
         response = adm.get_messages_by_chat_id(id)
         return response
 
     def post(self, id):  # User ID
-
+        """
+        Add a new message to a chat
+        :param id: user_id which sends the message
+        :return:
+        """
         adm = Administration()
         response = adm.add_message_to_chat(id, api.payload)
         return response
