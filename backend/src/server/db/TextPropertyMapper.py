@@ -1,3 +1,5 @@
+import json
+
 from backend.src.server.bo.TextProperty import TextProperty
 from backend.src.server.db import Mapper as Mapper
 from backend.src.server.bo.Information import Information
@@ -22,6 +24,7 @@ class TextPropertyMapper(Mapper.Mapper):
             text_prop.set_name(name)
             text_prop.set_is_selection(is_selection)
             text_prop.set_description(description)
+            result.append(text_prop)
 
         self._cnx.commit()
         cursor.close()
@@ -114,7 +117,7 @@ class TextPropertyMapper(Mapper.Mapper):
         self._cnx.commit()
         cursor.close()
 
-        return property
+        return text_prop
 
     def update(self, text_prop):
         """
@@ -173,7 +176,9 @@ class TextPropertyMapper(Mapper.Mapper):
         self._cnx.commit()
         cursor.close()
 
-    def insert_entry(self, text_prop, entry):
+        return text_prop
+
+    def insert_entry(self, text_prop, payload):
         """
         inserts a new freetext entry into occupancy & property_assignment
         :param text_prop: text property the entry will belong to
@@ -200,16 +205,22 @@ class TextPropertyMapper(Mapper.Mapper):
         data = (max_id, text_prop.get_id())
         cursor.execute(command, data)
 
+        entry = payload.get('entry')
         command2 = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
         data = (max_id, entry)
         cursor.execute(command2, data)
 
+        jsstr = f'{{"ValueID": "{max_id}", "Value": "{entry}"}}'
+        value_id_json = json.loads(jsstr)
+
         self._cnx.commit()
         cursor.close()
 
-        return max_id
+        return value_id_json
+        #Es wird ein json mit der ValueID returned,
+        #damit man in der zugehörigen Administration-Methode direkt ein info-Objekt anlegen kann.
 
-    def update_entry(self, info, entry): #todo maybe belongs to infomapper
+    def update_entry(self, value_id, payload):
         """
         updates the user's content of the textfield of a specified text property
         :param info: concrete info object to be modified
@@ -219,11 +230,11 @@ class TextPropertyMapper(Mapper.Mapper):
         cursor = self._cnx.cursor()
 
         command = "UPDATE occupancies SET Value=%s WHERE ValueID=%s"
-        data = (entry, info.get_value())
+        data = (payload.get('entry'), value_id)
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-        return entry
+        return payload
 

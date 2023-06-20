@@ -33,7 +33,7 @@ class InformationMapper(Mapper):
             information = Information()
             information.set_id(id)
             information.set_profile_id(profile_id)
-            information.set_value(value_id)
+            information.set_value_id(value_id)
             result.append(information)
 
         self._cnx.commit()
@@ -57,7 +57,7 @@ class InformationMapper(Mapper):
             info = Information()
             info.set_id(id)
             info.set_profile_id(profile_id)
-            info.set_value(value_id)
+            info.set_value_id(value_id)
             result = info
         except IndexError:
             result = None
@@ -92,7 +92,7 @@ class InformationMapper(Mapper):
                 information = Information()
                 information.set_id(id)
                 information.set_profile_id(profile_id)
-                information.set_value(value_id)
+                information.set_value_id(value_id)
                 result.append(information)
 
         self._cnx.commit()
@@ -118,7 +118,7 @@ class InformationMapper(Mapper):
             info = Information()
             info.set_id(id)
             info.set_profile_id(profile_id)
-            info.set_value(value_id)
+            info.set_value_id(value_id)
             result.append(info)
 
 
@@ -148,7 +148,7 @@ class InformationMapper(Mapper):
                 info.set_id(5001)
 
         command = "INSERT INTO information (InformationID, ProfileID, ValueID) VALUES (%s,%s,%s)"
-        data = (info.get_id(), info.get_profile_id(), info.get_value())
+        data = (info.get_id(), info.get_profile_id(), info.get_value_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -156,7 +156,7 @@ class InformationMapper(Mapper):
 
         return info
 
-    def update(self, info):
+    def update(self, info, payload):
         """
         Updating information object
         :param info: information object to be updated
@@ -164,13 +164,13 @@ class InformationMapper(Mapper):
         """
         cursor = self._cnx.cursor()
         command = "UPDATE information SET ProfileID=%s, ValueID=%s WHERE InformationID = %s"
-        data = (info.get_profile_id(), info.get_value(), info.get_id())
+        data = (info.get_profile_id(), payload.get('value_id'), info.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-        return info
+        return payload
 
     def delete(self, info):
         """
@@ -198,3 +198,43 @@ class InformationMapper(Mapper):
     #     # wenn freitext: zuerst create_info,
     #     # hole dann dieses info-objekt aus der datenbank (mapper find_by_id)
     #
+
+    def get_content_of_info(self, info):
+        """
+        gets the value of an info object
+        :param info: info we want to get the content from
+        :return: a dictionary with the content of the information object
+        """
+        cursor = self._cnx.cursor()
+
+        # Retrieving information
+        command = "SELECT * FROM information WHERE InformationID = {}".format(info.get_id())
+        cursor.execute(command)
+        information = cursor.fetchone()
+
+        if information:
+            value_id = information[2]
+
+            # Retrieving occupancies rows
+            command2 = "SELECT * FROM occupancies WHERE ValueID = {}".format(value_id)
+            cursor.execute(command2)
+            content = cursor.fetchone()
+
+            command3 = "SELECT * FROM property_assignment WHERE ValueID = {}".format(value_id)
+            cursor.execute(command3)
+            prop_ass_tuple = cursor.fetchone()
+            if prop_ass_tuple:
+                prop_id = prop_ass_tuple[1]
+                command4 = "SELECT * FROM property WHERE PropertyID = {}".format(prop_id)
+                cursor.execute(command4)
+                prop_tuple = cursor.fetchone()
+                prop = prop_tuple[1]
+
+                if content:
+                    jsstr = f'{{"ValueID": "{content[0]}", "Value": "{content[1]}", "Property": "{prop}"}}'
+                    content_json = json.loads(jsstr)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return content_json

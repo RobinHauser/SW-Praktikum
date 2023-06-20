@@ -14,4 +14,11 @@ class TextProperty(Property):
     # def get_textfield(self):
     #     return self._textfield
 
-    #str und from_dict methoden werden von Property vererbt
+    @staticmethod
+    def from_dict(dict): #todo default wert setzen
+        tex = TextProperty()
+        tex.set_name(dict["name"])
+        tex.set_is_selection(False)
+        tex.set_description(dict["description"])
+        return tex
+

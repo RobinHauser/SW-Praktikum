@@ -9,7 +9,6 @@ class Profile(BusinessObject):
         super().__init__()
         self.__user_id = 0
         self.__is_personal = True
-        #self.assigned_infos = []
 
     def get_user_id(self):
         return self._user_id
@@ -23,4 +22,15 @@ class Profile(BusinessObject):
     def set_is_personal(self, is_personal):
         self.__is_personal = is_personal
 
+
+    def __str__(self):
+        return "Profile: {}, owned by {}, is a personal profile: {}".format(self.get_id(), self.get_user_id(), self.get_is_personal())
+
+    @staticmethod
+    def from_dict(dict): #todo default wert setzen
+        pro = Profile()
+        pro.set_id(dict["id"])
+        pro.set_user_id(dict["user_id"])
+        pro.set_is_personal(dict["is_personal"])
+        return pro
 

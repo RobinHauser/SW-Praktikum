@@ -140,6 +140,13 @@ class Administration():
             else:
                 return None
 
+    def delete_user(self, user_id):
+        search_prof = self.get_search_profiles_of_user(user_id)
+        for i in search_prof:
+            self.delete_profile(i)
+        persprof = self.get_personal_profile_of_user(user_id)
+        for j in persprof:
+            self.delete_profile(j)
 
     '''
     Information-Methoden
@@ -150,7 +157,7 @@ class Administration():
             if profile is not None:
                 information = Information()
                 information.set_profile_id(profile.get_id())
-                information.set_value(value_id)
+                information.set_value_id(value_id)
 
                 return mapper.insert(information)
 
@@ -173,20 +180,25 @@ class Administration():
             else:
                 return None
 
-    def update_info(self, info):
+    def update_info(self, info, payload):
         with InformationMapper() as mapper:
-            if info is not None:
-                return mapper.update(info)
+            if info is not None and payload is not None:
+                return mapper.update(info, payload)
 
     def delete_info(self, info):
         with InformationMapper() as mapper:
             if info is not None:
                 return mapper.delete(info)
 
+    def get_info_content(self, info):
+        with InformationMapper() as mapper:
+            if info is not None:
+                return mapper.get_content_of_info(info)
 
     '''
-    Property Methoden
+    Property Methoden 
     '''
+    # todo Wird nicht benutzt
 
     def create_property(self, value, is_selection, explanation):
         property = Property()
@@ -291,12 +303,12 @@ class Administration():
     """
     SelectionProperty Methoden
     """
-    def create_selection_property(self, name, description, selections):
+    def create_selection_property(self, name, description):
         sel_prop = SelectionProperty()
         sel_prop.set_name(name)
         sel_prop.set_is_selection(1)
         sel_prop.set_description(description)
-        sel_prop.set_selections(selections)
+        # sel_prop.set_selections(selections)
 
         with SelectionPropertyMapper() as mapper:
             return mapper.insert(sel_prop)
@@ -335,6 +347,15 @@ class Administration():
             if sel_prop is not None:
                 return mapper.retrieve_selections(sel_prop)
 
+    def add_option(self, sel_prop, payload):
+        with SelectionPropertyMapper() as mapper:
+            if sel_prop is not None and payload is not None:
+                return mapper.add_selection(sel_prop, payload)
+
+    def remove_option(self, value_id):
+        with SelectionPropertyMapper() as mapper:
+            return mapper.remove_selection(value_id)
+
     """
     TextProperty Methoden
     """
@@ -371,25 +392,25 @@ class Administration():
                 if infos is not None:
                     for info in infos:
                         self.delete_info(info)
-
                     return mapper.delete(text_prop)
             else:
                 return None
 
-    def add_text_entry(self, text_prop, entry): #only to be used in create_text_entry_for_profile
+    def add_text_entry(self, text_prop, payload): #call create_info right after
         with TextPropertyMapper() as mapper:
             if text_prop is not None:
-                return mapper.insert_entry(text_prop, entry)
+                return mapper.insert_entry(text_prop, payload) #returns json with ValueID that can be used in create_info
 
-    def create_text_entry_for_profile(self, profile, text_prop, entry):
-        if profile is not None and text_prop is not None:
-            value_id = self.add_text_entry(text_prop, entry)
-            self.create_info(profile, value_id)
+    # def create_text_entry_for_profile(self, profile, text_prop, payload):
+    #     if profile is not None and text_prop is not None:
+    #         value_id = self.add_text_entry(text_prop, payload)
+    #         self.create_info(profile, value_id)
+    #         return payload
 
-    def update_text_entry(self, info, entry):
+    def update_text_entry(self, value_id, payload):
         with TextPropertyMapper() as mapper:
-            if info is not None:
-                return mapper.update_entry(info, entry)
+            if payload is not None:
+                return mapper.update_entry(value_id, payload)
 
 
     '''

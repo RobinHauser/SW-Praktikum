@@ -3,17 +3,17 @@ from backend.src.server.bo.BusinessObject import BusinessObject
 class Information(BusinessObject):
     def __init__(self):
         super().__init__()
-        self._profile_id = 0
-        self._value = 0
+        self.__profile_id = 0
+        self.__value_id = 0
 
     def set_profile_id(self, profile_id):
-        self._profile_id = profile_id
+        self.__profile_id = profile_id
 
     def get_profile_id(self):
-        return self._profile_id
+        return self.__profile_id
 
-    def set_value(self, value_id):
-        self._value = value_id
+    def set_value_id(self, value_id):
+        self.__value_id = value_id
 
-    def get_value(self):
-        return self._value
+    def get_value_id(self):
+        return self.__value_id

@@ -44,7 +44,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
                 if values:
                     value_names = [val[1] for val in values]
                     # setting the list as sel_prop's selections attribute
-                    sel_prop.set_selections(value_names)
+                    # sel_prop.set_selections(value_names)
 
             result.append(sel_prop)
 
@@ -90,7 +90,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
                 # Adding the occupancy value names to a list
                 if values:
                     value_names = [val[1] for val in values]
-                    sel_prop.set_selections(value_names)
+                    # sel_prop.set_selections(value_names)
 
             result = sel_prop
 
@@ -139,7 +139,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
                 # Adding the occupancy value names to a list
                 if values:
                     value_names = [val[1] for val in values]
-                    sel_prop.set_selections(value_names)
+                    # sel_prop.set_selections(value_names)
 
             result = sel_prop
 
@@ -177,36 +177,36 @@ class SelectionPropertyMapper(Mapper.Mapper):
         data = (sel_prop.get_id(), sel_prop.get_name(), sel_prop.get_is_selection(), sel_prop.get_description())
         cursor.execute(command, data)
 
-        #INSERTING SELECTION OPTIONS
-        selections = sel_prop.get_selections()
-        for selection in selections:
-            # ID Handling with specified ID range
-            cursor.execute("SELECT MAX(ValueID) AS maxid FROM property_assignment")
-            tuples = cursor.fetchall()
-            max_id = 0
-            for maxid in tuples:
-                if maxid[0] is not None:
-                    if maxid[0] + 1 > 8000:
-                        raise ValueError(
-                            "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
-                    else:
-                        max_id = maxid[0] + 1
-                else:
-                    max_id = 7001
-
-            command3 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
-            data = (max_id, sel_prop.get_id())
-            cursor.execute(command3, data)
-
-            command4 = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
-            data = (max_id, selection)
-            cursor.execute(command4, data)
+        # #INSERTING SELECTION OPTIONS
+        # selections = sel_prop.get_selections()
+        # for selection in selections:
+        #     # ID Handling with specified ID range
+        #     cursor.execute("SELECT MAX(ValueID) AS maxid FROM property_assignment")
+        #     tuples = cursor.fetchall()
+        #     max_id = 0
+        #     for maxid in tuples:
+        #         if maxid[0] is not None:
+        #             if maxid[0] + 1 > 8000:
+        #                 raise ValueError(
+        #                     "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
+        #             else:
+        #                 max_id = maxid[0] + 1
+        #         else:
+        #             max_id = 7001
+        #
+        #     command3 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
+        #     data = (max_id, sel_prop.get_id())
+        #     cursor.execute(command3, data)
+        #
+        #     command4 = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
+        #     data = (max_id, selection)
+        #     cursor.execute(command4, data)
 
 
         self._cnx.commit()
         cursor.close()
 
-        return property
+        return sel_prop
 
 
     def update(self, sel_prop):
@@ -221,70 +221,77 @@ class SelectionPropertyMapper(Mapper.Mapper):
         data = (sel_prop.get_name(), sel_prop.get_is_selection(), sel_prop.get_description(), sel_prop.get_id())
         cursor.execute(command, data)
 
-        # UPDATING THE SELECTION OPTIONS
-        # Retrieving property assignments
-        command = "SELECT * FROM property_assignment WHERE PropertyID = {}".format(sel_prop.get_id())
-        cursor.execute(command)
-        assignments = cursor.fetchall()
-        current_selections = []
-
-        if assignments:
-            value_ids = [assignment[0] for assignment in assignments]
-
-            # Retrieving occupancies rows
-            command2 = "SELECT * FROM occupancies WHERE ValueID IN ({})".format(
-                ','.join(str(v_id) for v_id in value_ids))
-            cursor.execute(command2)
-            values = cursor.fetchall()
-
-            # Adding the occupancy value names to a list
-            if values:
-                current_selections = [val[1] for val in values]
-
-        new_selections = sel_prop.get_selections()
-
-        #ADDING SELECTION OPTIONS
-        for selection in new_selections:
-            if selection not in current_selections:
-
-                # ID Handling with specified ID range
-                cursor.execute("SELECT MAX(ValueID) AS maxid FROM property_assignment")
-                tuples = cursor.fetchall()
-                max_id = 0
-                for maxid in tuples:
-                    if maxid[0] is not None:
-                        if maxid[0] + 1 > 8000:
-                            raise ValueError(
-                                "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
-                        else:
-                            max_id = maxid[0] + 1
-                    else:
-                        max_id = 7001
-
-                command3 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
-                data = (max_id, sel_prop.get_id())
-                cursor.execute(command3, data)
-
-                command4 = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
-                data = (max_id, selection)
-                cursor.execute(command4, data)
-
-        #DELETING SELECTION OPTIONS
-        for selection in current_selections:
-            if selection not in new_selections:
-
-                #Retrieving the ValueID of the selection value
-                command5 = "SELECT * FROM occupancies WHERE Value LIKE '{}'".format(selection)
-                cursor.execute(command5)
-                value_ids = cursor.fetchone()
-                if value_ids is not None:
-                    value_id = value_ids[0]
-
-                    command6 = "DELETE FROM occupancies WHERE Value LIKE '{}'".format(selection)
-                    cursor.execute(command6)
-
-                    command7 = "DELETE FROM property_assignment WHERE ValueID = {}".format(value_id)
-                    cursor.execute(command7)
+        # # UPDATING THE SELECTION OPTIONS
+        # # Retrieving property assignments
+        # command = "SELECT * FROM property_assignment WHERE PropertyID = {}".format(sel_prop.get_id())
+        # cursor.execute(command)
+        # assignments = cursor.fetchall()
+        # current_selections = []
+        #
+        # if assignments:
+        #     value_ids = [assignment[0] for assignment in assignments]
+        #
+        #     # Retrieving occupancies rows
+        #     command2 = "SELECT * FROM occupancies WHERE ValueID IN ({})".format(
+        #         ','.join(str(v_id) for v_id in value_ids))
+        #     cursor.execute(command2)
+        #     values = cursor.fetchall()
+        #
+        #     # Adding the occupancy value names to a list
+        #     if values:
+        #         current_selections = [val[1] for val in values]
+        #
+        # new_selections = sel_prop.get_selections()
+        #
+        # #ADDING SELECTION OPTIONS
+        # for selection in new_selections:
+        #     if selection not in current_selections:
+        #
+        #         # ID Handling with specified ID range
+        #         cursor.execute("SELECT MAX(ValueID) AS maxid FROM property_assignment")
+        #         tuples = cursor.fetchall()
+        #         max_id = 0
+        #         for maxid in tuples:
+        #             if maxid[0] is not None:
+        #                 if maxid[0] + 1 > 8000:
+        #                     raise ValueError(
+        #                         "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
+        #                 else:
+        #                     max_id = maxid[0] + 1
+        #             else:
+        #                 max_id = 7001
+        #
+        #         command3 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
+        #         data = (max_id, sel_prop.get_id())
+        #         cursor.execute(command3, data)
+        #
+        #         command4 = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
+        #         data = (max_id, selection)
+        #         cursor.execute(command4, data)
+        #
+        # #DELETING SELECTION OPTIONS
+        # #Retrieving list of ValueIDs assigned to the current selection property
+        # command5 = "SELECT * FROM property_assignment WHERE PropertyID={}".format(sel_prop.get_id())
+        # cursor.execute(command5)
+        # tuples = cursor.fetchall()
+        # if tuples:
+        #     all_value_ids_of_prop = [tup[0] for tup in tuples]
+        #
+        #     for selection in current_selections:
+        #         if selection not in new_selections:
+        #
+        #             #Retrieving the ValueID of the selection value
+        #             command6 = "SELECT * FROM occupancies WHERE Value LIKE '{}' AND ValueID IN ({})".format(selection, ','.join(str(v_id) for v_id in all_value_ids_of_prop))
+        #             cursor.execute(command6)
+        #             value_ids = cursor.fetchone()
+        #             if value_ids is not None:
+        #                 value_id = value_ids[0]
+        #
+        #                 command7 = "DELETE FROM occupancies WHERE Value LIKE '{}' AND ValueID IN ({})".format(selection, ','.join(str(v_id) for v_id in all_value_ids_of_prop))
+        #                 cursor.execute(command7)
+        #
+        #                 command8 = "DELETE FROM property_assignment WHERE ValueID = {}".format(value_id)
+        #                 cursor.execute(command8)
 
         self._cnx.commit()
         cursor.close()
@@ -300,24 +307,30 @@ class SelectionPropertyMapper(Mapper.Mapper):
         """
         cursor = self._cnx.cursor()
 
-        selections = sel_prop.get_selections()
-        for selection in selections:
+        # Retrieving list of ValueIDs assigned to the current selection property
+        command5 = "SELECT * FROM property_assignment WHERE PropertyID={}".format(sel_prop.get_id())
+        cursor.execute(command5)
+        tuples = cursor.fetchall()
+        if tuples:
+            all_value_ids_of_prop = [tup[0] for tup in tuples]
 
-            # Retrieving the ValueID of the selection value
-            # command = "SELECT * FROM occupancies WHERE Value LIKE '{}'".format(selection)
-            # cursor.execute(command)
-            # value_ids = cursor.fetchall()
-            # if value_ids is not None:
-            #     value_id = value_ids[0][0]
+            for value_id in all_value_ids_of_prop:
 
-            command2 = "DELETE FROM occupancies WHERE Value LIKE '{}'".format(selection)
-            cursor.execute(command2)
+                # Retrieving the ValueID of the selection value
+                # command = "SELECT * FROM occupancies WHERE Value LIKE '{}'".format(selection)
+                # cursor.execute(command)
+                # value_ids = cursor.fetchall()
+                # if value_ids is not None:
+                #     value_id = value_ids[0][0]
 
-        command3 = "DELETE FROM property_assignment WHERE PropertyID = {}".format(sel_prop.get_id())
-        cursor.execute(command3)
+                command2 = "DELETE FROM occupancies WHERE ValueID = {}".format(value_id)
+                cursor.execute(command2)
 
-        command4 = "DELETE FROM property WHERE PropertyID={}".format(sel_prop.get_id())
-        cursor.execute(command4)
+            command3 = "DELETE FROM property_assignment WHERE PropertyID = {}".format(sel_prop.get_id())
+            cursor.execute(command3)
+
+            command4 = "DELETE FROM property WHERE PropertyID={}".format(sel_prop.get_id())
+            cursor.execute(command4)
 
         self._cnx.commit()
         cursor.close()
@@ -356,3 +369,64 @@ class SelectionPropertyMapper(Mapper.Mapper):
         cursor.close()
 
         return result
+
+    def add_selection(self, sel_prop, payload):
+        """
+        adds a selectable option to the given selection property
+        :param sel_prop: the selection property we want to add an option to
+        :param selection: the String of the option we add
+        :return: the added selectable option
+        """
+        cursor = self._cnx.cursor()
+
+        # ID Handling with specified ID range
+        cursor.execute("SELECT MAX(ValueID) AS maxid FROM occupancies")
+        tuples = cursor.fetchall()
+        max_id = 0
+        for maxid in tuples:
+            if maxid[0] is not None:
+                if maxid[0] + 1 > 8000:
+                    raise ValueError(
+                        "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
+                else:
+                    max_id = maxid[0] + 1
+            else:
+                max_id = 7001
+
+        command2 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
+        data = (max_id, sel_prop.get_id())
+        cursor.execute(command2, data)
+
+        command = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
+        data = (max_id, payload.get('value'))
+        cursor.execute(command, data)
+
+
+
+        self._cnx.commit()
+        cursor.close()
+
+        return payload
+        # todo im frontend: sobald man eine neue option anlegt muss direkt danach der retrieve_selections befehl aufgerufen werden, damit die ValueID wieder geholt wird.
+
+    def remove_selection(self, value_id):
+        """
+        removes the given selectable option
+        :param value_id: id of the selectable option to be removed
+        :return: removed value_id
+        """
+        cursor = self._cnx.cursor()
+
+        command = "DELETE FROM information WHERE ValueID = {}".format(value_id)
+        cursor.execute(command)
+
+        command2 = "DELETE FROM occupancies WHERE ValueID = {}".format(value_id)
+        cursor.execute(command2)
+
+        command3 = "DELETE FROM property_assignment WHERE ValueID = {}".format(value_id)
+        cursor.execute(command3)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return value_id
