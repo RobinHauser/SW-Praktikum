@@ -5,9 +5,13 @@ post: adding a new information object to a profile
 
 delete: deleting an information object from a profile
 """
-from backend.src.server.bo.Information import Information
-from backend.src.server.db.Mapper import Mapper
 
+import json
+
+from server.bo.Information import Information
+from server.db.Mapper import Mapper
+
+# Information = Information.Information
 
 class InformationMapper(Mapper):
 
@@ -25,11 +29,11 @@ class InformationMapper(Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, property_id, value) in tuples:
+        for (id, profile_id, value_id) in tuples:
             information = Information()
-            information.set_id()
-            information.set_property(property_id)
-            information.set_value(value)
+            information.set_id(id)
+            information.set_profile_id(profile_id)
+            information.set_value_id(value_id)
             result.append(information)
 
         self._cnx.commit()
@@ -49,11 +53,11 @@ class InformationMapper(Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (info_id, property_id, value) = tuples[0]
+            (info_id, profile_id, value_id) = tuples[0]
             info = Information()
             info.set_id(id)
-            info.set_property(property_id)
-            info.set_value(value)
+            info.set_profile_id(profile_id)
+            info.set_value_id(value_id)
             result = info
         except IndexError:
             result = None
@@ -65,21 +69,58 @@ class InformationMapper(Mapper):
 
     def find_by_property(self, property):
         """
-        Finds all information objects that are assigned to a given property
-        :return: a list of information objects with the given PropertyID
+        Returns all information objects assigned to the given property
+        :param property: property object of the needed infos
+        :return: a list of information objects assigned to the property
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM information WHERE PropertyID={}".format(property.get_id())
+        command = "SELECT * FROM property_assignment WHERE PropertyID={}".format(property.get_id())
+        cursor.execute(command)
+        assignments = cursor.fetchall()
+
+        if assignments:
+            value_ids = [ass[0] for ass in assignments]
+
+            #Retrieve Informations by ValueID
+            command2 = "SELECT * FROM information WHERE ValueID IN ({})".format(
+                ','.join(str(v_id) for v_id in value_ids))
+            cursor.execute(command2)
+            tuples = cursor.fetchall()
+
+            for (id, profile_id, value_id) in tuples:
+                information = Information()
+                information.set_id(id)
+                information.set_profile_id(profile_id)
+                information.set_value_id(value_id)
+                result.append(information)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
+    def find_by_profile(self, profile):
+        """
+        Returns a list of all information objects assigned to the profile
+        :param profile: the unique id of the profile
+        :return: a list of all information objects assigned to the profile. If there is no information, it will return an empty list.
+        """
+        result = []
+        cursor = self._cnx.cursor()
+
+        # Retrieve assigned infos by ProfileID
+        command = "SELECT * FROM information WHERE ProfileID={}".format(profile.get_id())
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, property_id, value) in tuples:
-            information = Information()
-            information.set_id()
-            information.set_property(property_id)
-            information.set_value(value)
-            result.append(information)
+        for (id, profile_id, value_id) in tuples:
+            info = Information()
+            info.set_id(id)
+            info.set_profile_id(profile_id)
+            info.set_value_id(value_id)
+            result.append(info)
+
 
         self._cnx.commit()
         cursor.close()
@@ -93,8 +134,21 @@ class InformationMapper(Mapper):
         :return: inserted information object
         """
         cursor = self._cnx.cursor()
-        command = "INSERT INTO information (InformationID, PropertyID, Value) VALUES (%s,%s,%s)"
-        data = (info.get_id(), info.get_property(), info.get_value())
+        # ID Handling with specified ID range
+        cursor.execute("SELECT MAX(InformationID) AS maxid FROM information")
+        tuples = cursor.fetchall()
+
+        for maxid in tuples:
+            if maxid[0] is not None:
+                if maxid[0]+1 > 6000:
+                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
+                else:
+                    info.set_id(maxid[0]+1)
+            else:
+                info.set_id(5001)
+
+        command = "INSERT INTO information (InformationID, ProfileID, ValueID) VALUES (%s,%s,%s)"
+        data = (info.get_id(), info.get_profile_id(), info.get_value_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -102,21 +156,21 @@ class InformationMapper(Mapper):
 
         return info
 
-    def update(self, info):
+    def update(self, info, payload):
         """
         Updating information object
         :param info: information object to be updated
         :return: updated information object
         """
         cursor = self._cnx.cursor()
-        command = "UPDATE information SET PropertyID=%s, Value=%s WHERE InformationID = %s"
-        data = (info.get_property(), info.get_value(), info.get_id())
+        command = "UPDATE information SET ProfileID=%s, ValueID=%s WHERE InformationID = %s"
+        data = (info.get_profile_id(), payload.get('value_id'), info.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
         cursor.close()
 
-        return info
+        return payload
 
     def delete(self, info):
         """
@@ -136,7 +190,7 @@ class InformationMapper(Mapper):
 
 
     #
-    # def add_info_to_profile(self, profile_id, payload): #siehe profile mehoden
+    # def add_info_to_profile(self, profile_id, payload): #siehe profile methoden
     #     pass
     #     # überprüfen ob es sich bei der jeweiligen property dieses info-objekts
     #     # um dropdown oder um freitext handelt.
@@ -144,3 +198,43 @@ class InformationMapper(Mapper):
     #     # wenn freitext: zuerst create_info,
     #     # hole dann dieses info-objekt aus der datenbank (mapper find_by_id)
     #
+
+    def get_content_of_info(self, info):
+        """
+        gets the value of an info object
+        :param info: info we want to get the content from
+        :return: a dictionary with the content of the information object
+        """
+        cursor = self._cnx.cursor()
+
+        # Retrieving information
+        command = "SELECT * FROM information WHERE InformationID = {}".format(info.get_id())
+        cursor.execute(command)
+        information = cursor.fetchone()
+
+        if information:
+            value_id = information[2]
+
+            # Retrieving occupancies rows
+            command2 = "SELECT * FROM occupancies WHERE ValueID = {}".format(value_id)
+            cursor.execute(command2)
+            content = cursor.fetchone()
+
+            command3 = "SELECT * FROM property_assignment WHERE ValueID = {}".format(value_id)
+            cursor.execute(command3)
+            prop_ass_tuple = cursor.fetchone()
+            if prop_ass_tuple:
+                prop_id = prop_ass_tuple[1]
+                command4 = "SELECT * FROM property WHERE PropertyID = {}".format(prop_id)
+                cursor.execute(command4)
+                prop_tuple = cursor.fetchone()
+                prop = prop_tuple[1]
+
+                if content:
+                    jsstr = f'{{"ValueID": "{content[0]}", "Value": "{content[1]}", "Property": "{prop}"}}'
+                    content_json = json.loads(jsstr)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return content_json

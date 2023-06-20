@@ -7,6 +7,10 @@ from flask_restx import Resource, Api, Namespace, fields
 from backend.SecurityDecorator import secured
 from backend.src.server.Administration import Administration
 
+from backend.src.server.bo.SelectionProperty import SelectionProperty
+from backend.src.server.bo.TextProperty import TextProperty
+from backend.src.server.bo.Profile import Profile
+
 app = Flask(__name__)
 
 CORS(app, resources=r'/*')
@@ -22,10 +26,13 @@ bookmarklist_namespace = Namespace(name="bookmarklist", description="This is the
 blocklist_namespace = Namespace(name="blocklist", description="This is the Blockmarklist")
 chat_namespace = Namespace(name="chat", description="This is the Chat")
 message_namespace = Namespace(name="message", description="This is the Message")
-profile_namespace = Namespace(name="profile", description="This is the Profile")
+personal_profile_namespace = Namespace(name="personal-profile", description="This is the Profile")
 search_profile_namespace = Namespace(name="search-profile", description="This is the Search Profile")
 view_namespace = Namespace(name="view", description="tbd")
 init_user_namespace = Namespace(name="init-user", description="tbd")
+selection_property_namespace = Namespace(name="selection-property", description="This is the selection property")
+text_property_namespace = Namespace(name="text-property", description="This is the text property")
+information_namespace = Namespace(name="information", description="This is the information")
 user_namespace = Namespace(name="user", description="tbd")
 
 
@@ -34,14 +41,17 @@ api.add_namespace(bookmarklist_namespace)
 api.add_namespace(blocklist_namespace)
 api.add_namespace(chat_namespace)
 api.add_namespace(message_namespace)
-api.add_namespace(profile_namespace)
+api.add_namespace(personal_profile_namespace)
 api.add_namespace(search_profile_namespace)
 api.add_namespace(view_namespace)
 api.add_namespace(init_user_namespace)
+api.add_namespace(selection_property_namespace)
+api.add_namespace(text_property_namespace)
+api.add_namespace(information_namespace)
 api.add_namespace((user_namespace))
 
 bo = api.model('BusinessObject', {
-    'id': fields.Integer(attribute='id', description='This is the unique identifier of an business-object ')
+    'id': fields.Integer(attribute='_id', description='This is the unique identifier of an business-object ')
 })
 
 user = api.inherit('User', {
@@ -59,12 +69,10 @@ message = api.inherit('Message', bo, {
 })
 
 information = api.inherit('Information', bo, {
-    'Haircolor': fields.String(attribute='information', description='This is the information of a property')
+    'profile_id': fields.Integer(attribute= lambda x: x.get_profile_id(), description='This is the profile ID of an information'),
+    'value_id': fields.Integer(attribute= lambda x: x.get_value_id(), description='This is the ValueID of an information')
 })
 
-property = api.inherit('Property', bo, {
-    'Information1': fields.Nested(information)
-})
 
 bookmarklist = api.inherit('Bookmarklist', {
     'user': fields.Nested(user)
@@ -74,6 +82,25 @@ blocklist = api.inherit('Blocklist', {
     'user': fields.Nested(user)
 })
 
+
+profile = api.inherit('Profile', bo, {
+    'user_id': fields.Integer(attribute=lambda x: x.get_user_id(), description='This is the unique identifier of a profiles user '),
+    'is_personal': fields.Boolean(attribute=lambda x: x.get_is_personal(), description='This is the unique identifier of a bool ')
+})
+
+property = api.inherit('Property', bo, {
+    'name': fields.String(attribute=lambda x: x.get_name(), description='This is the unique identifier of a property name'),
+    'is_selection': fields.Boolean(attribute=lambda x: x.get_is_selection(), description='This is the unique identifier of a property type'),
+    'description': fields.String(attribute=lambda x: x.get_description(), description='This is the unique identifier of a property description')
+})
+
+selection_property = api.inherit('SelectionProperty', bo, property, {
+    # 'selections': fields.List(fields.String, attribute=lambda x: x.get_selections(), description='This is the unique identifier of a selection property list')
+})
+
+text_property = api.inherit('TextProperty', bo, property, {
+
+})
 
 @bookmarklist_namespace.route('/<int:user_id>')
 @bookmarklist_namespace.response(500, 'TBD')
@@ -239,72 +266,408 @@ class Message_api(Resource):
         return response
 
 
-@profile_namespace.route('/<int:id>')
-class Profile_api(Resource):
+@personal_profile_namespace.route('/personal_profiles')
+class PersonalProfileList_api(Resource):
+    @personal_profile_namespace.marshal_list_with(profile)
+    def get(self):
+        """
+        gets a list with all personal profiles
+        :return: a list with all personal profiles
+        """
+        adm = Administration()
+        response = adm.get_all_personal_profiles()
+        return response
+
+@personal_profile_namespace.route('/<int:id>')
+class PersonalProfile_api(Resource):
+    @personal_profile_namespace.marshal_with(profile)
     def get(self, id):
         """
-        Get the profile associated to the given user_id
-        HINT: The user_id can be of the own profile or of another profile
-        :param id: this is the id of the user we want the id from
-        :return: returns the profile of the associated user_id
+        Gets the profile with the given ID
+        :param id: ID of the profile
+        :return: profile with the given ID
         """
         adm = Administration()
-        response = adm.get_profile_by_user_id(id)  # TODO Methos need to be implemented
-        return response
-
-    def put(self, id):
-        """
-        Update the profile of the associated user with the user_id and the new profile
-        :param id: this is the id of the user we want to update the profile
-        :return: returns the updated profile
-        """
-        adm = Administration()
-        response = adm.update_profile_by_id(id, api.payload)  # TODO Methos need to be implemented
+        response = adm.get_profile_by_id(id)
         return response
 
 
-@search_profile_namespace.route('/<int:id>')
-class Search_profile_api(Resource):
-    def get(self, id):
-        """
-        Get a list of all searchProfiles from a user
-        :param id: this is the id of the user we want to get the searchProfiles from
-        :return: returns a list of all searchProfiles of a user
-        """
-        adm = Administration()
-        response = adm.get_search_profiles_by_user_id(id)  # TODO Methos need to be implemented
-        return response
-
-    def put(self, id):
-        """
-        Update a search profile
-        :param id: this is the id of the user we want to update a searchProfile
-        :return: returns the updated search profile
-        """
-        adm = Administration()
-        # HINT: Welches SearchProfile geupdated werden soll, steht in dem updated profile (payload) drinnen, da beide die selbe id haben
-        response = adm.update_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
-        return response
-
+    @personal_profile_namespace.marshal_with(profile)
     def delete(self, id):
         """
-        Remove a  search profile from the searchProfile list
-        :param id: this is the id of the user we want to remove a searchProfile
-        :return: returns the removed search profile
+        Deletes profile with the given id
+        :param id: id of the profile we want to delete
+        :return: deleted profile
         """
         adm = Administration()
-        response = adm.remove_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
+        prof = adm.get_profile_by_id(id)
+        response = adm.delete_profile(prof)
+        return response
+
+@personal_profile_namespace.route('/by_user/<int:id>')
+class PersonalProfileByUser_api(Resource):
+    @personal_profile_namespace.marshal_with(profile)
+    def get(self, id):
+        """
+        gets the personal profile of the given user id
+        :param id: id of the user we want to get the personal profile from
+        :return: personal profile of user
+        """
+        adm = Administration()
+        user = adm.get_user_by_id(id)
+        response = adm.get_personal_profile_of_user(user)
+        return response
+
+    @personal_profile_namespace.marshal_with(profile)
+    def post(self, id):
+        """
+        Creates a personal profile for a user specified by the given id
+        :param id: id of the user we create a personal profile for
+        :return: created profile
+        """
+        adm = Administration()
+        user = adm.get_user_by_id(id)
+        response = adm.create_personal_profile_for_user(user)
+        return response
+
+@search_profile_namespace.route('/by_user/<int:id>')
+class SearchProfilesByUser_api(Resource):
+    @search_profile_namespace.marshal_list_with(profile)
+    def get(self, id):
+        """
+        gets a list of all search profiles of a user
+        :param id: id of the user
+        :return: search profiles of the user
+        """
+        adm = Administration()
+        user = adm.get_user_by_id(id)
+        response = adm.get_search_profiles_of_user(user)
+        return response
+
+
+    @search_profile_namespace.marshal_with(profile)
+    def post(self, id):
+        """
+        Add a new search profile for a user
+        :param id: id of the user we want to add a new searchProfile for
+        :return: the added search profile
+        """
+        adm = Administration()
+        user = adm.get_user_by_id(id)
+        response = adm.create_search_profile_for_user(user)
+        return response
+
+@search_profile_namespace.route('/<int:id>')
+class SearchProfile_api(Resource):
+    @search_profile_namespace.marshal_with(profile)
+    def get(self, id):
+        """
+        Gets the (search) profile with the given ID
+        :param id: ID of the (search) profile
+        :return: (search) profile with the given ID
+        """
+        adm = Administration()
+        response = adm.get_profile_by_id(id)
+        return response
+
+
+    @search_profile_namespace.marshal_with(profile)
+    def delete(self, id):
+        """
+        Deletes (search) profile with the given id
+        :param id: id of the (search) profile we want to delete
+        :return: deleted (search) profile
+        """
+        adm = Administration()
+        prof = adm.get_profile_by_id(id)
+        response = adm.delete_profile(prof)
+        return response
+
+@selection_property_namespace.route('/<int:id>')
+class SelectionProperty_api(Resource):
+    @selection_property_namespace.marshal_with(selection_property)
+    def get(self, id):
+        """
+        Gets the selection property with the given ID
+        :param id: ID of the wanted selection property
+        :return: the selection property object of the given ID
+        """
+        adm = Administration()
+        response = adm.get_selection_property_by_id(id)
+        return response
+
+    @selection_property_namespace.marshal_with(selection_property)
+    def put(self, id):
+        """
+        updates the selection property with the given ID
+        :param id: ID of the selection property we want to update
+        :return: the updated selection property
+        """
+        adm = Administration()
+
+        sel_prop = SelectionProperty.from_dict(api.payload)
+
+        if sel_prop is not None:
+            sel_prop.set_id(id)
+            response = adm.update_selection_property(sel_prop)
+            return response, 200
+        else:
+            return '', 500
+
+    @selection_property_namespace.marshal_with(selection_property)
+    def delete(self, id):
+        """
+        deletes the selection property with the given ID
+        :param id: ID of the selection property we want to delete
+        :return: deleted selection property
+        """
+        adm = Administration()
+        sel_prop = adm.get_selection_property_by_id(id)
+        response = adm.delete_selection_property(sel_prop)
+        return response
+
+@selection_property_namespace.route('/selection_properties')
+class SelectionPropertyList_api(Resource):
+    @selection_property_namespace.marshal_with(selection_property)
+    def post(self):
+        """
+        creates a new selection property
+        :return: created selection property
+        """
+        adm = Administration()
+
+        proposal = SelectionProperty.from_dict(api.payload)
+
+        if proposal is not None:
+            name = proposal.get_name()
+            # is_selection = proposal.get_is_selection()
+            description = proposal.get_description()
+            # selections = proposal.get_selections()
+            result = adm.create_selection_property(name, description)
+            return result, 200
+        else:
+            return '', 500
+
+    @selection_property_namespace.marshal_list_with(selection_property)
+    def get(self):
+        """
+        returns a list of all selection properties
+        :return: a list of all selection properties
+        """
+        adm = Administration()
+        response = adm.get_all_selection_properties()
+        return response
+
+@selection_property_namespace.route('/options/<int:id>')
+class SelectionPropertyOptions_api(Resource):
+    def get(self, id):
+        """
+        gets the selectable options of a selection property
+        :param id: id of the selection property
+        :return: selectable options (Values) with respective ValueIDs
+        """
+        adm = Administration()
+        sel_prop = adm.get_selection_property_by_id(id)
+        response = adm.retrieve_options(sel_prop)
         return response
 
     def post(self, id):
         """
-        Add a new search profile to the searchProfile list
-        :param id: this is the id of the user we want to add a new searchProfile
-        :return: returns the added search profile
+        adds a selectable option to the given selection property
+        :param id: id of the selection property
+        :return: the added selectable option
         """
         adm = Administration()
-        response = adm.add_search_profile_by_user_id(id, api.payload)  # TODO Methos need to be implemented
+        sel_prop = adm.get_selection_property_by_id(id)
+        response = adm.add_option(sel_prop, api.payload)
         return response
+
+    def delete(self, id):
+        """
+        deletes the given selectable option
+        :param id: id of the selectable option (ValueID)
+        :return: -
+        """
+        adm = Administration()
+        adm.remove_option(id)
+        return ''
+
+
+@text_property_namespace.route('/<int:id>')
+class TextProperty_api(Resource):
+    @text_property_namespace.marshal_with(text_property)
+    def get(self, id):
+        """
+        gets a text property by its id
+        :param id: id of the wanted text property
+        :return: text property
+        """
+        adm = Administration()
+        response = adm.get_text_property_by_id(id)
+        return response
+
+    @text_property_namespace.marshal_with(text_property)
+    def put(self, id):
+        """
+        updates the text property of the given id
+        :param id: id of the text property we want to update
+        :return: updated text property
+        """
+        adm = Administration()
+
+        text_prop = TextProperty.from_dict(api.payload)
+
+        if text_prop is not None:
+            text_prop.set_id(id)
+            response = adm.update_text_property(text_prop)
+            return response, 200
+        else:
+            return '', 500
+
+    @text_property_namespace.marshal_with(text_property)
+    def delete(self, id):
+        """
+        deletes the text property of the given id
+        :param id: id of the text property we want to update
+        :return: deleted text property
+        """
+        adm = Administration()
+        text_prop = adm.get_text_property_by_id(id)
+        response = adm.delete_text_property(text_prop)
+        return response
+
+@text_property_namespace.route('/text_properties')
+class TextPropertyList_api(Resource):
+    @text_property_namespace.marshal_with(text_property)
+    def post(self):
+        """
+        creates a new text property
+        :return: the created text property
+        """
+        adm = Administration()
+
+        proposal = TextProperty.from_dict(api.payload)
+
+        if proposal is not None:
+            name = proposal.get_name()
+            # is_selection = proposal.get_is_selection()
+            description = proposal.get_description()
+            result = adm.create_text_property(name, description)
+            return result, 200
+        else:
+            return '', 500
+
+    @text_property_namespace.marshal_list_with(text_property)
+    def get(self):
+        """
+        returns a list of all text properties
+        :return: a list of all text properties
+        """
+        adm = Administration()
+        response = adm.get_all_text_properties()
+        return response
+
+@text_property_namespace.route('/entries/<int:id>')
+class TextPropertyEntries_api(Resource):
+    def post(self, id):
+        """
+        creates a new text entry for a specified text property
+        :param id: id of the text property we want to add an entry to
+        :return: a json containing the ValueID for further usage in "post information"
+        """
+        adm = Administration()
+        text_prop = adm.get_text_property_by_id(id)
+        response = adm.add_text_entry(text_prop, api.payload)
+        return response
+
+    def put(self, id):
+        """
+        updates an existing text entry of a text property
+        :param id: id of the text entry (occupancy)
+        :return: updated text entry as json
+        """
+        adm = Administration()
+        response = adm.update_text_entry(id, api.payload)
+        return response
+
+
+@information_namespace.route('/<int:id>')
+class Information_api(Resource):
+    @information_namespace.marshal_with(information)
+    def post(self, id):
+        """
+        creates a new information object for a given profile and a given ValueID. the profile is retrieved from the payload
+        :param id: ValueID of the occupancy we want to assign to the profile.
+        :return: new information object
+        """
+        adm = Administration()
+
+        prof = Profile.from_dict(api.payload)
+        response = adm.create_info(prof, id)
+        return response
+
+    @information_namespace.marshal_with(information)
+    def get(self, id):
+        """
+        Get an information objects by its id
+        :param id: id of an information object
+        :return: information object
+        """
+        adm = Administration()
+        response = adm.get_info_by_id(id)
+        return response
+
+    def put(self, id):
+        """
+        updates the information object with the given id
+        :param id: id of the information object we want to update
+        :return: updates information object
+        """
+        adm = Administration()
+        info = adm.get_info_by_id(id)
+        response = adm.update_info(info, api.payload)
+        return response
+
+    @information_namespace.marshal_with(information)
+    def delete(self, id):
+        """
+        deletes the information object with the given id
+        :param id: id of the information object we want to delete
+        :return: deleted information object
+        """
+        adm = Administration()
+        info = adm.get_info_by_id(id)
+        response = adm.delete_info(info)
+        return response
+
+@information_namespace.route('/infos')
+class InformationList_api(Resource):
+    @information_namespace.marshal_list_with(information)
+    def get(self):
+        """
+        gets all information objects of a given profile
+        :return: a list of all information objects assigned to the given profile
+        """
+        adm = Administration()
+        prof = Profile.from_dict(api.payload)
+        response = adm.get_infos_from_profile(prof)
+        return response
+
+@information_namespace.route('/content/<int:id>')
+class InformationContent_api(Resource):
+    def get(self, id):
+        """
+        gets the content of an information object
+        :param id: id of the information object
+        :return: ValueID and Value of an occupancy entry the info object is referencing
+        """
+        adm = Administration()
+        inf = adm.get_info_by_id(id)
+        response = adm.get_info_content(inf)
+        if response is not None:
+            return response
+        else:
+            return '', 500
 
 
 @init_user_namespace.route('/<string:email>')
@@ -362,5 +725,7 @@ class User_api(Resource):
 
 
 
+
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
+
