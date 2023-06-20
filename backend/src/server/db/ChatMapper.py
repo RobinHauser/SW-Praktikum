@@ -24,7 +24,6 @@ class ChatMapper(Mapper.Mapper):
 
                 chat_tuple = chat_tuple2
 
-
                 if chat_tuple is not None:
                     for j in chat_tuple:
                         command2 = f'SELECT * FROM user WHERE UserID={j[0]}'
@@ -68,10 +67,9 @@ class ChatMapper(Mapper.Mapper):
                 try:
                     for i in v2:
                         if int(i[0]) == int(payload.get('UserID')):
-                            raise IndexError
-                except IndexError:
-                    result.append("Chat already exists")
-                    return IndexError
+                            return result
+                except:
+                    return result
 
             else:
                 command1 = f'INSERT INTO chatrelation (ChatID ,UserID) VALUES (%s, %s) '
@@ -81,12 +79,9 @@ class ChatMapper(Mapper.Mapper):
                 cursor.execute(command1, data)
                 cursor.execute(command2, data2)
 
-        json.dumps(result)
-
         self._cnx.commit()
         cursor.close()
         return result
-
 
     def update(self, message):
         pass

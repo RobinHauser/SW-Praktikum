@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import IconButton from "@mui/material/IconButton";
 import EditSharpIcon from '@mui/icons-material/EditSharp';
 import {ListItem, ListItemText} from "@mui/material";
-import List from "@mui/material/List";
 import Tooltip from "@mui/material/Tooltip";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveCircleSharpIcon from "@mui/icons-material/RemoveCircleSharp";
+import InfoSelectDialog from "./InfoSelectDialog";
+
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -19,68 +17,112 @@ class ProfilePropertySelect extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            openDialog: false,
+            openDialogSelect: false,
             selectedValue: null,
+            properties: [],
+            newProperty: "",
+            isAddingNewProperty: false,
         };
 
-        this.handleOpenDialog = this.handleOpenDialog.bind(this);
-        this.handleCloseDialog = this.handleCloseDialog.bind(this);
+        this.handleOpenDialogSelect = this.handleOpenDialogSelect.bind(this);
+        this.handleCloseDialogInfo = this.handleCloseDialogInfo.bind(this);
         this.handleListItemClick = this.handleListItemClick.bind(this);
+        this.handleDeleteItemClick = this.handleDeleteItemClick.bind(this);
+        this.handleAddItemClick = this.handleAddItemClick.bind(this);
+        this.handleNewPropertyChange = this.handleNewPropertyChange.bind(this);
+        this.handleAddProperty = this.handleAddProperty.bind(this);
     }
 
-    handleOpenDialog() {
-        this.setState({openDialog: true});
+    componentDidMount() {
+        const exampleProperties = ["Value 1", "Value 2", "Value 3"];
+        this.setState({properties: exampleProperties});
     }
 
-    handleCloseDialog() {
-        this.setState({openDialog: false, selectedValue: this.props.value});
+    handleOpenDialogSelect() {
+        this.setState({openDialogSelect: true});
     }
 
-    handleListItemClick(value) {
-        this.handleCloseDialog(value);
+    handleCloseDialogInfo() {
+        const { isAddingNewProperty } = this.state;
+        console.log(this.state.openDialogSelect)
+        if (isAddingNewProperty) {
+            this.setState({ isAddingNewProperty: false });
+        }
+        else {
+            this.setState({ openDialogSelect: false });
+        }
     }
 
+    handleListItemClick() {
+        this.handleCloseDialogInfo();
+    }
+
+    handleDeleteItemClick(value) {
+      const { properties } = this.state;
+      const updatedProperties = properties.filter((property) => property !== value);
+      this.setState({ properties: updatedProperties });
+    }
+
+    handleAddItemClick() {
+        this.setState({openDialogSelect:true, isAddingNewProperty: true });
+    }
+
+    handleNewPropertyChange(event) {
+        this.setState({newProperty: event.target.value });
+    }
+
+    handleAddProperty() {
+        const {properties, newProperty} = this.state;
+        if (newProperty.trim() !== "") {
+            const updatedProperties = [...properties, newProperty];
+            this.setState({properties: updatedProperties, newProperty: ""});
+        }
+        this.handleCloseDialogInfo();
+    }
 
     render() {
         const {value} = this.props;
-        const {openDialog} = this.state;
+        const {openDialogSelect, properties, newProperty, isAddingNewProperty} = this.state;
         return (
             <div>
-                <ListItem
-                    sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}
-                    secondaryAction={
+               <ListItem
+                    sx={{ '&:hover': { bgcolor: '#c6e2ff' }, borderRadius: '10px' }}
+               >
+                    <ListItemText primary={`Eigenschaft ${value}: Value`} />
+                    <ListItemSecondaryAction>
                         <Tooltip title="Auswahl-Eigenschaft bearbeiten">
-                            <IconButton onClick={this.handleOpenDialog}>
-                                <EditSharpIcon/>
-                            </IconButton>
+                          <IconButton onClick={this.handleOpenDialogSelect}>
+                            <EditSharpIcon />
+                          </IconButton>
                         </Tooltip>
-                    }
-                >
-                    <ListItemText primary={`Eigenschaft ${value}: Value`}/>
-                </ListItem>
-                <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
-                    <DialogTitle>{`Eigenschaft ${value}`}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText> Diese Eigenschaft ist folgendermaßen beschrieben.
-                            <List>
-                                <ListItem button onClick={() => this.handleListItemClick("Value 1")}>
-                                    <ListItemText sx={{textAlign: 'center', display: 'flex', justifyContent: 'center'}}
-                                                  primary="Value 1"/></ListItem>
-                                <ListItem button onClick={() => this.handleListItemClick("Value 2")}>
-                                    <ListItemText sx={{textAlign: 'center', display: 'flex', justifyContent: 'center'}}
-                                                  primary="Value 2"/></ListItem>
-                                <ListItem button onClick={() => this.handleListItemClick("Value 1")}>
-                                    <ListItemText sx={{textAlign: 'center', display: 'flex', justifyContent: 'center'}}
-                                                  primary="Value 3"/></ListItem>
-                            </List>
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleCloseDialog}>Abbrechen</Button>
-                    </DialogActions>
-                </Dialog>
+                        <Tooltip title="Eigenschaft aus Profil entfernen">
+                          <IconButton onClick={this.handleRemoveItemClick}>
+                            <RemoveCircleSharpIcon/>
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Eigenschaft aus App löschen">
+                          <IconButton onClick={this.handleDeleteItemClick}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+
+                    <InfoSelectDialog
+                        openDialogSelect={openDialogSelect}
+                        handleCloseDialogInfo={this.handleCloseDialogInfo}
+                        handleListItemClick={this.handleListItemClick}
+                        handleDeleteItemClick={this.handleDeleteItemClick}
+                        handleAddItemClick={this.handleAddItemClick}
+                        properties={properties}
+                        newProperty={newProperty}
+                        isAddingNewProperty={isAddingNewProperty}
+                        handleNewPropertyChange={this.handleNewPropertyChange}
+                        handleAddProperty={this.handleAddProperty}
+                        value={value}
+                    />
             </div>
-        )
+        );
     }
 }
 
