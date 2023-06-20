@@ -28,7 +28,6 @@ view_namespace = Namespace(name="view", description="tbd")
 init_user_namespace = Namespace(name="init-user", description="tbd")
 user_namespace = Namespace(name="user", description="tbd")
 
-
 # Adding the namespaces to the api
 api.add_namespace(bookmarklist_namespace)
 api.add_namespace(blocklist_namespace)
@@ -47,8 +46,10 @@ bo = api.model('BusinessObject', {
 user = api.inherit('User', {
     'UserID': fields.String(attribute=lambda x: x.get_user_id(), description='This is the id of the user'),
     'email': fields.String(attribute=lambda x: x.get_email(), description='This is the email of the user'),
-    'displayname': fields.String(attribute=lambda x: x.get_displayname(), description='This is the full name of the user'),
-    'ProfileIMGURL': fields.String(attribute=lambda x: x.get_avatarurl(), description='This is the URL to the profileImage of the profile'),
+    'displayname': fields.String(attribute=lambda x: x.get_displayname(),
+                                 description='This is the full name of the user'),
+    'ProfileIMGURL': fields.String(attribute=lambda x: x.get_avatarurl(),
+                                   description='This is the URL to the profileImage of the profile'),
 })
 
 message = api.inherit('Message', bo, {
@@ -319,11 +320,13 @@ class Init_user_api(Resource):
         adm = Administration()
         return adm.get_user_by_email(email)
 
+
 @user_namespace.route('/<int:id>')
 class User_api(Resource):
     """
     HINT: The user_id 1000 returns all users
     """
+
     @user_namespace.marshal_list_with(user, code=200)
     def get(self, id):
         """
@@ -344,8 +347,7 @@ class User_api(Resource):
     @user_namespace.expect(user)
     def post(self, id):
         adm = Administration()
-        payload = api.payload
-        return adm.add_new_user(payload)
+        return adm.add_new_user(api.payload)
 
     @user_namespace.marshal_with(user, code=200)
     @user_namespace.expect(user)
@@ -358,8 +360,6 @@ class User_api(Resource):
     def put(self, id):
         adm = Administration()
         return adm.update_user(id, api.payload)
-
-
 
 
 if __name__ == '__main__':
