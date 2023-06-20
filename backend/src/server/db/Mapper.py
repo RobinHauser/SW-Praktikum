@@ -36,10 +36,5 @@ class Mapper(AbstractContextManager, ABC):
     def delete(self, object, payload):
         pass
 
-    @abstractmethod
-    def find_by_name(self, name):
-        pass
 
-    @abstractmethod
-    def find_by_email(self, email):
-        pass
+

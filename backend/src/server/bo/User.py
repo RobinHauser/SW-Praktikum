@@ -3,7 +3,7 @@ from backend.src.server.bo.BusinessObject import BusinessObject
 
 class User(BusinessObject):
     def __init__(self):
-        super().__init__("User", [1001, 2000])
+        super().__init__()
         self.__user_id = ""
         self.__email = ""
         self.__displayname = ""
