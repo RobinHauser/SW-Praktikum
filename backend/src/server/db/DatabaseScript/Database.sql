@@ -1,38 +1,83 @@
+create table profile
+(
+    ProfileID  int        not null
+        primary key,
+    IsPersonal tinyint(1) not null
+);
+
+create table property
+(
+    PropertyID  int                          not null
+        primary key,
+    Name        varchar(100) charset utf8mb3 not null,
+    IsSelection tinyint(1)                   not null,
+    Description varchar(200)                 not null
+);
+
+create table property_assignment
+(
+    ValueID    int not null
+        primary key,
+    PropertyID int not null,
+    constraint fk_assignment_to_property
+        foreign key (PropertyID) references property (PropertyID)
+);
+
+create table occupancies
+(
+    ValueID int                          not null
+        primary key,
+    Value   varchar(100) charset utf8mb3 not null,
+    constraint fk_occupancies_to_assignment
+        foreign key (ValueID) references property_assignment (ValueID)
+);
+
+create table information
+(
+    InformationID int not null
+        primary key,
+    ProfileID     int not null,
+    ValueID       int not null,
+    constraint fk_information_to_characteristics
+        foreign key (ValueID) references occupancies (ValueID),
+    constraint fk_information_to_profile
+        foreign key (ProfileID) references profile (ProfileID)
+);
+
 create table user
 (
-    UserID    int not null
-        primary key auto_increment,
-    Email     nvarchar(100) not null,
-    Displayname nvarchar(100) not null,
-    AvatarURL  nvarchar(1000) not null
+    UserID      int auto_increment
+        primary key,
+    Email       varchar(100) charset utf8mb3  not null,
+    Displayname varchar(100) charset utf8mb3  not null,
+    AvatarURL   varchar(1000) charset utf8mb3 not null
 );
 
 create table blocklist
 (
-    BlocklistID int not null
-        primary key AUTO_INCREMENT,
-    UserID int not null,
+    BlocklistID int auto_increment
+        primary key,
+    UserID      int not null,
     constraint fk_blocklist_user
         foreign key (UserID) references user (UserID)
 );
 
 create table block
 (
-    BlockID     int not null AUTO_INCREMENT
+    BlockID       int auto_increment
         primary key,
-    BlocklistID int not null,
-    BlockedUserID      int not null,
-    constraint fk_block_user
-        foreign key (BlockedUserID) references user (UserID),
+    BlocklistID   int not null,
+    BlockedUserID int not null,
     constraint fk_block_blocklist
-        foreign key (BlocklistID) references blocklist (BlocklistID)
+        foreign key (BlocklistID) references blocklist (BlocklistID),
+    constraint fk_block_user
+        foreign key (BlockedUserID) references user (UserID)
 );
-alter table block AUTO_INCREMENT=13001;
 
 create table bookmarklist
 (
-    BookmarklistID int not null
-        primary key AUTO_INCREMENT,
+    BookmarklistID int auto_increment
+        primary key,
     UserID         int not null,
     constraint fk_bookmarklist_user
         foreign key (UserID) references user (UserID)
@@ -40,32 +85,30 @@ create table bookmarklist
 
 create table bookmark
 (
-    BookmarkID     int not null AUTO_INCREMENT
+    BookmarkID       int auto_increment
         primary key,
-    BookmarklistID int not null,
+    BookmarklistID   int not null,
     BookmarkedUserID int not null,
-    constraint fk_bookmark_user
-        foreign key (BookmarkedUserID) references user (UserID),
     constraint fk_bookmark_bookmarklist
-        foreign key (BookmarklistID) references bookmarklist (BookmarklistID)
+        foreign key (BookmarklistID) references bookmarklist (BookmarklistID),
+    constraint fk_bookmark_user
+        foreign key (BookmarkedUserID) references user (UserID)
 );
-alter table bookmark AUTO_INCREMENT=12001;
-
 
 create table chatrelation
 (
-    ChatID  int not null
+    ChatID               int not null,
+    UserID               int not null,
+    UserRelationToChatID int auto_increment
         primary key,
-    UserID  int not null,
-    UserID2 int not null,
-    constraint chatrelation2_user_UserID_fk2
-        foreign key (UserID2) references user (UserID),
     constraint chatrelation_user_UserID_fk
         foreign key (UserID) references user (UserID)
 );
 
 create index chatrelation_user_UserID_fk2
     on chatrelation (UserID);
+
+
 
 create table message
 (
@@ -84,84 +127,42 @@ create table chatcontainer
         primary key,
     ChatID         int not null,
     MessageID      int not null,
-    constraint fk_chatcontainer_chatrelation
-        foreign key (ChatID) references chatrelation (ChatID),
     constraint fk_chatcontainer_message
         foreign key (MessageID) references message (MessageID)
 );
 
-create table viewedlist
-(
-    ViewedListID int not null
-        primary key AUTO_INCREMENT,
-    UserID     int not null,
-    constraint fk_viewedlist_user
-        foreign key (UserID) references user (UserID)
-);
+create index chatcontainer_chatrelation_ChatID_fk
+    on chatcontainer (ChatID);
 
-create table view
-(
-    ViewID     int not null
-        primary key AUTO_INCREMENT,
-    ViewedListID int not null,
-    UserID     int null,
-    constraint fk_view_viewedlist
-        foreign key (ViewedListID) references viewedlist (ViewedListID)
-);
-
-
-create table property
-(
-    PropertyID int not null
-        primary key,
-    Name      nvarchar(100) not null,
-    IsSelection tinyint(1) not null,
-    Description varchar(200) not null
-);
-
-create table property_assignment
-(
-    ValueID int not null primary key,
-    PropertyID int not null,
-    constraint fk_assignment_to_property
-        foreign key (PropertyID) references property (PropertyID)
-);
-
-create table occupancies
-(
-    ValueID int not null primary key,
-    Value nvarchar(100) not null,
-    constraint fk_occupancies_to_assignment
-        foreign key (ValueID) references property_assignment (ValueID)
-);
-
-create table profile
-(
-    ProfileID int not null
-        primary key,
-    IsPersonal tinyint(1) not null
-);
 
 create table profile_relation
 (
-    ProfileID int not null primary key,
-    UserID int not null,
+    ProfileID int not null
+        primary key,
+    UserID    int not null,
     constraint fk_profile_rel_to_profile
         foreign key (ProfileID) references profile (ProfileID),
     constraint fk_profile_rel_to_user
         foreign key (UserID) references user (UserID)
 );
 
-create table information
+create table viewedlist
 (
-    InformationID int not null
+    ViewedListID int auto_increment
         primary key,
-    ProfileID int not null,
-    ValueID int not null,
-    constraint fk_information_to_characteristics
-        foreign key (ValueID) references occupancies (ValueID),
-    constraint fk_information_to_profile
-        foreign key (ProfileID) references profile (ProfileID)
+    UserID       int not null,
+    constraint fk_viewedlist_user
+        foreign key (UserID) references user (UserID)
+);
+
+create table view
+(
+    ViewID       int auto_increment
+        primary key,
+    ViewedListID int not null,
+    UserID       int null,
+    constraint fk_view_viewedlist
+        foreign key (ViewedListID) references viewedlist (ViewedListID)
 );
 
 
@@ -212,7 +213,8 @@ INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20009, 1003,
 INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20010, 1003, '20Uhr kannst mich abholen', '2023-02-10 12:56:00');
 
 -- Chatrelation befüllen
-INSERT INTO chatrelation (ChatID, UserID, UserID2) VALUES (30001, 1004, 1003);
+INSERT INTO chatrelation (ChatID, UserID) VALUES (30001, 1004);
+INSERT INTO chatrelation (ChatID, UserID) VALUES (30001, 1003);
 
 -- Chatcontainer befüllen
 INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20001);
@@ -240,6 +242,4 @@ INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15006, 1006);
 INSERT INTO view (ViewID, ViewedListID, UserID) VALUES (16001, 15001, 1004);
 INSERT INTO view (ViewID, ViewedListID, UserID) VALUES (16002, 15004, 1002);
 INSERT INTO view (ViewID, ViewedListID, UserID) VALUES (16003, 15004, 1003);
-
-
 
