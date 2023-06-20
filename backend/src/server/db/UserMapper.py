@@ -16,6 +16,10 @@ class UserMapper(Mapper):
         cursor.execute("SELECT * FROM user")
         users = cursor.fetchall()
 
+        # return empty list if no users where found
+        if not users:
+            return []
+
         for user_from_list in users:
             try:
                 user = User()
@@ -42,6 +46,10 @@ class UserMapper(Mapper):
         command = f'SELECT * FROM user WHERE UserID = {id}'
         cursor.execute(command)
         tuples = cursor.fetchone()
+
+        # return empty list if user with given user_id does not exist
+        if tuples is None:
+            return []
 
         try:
             user = User()
@@ -71,6 +79,10 @@ class UserMapper(Mapper):
         command = f'SELECT * FROM user WHERE Email = "{email}"'
         cursor.execute(command)
         tuples = cursor.fetchone()
+
+        # return empty list if user with given user_id does not exist
+        if tuples is None:
+            return []
 
         try:
             user = User()
