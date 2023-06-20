@@ -33,6 +33,8 @@ init_user_namespace = Namespace(name="init-user", description="tbd")
 selection_property_namespace = Namespace(name="selection-property", description="This is the selection property")
 text_property_namespace = Namespace(name="text-property", description="This is the text property")
 information_namespace = Namespace(name="information", description="This is the information")
+user_namespace = Namespace(name="user", description="tbd")
+
 
 # Adding the namespaces to the api
 api.add_namespace(bookmarklist_namespace)
@@ -46,6 +48,7 @@ api.add_namespace(init_user_namespace)
 api.add_namespace(selection_property_namespace)
 api.add_namespace(text_property_namespace)
 api.add_namespace(information_namespace)
+api.add_namespace((user_namespace))
 
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='This is the unique identifier of an business-object ')
@@ -217,16 +220,23 @@ class View_api(Resource):
 @chat_namespace.route('/<int:user_id>')
 class Chat_api(Resource):
     def get(self, user_id):
+        """
+        Get the chat associated to a user
+        :param user_id: the id of the user we want to get the chats from
+        :return: chats associated to the user
+        """
         adm = Administration()
-
         response = adm.get_chat_by_user_id(user_id)
-
         return response
 
     def post(self, user_id):
+        """
+        Start a new chat with a user
+        :param user_id: id of the user which starts the chat
+        :return:
+        """
         adm = Administration()
         response = adm.add_chat_to_user(user_id, api.payload)
-
         return response
 
     def delete(self):
@@ -236,13 +246,21 @@ class Chat_api(Resource):
 @message_namespace.route('/<int:id>')
 class Message_api(Resource):
     def get(self, id):  # Chat ID
-
+        """
+        Get all messages associated to a chat
+        :param id: chat_id of the chat we want to get the messages from
+        :return: all messages associated to the chat
+        """
         adm = Administration()
         response = adm.get_messages_by_chat_id(id)
         return response
 
     def post(self, id):  # User ID
-
+        """
+        Add a new message to a chat
+        :param id: user_id which sends the message
+        :return:
+        """
         adm = Administration()
         response = adm.add_message_to_chat(id, api.payload)
         return response
@@ -663,6 +681,48 @@ class Init_user_api(Resource):
         """
         adm = Administration()
         return adm.get_user_by_email(email)
+
+@user_namespace.route('/<int:id>')
+class User_api(Resource):
+    """
+    HINT: The user_id 1000 returns all users
+    """
+    @user_namespace.marshal_list_with(user, code=200)
+    def get(self, id):
+        """
+        Get a specific user by user_id
+        :param user_id:
+        :return: the wanted user
+        """
+
+        if id == 1000:
+            adm = Administration()
+            return adm.get_all_users()
+
+        else:
+            adm = Administration()
+            return adm.get_user_by_id(id)
+
+    @user_namespace.marshal_with(user, code=200)
+    @user_namespace.expect(user)
+    def post(self, id):
+        adm = Administration()
+        payload = api.payload
+        return adm.add_new_user(payload)
+
+    @user_namespace.marshal_with(user, code=200)
+    @user_namespace.expect(user)
+    def delete(self, id):
+        adm = Administration()
+        return adm.delete_user(id, api.payload)
+
+    @user_namespace.marshal_with(user, code=200)
+    @user_namespace.expect(user)
+    def put(self, id):
+        adm = Administration()
+        return adm.update_user(id, api.payload)
+
+
 
 
 

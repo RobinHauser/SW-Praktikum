@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from contextlib import AbstractContextManager
-
 import mysql
 import mysql.connector as connector
 
@@ -16,7 +15,6 @@ class Mapper(AbstractContextManager, ABC):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._cnx.close()
-
 
     @abstractmethod
     def find_all(self):

@@ -23,8 +23,8 @@ class MessageRight extends Component {
                         <Typography noWrap={false} sx={{m: 2, wordBreak: "break-word"}}>{content}</Typography>
                         <Typography fontSize={12} sx={{
                             textAlign: "left",
-                            marginLeft: 10,
-                            marginBottom: 3
+                            marginLeft: 3,
+                            marginBottom: 1
                         }}> {timeStamp}</Typography>
                     </Paper>
                     <Avatar src={avatarLink}></Avatar>

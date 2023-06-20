@@ -28,39 +28,45 @@ class Administration():
     '''
     User - Methoden
     '''
-    def create_user(self, email, displayname, avatar_url):
-        user = User()
-        user.set_email(email)
-        user.set_displayname(displayname)
-        user.set_avatarurl(avatar_url)
+    def add_new_user(self, payload):
+        userMapper = UserMapper()
+        return userMapper.insert(payload)
 
-        with UserMapper() as mapper:
-            return mapper.insert(user)
 
     def get_user_by_id(self, id):
-        with UserMapper() as mapper:
-            return mapper.find_by_id(id)
+        user_mapper = UserMapper()
+        return user_mapper.find_by_id(id)
 
     def get_user_by_name(self, name):
         with UserMapper() as mapper:
             return mapper.find_by_name(name)
 
     def get_all_users(self):
-        with UserMapper() as mapper:
-            return mapper.find_all()
+        user_mapper = UserMapper()
+        return user_mapper.find_all()
 
     def get_user_by_email(self, email):
         user_mapper = UserMapper()
         return user_mapper.find_by_email(email)
 
 
-    def update_user(self, user):  # das selbe wie save user
-        with UserMapper() as mapper:
-            return mapper.update(user)
+    def update_user(self, id, payload):  # das selbe wie save user
+        user = User()
+        user.set_user_id(payload['UserID'])
+        user.set_email(payload['email'])
+        user.set_avatarurl(payload['ProfileIMGURL'])
+        user.set_displayname(payload['displayname'])
+        user_mapper = UserMapper()
+        return user_mapper.update(user)
 
-    def delete_user(self, user):
-        with UserMapper() as mapper:
-            mapper.delete(user)
+    def delete_user(self, id, payload):
+        user = User()
+        user.set_user_id(payload['UserID'])
+        user.set_email(payload['email'])
+        user.set_avatarurl(payload['ProfileIMGURL'])
+        user.set_displayname(payload['displayname'])
+        user_mapper = UserMapper()
+        return user_mapper.delete(id, user)
 
 
     '''

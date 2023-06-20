@@ -97,11 +97,20 @@ class ChatContainer extends Component {
 
     /**
      * Gets the current time and date and formats it into sql datetime format
+     * It changes the timezone to CET.
      */
     getFormatedDateTime() {
         var dateTime = new Date().toISOString()
         dateTime = dateTime.replace('T', ' ')
         dateTime = dateTime.substring(0, dateTime.length - 5)
+        console.log("TEST")
+        var time = dateTime.substring(11, 13)
+        var changedTime = parseInt(time) + 2
+        changedTime = changedTime.toString()
+        const dateTime1 = dateTime.substring(0, 11)
+        const dateTime2 = dateTime.substring(13)
+        dateTime = dateTime1 + changedTime + dateTime2
+        console.log(dateTime)
         return dateTime
     }
 
@@ -126,7 +135,7 @@ class ChatContainer extends Component {
      * Reference: https://stackoverflow.com/questions/37620694/how-to-scroll-to-bottom-in-react
      */
     scrollToBottom() {
-        this.messagesEndRef.current?.scrollIntoView();
+        this.messagesEndRef.current?.scrollIntoView()
     }
 
     /**
@@ -229,7 +238,7 @@ class ChatContainer extends Component {
                         </List>
 
                     </Paper>
-                    <Paper elevation={1} sx={{borderRadius: "0 0 10px 10px"}}>
+                    <Paper elevation={5} sx={{borderRadius: "0 0 10px 10px"}}>
                         <Container sx={{
                             maxHeight: "50px",
                             position: "static",
