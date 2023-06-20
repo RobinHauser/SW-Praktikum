@@ -7,79 +7,6 @@ create table user
     AvatarURL  nvarchar(1000) not null
 );
 
-create table profile
-(
-    ProfileID int not null
-        primary key,
-    UserID    int not null,
-    isPersonal tinyint(1) not null,
-    constraint fk_profile_user
-        foreign key (UserID) references user (UserID)
-);
-
-create table selection_property
-(
-    SelectionPropertyID int not null
-        primary key,
-    Value      varchar(100) not null,
-    Description varchar(100) not null
-);
-
-create table text_property
-(
-    TextPropertyID int not null
-        primary key,
-    Value      varchar(100) not null,
-    Description varchar(100) not null
-);
-
-create table selection_information
-(
-    SelectionInformationID int not null
-        primary key,
-    SelectionPropertyID int not null,
-    Value varchar(100) not null,
-    constraint fk_selection_information_property
-        foreign key (SelectionPropertyID) references selection_property (SelectionPropertyID)
-);
-
-create table text_information
-(
-    TextInformationID int not null
-        primary key,
-    TextPropertyID int not null,
-    Value varchar(100) not null,
-    constraint fk_text_information_property
-        foreign key (TextPropertyID) references text_property (TextPropertyID)
-);
-
-create table selection_info_assignment
-(
-    SelectionAssignmentID    int not null AUTO_INCREMENT
-        primary key,
-    ProfileID     int not null,
-    SelectionInformationID int not null,
-    constraint fk_selection_assignment_profile
-        foreign key (ProfileID) references profile (ProfileID),
-    constraint fk_selection_assignment_information
-        foreign key (SelectionInformationID) references selection_information (SelectionInformationID)
-);
-alter table selection_info_assignment AUTO_INCREMENT=9001;
-
-
-create table text_info_assignment
-(
-    TextAssignmentID    int not null AUTO_INCREMENT
-        primary key,
-    ProfileID     int not null,
-    TextInformationID int not null,
-    constraint fk_text_assignment_profile
-        foreign key (ProfileID) references profile (ProfileID),
-    constraint fk_text_assignment_information
-        foreign key (TextInformationID) references text_information (TextInformationID)
-);
-alter table text_info_assignment AUTO_INCREMENT=10001;
-
 create table blocklist
 (
     BlocklistID int not null
@@ -182,8 +109,64 @@ create table view
         foreign key (ViewedListID) references viewedlist (ViewedListID)
 );
 
--- --------------------------------------------------------------------------------------
 
+create table property
+(
+    PropertyID int not null
+        primary key,
+    Name      nvarchar(100) not null,
+    IsSelection tinyint(1) not null,
+    Description varchar(200) not null
+);
+
+create table property_assignment
+(
+    ValueID int not null primary key,
+    PropertyID int not null,
+    constraint fk_assignment_to_property
+        foreign key (PropertyID) references property (PropertyID)
+);
+
+create table occupancies
+(
+    ValueID int not null primary key,
+    Value nvarchar(100) not null,
+    constraint fk_occupancies_to_assignment
+        foreign key (ValueID) references property_assignment (ValueID)
+);
+
+create table profile
+(
+    ProfileID int not null
+        primary key,
+    IsPersonal tinyint(1) not null
+);
+
+create table profile_relation
+(
+    ProfileID int not null primary key,
+    UserID int not null,
+    constraint fk_profile_rel_to_profile
+        foreign key (ProfileID) references profile (ProfileID),
+    constraint fk_profile_rel_to_user
+        foreign key (UserID) references user (UserID)
+);
+
+create table information
+(
+    InformationID int not null
+        primary key,
+    ProfileID int not null,
+    ValueID int not null,
+    constraint fk_information_to_characteristics
+        foreign key (ValueID) references occupancies (ValueID),
+    constraint fk_information_to_profile
+        foreign key (ProfileID) references profile (ProfileID)
+);
+
+
+----------------------------------------------------------------------------------------------------
+# Befüllung
 -- user erstellen
 insert into user (UserID, Email, Displayname, AvatarURL) values (1001, 'ek103@hdm-stuttgart.de', 'Elias', 'tbd.de');
 insert into user (UserID, Email, Displayname, AvatarURL) values (1002, 'rh086@hdm-stuttgart.de', 'Robin', 'tbd.de');
@@ -208,51 +191,6 @@ insert into bookmarklist (BookmarklistID, UserID) VALUES (2004, 1004);
 insert into bookmarklist (BookmarklistID, UserID) VALUES (2005, 1005);
 insert into bookmarklist (BookmarklistID, UserID) VALUES (2006, 1006);
 
--- profile erstellen / zuweisen
-insert into profile (ProfileID, UserID, isPersonal) VALUES (4001, 1001, 1);
-insert into profile (ProfileID, UserID, isPersonal) VALUES (4002, 1002, 1);
-insert into profile (ProfileID, UserID, isPersonal) VALUES (4003, 1003, 1);
-insert into profile (ProfileID, UserID, isPersonal) VALUES (4004, 1004, 1);
-insert into profile (ProfileID, UserID, isPersonal) VALUES (4005, 1005, 1);
-insert into profile (ProfileID, UserID, isPersonal) VALUES (4006, 1006, 1);
-
--- selection properties erstellen
-insert into selection_property (SelectionPropertyID, Value, Description) VALUES (7001, 'Hair Color', 'select your hair color');
-insert into selection_property (SelectionPropertyID, Value, Description) VALUES (7002, 'Height', 'select your height range');
-insert into selection_property (SelectionPropertyID, Value, Description) VALUES (7003, 'Smoker', 'select your smoking behaviour');
-insert into selection_property (SelectionPropertyID, Value, Description) VALUES (7004, 'Religion', 'select your religion');
-
--- text properties erstellen
-insert into text_property (TextPropertyID, Value, Description) VALUES (8001, 'First Name', 'enter your first name');
-insert into text_property (TextPropertyID, Value, Description) VALUES (8002, 'Last Name', 'enter your last name');
-insert into text_property (TextPropertyID, Value, Description) VALUES (8003, 'Birthdate', 'enter your birthdate');
-
--- selection informations erstellen
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5001, 7001, 'Black');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5002, 7001, 'Blond');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5003, 7001, 'Brown');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5004, 7001, 'Gray');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5005, 7001, 'Red');
-
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5006, 7002, '< 150 cm');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5007, 7002, '150 - 160 cm');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5008, 7002, '160 - 170 cm');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5009, 7002, '170 - 180 cm');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5010, 7002, '180 - 190 cm');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5011, 7002, '190 - 200 cm');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5012, 7002, '> 200 cm');
-
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5013, 7003, 'Yes');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5014, 7003, 'No');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5015, 7003, 'Only when drunk');
-
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5016, 7004, 'Christianity');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5017, 7004, 'Islam');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5018, 7004, 'Judaism');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5019, 7004, 'Hinduism');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5020, 7004, 'Buddhism');
-insert into selection_information (SelectionInformationID, SelectionPropertyID, Value) VALUES (5021, 7004, 'Atheism');
-
 -- blocks erzeugen
 insert into block (BlocklistID, BlockedUserID) VALUES (3002, 1004); -- robin blockt theo
 insert into block (BlocklistID, BlockedUserID) VALUES (3005, 1001); -- michi blockt elias
@@ -260,15 +198,6 @@ insert into block (BlocklistID, BlockedUserID) VALUES (3005, 1001); -- michi blo
 -- bookmarks erzeugen
 insert into bookmark (BookmarklistID, BookmarkedUserID) VALUES (2004, 1003); -- theo merkt björn
 insert into bookmark (BookmarklistID, BookmarkedUserID) VALUES (2006, 1005); -- jannik merkt michi
-
--- selection infos zuweisen
-insert into selection_info_assignment (ProfileID, SelectionInformationID) VALUES (4003, 5006); -- björn ist unter 150cm
-insert into selection_info_assignment (ProfileID, SelectionInformationID) VALUES (4006, 5020); -- jannik ist buddhist
-insert into selection_info_assignment (ProfileID, SelectionInformationID) VALUES (4001, 5005); -- elias hat rote haare
-insert into selection_info_assignment (ProfileID, SelectionInformationID) VALUES (4004, 5012); -- theo ist über 2 meter
-
-
-
 
 -- Messages befüllen
 INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20001, 1004, 'Hallo', '2023-02-10 12:00:00');
@@ -282,19 +211,23 @@ INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20008, 1004,
 INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20009, 1003, 'Achso ja oke', '2023-02-10 12:50:00');
 INSERT INTO message (MessageID, Sender, Content, TimeStamp) VALUES (20010, 1003, '20Uhr kannst mich abholen', '2023-02-10 12:56:00');
 
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20001);
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20002);
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20003);
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20004);
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20005);
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20006);
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20007);
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20008);
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20009);
--- INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20010);
--- INSERT INTO chatrelation (ChatID, UserID, UserID2) VALUES (30001, 1004, 1003);
+-- Chatrelation befüllen
+INSERT INTO chatrelation (ChatID, UserID, UserID2) VALUES (30001, 1004, 1003);
+
+-- Chatcontainer befüllen
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20001);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20002);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20003);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20004);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20005);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20006);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20007);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20008);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20009);
+INSERT INTO chatcontainer (ChatID, MessageID) VALUES (30001, 20010);
 
 
+-- viewlist befüllen
 INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15001, 1001);
 INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15002, 1002);
 INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15003, 1003);
@@ -303,12 +236,10 @@ INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15005, 1005);
 INSERT INTO viewedlist (ViewedListID, UserID) VALUES (15006, 1006);
 
 
+-- view befüllen
 INSERT INTO view (ViewID, ViewedListID, UserID) VALUES (16001, 15001, 1004);
 INSERT INTO view (ViewID, ViewedListID, UserID) VALUES (16002, 15004, 1002);
 INSERT INTO view (ViewID, ViewedListID, UserID) VALUES (16003, 15004, 1003);
-
-
-
 
 
 
