@@ -144,9 +144,9 @@ class UserMapper(Mapper):
         cursor.execute(insert_user_to_viewedlist_command)
         self._cnx.commit()
 
-        # TODO Insert Profile relation
+
         adm = Administration()
-        #adm.create_personal_profile
+        adm.create_personal_profile_for_user(user)
 
         cursor.close()
 
@@ -201,6 +201,16 @@ class UserMapper(Mapper):
             self.__delete_user_chat_content(id)
 
         # TODO Delete related user content with profile context
+        # Delete searchprofiles of user
+        adm = Administration()
+        search_profiles = adm.get_search_profiles_of_user(user)
+        for i in search_profiles:
+            adm.delete_profile(i)
+
+        # Delete the personal profile if the user
+        personal_profiles = adm.get_personal_profile_of_user(user)
+        for i in personal_profiles:
+            adm.delete_profile(i)
 
 
         # Delete the user
