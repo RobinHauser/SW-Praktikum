@@ -10,6 +10,7 @@ import MessageBO from "./MessageBO";
 import chatb from "./ChatBO";
 import ChatBO from "./ChatBO";
 import InformationBO from "./InformationBO";
+import ProfileBO from "./ChatBO";
 
 export default class SopraDatingAPI {
 
@@ -24,6 +25,10 @@ export default class SopraDatingAPI {
 
 
     // User related
+    #getAllUsersURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/user/1000`
+    }
+
     #getUserURL = (email) => {
         return `${this.#SopraDatingServerBaseURL}/init-user/${email}`;
     };
@@ -68,6 +73,7 @@ export default class SopraDatingAPI {
     // Profile related
     #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
     #updateProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
+    #getAllProfilesURL = () => `${this.#SopraDatingServerBaseURL}/personal-profile/personal_profiles`
 
     // Information related
     #getSelectionInformationURL = (propertyID) => `${this.#SopraDatingServerBaseURL}/Information/${propertyID}`
@@ -122,6 +128,16 @@ export default class SopraDatingAPI {
             }
         )
 
+    getAllUsers() {
+        return this.#fetchAdvanced(this.#getAllUsersURL())
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
+
     getUser(email) {
         return this.#fetchAdvanced(this.#getUserURL(email))
             .then((responseJSON) => {
@@ -160,6 +176,7 @@ export default class SopraDatingAPI {
     }
 
     addUserToBookmarklist(userID, userBO) {
+        console.log(JSON.stringify(userBO))
         return this.#fetchAdvanced(this.#addUserToBookmarklistURL(userID), {
             method: 'POST',
             headers: {
@@ -302,31 +319,15 @@ export default class SopraDatingAPI {
             })
     }
 
-    getSelectionInformation(propertyID) {
-        return this.#fetchAdvanced(this.#getSelectionInformationURL(propertyID))
+    getAllProfiles() {
+        return this.#fetchAdvanced(this.#getAllProfilesURL())
             .then((responseJSON) => {
-                let informationBOs = InformationBO.fromJSON(responseJSON);
+                let profileBOs = ProfileBO.fromJSON(responseJSON);
+                // console.log(blocklistBOs)
                 return new Promise(function (resolve) {
-                    resolve(informationBOs)
+                    resolve(profileBOs)
                 })
             })
-    }
-
-    getProfile(userID) {
-        return this.#fetchAdvanced(this.#getProfileURL(userID)).then((responseJSON) => {
-            return responseJSON
-        })
-    }
-
-    updateProfile(userBO) {
-        return this.#fetchAdvanced(this.#updateProfileURL(userBO.id), {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify(userBO)
-        })
     }
 
     getSearchProfile(searchprofileID) {

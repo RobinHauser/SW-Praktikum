@@ -84,7 +84,7 @@ class   ExtendedProfileCard extends Component {
         const{showedUser} = this.props;
 
         return (
-            <Box sx={{width: "100%"}}> // Todo gucken ob breite auch mit verschieden großen Strings aus dem Backend gut aussieht
+            <Box sx={{width: "100%"}}>
                 <DialogContent>
                     <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
                     <DialogTitle sx={{textAlign: "center"}}>Profil Übersicht </DialogTitle>

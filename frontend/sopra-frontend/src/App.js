@@ -129,7 +129,7 @@ class App extends React.Component {
         // this.setState({
         //     user: testUser[0]
         // })
-        console.log(this.state.currentUser.email)
+        //console.log(this.state.currentUser.email)
         SopraDatingAPI.getAPI().getUser(this.state.currentUser.email)
             .then(UserBO => {
                 if(UserBO.length === 0) {

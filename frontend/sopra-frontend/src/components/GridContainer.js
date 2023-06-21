@@ -28,7 +28,22 @@ export default class GridContainer extends React.Component{
 
     componentDidMount() {
         // Fetch the initial user list based on the search profile
-        this.getUserListBySearchprofile(1); // Todo dynamisch einlesen
+        console.log(this.props.user)
+        this.getAllUsers();
+    }
+
+    getAllUsers = () => {
+        SopraDatingAPI.getAPI().getAllUsers()
+            .then(userBOs => {
+                this.setState({
+                    userList: userBOs
+                })
+            })
+            .catch(() => {
+                this.setState({
+                    userList: []
+                })
+            })
     }
 
     /**
@@ -156,7 +171,7 @@ export default class GridContainer extends React.Component{
     render() {
         const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList } = this.state;
         const open = Boolean(anchorEl);
-        console.log(this.props.user)
+        // console.log(this.props.user)
 
         return (
             <Box>
