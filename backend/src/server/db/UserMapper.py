@@ -31,6 +31,9 @@ class UserMapper(Mapper):
             except IndexError:
                 result = None
 
+
+
+
         self._cnx.commit()
         cursor.close()
 
