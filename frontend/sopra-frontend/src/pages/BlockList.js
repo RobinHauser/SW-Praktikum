@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react';
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
 import {List, ListItem, ListItemText, ListSubheader} from "@mui/material";
@@ -19,34 +19,42 @@ export default class BlockList extends React.Component{
         this.state = {
             blocklist: [],
             error: null
-        }
+        };
     }
 
+    /**
+     * Fetches the blocklist for the current user
+     */
     getBlocklist = () => {
         SopraDatingAPI.getAPI().getBlocklist(this.props.user.getUserID())
-            .then(UserBOs =>
+            .then(UserBOs => {
                 this.setState({
                     blocklist: UserBOs,
                     error: null
-                }))
-            .catch(e =>
+                });
+            })
+            .catch(e => {
                 this.setState({
                     blocklist: [],
                     error: e
-                    })
-                )
-        ;
-    }
+                });
+            });
+    };
 
     componentDidMount() {
         this.getBlocklist();
     }
 
+    /**
+     * Handles the removal of a user from the user list
+     *
+     * @param {UserBO} removedUser - the removed user
+     */
     removeUserHandler = (removedUser) => {
         this.setState({
             blocklist: this.state.blocklist.filter(user => user.getUserID() !== removedUser.getUserID())
-        })
-    }
+        });
+    };
 
 
     render() {
@@ -82,6 +90,6 @@ export default class BlockList extends React.Component{
                     </List>
                 </Container>
             </div>
-        )
+        );
     }
 }

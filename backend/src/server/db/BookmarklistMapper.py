@@ -63,7 +63,7 @@ class BookmarklistMapper(Mapper):
         cursor.execute(f'SELECT BookmarklistID FROM bookmarklist WHERE UserID = {user_id}')
 
         bookmarklist_id = cursor.fetchall()[0][0]
-        bookmarked_user_id = int(payload.get('id'))
+        bookmarked_user_id = int(payload.get('UserID'))
 
         cursor.execute(
             f'INSERT INTO bookmark (BookmarklistID, BookmarkedUserID) VALUES ({bookmarklist_id}, {bookmarked_user_id})')

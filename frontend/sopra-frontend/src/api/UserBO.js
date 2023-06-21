@@ -3,7 +3,7 @@ import BusinessObject from './BusinessObject';
 /**
  * Represents a User object.
  */
-export default class UserBO extends BusinessObject {
+export default class UserBO {
 
   /**
    * Constructs a new UserBO object.
@@ -11,21 +11,14 @@ export default class UserBO extends BusinessObject {
    * @param {*} userID - id of User.
    * @param {*} displayname - displayname of User
    * @param {*} email - Email of the User
-   * @param {*} dateOfBirth - Birthdate of the User
-   * @param {*} blocklistID - Blocklist ID of the User
-   * @param {*} bookmarklistID - Bookmarklist ID of the User
-   * @param {*} profileID - Profile ID of the User
+   * @param {*} ProfileIMGURL - Avatar URL of the User
    *
    */
-  constructor(userID, displayname, email, dateOfBirth, blocklistID, bookmarklistID, profileID) {
-    super();
+  constructor(userID, displayname, email, ProfileIMGURL) {
     this.UserID = userID;
     this.displayname = displayname;
     this.email = email;
-    this.dateOfBirth = dateOfBirth;
-    this.blocklistID = blocklistID;
-    this.bookmarklistID = bookmarklistID;
-    this.profileID = profileID;
+    this.ProfileIMGURL = ProfileIMGURL;
   }
 
   /**
@@ -41,7 +34,7 @@ export default class UserBO extends BusinessObject {
    * Gets the userID of this UserBO.
    */
   getUserID() {
-    return this.UserID;
+    return parseInt(this.UserID);
   }
 
   /**
@@ -77,67 +70,21 @@ export default class UserBO extends BusinessObject {
   }
 
   /**
-   * Sets the date of birth of this UserBO.
+   * Sets Avatar URL of this UserBO.
    *
-   * @param {*} dateOfBirth - the new date of birth of this UserBO.
+   * @param {*} ProfileIMGURL - the new date of birth of this UserBO.
    */
-  setDateOfBirth(dateOfBirth) {
-    this.dateOfBirth = dateOfBirth;
+  setAvatarURL(ProfileIMGURL) {
+    this.ProfileIMGURL = ProfileIMGURL;
   }
 
   /**
-   * Gets the date of birth of this UserBO.
-   */
-  getDateOfBirth() {
-    return this.dateOfBirth;
-  }
-
-  /**
-   * Sets the blocklist ID of this UserBO.
+   * Gets the avatar URL of this UserBO.
    *
-   * @param {*} blocklistID - the new blocklist ID of this UserBO.
+   * @return {string} avatarURL - the avatar URL of this user
    */
-  setBlocklistID(blocklistID) {
-    this.blocklistID = blocklistID;
-  }
-
-  /**
-   * Gets the blocklist ID of this UserBO.
-   */
-  getBlocklistID() {
-    return this.blocklistID;
-  }
-
-  /**
-   * Sets the bookmarklist ID of this UserBO.
-   *
-   * @param {*} bookmarklistID - the new bookmarklist ID of this UserBO.
-   */
-  setBookmarklistID(bookmarklistID) {
-    this.bookmarklistID = bookmarklistID;
-  }
-
-  /**
-   * Gets the bookmarklist ID of this UserBO.
-   */
-  getBookmarklistID() {
-    return this.bookmarklistID;
-  }
-
-  /**
-   * Sets the profile ID of this UserBO.
-   *
-   * @param {*} profileID - the new profile ID of this UserBO.
-   */
-  setProfileID(profileID) {
-    this.profileID = profileID;
-  }
-
-  /**
-   * Gets the profile ID of this UserBO.
-   */
-  getProfileID() {
-    return this.profileID;
+  getAvatarURL() {
+    return this.ProfileIMGURL;
   }
 
   /**

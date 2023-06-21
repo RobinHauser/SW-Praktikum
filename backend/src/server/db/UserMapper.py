@@ -106,20 +106,39 @@ class UserMapper(Mapper):
         :return: the created user
         """
 
-        # insert the new User
+        # Check if the email already exists
+        email = payload['email']
         cursor = self._cnx.cursor()
+        command = (f"SELECT * FROM user WHERE Email = '{email}'")
+        cursor.execute(command)
+        email_data = cursor.fetchone()
+
+        if email_data is not None:
+            command_2 = (f"SELECT * FROM user WHERE Email = '{email}'")
+            cursor.execute(command_2)
+            user_data = cursor.fetchall()
+            user = User()
+            user.set_user_id(user_data[0][0])
+            user.set_email(user_data[0][1])
+            user.set_displayname(user_data[0][2])
+            user.set_avatarurl(user_data[0][3])
+            cursor.close()
+            return user
+
+
+        # Insert the new User
         insert_command = "INSERT INTO user (email, displayname, avatarurl) VALUES (%s, %s, %s)"
-        data = (payload['email'], payload['displayname'], payload['ProfileIMGURL'])
+        data = (email, payload['displayname'], payload['ProfileIMGURL'])
         cursor.execute(insert_command, data)
         self._cnx.commit()
 
-        # get the user which is inserted
-        email = payload['email']
+        # Get the inserted user
         select_command = f"SELECT * FROM user WHERE email = '{email}'"
         cursor.execute(select_command)
         user_data = cursor.fetchone()
 
         if not user_data:
+            cursor.close()
             return None
 
         user = User()
