@@ -102,6 +102,11 @@ text_property = api.inherit('TextProperty', bo, property, {
 
 })
 
+profile_similarity = {
+    'Profile': fields.Nested(profile),
+    'Similarity': fields.Float
+}
+
 @bookmarklist_namespace.route('/<int:user_id>')
 @bookmarklist_namespace.response(500, 'TBD')
 @bookmarklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
@@ -277,6 +282,28 @@ class PersonalProfileList_api(Resource):
         adm = Administration()
         response = adm.get_all_personal_profiles()
         return response
+
+@personal_profile_namespace.route('/sorted')
+class PersonalProfileSimilarity_api(Resource):
+    @personal_profile_namespace.marshal_list_with(profile_similarity)
+    def get(self):
+        """
+        gets a list of all personal profiles sorted by similarity.
+        the similarity is based on a comparison with a given search profile (payload).
+        :return: list of all personal profiles sorted by similarity to the given search profile
+        """
+        adm = Administration()
+        proposal = Profile.from_dict(api.payload)
+        if proposal is not None:
+            search = adm.get_profile_by_id(proposal.get_id())
+            if search is not None:
+                response = adm.get_sorted_list_of_personal_profiles(search)
+                print(search.get_id())
+                return response
+            else:
+                return '', 500
+        else:
+            return '', 500
 
 @personal_profile_namespace.route('/<int:id>')
 class PersonalProfile_api(Resource):

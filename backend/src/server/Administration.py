@@ -5,6 +5,7 @@ from backend.src.server.bo.Property import Property
 from backend.src.server.bo.SelectionProperty import SelectionProperty
 from backend.src.server.bo.TextProperty import TextProperty
 from backend.src.server.bo.Information import Information
+from backend.src.server.bo.SimilarityMeasure import SimilarityMeasure
 
 from backend.src.server.db.BlocklistMapper import BlocklistMapper
 from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
@@ -437,3 +438,37 @@ class Administration():
     def remove_user_to_viewedList(self, user_id, payload):
         viewedMapper = ViewedMapper()
         return viewedMapper.delete(user_id, payload)
+
+
+    """
+    Ähnlichkeitsmass - Ausführung
+    (Die Logik, die hinter der Berechnung des Ähnlichkeitsmaßes steckt, ist in der Datei SimilarityMeasure.py zu finden)
+    """
+    def get_sorted_list_of_personal_profiles(self, search_profile):
+        search_infos = self.get_infos_from_profile(search_profile)
+        search_info_content = {}
+        for info in search_infos:
+            search_content = self.get_info_content(info)
+            search_info_content[search_content["Property"]] = search_content["Value"]
+
+        personal_profiles = self.get_all_personal_profiles()
+        similarity_profiles = []
+
+        for profile in personal_profiles:
+            profile_id = profile.get_id()
+            infos = self.get_infos_from_profile(profile)
+            info_content = {}
+            for info in infos:
+                content = self.get_info_content(info)
+                info_content[content["Property"]] = content["Value"]
+
+            sim = SimilarityMeasure(search_info_content, info_content)
+            similarity = sim.get_similarity_measure()
+            profile_and_sim = {}
+            profile_and_sim['Profile'] = profile
+            profile_and_sim['Similarity'] = similarity
+            similarity_profiles.append(profile_and_sim)
+
+        similarity_profiles = sorted(similarity_profiles, key=lambda x: x['Similarity'], reverse=True)
+
+        return similarity_profiles
