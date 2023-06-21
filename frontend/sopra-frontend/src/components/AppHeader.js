@@ -42,6 +42,9 @@ export default function AppHeader(props) {
     function navigateToConversationOverviewPage() {
         navigate('/conversationOverview')
     }
+    function navigateToMainPage() {
+        navigate('/main')
+    }
     function navigateToBookmarkListPage() {
         navigate(('/bookmarklist'))
     }
@@ -107,6 +110,12 @@ export default function AppHeader(props) {
                             sx={{
                                 display: {xs: 'block', md: 'none'},
                             }}>
+                            <MenuItem onClick={() => {
+                                handleCloseNavMenu()
+                                navigateToMainPage()
+                            }}>
+                                <Typography textAlign="center">Startseite</Typography>
+                            </MenuItem>
                             <MenuItem onClick={() => {
                                 handleCloseNavMenu()
                                 navigateToBookmarkListPage()

@@ -18,28 +18,30 @@ export default class BlockListItem extends React.Component{
         }
     }
 
+    /**
+     * Removes the user from the blocklist
+     */
     removeUser = () => {
         const { blockedUser, user } = this.props;
         SopraDatingAPI.getAPI().removeUserFromBlocklist(user.getUserID(), blockedUser).then(() => {
             this.setState({
                 deletingInProgress: false,
                 deletingError: null
-            })
-            // console.log(user);
+            });
             this.props.onUserRemoved(blockedUser);
-        }).catch(e =>
+        }).catch(e => {
             this.setState({
                 deletingInProgress: false,
                 deletingError: e
-            })
-        );
+            });
+        });
 
-        // set loading to true
         this.setState({
             deletingInProgress: true,
             deletingError: null
-        })
+        });
     }
+
     render() {
         const{blockedUser}=this.props;
 
@@ -61,7 +63,6 @@ export default class BlockListItem extends React.Component{
                 </ListItemAvatar>
                 <ListItemText primary={blockedUser.getDisplayname()} />
             </ListItem>
-        )
+        );
     }
-
 }

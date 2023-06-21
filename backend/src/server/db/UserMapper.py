@@ -1,4 +1,3 @@
-from backend.src.server.bo.Profile import Profile
 from backend.src.server.bo.User import User
 from backend.src.server.db.Mapper import Mapper
 from backend.src.server.db.ProfileMapper import ProfileMapper
@@ -127,15 +126,14 @@ class UserMapper(Mapper):
             cursor.close()
             return user
 
-        # insert the new User
-        cursor = self._cnx.cursor()
+
+        # Insert the new User
         insert_command = "INSERT INTO user (email, displayname, avatarurl) VALUES (%s, %s, %s)"
-        data = (payload['email'], payload['displayname'], payload['ProfileIMGURL'])
+        data = (email, payload['displayname'], payload['ProfileIMGURL'])
         cursor.execute(insert_command, data)
         self._cnx.commit()
 
-        # get the user which is inserted
-        email = payload['email']
+        # Get the inserted user
         select_command = f"SELECT * FROM user WHERE email = '{email}'"
         cursor.execute(select_command)
         user_data = cursor.fetchone()
