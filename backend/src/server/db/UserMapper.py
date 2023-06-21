@@ -1,6 +1,7 @@
-from backend.src.server.Administration import Administration
+from backend.src.server.bo.Profile import Profile
 from backend.src.server.bo.User import User
 from backend.src.server.db.Mapper import Mapper
+from backend.src.server.db.ProfileMapper import ProfileMapper
 
 
 class UserMapper(Mapper):
@@ -107,6 +108,25 @@ class UserMapper(Mapper):
         :return: the created user
         """
 
+        # Check if the email already exists
+        email = payload['email']
+        cursor = self._cnx.cursor()
+        command = (f"SELECT * FROM user WHERE Email = '{email}'")
+        cursor.execute(command)
+        email_data = cursor.fetchone()
+
+        if email_data is not None:
+            command_2 = (f"SELECT * FROM user WHERE Email = '{email}'")
+            cursor.execute(command_2)
+            user_data = cursor.fetchall()
+            user = User()
+            user.set_user_id(user_data[0][0])
+            user.set_email(user_data[0][1])
+            user.set_displayname(user_data[0][2])
+            user.set_avatarurl(user_data[0][3])
+            cursor.close()
+            return user
+
         # insert the new User
         cursor = self._cnx.cursor()
         insert_command = "INSERT INTO user (email, displayname, avatarurl) VALUES (%s, %s, %s)"
@@ -121,6 +141,7 @@ class UserMapper(Mapper):
         user_data = cursor.fetchone()
 
         if not user_data:
+            cursor.close()
             return None
 
         user = User()
@@ -144,9 +165,12 @@ class UserMapper(Mapper):
         cursor.execute(insert_user_to_viewedlist_command)
         self._cnx.commit()
 
-
-        adm = Administration()
-        adm.create_personal_profile_for_user(user)
+        if user is not None:
+            mapper = ProfileMapper()
+            profile = Profile()
+            profile.set_user_id(user.get_id())
+            profile.set_is_personal(1)
+            mapper.insert(profile)
 
         cursor.close()
 
@@ -202,16 +226,28 @@ class UserMapper(Mapper):
 
         # TODO Delete related user content with profile context
         # Delete searchprofiles of user
-        adm = Administration()
-        search_profiles = adm.get_search_profiles_of_user(user)
+        search_profiles = ProfileMapper().find_search_profiles_of_owner(user)
         for i in search_profiles:
-            adm.delete_profile(i)
+            if i is not None:
+                infos = self.get_infos_from_profile(i)
+                # if infos is not None:
+                for info in infos:
+                    self.delete_info(info)
+
+                ProfileMapper.delete(i)
+
 
         # Delete the personal profile if the user
-        personal_profiles = adm.get_personal_profile_of_user(user)
-        for i in personal_profiles:
-            adm.delete_profile(i)
+        personal_profiles = ProfileMapper().find_personal_profile_of_owner(user)
 
+        for i in personal_profiles:
+            if i is not None:
+                infos = self.get_infos_from_profile(i)
+                # if infos is not None:
+                for info in infos:
+                    self.delete_info(info)
+
+                ProfileMapper.delete(i)
 
         # Delete the user
         command = "DELETE FROM user WHERE UserID={}".format(user.get_user_id())
