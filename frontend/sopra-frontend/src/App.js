@@ -93,6 +93,27 @@ class App extends React.Component {
     }
 
     /**
+     * Setter for a new User
+     */
+    setUser = () => {
+        const {profileImageURL, profileDisplayName, profileEmail} = this.state;
+        const newUser = new UserBO("", profileDisplayName, profileEmail, profileImageURL);
+        SopraDatingAPI.getAPI().postUser(newUser)
+            .then(UserBOs => {
+                this.setState({
+                    appError: null,
+                    user: UserBOs[0]
+                })
+            })
+            .catch(e => {
+                this.setState({
+                    user: [],
+                    appError: e
+                });
+            });
+    }
+
+    /**
      * Getter for the current User
      */
     getUser = () => {
@@ -108,13 +129,17 @@ class App extends React.Component {
         // this.setState({
         //     user: testUser[0]
         // })
-
-        SopraDatingAPI.getAPI().getUser(this.state.profileEmail)
+        console.log(this.state.currentUser.email)
+        SopraDatingAPI.getAPI().getUser(this.state.currentUser.email)
             .then(UserBO => {
-                this.setState({
+                if(UserBO.length === 0) {
+                    this.setUser()
+                } else {
+                    this.setState({
                     appError: null,
                     user: UserBO[0]
                 })
+                }
             }).catch(e =>
                 this.setState({
                     appError: e,
@@ -133,7 +158,7 @@ class App extends React.Component {
                     <Route path={"/"}>
                         <Route path={'/'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
                         <Route path={'/*'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
-                        <Route path={'/main'} element={<Secured user={currentUser}><Main avatar={profileImageURL} user={user}/> </Secured>}/>
+                        <Route path={'/main'} element={<Secured user={currentUser}><Main avatar={profileImageURL} user={user} onUserLogin={this.getUser}/> </Secured>}/>
                         <Route path={'/profile'} element={<Secured user={currentUser}><Profile avatar={profileImageURL} name={profileDisplayName} email={profileEmail}/> </Secured>}/>
                         <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList avatar={profileImageURL} user={user}/> </Secured>}/>
                         <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList avatar={profileImageURL} user={user}/> </Secured>}/>

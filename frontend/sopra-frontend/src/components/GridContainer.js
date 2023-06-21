@@ -156,6 +156,7 @@ export default class GridContainer extends React.Component{
     render() {
         const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList } = this.state;
         const open = Boolean(anchorEl);
+        console.log(this.props.user)
 
         return (
             <Box>

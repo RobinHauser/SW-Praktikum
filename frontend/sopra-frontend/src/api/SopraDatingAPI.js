@@ -28,6 +28,10 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/init-user/${email}`;
     };
 
+    #postUserURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/user/1000`
+    };
+
     // Main Page related
     #getUserListBySearchprofileURL = (searchProfileID) => {
         return `http://localhost:8081/api/v1/userList/${searchProfileID}`; //Todo set Base URL Back to variable
@@ -62,7 +66,7 @@ export default class SopraDatingAPI {
     #getChatMessagesURL = (chatID) => `http://127.0.0.1:8000/message/${chatID}`; //TODO change ID
 
     // Profile related
-    #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile/${userID}`;
+    #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
     #updateProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
 
     // Information related
@@ -122,10 +126,25 @@ export default class SopraDatingAPI {
         return this.#fetchAdvanced(this.#getUserURL(email))
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
-                // console.log(blocklistBOs)
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
+        })
+    }
+
+    postUser(userBO) {
+        return this.#fetchAdvanced(this.#postUserURL(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(userBO)
+        }).then((responseJSON) => {
+            let user = UserBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(user)
+            })
         })
     }
 
