@@ -5,6 +5,7 @@ from backend.src.server.bo.Property import Property
 from backend.src.server.bo.SelectionProperty import SelectionProperty
 from backend.src.server.bo.TextProperty import TextProperty
 from backend.src.server.bo.Information import Information
+from backend.src.server.bo.SimilarityMeasure import SimilarityMeasure
 
 from backend.src.server.db.BlocklistMapper import BlocklistMapper
 from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
@@ -34,8 +35,8 @@ class Administration():
 
 
     def get_user_by_id(self, id):
-        user_mapper = UserMapper()
-        return user_mapper.find_by_id(id)
+        userMapper = UserMapper()
+        return userMapper.find_by_id(id)
 
     def get_user_by_name(self, name):
         with UserMapper() as mapper:
@@ -77,7 +78,7 @@ class Administration():
         with ProfileMapper() as mapper:
             if user is not None:
                 profile = Profile()
-                profile.set_user_id(user.get_id())
+                profile.set_user_id(user.get_user_id())
                 profile.set_is_personal(1)
                 return mapper.insert(profile)
             else:
@@ -87,7 +88,7 @@ class Administration():
         with ProfileMapper() as mapper:
             if user is not None:
                 profile = Profile()
-                profile.set_user_id(user.get_id())
+                profile.set_user_id(user.get_user_id())
                 profile.set_is_personal(0)
                 return mapper.insert(profile)
             else:
@@ -344,7 +345,7 @@ class Administration():
                     for info in infos:
                         self.delete_info(info)
 
-                    return mapper.delete(sel_prop)
+                return mapper.delete(sel_prop)
             else:
                 return None
 
@@ -437,3 +438,42 @@ class Administration():
     def remove_user_to_viewedList(self, user_id, payload):
         viewedMapper = ViewedMapper()
         return viewedMapper.delete(user_id, payload)
+
+
+    """
+    Ähnlichkeitsmass - Ausführung
+    (Die Logik, die hinter der Berechnung des Ähnlichkeitsmaßes steckt, ist in der Datei SimilarityMeasure.py zu finden)
+    """
+    def get_sorted_list_of_personal_profiles(self, search_profile):
+        search_infos = self.get_infos_from_profile(search_profile)
+        search_info_content = {}
+        for info in search_infos:
+            search_content = self.get_info_content(info)
+            search_info_content[search_content["property"]] = search_content["value"]
+
+        personal_profiles = self.get_all_personal_profiles()
+        similarity_profiles = []
+
+        for profile in personal_profiles:
+            profile_id = profile.get_id()
+            infos = self.get_infos_from_profile(profile)
+            info_content = {}
+            for info in infos:
+                content = self.get_info_content(info)
+                info_content[content["property"]] = content["value"]
+
+            sim = SimilarityMeasure(search_info_content, info_content)
+            similarity = sim.get_similarity_measure()
+            profile_and_sim = {}
+            profile_and_sim['profile'] = profile
+            profile_and_sim['similarity'] = similarity
+            similarity_profiles.append(profile_and_sim)
+
+
+        similarity_profiles = sorted(similarity_profiles, key=lambda x: x['similarity'], reverse=True)
+
+        # sorted_users = []
+        # for s in similarity_profiles:
+        #     prof = s["profile"]
+
+        return similarity_profiles

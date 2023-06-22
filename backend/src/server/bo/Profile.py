@@ -11,10 +11,10 @@ class Profile(BusinessObject):
         self.__is_personal = True
 
     def get_user_id(self):
-        return self._user_id
+        return self.__user_id
 
     def set_user_id(self, user_id):
-        self._user_id = user_id
+        self.__user_id = user_id
 
     def get_is_personal(self):
         return self.__is_personal
@@ -30,7 +30,7 @@ class Profile(BusinessObject):
     def from_dict(dict): #todo default wert setzen
         pro = Profile()
         pro.set_id(dict["id"])
-        pro.set_user_id(dict["user_id"])
-        pro.set_is_personal(dict["is_personal"])
+        pro.set_user_id(dict["UserID"])
+        pro.set_is_personal(dict["isPersonal"])
         return pro
 
