@@ -38,6 +38,10 @@ class Administration():
         userMapper = UserMapper()
         return userMapper.find_by_id(id)
 
+    def get_all_user_by_id(self, id):
+        userMapper = UserMapper()
+        return userMapper.find_all_by_id(id)
+
     def get_user_by_name(self, name):
         with UserMapper() as mapper:
             return mapper.find_by_name(name)

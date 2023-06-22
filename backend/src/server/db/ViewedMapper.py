@@ -45,18 +45,7 @@ class ViewedMapper(Mapper.Mapper):
         viewed_user_id = int(payload.get('UserID'))
 
 
-        command3 = f'SELECT * FROM blocklist WHERE UserID={payload.get("UserID")}'
-        cursor.execute(command3)
-        v3 = cursor.fetchall()
-        command4 = f'SELECT * FROM block WHERE BlocklistID= {v3[0][0]}'
-        cursor.execute(command4)
-        v4 = cursor.fetchall()
-
-        for i in v4:
-            if int(i[2]) == int(user_id):
-                return result
-        else:
-            cursor.execute(f'INSERT INTO view (ViewedListID, UserID) VALUES ({viewedlist_id}, {viewed_user_id})')
+        cursor.execute(f'INSERT INTO view (ViewedListID, UserID) VALUES ({viewedlist_id}, {viewed_user_id})')
 
         self._cnx.commit()
         cursor.close()

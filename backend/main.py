@@ -34,6 +34,7 @@ selection_property_namespace = Namespace(name="selection-property", description=
 text_property_namespace = Namespace(name="text-property", description="This is the text property")
 information_namespace = Namespace(name="information", description="This is the information")
 user_namespace = Namespace(name="user", description="tbd")
+all_user_namespace = Namespace(name="all-user", description="tbd")
 
 
 # Adding the namespaces to the api
@@ -49,6 +50,7 @@ api.add_namespace(selection_property_namespace)
 api.add_namespace(text_property_namespace)
 api.add_namespace(information_namespace)
 api.add_namespace((user_namespace))
+api.add_namespace(all_user_namespace)
 
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='This is the unique identifier of an business-object ')
@@ -60,6 +62,8 @@ user = api.inherit('User', {
     'displayname': fields.String(attribute=lambda x: x.get_displayname(), description='This is the full name of the user'),
     'ProfileIMGURL': fields.String(attribute=lambda x: x.get_avatarurl(), description='This is the URL to the profileImage of the profile'),
 })
+
+
 
 message = api.inherit('Message', bo, {
     'timestamp': fields.Date(attribute='timestamp', description='This is the timestamp at which the message was sent'),
@@ -748,8 +752,18 @@ class User_api(Resource):
         adm = Administration()
         return adm.update_user(id, api.payload)
 
+@all_user_namespace.route('/<int:id>')
+class All_User_api(Resource):
 
-
+    @user_namespace.marshal_with(user, code=200)
+    def get(self, id):
+        """
+        Get a specific user by user_id
+        :param user_id:
+        :return: the wanted user
+        """
+        adm = Administration()
+        return adm.get_all_user_by_id(id)
 
 
 if __name__ == '__main__':
