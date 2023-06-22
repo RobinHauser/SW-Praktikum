@@ -110,7 +110,7 @@ class ProfileMapper(Mapper.Mapper):
         :param owner: user the personal profile belongs to
         :return: personal profile of the user
         """
-        result = []
+        result = None
         cursor = self._cnx.cursor()
         command = "SELECT * FROM profile_relation WHERE UserID={}".format(owner.get_user_id())
         cursor.execute(command)
@@ -129,7 +129,7 @@ class ProfileMapper(Mapper.Mapper):
                 (profile_id, is_personal) = tuples[0]
                 profile = Profile()
                 profile.set_id(profile_id)
-                profile.set_user_id(owner.get_id())
+                profile.set_user_id(owner.get_user_id())
                 profile.set_is_personal(is_personal)
                 result = profile
             except IndexError:
@@ -164,7 +164,7 @@ class ProfileMapper(Mapper.Mapper):
             for (profile_id, is_personal) in tuples:
                 profile = Profile()
                 profile.set_id(profile_id)
-                profile.set_user_id(owner.get_id())
+                profile.set_user_id(owner.get_user_id())
                 profile.set_is_personal(is_personal)
                 result.append(profile)
 
@@ -243,8 +243,8 @@ class ProfileMapper(Mapper.Mapper):
         cursor.execute(command, data)
 
         command2 = "INSERT INTO profile_relation (ProfileID, UserID) VALUES (%s, %s)"
-        data = (profile.get_id(), profile.get_user_id())
-        cursor.execute(command2, data)
+        data2 = (profile.get_id(), profile.get_user_id())
+        cursor.execute(command2, data2)
 
         self._cnx.commit()
         cursor.close()

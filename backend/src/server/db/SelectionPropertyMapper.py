@@ -329,8 +329,8 @@ class SelectionPropertyMapper(Mapper.Mapper):
             command3 = "DELETE FROM property_assignment WHERE PropertyID = {}".format(sel_prop.get_id())
             cursor.execute(command3)
 
-            command4 = "DELETE FROM property WHERE PropertyID={}".format(sel_prop.get_id())
-            cursor.execute(command4)
+        command4 = "DELETE FROM property WHERE PropertyID={}".format(sel_prop.get_id())
+        cursor.execute(command4)
 
         self._cnx.commit()
         cursor.close()
@@ -361,7 +361,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
             values = cursor.fetchall()
 
             for value in values:
-                jsstr = f'{{"ValueID": "{value[0]}", "Value": "{value[1]}"}}'
+                jsstr = f'{{"valueID": "{value[0]}", "value": "{value[1]}"}}'
                 value_json = json.loads(jsstr)
                 result.append(value_json)
 

@@ -16,6 +16,7 @@ class UserMapper(Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
+
         cursor.execute("SELECT * FROM user")
         users = cursor.fetchall()
 
@@ -34,10 +35,75 @@ class UserMapper(Mapper):
             except IndexError:
                 result = None
 
+
+
+
         self._cnx.commit()
         cursor.close()
 
         return result
+
+    def find_all_by_id(self, id):
+        result = []
+        cursor = self._cnx.cursor()
+        command = f'SELECT * FROM user'
+        cursor.execute(command)
+        users = cursor.fetchall()
+
+        if not users:
+            return []
+
+        for user_from_list in users:
+            try:
+                user = User()
+                user.set_user_id(user_from_list[0])
+                user.set_email(user_from_list[1])
+                user.set_displayname(user_from_list[2])
+                user.set_avatarurl(user_from_list[3])
+                result.append(user)
+            except IndexError:
+                result = None
+
+
+        for i in result:
+            if int(i.get_user_id()) == int(id):
+                result.remove(i)
+
+        print(result)
+
+        for j in result:
+            command3 = f'SELECT * FROM blocklist WHERE UserID={j.get_user_id()}' #Iteriert durch alle Blocklists der User
+            cursor.execute(command3)
+            v3 = cursor.fetchall()
+
+            if len(v3) is not 0:
+                command4 = f'SELECT * FROM block WHERE BlocklistID= {v3[0][0]} AND BlockedUserID = {id}' #Prüft ob User mit id=id Blockiert ist
+                cursor.execute(command4)
+                v4 = cursor.fetchall()
+                if len(v4) is not 0:
+                    for i in v4:
+                        result.remove(j)      # Entfernt User wenn Blockiert
+
+        command = f'SELECT * FROM blocklist WHERE UserID={id}'  #Holt sich Blocklist des Users, wo UserID = id
+        cursor.execute(command)
+        v = cursor.fetchall()
+
+        command2 = f'SELECT * FROM block WHERE BlocklistID= {v[0][0]}'      #Prüft wen User mit id=id blockiert hat
+        cursor.execute(command2)
+        v2 = cursor.fetchall()
+        if len(v2) is not 0:
+            for i in result:
+                for j in v2:
+                    if int(i.get_user_id()) == int(j[2]):
+                        result.remove(i)
+
+                   #Entfernt User aus Liste, wenn er blockiert wurde
+
+        self._cnx.commit()
+        cursor.close()
+
+        return result
+
 
     def find_by_id(self, id):
         """
@@ -57,6 +123,7 @@ class UserMapper(Mapper):
         try:
             user = User()
             user.set_user_id(tuples[0])
+            useruser_id = user.get_user_id()
             user.set_email(tuples[1])
             user.set_displayname(tuples[2])
             user.set_avatarurl(tuples[3])

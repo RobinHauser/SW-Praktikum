@@ -12,6 +12,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Typography from "@mui/material/Typography";
+import UserBO from "../api/UserBO";
 
 export default class GridContainer extends React.Component{
     constructor(props) {
@@ -22,14 +23,50 @@ export default class GridContainer extends React.Component{
             searchprofiles: ["Suchprofil 1", "Suchprofil 2", "Suchprofil 3"],
             userList: [],
             showOnlyNewUser: true,
-            viewedList: []
+            viewedList: [],
+            user: null,
+            blocklist: []
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // Fetch the initial user list based on the search profile
-        this.getUserListBySearchprofile(1); // Todo dynamisch einlesen
+        await this.props.onUserLogin().then(user => {
+            this.setState({
+                user: user
+            })
+        })
+        this.getAllUsers()
     }
+
+getBlocklist = async () => {
+    try {
+        const UserBOs = await SopraDatingAPI.getAPI().getBlocklist(this.state.user.getUserID());
+        return UserBOs;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+};
+
+getAllUsers = async () => {
+    try {
+        let userBOs = await SopraDatingAPI.getAPI().getAllUsers();
+        let filteredUsers = userBOs.filter(user => user.getUserID() !== this.state.user.getUserID());
+        let blocklist = await this.getBlocklist();
+        let userList = filteredUsers.filter(item => {
+            return !blocklist.some(blockedUser => blockedUser.getUserID() === item.getUserID());
+        });
+        this.setState({
+            userList: userList
+        });
+    } catch (error) {
+        console.log(error);
+        this.setState({
+            userList: []
+        });
+    }
+};
 
     /**
      * Fetches the user list based on the selected search profile ID
@@ -156,7 +193,6 @@ export default class GridContainer extends React.Component{
     render() {
         const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList } = this.state;
         const open = Boolean(anchorEl);
-        console.log(this.props.user)
 
         return (
             <Box>
@@ -226,7 +262,7 @@ export default class GridContainer extends React.Component{
                             <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>
                                 <ProfileCard
                                     key={userListItem.getUserID()}
-                                    user={this.props.user}
+                                    user={this.state.user}
                                     showedUser={userListItem}
                                     showOnlyNewUser={showOnlyNewUser}
                                     onUserRemoved={this.handleRemoveUser}>

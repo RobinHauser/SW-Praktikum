@@ -162,7 +162,7 @@ class InformationMapper(Mapper):
         """
         cursor = self._cnx.cursor()
         command = "UPDATE information SET ProfileID=%s, ValueID=%s WHERE InformationID = %s"
-        data = (info.get_profile_id(), payload.get('value_id'), info.get_id())
+        data = (info.get_profile_id(), payload.get('valueID'), info.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -229,7 +229,7 @@ class InformationMapper(Mapper):
                 prop = prop_tuple[1]
 
                 if content:
-                    jsstr = f'{{"ValueID": "{content[0]}", "Value": "{content[1]}", "Property": "{prop}"}}'
+                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}"}}'
                     content_json = json.loads(jsstr)
 
         self._cnx.commit()
