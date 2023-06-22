@@ -1,5 +1,8 @@
+from backend.src.server.bo.Profile import Profile
 from backend.src.server.bo.User import User
+from backend.src.server.db.InformationMapper import InformationMapper
 from backend.src.server.db.Mapper import Mapper
+from backend.src.server.db.ProfileMapper import ProfileMapper
 
 
 class UserMapper(Mapper):
@@ -232,7 +235,8 @@ class UserMapper(Mapper):
         cursor.execute(insert_user_to_viewedlist_command)
         self._cnx.commit()
 
-        # TODO Insert Profile relation
+        # add content related to profile
+        self.__create_personal_profile_for_user(user)
 
         cursor.close()
 
@@ -265,23 +269,33 @@ class UserMapper(Mapper):
         cursor = self._cnx.cursor()
 
         # Delete content related to the user in Bookmarklist context
-        bookmarklist_id = self._get_user_related_id(cursor, 'bookmarklist', 'BookmarklistID', 'UserID', id)
-        self._delete_content(cursor, 'bookmark', 'BookmarklistID', bookmarklist_id)
-        self._delete_content(cursor, 'bookmarklist', 'BookmarklistID', bookmarklist_id)
+        bookmarklist_id = self.__get_user_related_id(cursor, 'bookmarklist', 'BookmarklistID', 'UserID', id)
+        self.__delete_content(cursor, 'bookmark', 'BookmarklistID', bookmarklist_id)
+        self.__delete_content(cursor, 'bookmark', 'BookmarkedUserID', id)
+        self.__delete_content(cursor, 'bookmarklist', 'BookmarklistID', bookmarklist_id)
 
         # Delete content related to the user in Blocklist context
-        blocklist_id = self._get_user_related_id(cursor, 'blocklist', 'BlocklistID', 'UserID', id)
-        self._delete_content(cursor, 'block', 'BlocklistID', blocklist_id)
-        self._delete_content(cursor, 'blocklist', 'BlocklistID', blocklist_id)
+        blocklist_id = self.__get_user_related_id(cursor, 'blocklist', 'BlocklistID', 'UserID', id)
+        self.__delete_content(cursor, 'block', 'BlocklistID', blocklist_id)
+        self.__delete_content(cursor, 'block', 'BlockedUserID', id)
+        self.__delete_content(cursor, 'blocklist', 'BlocklistID', blocklist_id)
 
         # Delete content related to the user in View context
-        viewedlist_id = self._get_user_related_id(cursor, 'viewedlist', 'ViewedListID', 'UserID', id)
-        self._delete_content(cursor, 'view', 'ViewedListID', viewedlist_id)
-        self._delete_content(cursor, 'viewedlist', 'ViewedListID', viewedlist_id)
+        viewedlist_id = self.__get_user_related_id(cursor, 'viewedlist', 'ViewedListID', 'UserID', id)
+        self.__delete_content(cursor, 'view', 'ViewedListID', viewedlist_id)
+        self.__delete_content(cursor, 'view', 'UserID', id)
+        self.__delete_content(cursor, 'viewedlist', 'ViewedListID', viewedlist_id)
 
-        # TODO Check if there is Content related to chatting. If there is delete it
+        # Delete content related to the user in chatting context
+        if self.__check_user_dependencies_in_chat_context(id):
+            self.__delete_user_chat_content(id)
 
-        # TODO Delete related user content with profile context
+        search_profiles = self.get_search_profiles_of_user(user)
+        for i in search_profiles:
+            self.delete_profile(i)
+
+        personal_profile = self.get_personal_profile_of_user(user)
+        self.delete_profile(personal_profile)
 
         # Delete the user
         command = "DELETE FROM user WHERE UserID={}".format(user.get_user_id())
@@ -291,13 +305,103 @@ class UserMapper(Mapper):
 
         return user
 
-    def _get_user_related_id(self, cursor, table, id_column, user_column, user_id):
+    def __get_user_related_id(self, cursor, table, id_column, user_column, user_id):
         command = f'SELECT {id_column} FROM {table} WHERE {user_column} = {user_id}'
         cursor.execute(command)
         return cursor.fetchone()[0]
 
-
-    def _delete_content(self, cursor, table, id_column, content_id):
+    def __delete_content(self, cursor, table, id_column, content_id):
         command = f'DELETE FROM {table} WHERE {id_column} = {content_id}'
         cursor.execute(command)
         self._cnx.commit()
+
+    def __check_user_dependencies_in_chat_context(self, user_id):
+        cursor = self._cnx.cursor()
+
+        # Check for chat relations
+        command_check_chatrelation = f"SELECT * FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}"
+        cursor.execute(command_check_chatrelation)
+        chatrelation_tuples = cursor.fetchall()
+
+        # Check for message relations
+        command_check_messages = f"SELECT * FROM message WHERE Sender = {user_id}"
+        cursor.execute(command_check_messages)
+        messages_tuples = cursor.fetchall()
+
+        cursor.close()
+
+        return len(chatrelation_tuples) > 0 or len(messages_tuples) > 0
+
+    def __delete_user_chat_content(self, user_id):
+        cursor = self._cnx.cursor()
+
+        # Get related ChatIDs of user
+        command_get_ChatID = f"SELECT ChatID FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}" # TODO Vielleicht error weil user2 nicht mehr gibt
+        cursor.execute(command_get_ChatID)
+        ChatID_tuples = cursor.fetchall()
+
+        # Get related MessageIDs of user
+        command_get_MessageID = f"SELECT MessageID FROM message WHERE Sender = {user_id}"
+        cursor.execute(command_get_MessageID)
+        MessageID_tuples = cursor.fetchall()
+
+        # Delete chatcontainer rows related to ChatIDs and MessageIDs of the user
+        command_delete_chatcontainer = f"DELETE FROM chatcontainer WHERE ChatID IN ({','.join(str(cid[0]) for cid in ChatID_tuples)}) OR MessageID IN ({','.join(str(mid[0]) for mid in MessageID_tuples)})"
+        cursor.execute(command_delete_chatcontainer)
+
+        # Delete chatrelations of user
+        command_delete_chatrelations = f"DELETE FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}"
+        cursor.execute(command_delete_chatrelations)
+
+        # Delete Messages of user
+        command_delete_messages = f"DELETE FROM message WHERE Sender = {user_id}"
+        cursor.execute(command_delete_messages)
+
+        self._cnx.commit()
+        cursor.close()
+
+    def __create_personal_profile_for_user(self, user):
+            mapper = ProfileMapper()
+            user_id = user.get_user_id()
+            profile = Profile()
+            profile.set_user_id(user_id)
+            profile.set_is_personal(1)
+            return mapper.insert(profile)
+
+    def get_search_profiles_of_user(self, user):
+        mapper = ProfileMapper()
+        if user is not None:
+            return mapper.find_search_profiles_of_owner(user)
+        else:
+            return None
+
+    def get_personal_profile_of_user(self, user):
+        mapper = ProfileMapper()
+        if user is not None:
+            return mapper.find_personal_profile_of_owner(user)
+        else:
+            return None
+
+    def get_infos_from_profile(self, profile):
+        mapper = InformationMapper()
+        if profile is not None:
+            return mapper.find_by_profile(profile)
+        else:
+            return None
+
+    def delete_info(self, info):
+        mapper = InformationMapper()
+        if info is not None:
+            return mapper.delete(info)
+
+    def delete_profile(self, profile):
+        mapper = ProfileMapper()
+        if profile is not None:
+            infos = self.get_infos_from_profile(profile)
+            # if infos is not None:
+            for info in infos:
+                self.delete_info(info)
+
+            return mapper.delete(profile)
+        else:
+            return None

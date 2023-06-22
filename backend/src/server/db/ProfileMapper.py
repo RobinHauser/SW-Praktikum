@@ -1,6 +1,6 @@
-from server.db import Mapper
-from server.bo import Profile
-from server.bo import Information
+from backend.src.server.db import Mapper
+from backend.src.server.bo import Profile
+from backend.src.server.bo import Information
 import json
 
 Profile = Profile.Profile
