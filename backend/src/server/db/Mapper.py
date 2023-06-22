@@ -7,11 +7,15 @@ import mysql.connector as connector
 class Mapper(AbstractContextManager, ABC):
 
     def __init__(self):
-        self._cnx = mysql.connector.connect(user='root', password='sopra_2023', host='127.0.0.1', database='datenbank')
+
+        self._cnx = connector.connect(user='root', password='sopra_2023', host="34.159.236.154", database='datenbank')
 
     def __enter__(self):
-        self._cnx = mysql.connector.connect(user='root', password='sopra_2023', host='127.0.0.1', database='datenbank')
+
+        self._cnx = connector.connect(user='root', password='sopra_2023', host="34.159.236.154", database='datenbank')
+
         return self
+
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._cnx.close()

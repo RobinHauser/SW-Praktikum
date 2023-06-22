@@ -287,7 +287,6 @@ class UserMapper(Mapper):
         if self.__check_user_dependencies_in_chat_context(id):
             self.__delete_user_chat_content(id)
 
-        # TODO Delete related user content with profile context
         search_profiles = self.get_search_profiles_of_user(user)
         for i in search_profiles:
             self.delete_profile(i)
