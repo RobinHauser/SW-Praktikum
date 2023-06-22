@@ -715,7 +715,8 @@ class User_api(Resource):
     @user_namespace.expect(user)
     def delete(self, id):
         adm = Administration()
-        return adm.delete_user(id, api.payload)
+        payload = api.payload
+        return adm.delete_user_with_all_relations(payload)
 
     @user_namespace.marshal_with(user, code=200)
     @user_namespace.expect(user)

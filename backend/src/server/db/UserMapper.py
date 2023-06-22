@@ -1,4 +1,6 @@
+from backend.src.server.bo.Profile import Profile
 from backend.src.server.bo.User import User
+from backend.src.server.db.InformationMapper import InformationMapper
 from backend.src.server.db.Mapper import Mapper
 from backend.src.server.db.ProfileMapper import ProfileMapper
 
@@ -163,12 +165,8 @@ class UserMapper(Mapper):
         cursor.execute(insert_user_to_viewedlist_command)
         self._cnx.commit()
 
-        if user is not None:
-            mapper = ProfileMapper()
-            profile = Profile()
-            profile.set_user_id(user.get_id())
-            profile.set_is_personal(1)
-            mapper.insert(profile)
+        # add content related to profile
+        self.__create_personal_profile_for_user(user)
 
         cursor.close()
 
@@ -223,29 +221,12 @@ class UserMapper(Mapper):
             self.__delete_user_chat_content(id)
 
         # TODO Delete related user content with profile context
-        # Delete searchprofiles of user
-        search_profiles = ProfileMapper().find_search_profiles_of_owner(user)
+        search_profiles = self.get_search_profiles_of_user(user)
         for i in search_profiles:
-            if i is not None:
-                infos = self.get_infos_from_profile(i)
-                # if infos is not None:
-                for info in infos:
-                    self.delete_info(info)
+            self.delete_profile(i)
 
-                ProfileMapper.delete(i)
-
-
-        # Delete the personal profile if the user
-        personal_profiles = ProfileMapper().find_personal_profile_of_owner(user)
-
-        for i in personal_profiles:
-            if i is not None:
-                infos = self.get_infos_from_profile(i)
-                # if infos is not None:
-                for info in infos:
-                    self.delete_info(info)
-
-                ProfileMapper.delete(i)
+        personal_profile = self.get_personal_profile_of_user(user)
+        self.delete_profile(personal_profile)
 
         # Delete the user
         command = "DELETE FROM user WHERE UserID={}".format(user.get_user_id())
@@ -269,7 +250,7 @@ class UserMapper(Mapper):
         cursor = self._cnx.cursor()
 
         # Check for chat relations
-        command_check_chatrelation = f"SELECT * FROM chatrelation WHERE UserID = {user_id} OR UserID2 = {user_id}"
+        command_check_chatrelation = f"SELECT * FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}"
         cursor.execute(command_check_chatrelation)
         chatrelation_tuples = cursor.fetchall()
 
@@ -286,7 +267,7 @@ class UserMapper(Mapper):
         cursor = self._cnx.cursor()
 
         # Get related ChatIDs of user
-        command_get_ChatID = f"SELECT ChatID FROM chatrelation WHERE UserID = {user_id} OR UserID2 = {user_id}" # TODO Vielleicht error weil user2 nicht mehr gibt
+        command_get_ChatID = f"SELECT ChatID FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}" # TODO Vielleicht error weil user2 nicht mehr gibt
         cursor.execute(command_get_ChatID)
         ChatID_tuples = cursor.fetchall()
 
@@ -300,7 +281,7 @@ class UserMapper(Mapper):
         cursor.execute(command_delete_chatcontainer)
 
         # Delete chatrelations of user
-        command_delete_chatrelations = f"DELETE FROM chatrelation WHERE UserID = {user_id} OR UserID2 = {user_id}"
+        command_delete_chatrelations = f"DELETE FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}"
         cursor.execute(command_delete_chatrelations)
 
         # Delete Messages of user
@@ -309,3 +290,49 @@ class UserMapper(Mapper):
 
         self._cnx.commit()
         cursor.close()
+
+    def __create_personal_profile_for_user(self, user):
+            mapper = ProfileMapper()
+            user_id = user.get_user_id()
+            profile = Profile()
+            profile.set_user_id(user_id)
+            profile.set_is_personal(1)
+            return mapper.insert(profile)
+
+    def get_search_profiles_of_user(self, user):
+        mapper = ProfileMapper()
+        if user is not None:
+            return mapper.find_search_profiles_of_owner(user)
+        else:
+            return None
+
+    def get_personal_profile_of_user(self, user):
+        mapper = ProfileMapper()
+        if user is not None:
+            return mapper.find_personal_profile_of_owner(user)
+        else:
+            return None
+
+    def get_infos_from_profile(self, profile):
+        mapper = InformationMapper()
+        if profile is not None:
+            return mapper.find_by_profile(profile)
+        else:
+            return None
+
+    def delete_info(self, info):
+        mapper = InformationMapper()
+        if info is not None:
+            return mapper.delete(info)
+
+    def delete_profile(self, profile):
+        mapper = ProfileMapper()
+        if profile is not None:
+            infos = self.get_infos_from_profile(profile)
+            # if infos is not None:
+            for info in infos:
+                self.delete_info(info)
+
+            return mapper.delete(profile)
+        else:
+            return None

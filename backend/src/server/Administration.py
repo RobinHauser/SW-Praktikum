@@ -59,14 +59,14 @@ class Administration():
         user_mapper = UserMapper()
         return user_mapper.update(user)
 
-    def delete_user(self, id, payload):
+    def delete_user_with_all_relations(self, payload):
         user = User()
         user.set_user_id(payload['UserID'])
         user.set_email(payload['email'])
         user.set_avatarurl(payload['ProfileIMGURL'])
         user.set_displayname(payload['displayname'])
         user_mapper = UserMapper()
-        return user_mapper.delete(id, user)
+        return user_mapper.delete(user.get_user_id(), user)
 
 
     '''

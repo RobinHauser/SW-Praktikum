@@ -112,7 +112,7 @@ class ProfileMapper(Mapper.Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM profile_relation WHERE UserID={}".format(owner.get_id())
+        command = "SELECT * FROM profile_relation WHERE UserID={}".format(owner.get_user_id())
         cursor.execute(command)
         relations = cursor.fetchall()
 
@@ -148,7 +148,7 @@ class ProfileMapper(Mapper.Mapper):
         """
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT * FROM profile_relation WHERE UserID={}".format(owner.get_id())
+        command = "SELECT * FROM profile_relation WHERE UserID={}".format(owner.get_user_id())
         cursor.execute(command)
         relations = cursor.fetchall()
 
