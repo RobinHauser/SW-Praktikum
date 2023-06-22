@@ -57,6 +57,7 @@ class UserMapper(Mapper):
         try:
             user = User()
             user.set_user_id(tuples[0])
+            useruser_id = user.get_user_id()
             user.set_email(tuples[1])
             user.set_displayname(tuples[2])
             user.set_avatarurl(tuples[3])

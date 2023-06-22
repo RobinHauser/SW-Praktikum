@@ -69,8 +69,8 @@ message = api.inherit('Message', bo, {
 })
 
 information = api.inherit('Information', bo, {
-    'profile_id': fields.Integer(attribute= lambda x: x.get_profile_id(), description='This is the profile ID of an information'),
-    'value_id': fields.Integer(attribute= lambda x: x.get_value_id(), description='This is the ValueID of an information')
+    'profileID': fields.Integer(attribute= lambda x: x.get_profile_id(), description='This is the profile ID of an information'),
+    'valueID': fields.Integer(attribute= lambda x: x.get_value_id(), description='This is the ValueID of an information')
 })
 
 
@@ -84,13 +84,13 @@ blocklist = api.inherit('Blocklist', {
 
 
 profile = api.inherit('Profile', bo, {
-    'user_id': fields.Integer(attribute=lambda x: x.get_user_id(), description='This is the unique identifier of a profiles user '),
-    'is_personal': fields.Boolean(attribute=lambda x: x.get_is_personal(), description='This is the unique identifier of a bool ')
+    'UserID': fields.Integer(attribute=lambda x: x.get_user_id(), description='This is the unique identifier of a profiles user '),
+    'isPersonal': fields.Boolean(attribute=lambda x: x.get_is_personal(), description='This is the unique identifier of a bool ')
 })
 
 property = api.inherit('Property', bo, {
     'name': fields.String(attribute=lambda x: x.get_name(), description='This is the unique identifier of a property name'),
-    'is_selection': fields.Boolean(attribute=lambda x: x.get_is_selection(), description='This is the unique identifier of a property type'),
+    'isSelection': fields.Boolean(attribute=lambda x: x.get_is_selection(), description='This is the unique identifier of a property type'),
     'description': fields.String(attribute=lambda x: x.get_description(), description='This is the unique identifier of a property description')
 })
 
@@ -101,6 +101,11 @@ selection_property = api.inherit('SelectionProperty', bo, property, {
 text_property = api.inherit('TextProperty', bo, property, {
 
 })
+
+profile_similarity = {
+    'profile': fields.Nested(profile),
+    'similarity': fields.Float
+}
 
 @bookmarklist_namespace.route('/<int:user_id>')
 @bookmarklist_namespace.response(500, 'TBD')
@@ -277,6 +282,27 @@ class PersonalProfileList_api(Resource):
         adm = Administration()
         response = adm.get_all_personal_profiles()
         return response
+
+@personal_profile_namespace.route('/sorted')
+class PersonalProfileSimilarity_api(Resource):
+    @personal_profile_namespace.marshal_list_with(profile_similarity)
+    def get(self):
+        """
+        gets a list of all personal profiles sorted by similarity.
+        the similarity is based on a comparison with a given search profile (payload).
+        :return: list of all personal profiles sorted by similarity to the given search profile
+        """
+        adm = Administration()
+        proposal = Profile.from_dict(api.payload)
+        if proposal is not None:
+            search = adm.get_profile_by_id(proposal.get_id())
+            if search is not None:
+                response = adm.get_sorted_list_of_personal_profiles(search)
+                return response
+            else:
+                return '', 500
+        else:
+            return '', 500
 
 @personal_profile_namespace.route('/<int:id>')
 class PersonalProfile_api(Resource):

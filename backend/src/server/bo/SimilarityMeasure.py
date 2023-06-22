@@ -35,7 +35,7 @@ class SimilarityMeasure:
 
             The information string of the 2 profiles are split in the lowercase words of the two strings.
             After that the words of one string are checked on similarity with the words of the other string.
-            Finally, the similar word count is divided threw the length of the shorter word list of phrases to get the
+            Finally, the similar word count is divided through the length of the shorter word list of phrases to get the
             similarity of the two phrases.
             """
         search_str = search_str.lower().split(" ")
@@ -59,12 +59,15 @@ class SimilarityMeasure:
         list_diff = []
 
         for prop in self.__search_profile:
-            if self.__search_profile[prop] != "Keine Angabe" and self.__user_profile[prop] != "Keine Angabe":
-                if (type(self.__search_profile[prop])) == str:
-                    list_diff.append(self.__get_string_sim(self.__search_profile[prop], self.__user_profile[prop]))
-                else:
-                    list_diff.append(self.__get_num_sim(self.__search_profile[prop], self.__user_profile[prop]))
-            # print(f"{i} Ähnlichkeitsmaß: {list_diff[-1]}")
+            if prop in self.__user_profile:
+                if self.__search_profile[prop] != "Keine Angabe" and self.__user_profile[prop] != "Keine Angabe":
+                    if (type(self.__search_profile[prop])) == str:
+                        list_diff.append(self.__get_string_sim(self.__search_profile[prop], self.__user_profile[prop]))
+                    else:
+                        list_diff.append(self.__get_num_sim(self.__search_profile[prop], self.__user_profile[prop]))
+                # print(f"{i} Ähnlichkeitsmaß: {list_diff[-1]}")
+            else:
+                list_diff.append(0)
 
         # If one User didn't set any Properties return 0 as similarity between the Users
         if len(list_diff) == 0:
@@ -74,6 +77,8 @@ class SimilarityMeasure:
         similarity_measure = sum(list_diff) / len(list_diff)
         # round the similarity_measure by 2 digits
         return round(similarity_measure, 2)
+
+
 
 
 test_profile1 = {
@@ -98,5 +103,6 @@ test_profile3 = {
     "sunday morning": "wenn ich mit einem Kaffee geweckt werden :)"
 }
 
-test = SimilarityMeasure(test_profile1, test_profile2)
-print(f"Ähnlichkeitsmaß: {test.get_similarity_measure()}")
+# test = SimilarityMeasure(test_profile1, test_profile2)
+# print(f"Ähnlichkeitsmaß: {test.get_similarity_measure()}")
+
