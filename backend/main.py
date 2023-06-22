@@ -790,8 +790,8 @@ class All_User_api(Resource):
     def get(self, id):
         """
         Get a specific user by user_id
-        :param user_id:
-        :return: the wanted user
+        :param user_id: id of the user who wants to get all users
+        :return: all users except the user which are blocked by the user with the given id or blocked the user with the given id
         """
         adm = Administration()
         return adm.get_all_user_by_id(id)
