@@ -68,9 +68,9 @@ class ChatMapper(Mapper.Mapper):
                 try:
                     for i in v2:
                         if int(i[0]) == int(payload.get('UserID')):
-                            return result
-                except:
-                    return result
+                            return IndexError
+                except IndexError:
+                    return IndexError
 
             else:
                 command1 = f'INSERT INTO chatrelation (ChatID ,UserID) VALUES (%s, %s) '

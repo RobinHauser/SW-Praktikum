@@ -158,11 +158,9 @@ class ExtendedProfileCard extends Component {
                             <FavoriteIcon onClick={() => this.addUserToBookmarklist()}
                                           sx={{cursor: 'pointer', width: 35, height: 35}}></FavoriteIcon>
                         </Tooltip>
-                        <Tooltip title="Zum Chat">
                             <Tooltip title="User zum Chat hinzufügen">
                                 <ChatIcon onClick={() => this.chatButtonFunction(showedUserId)} sx={{cursor: 'pointer', width: 35, height: 35}}></ChatIcon>
                             </Tooltip>
-                        </Tooltip>
                     </Box>
                 </DialogContent>
             </Box>
