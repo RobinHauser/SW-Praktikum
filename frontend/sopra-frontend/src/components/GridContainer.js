@@ -52,14 +52,11 @@ getBlocklist = async () => {
 getAllUsers = async () => {
     try {
         let userBOs = await SopraDatingAPI.getAPI().getAllUsers();
-        let filteredUsers = userBOs.filter(user => user.getUserID() !== this.state.user.getUserID());
-        let blocklist = await this.getBlocklist();
-        let userList = filteredUsers.filter(item => {
-            return !blocklist.some(blockedUser => blockedUser.getUserID() === item.getUserID());
-        });
-        this.setState({
-            userList: userList
-        });
+        SopraDatingAPI.getAPI().getAllUsersFiltered(this.state.user.getUserID()).then((userBOs) => {
+            this.setState({
+                userList: userBOs
+            })
+        })
     } catch (error) {
         console.log(error);
         this.setState({
