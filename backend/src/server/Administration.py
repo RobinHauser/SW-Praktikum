@@ -447,7 +447,7 @@ class Administration():
     def get_sorted_list_of_personal_profiles(self, search_profile):
         search_infos = self.get_infos_from_profile(search_profile)
         search_info_content = {}
-        for info in search_infos:
+        for info in search_infos: #dict erstellen mit allen infos des suchprofils
             search_content = self.get_info_content(info)
             search_info_content[search_content["property"]] = search_content["value"]
 
@@ -455,25 +455,30 @@ class Administration():
         similarity_profiles = []
 
         for profile in personal_profiles:
-            profile_id = profile.get_id()
             infos = self.get_infos_from_profile(profile)
             info_content = {}
-            for info in infos:
+            for info in infos: #dict erstellen mit allen infos des aktuell iterierten profils
                 content = self.get_info_content(info)
                 info_content[content["property"]] = content["value"]
 
             sim = SimilarityMeasure(search_info_content, info_content)
             similarity = sim.get_similarity_measure()
-            profile_and_sim = {}
+
+            profile_and_sim = {} #dict erstellen mit profilen und ähnlichkeitsmaßen
             profile_and_sim['profile'] = profile
             profile_and_sim['similarity'] = similarity
             similarity_profiles.append(profile_and_sim)
 
-
+        #dict sortieren nach ähnlichkeit
         similarity_profiles = sorted(similarity_profiles, key=lambda x: x['similarity'], reverse=True)
 
-        # sorted_users = []
-        # for s in similarity_profiles:
-        #     prof = s["profile"]
+        #anstatt von profilen soll das frontend eine liste sortierter user bekommen:
+        sorted_users = []
+        for s in similarity_profiles:
+            prof = s["profile"]
+            user_id = prof.get_user_id()
+            user = self.get_user_by_id(user_id)
+            sorted_users.append(user)
+            print(user_id)
 
         return similarity_profiles
