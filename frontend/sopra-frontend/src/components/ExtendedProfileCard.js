@@ -89,7 +89,7 @@ class ExtendedProfileCard extends Component {
             })
     }
     chatButtonFunction(userToAdd) {
-        var addObject = {
+        let addObject = {
             "UserID": userToAdd
         }
         this.addUserToChat(addObject)

@@ -68,10 +68,12 @@ class ChatContainer extends Component {
         const content = this.state.messageText
         const dateTime = this.getFormatedDateTime()
         const chatId = this.state.chatId
-        var messageBo = {
+        const chatPartner = this.state.chatPartner
+        let messageBo = {
             "Content": `${content}`,
             "TimeStamp": `${dateTime}`,
-            "ChatID": chatId
+            "ChatID": chatId,
+            "UserID": chatPartner
         }
         this.sendMessage(messageBo)
         this.setState({messageText: ''})
@@ -93,6 +95,9 @@ class ChatContainer extends Component {
         SopraDatingAPI.getAPI().addMessage(this.state.currentUser, messageBo)
             .then(() => {
             })
+            .catch(error => {
+                alert("Du kannst einem User keine Nachricht schicken wenn er dich geblockt hat!")
+            })
     }
 
     /**
@@ -100,12 +105,12 @@ class ChatContainer extends Component {
      * It changes the timezone to CET.
      */
     getFormatedDateTime() {
-        var dateTime = new Date().toISOString()
+        let dateTime = new Date().toISOString()
         dateTime = dateTime.replace('T', ' ')
         dateTime = dateTime.substring(0, dateTime.length - 5)
         console.log("TEST")
-        var time = dateTime.substring(11, 13)
-        var changedTime = parseInt(time) + 2
+        let time = dateTime.substring(11, 13)
+        let changedTime = parseInt(time) + 2
         changedTime = changedTime.toString()
         const dateTime1 = dateTime.substring(0, 11)
         const dateTime2 = dateTime.substring(13)
@@ -122,6 +127,10 @@ class ChatContainer extends Component {
         this.state.chatId = urlChatId[2]
     }
 
+    getChatPartner() {
+        const urlChatPartner = window.location.pathname.split('/')
+        this.state.chatPartner = urlChatPartner[3]
+    }
     /**
      * Gets the current text, written in the text field
      * @param {Object} event
@@ -143,6 +152,7 @@ class ChatContainer extends Component {
      * It retrieves the current chat ID, all messages of the current chat and scrolls to the newest message
      */
     componentDidMount() {
+        this.getChatPartner()
         this.getChatId()
         this.getMessageList(this.state.chatId)
         this.scrollToBottom()
