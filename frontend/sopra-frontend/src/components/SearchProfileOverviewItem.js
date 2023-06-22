@@ -12,7 +12,6 @@ class SearchProfileOverviewItem extends Component {
 render() {
 const {name} = this.props;
 
-
     return (
         <div style={{display: "flex", alignItems: "center"}}>
 
@@ -34,7 +33,6 @@ const {name} = this.props;
                 <Link  to="/SearchProfile">
                 <Tooltip title="zum Suchprofil" fontSize="large" sx={{color: "#2979ff"}}>
                     <KeyboardDoubleArrowRightIcon>
-                        test
                     </KeyboardDoubleArrowRightIcon>
                 </Tooltip>
 </Link>

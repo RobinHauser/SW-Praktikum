@@ -1,35 +1,35 @@
 import BusinessObject from './BusinessObject';
 
 /**
- * Represents a User object.
+ * Represents Profile object.
  */
 export default class ProfileBO extends BusinessObject{
 
   /**
-   * Constructs a new UserBO object.
+   * Constructs a new ProfileBO object.
    *
    * @param {*} user_id - id of User.
-   * @param {*} is_personal - decides whether the profile is a personal or a searchprofile
-   * @param {*} profileID - Email of the User
+   * @param {*} is_personal - decides whether the profile is a personal or a ssearchprofile
+   * @param {*} profileID - profileID of the SearchProfileBO
    */
   constructor(user_id, is_personal, profileID) {
     super()
     this.UserID = user_id;
     this.isPersonal = is_personal;
-    this.profileID = profileID;
+    this.id = profileID;
   }
 
   /**
-   * Sets the ID of this UserBO.
+   * Sets the userID of this ProfileBO.
    *
-   * @param {*} userID - the new userID of this UserBO.
+   * @param {*} userID - the new userID of this ProfileBO.
    */
   setUserID(userID) {
     this.UserID = userID;
   }
 
   /**
-   * Gets the userID of this UserBO.
+   * Gets the userID of this ProfileBO.
    */
   getUserID() {
     return parseInt(this.UserID);
@@ -45,7 +45,7 @@ export default class ProfileBO extends BusinessObject{
   }
 
   /**
-   * Gets the isPersonal boolean of this UserBO
+   * Gets the isPersonal boolean of this ProfileBO
    */
   getIsPersonal() {
     return this.isPersonal;
@@ -57,14 +57,14 @@ export default class ProfileBO extends BusinessObject{
    * @param {*} profileID - the new email of this UserBO.
    */
   setProfileID(profileID) {
-    this.profileID = profileID;
+    this.id = profileID;
   }
 
   /**
    * Gets the profile ID of this UserBO.
    */
   getProfileID() {
-    return this.profileID;
+    return this.id;
   }
 
   /**

@@ -7,10 +7,10 @@
  */
 import UserBO from "./UserBO";
 import MessageBO from "./MessageBO";
-import chatb from "./ChatBO";
 import ChatBO from "./ChatBO";
 import InformationBO from "./InformationBO";
 import ProfileBO from "./ChatBO";
+import SearchProfileBO from "./ProfileBO";
 
 export default class SopraDatingAPI {
 
@@ -83,7 +83,7 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
     #getSearchProfilesURL = (userID) => {
-        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${userID}`;
+        return `${this.#SopraDatingServerBaseURL}/search-profile/by_user/${userID}`;
     }
     #addSearchProfileURL = () => {
         return `${this.#SopraDatingServerBaseURL}/searchprofile`;
@@ -308,11 +308,9 @@ export default class SopraDatingAPI {
     }
 
     getChatMessages(chatID) {
-        console.log("test:"+ this.#getChatMessagesURL(chatID))
         return this.#fetchAdvanced(this.#getChatMessagesURL(chatID))
             .then((responseJSON) => {
                 let messageBOs = MessageBO.fromJSON(responseJSON);
-                // console.log(messageBOs)
                 return new Promise(function (resolve) {
                     resolve(messageBOs)
                 })
@@ -336,10 +334,14 @@ export default class SopraDatingAPI {
         })
     }
 
-    getSearchProfiles(userID) {
-        return this.#fetchAdvanced(this.#getSearchProfilesURL(userID)).then((responseJSON) => {
-            return responseJSON
-        })
+     getSearchProfiles(UserID) {
+        return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID))
+            .then((responseJSON) => {
+                let SearchProfileBOs = SearchProfileBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(SearchProfileBOs)
+                })
+            })
     }
 
     addSearchProfile(searchprofileBO) {
