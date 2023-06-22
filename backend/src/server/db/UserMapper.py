@@ -89,12 +89,15 @@ class UserMapper(Mapper):
         cursor.execute(command2)
         v2 = cursor.fetchall()
         if len(v2) is not 0:
-            for i in result:
+            result1 = result.copy()
+            for i in result1:
+                print(i.get_user_id())
                 for j in v2:
+                    print(j[2])
                     if int(i.get_user_id()) == int(j[2]):
-                        result.remove(i)
+                        result.remove(i)                            #Entfernt User aus Liste, wenn er blockiert wurde
 
-                   #Entfernt User aus Liste, wenn er blockiert wurde
+        print(result)
 
         self._cnx.commit()
         cursor.close()
