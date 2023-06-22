@@ -210,7 +210,7 @@ class TextPropertyMapper(Mapper.Mapper):
         data = (max_id, entry)
         cursor.execute(command2, data)
 
-        jsstr = f'{{"ValueID": "{max_id}", "Value": "{entry}"}}'
+        jsstr = f'{{"valueID": "{max_id}", "value": "{entry}"}}'
         value_id_json = json.loads(jsstr)
 
         self._cnx.commit()

@@ -35,8 +35,8 @@ class Administration():
 
 
     def get_user_by_id(self, id):
-        user_mapper = UserMapper()
-        return user_mapper.find_by_id(id)
+        userMapper = UserMapper()
+        return userMapper.find_by_id(id)
 
     def get_user_by_name(self, name):
         with UserMapper() as mapper:
@@ -78,7 +78,7 @@ class Administration():
         with ProfileMapper() as mapper:
             if user is not None:
                 profile = Profile()
-                profile.set_user_id(user.get_id())
+                profile.set_user_id(user.get_user_id())
                 profile.set_is_personal(1)
                 return mapper.insert(profile)
             else:
@@ -88,7 +88,7 @@ class Administration():
         with ProfileMapper() as mapper:
             if user is not None:
                 profile = Profile()
-                profile.set_user_id(user.get_id())
+                profile.set_user_id(user.get_user_id())
                 profile.set_is_personal(0)
                 return mapper.insert(profile)
             else:
@@ -345,7 +345,7 @@ class Administration():
                     for info in infos:
                         self.delete_info(info)
 
-                    return mapper.delete(sel_prop)
+                return mapper.delete(sel_prop)
             else:
                 return None
 
@@ -449,7 +449,7 @@ class Administration():
         search_info_content = {}
         for info in search_infos:
             search_content = self.get_info_content(info)
-            search_info_content[search_content["Property"]] = search_content["Value"]
+            search_info_content[search_content["property"]] = search_content["value"]
 
         personal_profiles = self.get_all_personal_profiles()
         similarity_profiles = []
@@ -460,15 +460,20 @@ class Administration():
             info_content = {}
             for info in infos:
                 content = self.get_info_content(info)
-                info_content[content["Property"]] = content["Value"]
+                info_content[content["property"]] = content["value"]
 
             sim = SimilarityMeasure(search_info_content, info_content)
             similarity = sim.get_similarity_measure()
             profile_and_sim = {}
-            profile_and_sim['Profile'] = profile
-            profile_and_sim['Similarity'] = similarity
+            profile_and_sim['profile'] = profile
+            profile_and_sim['similarity'] = similarity
             similarity_profiles.append(profile_and_sim)
 
-        similarity_profiles = sorted(similarity_profiles, key=lambda x: x['Similarity'], reverse=True)
+
+        similarity_profiles = sorted(similarity_profiles, key=lambda x: x['similarity'], reverse=True)
+
+        # sorted_users = []
+        # for s in similarity_profiles:
+        #     prof = s["profile"]
 
         return similarity_profiles
