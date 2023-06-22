@@ -29,6 +29,10 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/user/1000`
     }
 
+    #getAllUsersFilteredURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/all-user/${userID}`
+    }
+
     #getUserURL = (email) => {
         return `${this.#SopraDatingServerBaseURL}/init-user/${email}`;
     };
@@ -130,6 +134,16 @@ export default class SopraDatingAPI {
 
     getAllUsers() {
         return this.#fetchAdvanced(this.#getAllUsersURL())
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
+
+    getAllUsersFiltered(userID) {
+        return this.#fetchAdvanced(this.#getAllUsersFilteredURL(userID))
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
