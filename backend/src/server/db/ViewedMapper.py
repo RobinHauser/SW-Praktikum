@@ -42,7 +42,7 @@ class ViewedMapper(Mapper.Mapper):
         cursor.execute(f'SELECT ViewedListID FROM viewedlist WHERE UserID = {user_id}')
 
         viewedlist_id = cursor.fetchall()[0][0]
-        viewed_user_id = int(payload.get('id'))
+        viewed_user_id = int(payload.get('UserID'))
 
         cursor.execute(f'INSERT INTO view (ViewedListID, UserID) VALUES ({viewedlist_id}, {viewed_user_id})')
 
@@ -60,7 +60,7 @@ class ViewedMapper(Mapper.Mapper):
         cursor.execute(f'SELECT ViewedListID FROM viewedlist WHERE UserID = {user_id}')
 
         viewedlist_id = cursor.fetchall()[0][0]
-        viewed_user_id = int(payload.get('id'))
+        viewed_user_id = int(payload.get('UserID'))
 
         cursor.execute(f'DELETE FROM view WHERE ViewedListID = {viewedlist_id} AND UserID = {viewed_user_id}')
 

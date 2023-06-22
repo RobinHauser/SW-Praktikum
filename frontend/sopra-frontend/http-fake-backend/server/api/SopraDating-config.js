@@ -55,6 +55,12 @@ module.exports = SetupEndpoint({
             method: 'GET',
             response: '/response-files/sopra-dating/userLIst.json'
         }]
+    }, {
+        params: '/information/{propertyID}',
+        requests: [{
+            method: 'GET',
+            response: '/response-files/sopra-dating/Information.json'
+        }]
     }]
 });
 

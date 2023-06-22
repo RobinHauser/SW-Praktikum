@@ -124,7 +124,7 @@ class Bookmarklist_api(Resource):
         response = adm.get_bookmarklist_by_user_id(user_id)
         return response
 
-    @secured
+    #@secured
     def post(self, user_id):
         """
         Adding a new user to the users bookmarklist

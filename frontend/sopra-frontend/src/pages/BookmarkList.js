@@ -25,6 +25,9 @@ export default class bookmarkList extends React.Component {
         }
     }
 
+    /**
+     * Fetches the bookmarklist for the current user
+     */
     getBookmarklist = () => {
         SopraDatingAPI.getAPI().getBookmarklist(this.props.user.getUserID())
             .then(UserBOs =>
@@ -37,19 +40,23 @@ export default class bookmarkList extends React.Component {
                     error: e,
                     bookmarklist: []
                 })
-            )
-        ;
-    }
+            );
+    };
 
     componentDidMount() {
         this.getBookmarklist();
     }
 
+    /**
+     * Removes the blocked user from the bookmarklist
+     *
+     * @param {UserBO} addedUser - user which was added to the blocklist
+     */
     addUserToBlocklistHandler = (addedUser) => {
         this.setState({
             bookmarklist: this.state.bookmarklist.filter(user => user.getUserID() !== addedUser.getUserID())
-        })
-    }
+        });
+    };
 
     render() {
         const {bookmarklist} = this.state;
@@ -85,6 +92,6 @@ export default class bookmarkList extends React.Component {
                     </Box>
                 </Container>
             </div>
-        )
+        );
     }
 }

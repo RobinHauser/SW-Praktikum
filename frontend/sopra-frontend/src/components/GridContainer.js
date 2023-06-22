@@ -12,6 +12,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Typography from "@mui/material/Typography";
+import UserBO from "../api/UserBO";
 
 export default class GridContainer extends React.Component{
     constructor(props) {
@@ -21,49 +22,177 @@ export default class GridContainer extends React.Component{
             selectedSearchprofile: null,
             searchprofiles: ["Suchprofil 1", "Suchprofil 2", "Suchprofil 3"],
             userList: [],
-            showOnlyNewUser: false
+            showOnlyNewUser: true,
+            viewedList: [],
+            user: null,
+            blocklist: []
         };
     }
 
-    componentDidMount() {
-        this.getUserListBySearchprofile();
-    }
-
-    getUserListBySearchprofile = (searchProfileID) => {
-        SopraDatingAPI.getAPI().getUserListBySearchprofile(searchProfileID)
-            .then(UserBOs => {
-                this.setState({
-                    userList: UserBOs
-                });
+    async componentDidMount() {
+        // Fetch the initial user list based on the search profile
+        await this.props.onUserLogin().then(user => {
+            this.setState({
+                user: user
             })
-            .catch(e =>
-                this.setState({
-                    userList: []
-                })
-            )
+        })
+        this.getAllUsers()
     }
 
+getBlocklist = async () => {
+    try {
+        const UserBOs = await SopraDatingAPI.getAPI().getBlocklist(this.state.user.getUserID());
+        return UserBOs;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+};
+
+getAllUsers = async () => {
+    try {
+        let userBOs = await SopraDatingAPI.getAPI().getAllUsers();
+        let filteredUsers = userBOs.filter(user => user.getUserID() !== this.state.user.getUserID());
+        let blocklist = await this.getBlocklist();
+        let userList = filteredUsers.filter(item => {
+            return !blocklist.some(blockedUser => blockedUser.getUserID() === item.getUserID());
+        });
+        this.setState({
+            userList: userList
+        });
+    } catch (error) {
+        console.log(error);
+        this.setState({
+            userList: []
+        });
+    }
+};
+
+    /**
+     * Fetches the user list based on the selected search profile ID
+     *
+     * @param {number} searchProfileID - The ID of the selected search profile
+     * @returns {Promise} A promise that resolves when the user list is fetched successfully
+     */
+    getUserListBySearchprofile = (searchProfileID) => {
+        return new Promise((resolve, reject) => {
+            // Call the API to get the user list based on the search profile
+            SopraDatingAPI.getAPI()
+                .getUserListBySearchprofile(searchProfileID)
+                .then(UserBOs => {
+                    // Update the user list state
+                    this.setState({
+                        userList: UserBOs
+                    });
+                    resolve();
+                })
+                .catch(e => {
+                    // In case of an error, reset the user list state
+                    this.setState({
+                        userList: []
+                    });
+                    reject(e);
+                });
+        });
+    };
+
+    /**
+     * Fetches the viewed user list for the current user
+     *
+     * @returns {Promise} A promise that resolves when the viewed user list is fetched successfully
+     */
+    getViewedlist = () => {
+        return new Promise((resolve, reject) => {
+            // Call the API to get the viewed user list for the current user
+            SopraDatingAPI.getAPI()
+                .getViewedlist(this.props.user.getUserID())
+                .then(UserBOs => {
+                    // Update the viewed user list state
+                    this.setState({
+                        viewedList: UserBOs
+                    });
+                resolve();
+            })
+            .catch(e => {
+                // In case of an error, reset the viewed user list state
+                this.setState({
+                    viewedList: []
+                });
+                reject(e);
+            });
+        });
+    };
+
+    /**
+     * Handles the click event on the search profile menu button
+     *
+     * @param {Event} event - The click event
+     */
     handleSearchProfileMenuClick = (event) => {
+        // Set the anchor element for the search profile menu
         this.setState({ anchorEl: event.currentTarget });
     };
 
+    /**
+     * Handles the close event of the search profile menu
+     */
     handleCloseSearchprofile = () => {
+        // Close the search profile menu
         this.setState({ anchorEl: null });
     };
 
+     /**
+      * Handles the click event on a search profile item in the menu
+      *
+      * @param {string} searchprofile - The selected search profile
+      */
     handleSearchprofileItemClick = (searchprofile) => {
+        // Set the selected search profile and close the menu
         this.setState({ selectedSearchprofile: searchprofile, anchorEl: null });
     };
 
-    handleShowOnlyNewUser = () => {
-        this.setState((prevState) => ({
-            showOnlyNewUser: !prevState.showOnlyNewUser
-        }))
-    }
+    /**
+     * Toggles between showing only new users or all users based on the state
+     * Updates the user list accordingly
+     */
+    handleShowOnlyNewUser = async () => {
+         // Fetch the viewed user list and update the user list based on the showOnlyNewUser state
+        await this.getViewedlist(1); // Todo dynamisch einlesen
+        await this.getUserListBySearchprofile(1);
+        await this.getUserListBySearchprofile(1);
+
+        const {userList, viewedList, showOnlyNewUser} = this.state
+
+        // If the viewedList is not empty, filter the nonViewedList based on the viewedUsers
+        let nonViewedList = userList;
+        if(viewedList.length > 0) {
+            nonViewedList = userList.filter(user =>
+                viewedList.some(viewedUser => user.getUserID() !== viewedUser.getUserID())
+            )
+        }
+
+        // Toggle the showOnlyNewUser state and update the user list accordingly
+        this.setState(() => ({
+            showOnlyNewUser: !showOnlyNewUser,
+            userList: showOnlyNewUser ? nonViewedList : userList
+        }));
+    };
+
+    /**
+     * Handles the removal of a user from the user list
+     *
+     * @param {object} removedUser - The user to be removed
+     */
+    handleRemoveUser = (removedUser) => {
+        // Remove the blocked user from the user list
+        this.setState({
+            userList: this.state.userList.filter(user => user.getUserID() !== removedUser.getUserID())
+        });
+    };
 
     render() {
         const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList } = this.state;
-        const open = Boolean(anchorEl)
+        const open = Boolean(anchorEl);
 
         return (
             <Box>
@@ -113,8 +242,8 @@ export default class GridContainer extends React.Component{
                                     backgroundColor: '#b3b3b3',
                                 },
                                 '& .MuiSvgIcon-root': {
-                                    height: 'auto', // Anpassen der Höhe des Icons
-                                    marginTop: -0.2, // Anpassen der vertikalen Ausrichtung des Icons
+                                    height: 'auto',
+                                    marginTop: -0.2,
                                     color: '#3f51b5'
                                 },
                             }}
@@ -131,7 +260,13 @@ export default class GridContainer extends React.Component{
                     {userList.length > 0 ? (
                         userList.map((userListItem) => (
                             <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>
-                                <ProfileCard key={userListItem.getUserID()} user={userListItem}></ProfileCard>
+                                <ProfileCard
+                                    key={userListItem.getUserID()}
+                                    user={this.state.user}
+                                    showedUser={userListItem}
+                                    showOnlyNewUser={showOnlyNewUser}
+                                    onUserRemoved={this.handleRemoveUser}>
+                                </ProfileCard>
                             </Grid>
                         ))
                         ) : (
@@ -143,6 +278,6 @@ export default class GridContainer extends React.Component{
                     )}
                 </Grid>
             </Box>
-    );
+        );
     }
 }

@@ -7,9 +7,10 @@ import Avatar from "@mui/material/Avatar";
 import {Component} from "react";
 import Dialog from "@mui/material/Dialog";
 import ExtendedProfileCard from "./ExtendedProfileCard";
+import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
- * @author [Jannik Haug, Theo Klautke]
+ * @author [Jannik Haug, Theo Klautke, Michael Bergdolt]
  * Diaologhandling von Björn Till übernommen
  */
 class ProfileCard extends Component {
@@ -18,24 +19,56 @@ class ProfileCard extends Component {
         this.state = {
             openDialog: false,
             selectedValue: null,
+            addingError: null
         };
 
         this.handleOpenDialog = this.handleOpenDialog.bind(this);
         this.handleCloseDialog = this.handleCloseDialog.bind(this);
-
     }
 
+    /**
+     * Adds the user to the viewed user list.
+     * Calls the API to update the viewed user list in the backend.
+     */
+    addUserToViewedList = () => {
+        const { user, showedUser} = this.props;
+        SopraDatingAPI.getAPI().addUserToViewedlist(user.getUserID(), showedUser)
+            .then(() => {
+                this.setState({
+                    addingError: null
+                });
+            }).catch(e => {
+                this.setState({
+                    addingError: e
+                });
+            });
+    };
+
+    /**
+     * Handles the opening of the dialog.
+     * Adds the user to the viewed user list before opening the dialog
+     */
     handleOpenDialog() {
+        this.addUserToViewedList();
         this.setState({openDialog: true});
     }
 
+    /**
+     * Handles the closing of the dialog.
+     * removes the User from the shown list of profiles if the user only want to see new profiles
+     */
     handleCloseDialog() {
+        const { onUserRemoved, showOnlyNewUser, showedUser } = this.props;
         this.setState({openDialog: false, selectedValue: this.props.value});
+
+        if(!showOnlyNewUser) {
+            onUserRemoved(showedUser)
+        }
     }
 
     render() {
         const {openDialog} = this.state;
-        const {user} = this.props;
+        const {showedUser, onUserRemoved} = this.props;
 
         return (
             <div>
@@ -57,7 +90,7 @@ class ProfileCard extends Component {
                     <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                            {user.getDisplayname()}
+                            {showedUser.getDisplayname()}
                         </Typography>
                         <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
                             Alter:
@@ -84,10 +117,14 @@ class ProfileCard extends Component {
                 </Card>
                 <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
 
-                    <ExtendedProfileCard user={user}></ExtendedProfileCard>
+                    <ExtendedProfileCard
+                        showedUser={showedUser}
+                        onUserRemoved={onUserRemoved}
+                        user={this.props.user}>
+                    </ExtendedProfileCard>
                 </Dialog>
             </div>
-        )
+        );
     }
 }
 
