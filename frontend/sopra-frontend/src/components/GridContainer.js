@@ -12,6 +12,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Typography from "@mui/material/Typography";
+import UserBO from "../api/UserBO";
 
 export default class GridContainer extends React.Component{
     constructor(props) {
@@ -23,31 +24,49 @@ export default class GridContainer extends React.Component{
             userList: [],
             showOnlyNewUser: true,
             viewedList: [],
-            user: null
+            user: null,
+            blocklist: []
         };
     }
 
     async componentDidMount() {
         // Fetch the initial user list based on the search profile
         await this.props.onUserLogin().then(user => {
-            this.state.user = user
+            this.setState({
+                user: user
+            })
         })
         this.getAllUsers()
     }
 
-    getAllUsers = () => {
-        SopraDatingAPI.getAPI().getAllUsers()
-            .then(userBOs => {
-                this.setState({
-                    userList: userBOs
-                })
-            })
-            .catch(() => {
-                this.setState({
-                    userList: []
-                })
-            })
+getBlocklist = async () => {
+    try {
+        const UserBOs = await SopraDatingAPI.getAPI().getBlocklist(this.state.user.getUserID());
+        return UserBOs;
+    } catch (e) {
+        console.log(e);
+        return [];
     }
+};
+
+getAllUsers = async () => {
+    try {
+        let userBOs = await SopraDatingAPI.getAPI().getAllUsers();
+        let filteredUsers = userBOs.filter(user => user.getUserID() !== this.state.user.getUserID());
+        let blocklist = await this.getBlocklist();
+        let userList = filteredUsers.filter(item => {
+            return !blocklist.some(blockedUser => blockedUser.getUserID() === item.getUserID());
+        });
+        this.setState({
+            userList: userList
+        });
+    } catch (error) {
+        console.log(error);
+        this.setState({
+            userList: []
+        });
+    }
+};
 
     /**
      * Fetches the user list based on the selected search profile ID
