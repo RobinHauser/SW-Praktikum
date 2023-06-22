@@ -22,14 +22,17 @@ export default class GridContainer extends React.Component{
             searchprofiles: ["Suchprofil 1", "Suchprofil 2", "Suchprofil 3"],
             userList: [],
             showOnlyNewUser: true,
-            viewedList: []
+            viewedList: [],
+            user: null
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // Fetch the initial user list based on the search profile
-        console.log(this.props.user)
-        this.getAllUsers();
+        await this.props.onUserLogin().then(user => {
+            this.state.user = user
+        })
+        this.getAllUsers()
     }
 
     getAllUsers = () => {
@@ -171,7 +174,6 @@ export default class GridContainer extends React.Component{
     render() {
         const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList } = this.state;
         const open = Boolean(anchorEl);
-        // console.log(this.props.user)
 
         return (
             <Box>
@@ -241,7 +243,7 @@ export default class GridContainer extends React.Component{
                             <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>
                                 <ProfileCard
                                     key={userListItem.getUserID()}
-                                    user={this.props.user}
+                                    user={this.state.user}
                                     showedUser={userListItem}
                                     showOnlyNewUser={showOnlyNewUser}
                                     onUserRemoved={this.handleRemoveUser}>
