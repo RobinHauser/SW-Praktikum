@@ -129,8 +129,8 @@ class App extends React.Component {
         // this.setState({
         //     user: testUser[0]
         // })
-        console.log(this.state.currentUser.email)
-        SopraDatingAPI.getAPI().getUser(this.state.currentUser.email)
+        //console.log(this.state.currentUser.email)
+        return SopraDatingAPI.getAPI().getUser(this.state.currentUser.email)
             .then(UserBO => {
                 if(UserBO.length === 0) {
                     this.setUser()
@@ -140,7 +140,11 @@ class App extends React.Component {
                     user: UserBO[0]
                 })
                 }
-            }).catch(e =>
+                return new Promise(function (resolve) {
+                    resolve(UserBO[0])
+                })
+            })
+            .catch(e =>
                 this.setState({
                     appError: e,
                     user: null
