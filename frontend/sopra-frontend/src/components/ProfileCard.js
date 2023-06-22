@@ -87,7 +87,7 @@ class ProfileCard extends Component {
                           minWidth: "300px"
                       }} //Quelle: https://stackoverflow.com/questions/37062176/mui-how-to-animate-card-depth-on-hover
                       onClick={this.handleOpenDialog}>
-                    <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
+                    <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={this.props.showedUser.getAvatarURL()}></Avatar>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
                             {showedUser.getDisplayname()}

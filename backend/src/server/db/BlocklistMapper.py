@@ -40,7 +40,7 @@ class BlocklistMapper(Mapper.Mapper):
                 user_ids = [block[2] for block in blocks]
 
                 # Retrieve user by UserID
-                command3 = "SELECT * FROM user WHERE UserID IN ({})".format(','.join(str(uid) for uid in user_ids))
+                command3 = "SELECT * FROM user WHERE UserID IN ({})".format(','.join(str(uid) for uid in user_ids)) #TODO FIX error when list is empty
                 cursor.execute(command3)
                 users = cursor.fetchall()
 
