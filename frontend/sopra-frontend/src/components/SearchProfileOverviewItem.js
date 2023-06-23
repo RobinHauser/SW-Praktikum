@@ -10,8 +10,7 @@ import {Component} from "react";
 
 class SearchProfileOverviewItem extends Component {
 render() {
-const {name} = this.props;
-
+    const {name, profile} = this.props;
     return (
         <div style={{display: "flex", alignItems: "center"}}>
 
@@ -30,7 +29,7 @@ const {name} = this.props;
                     <ListItemText noWrap={false} sx={{ml: 2, fontSize: 20, wordBreak: 'break-all'}}
                                   primary={`${name}`}></ListItemText>
                 </div>
-                <Link  to="/SearchProfile">
+                <Link  to={`/SearchProfile/${profile.getProfileID()}`}>
                 <Tooltip title="zum Suchprofil" fontSize="large" sx={{color: "#2979ff"}}>
                     <KeyboardDoubleArrowRightIcon>
                     </KeyboardDoubleArrowRightIcon>

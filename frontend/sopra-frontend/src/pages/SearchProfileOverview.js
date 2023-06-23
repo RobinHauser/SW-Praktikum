@@ -14,7 +14,7 @@ class SearchProfileOverview extends Component {
         }
     }
     render() {
-        const user = this.props.user.getUserID()
+        const user = this.props.user
         return (
             <div className="App">
                 <AppHeader avatar={this.props.avatar}></AppHeader>
