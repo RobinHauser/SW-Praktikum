@@ -1,6 +1,7 @@
 import json
 
 from backend.src.server.db.Mapper import Mapper
+from backend.src.server.bo.User import User
 
 
 class BookmarklistMapper(Mapper):
@@ -21,6 +22,7 @@ class BookmarklistMapper(Mapper):
         result = []
         cursor = self._cnx.cursor()
 
+        # Retrieve Bookmarklist by UserID
         command = "SELECT * FROM bookmarklist WHERE UserID={}".format(user_id)
         cursor.execute(command)
         bookmarklist_tuple = cursor.fetchone()
@@ -28,7 +30,7 @@ class BookmarklistMapper(Mapper):
         if bookmarklist_tuple is not None:
             bookmarklist_id = bookmarklist_tuple[0]
 
-            # Retrieve bookmarklist by UserID
+            # Retrieve bookmarked users
             command2 = "SELECT * FROM bookmark WHERE BookmarklistID={}".format(bookmarklist_id)
             cursor.execute(command2)
             bookmarks = cursor.fetchall()
@@ -36,34 +38,37 @@ class BookmarklistMapper(Mapper):
             if bookmarks is not None:
                 user_ids = [bookmark[2] for bookmark in bookmarks]
 
-                # Retrieve user by UserID
-                command3 = "SELECT * FROM user WHERE UserID IN ({})".format(','.join(str(uid) for uid in user_ids))
-                cursor.execute(command3)
-                users = cursor.fetchall()
+                if len(user_ids) != 0:
+                    # Retrieve user by UserID
+                    command3 = "SELECT * FROM user WHERE UserID IN ({})".format(','.join(str(uid) for uid in user_ids))
+                    cursor.execute(command3)
+                    users = cursor.fetchall()
 
-                # Form the user into a json and add it to the list
-                for user in users:
-                    jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}"' \
-                            f', "ProfileIMGURL": "{user[3]}"}}'
+                    if len(users) != 0:
+                        for user in users:
+                            new_user = User()
+                            new_user.set_user_id(user[0])
+                            new_user.set_email(user[1])
+                            new_user.set_displayname(user[2])
+                            new_user.set_avatarurl(user[3])
+                            result.append(new_user)
 
-                    userJSON = json.loads(jsstr)
-                    result.append(userJSON)
-
+        self._cnx.commit()
         cursor.close()
         return result
 
-    def insert(self, user_id, payload):
+    def insert(self, user_id, bookmarked_user):
         """
         Adding a user to the bookmark list of a user
         :param user_id: the unique id of the user with the bookmark list
-        :param payload: the dic of the user to be added
+        :param bookmarked_user: the dic of the user to be added
         :return: the added user
         """
         cursor = self._cnx.cursor()
         cursor.execute(f'SELECT BookmarklistID FROM bookmarklist WHERE UserID = {user_id}')
 
         bookmarklist_id = cursor.fetchall()[0][0]
-        bookmarked_user_id = int(payload.get('UserID'))
+        bookmarked_user_id = bookmarked_user.get_user_id()
 
         cursor.execute(
             f'INSERT INTO bookmark (BookmarklistID, BookmarkedUserID) VALUES ({bookmarklist_id}, {bookmarked_user_id})')
@@ -71,16 +76,16 @@ class BookmarklistMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-        return payload
+        return bookmarked_user
 
     def update(self, bookmarklist):
         pass
 
-    def delete(self, user_id, payload):
+    def delete(self, user_id, bookmarked_user):
         """
         Removing a user from the bookmark list of a user
         :param user_id: the unique id of the user with the bookmark list
-        :param payload: the dic of the user to be deleted
+        :param bookmarked_user: the dic of the user to be deleted
         :return: the removed user
         """
         cursor = self._cnx.cursor()
@@ -88,7 +93,7 @@ class BookmarklistMapper(Mapper):
         cursor.execute(f'SELECT BookmarklistID FROM bookmarklist WHERE UserID = {user_id}')
 
         bookmarklist_id = cursor.fetchall()[0][0]
-        bookmarked_user_id = int(payload.get('UserID'))
+        bookmarked_user_id = bookmarked_user.get_user_id()
 
         cursor.execute(
             f'DELETE FROM bookmark WHERE BookmarklistID = {bookmarklist_id} AND BookmarkedUserID = {bookmarked_user_id}')
@@ -96,12 +101,8 @@ class BookmarklistMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-        return payload
+        return bookmarked_user
 
-    def find_by_email(self, email):
-        pass
 
-    def find_by_name(self, name):
-        pass
 
 #todo delete bookmarklist

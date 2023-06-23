@@ -251,32 +251,38 @@ class Administration():
     '''
 
     def get_bookmarklist_by_user_id(self, user_id):
-        mapper = BookmarklistMapper()
-        return mapper.find_by_id(user_id)
+        with BookmarklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
 
-    def add_user_to_bookmarklist(self, user_id, payload):
-        bookmarklistmapper = BookmarklistMapper()
-        return bookmarklistmapper.insert(user_id, payload)
+    def add_user_to_bookmarklist(self, user_id, bookmarked_user):
+        if bookmarked_user is not None:
+            self.remove_user_from_blocklist(user_id, bookmarked_user)
+            with BookmarklistMapper() as mapper:
+                return mapper.insert(user_id, bookmarked_user)
 
-    def remove_user_from_bookmarklist(self, user_id, payload):
-        bookmarklistmapper = BookmarklistMapper()
-        return bookmarklistmapper.delete(user_id, payload)
+    def remove_user_from_bookmarklist(self, user_id, bookmarked_user):
+        if bookmarked_user is not None:
+            with BookmarklistMapper() as mapper:
+                return mapper.delete(user_id, bookmarked_user)
 
     '''
         Blocklist Methoden
     '''
 
     def get_blocklist_by_user_id(self, user_id):
-        blocklistmapper = BlocklistMapper()
-        return blocklistmapper.find_by_id(user_id)
+        with BlocklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
 
-    def add_user_to_blocklist(self, user_id, payload):
-        blocklistmapper = BlocklistMapper()
-        return blocklistmapper.insert(user_id, payload)
+    def add_user_to_blocklist(self, user_id, blocked_user):
+        if blocked_user is not None:
+            self.remove_user_from_bookmarklist(user_id, blocked_user)
+            with BlocklistMapper() as mapper:
+                return mapper.insert(user_id, blocked_user)
 
-    def delete_blocklist(self, user_id, payload):
-        blocklistmapper = BlocklistMapper()
-        return blocklistmapper.delete(user_id, payload)
+    def remove_user_from_blocklist(self, user_id, blocked_user):
+        if blocked_user is not None:
+            with BlocklistMapper() as mapper:
+                return mapper.delete(user_id, blocked_user)
 
 
     '''
@@ -455,7 +461,10 @@ class Administration():
             search_content = self.get_info_content(info)
             search_info_content[search_content["property"]] = search_content["value"]
 
-        personal_profiles = self.get_all_personal_profiles()
+        users = self.get_all_user_by_id(search_profile.get_user_id())
+        personal_profiles = []
+        for u in users:
+            personal_profiles.append(self.get_personal_profile_of_user(u))
         similarity_profiles = []
 
         for profile in personal_profiles:
