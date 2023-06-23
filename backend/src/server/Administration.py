@@ -483,6 +483,6 @@ class Administration():
             user_id = prof.get_user_id()
             user = self.get_user_by_id(user_id)
             sorted_users.append(user)
-            print(user_id)
 
-        return similarity_profiles
+        # return similarity_profiles
+        return sorted_users

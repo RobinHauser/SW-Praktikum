@@ -292,26 +292,23 @@ class PersonalProfileList_api(Resource):
         return response
 
 
-@personal_profile_namespace.route('/sorted')
+@personal_profile_namespace.route('/sorted/<int:id>')
 class PersonalProfileSimilarity_api(Resource):
-    @personal_profile_namespace.marshal_list_with(profile_similarity)
-    def get(self):
+    @personal_profile_namespace.marshal_list_with(user)
+    def get(self, id):
         """
         gets a list of all personal profiles sorted by similarity.
-        the similarity is based on a comparison with a given search profile (payload).
+        :param id: id of the search profile we want to base the similarity on
         :return: list of all personal profiles sorted by similarity to the given search profile
         """
         adm = Administration()
-        proposal = Profile.from_dict(api.payload)
-        if proposal is not None:
-            search = adm.get_profile_by_id(proposal.get_id())
-            if search is not None:
-                response = adm.get_sorted_list_of_personal_profiles(search)
-                return response
-            else:
-                return '', 500
+        search = adm.get_profile_by_id(id)
+        if search is not None:
+            response = adm.get_sorted_list_of_personal_profiles(search)
+            return response
         else:
             return '', 500
+
 
 
 @personal_profile_namespace.route('/<int:id>')
@@ -682,16 +679,17 @@ class Information_api(Resource):
         return response
 
 
-@information_namespace.route('/infos')
+@information_namespace.route('/infos/<int:id>')
 class InformationList_api(Resource):
     @information_namespace.marshal_list_with(information)
-    def get(self):
+    def get(self, id):
         """
         gets all information objects of a given profile
+        :param id: id of the profile we want to get information from
         :return: a list of all information objects assigned to the given profile
         """
         adm = Administration()
-        prof = Profile.from_dict(api.payload)
+        prof = adm.get_profile_by_id(id)
         response = adm.get_infos_from_profile(prof)
         return response
 
