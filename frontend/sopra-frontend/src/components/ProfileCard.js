@@ -8,6 +8,8 @@ import {Component} from "react";
 import Dialog from "@mui/material/Dialog";
 import ExtendedProfileCard from "./ExtendedProfileCard";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import Grid from "@mui/material/Unstable_Grid2";
+import {ListItem, ListItemText} from "@mui/material";
 
 /**
  * @author [Jannik Haug, Theo Klautke, Michael Bergdolt]
@@ -19,13 +21,45 @@ class ProfileCard extends Component {
         this.state = {
             openDialog: false,
             selectedValue: null,
-            addingError: null
+            addingError: null,
+            showedProfile: null,
+            informations: []
         };
 
         this.handleOpenDialog = this.handleOpenDialog.bind(this);
         this.handleCloseDialog = this.handleCloseDialog.bind(this);
     }
+    async componentDidMount() {
+        const profile = this.getProfileOfShowedUser();
+        await this.setState({
+            showedProfile: profile
+        })
+        this.getInformationsByProfile();
+    }
 
+    getProfileOfShowedUser = () => {
+        return SopraDatingAPI.getAPI().getProfile(this.props.showedUser.getUserID())
+            .then(responseJSON => {
+                return new Promise( (resolve) => {
+                    resolve(responseJSON)
+                })
+            })
+    }
+
+    getInformationsByProfile = () => {
+        this.state.showedProfile.then((profile) => {
+            SopraDatingAPI.getAPI().getInformationsByProfile(profile.getProfileID())
+            .then(responseJSON => {
+                this.setState({
+                    informations: responseJSON
+                })
+            }).catch(() => {
+                this.setState({
+                    informations: []
+                })
+            })
+        })
+    }
     /**
      * Adds the user to the viewed user list.
      * Calls the API to update the viewed user list in the backend.
@@ -67,8 +101,9 @@ class ProfileCard extends Component {
     }
 
     render() {
-        const {openDialog} = this.state;
+        const {openDialog, informations} = this.state;
         const {showedUser, onUserRemoved} = this.props;
+        console.log(informations)
 
         return (
             <div>
@@ -92,27 +127,25 @@ class ProfileCard extends Component {
                         <Typography gutterBottom variant="h5" component="div">
                             {showedUser.getDisplayname()}
                         </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Alter:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Geschlecht:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Raucher:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Religion:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Haarfarbe:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Geburtsdatum:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Körpergröße:
-                        </Typography>
+                        {/*{userList.length > 0 ? (*/}
+                        {/*    userList.map((userListItem) => (*/}
+                        {/*        <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>*/}
+                        {/*            <ProfileCard */}
+                        {/*                key={userListItem.getUserID()}*/}
+                        {/*                user={this.state.user}*/}
+                        {/*                showedUser={userListItem}*/}
+                        {/*                showOnlyNewUser={showOnlyNewUser}*/}
+                        {/*                onUserRemoved={this.handleRemoveUser}>*/}
+                        {/*            </ProfileCard>*/}
+                        {/*        </Grid>*/}
+                        {/*    ))*/}
+                        {/*) : (*/}
+                        {/*    <ListItem>*/}
+                        {/*        <ListItemText sx={{ textAlign: 'center' }}>*/}
+                        {/*            <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>*/}
+                        {/*        </ListItemText>*/}
+                        {/*    </ListItem>*/}
+                        {/*)}*/}
                     </CardContent>
                 </Card>
                 <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
