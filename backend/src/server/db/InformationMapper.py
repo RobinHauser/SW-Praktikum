@@ -108,7 +108,7 @@ class InformationMapper(Mapper):
         cursor = self._cnx.cursor()
 
         # Retrieve assigned infos by ProfileID
-        command = f"SELECT * FROM information WHERE ProfileID={id}"
+        command = "SELECT * FROM information WHERE ProfileID={}".format(payload["profile_id"])
         cursor.execute(command)
         tuples = cursor.fetchall()
 
