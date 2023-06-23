@@ -34,7 +34,7 @@ selection_property_namespace = Namespace(name="selection-property", description=
 text_property_namespace = Namespace(name="text-property", description="This is the text property")
 information_namespace = Namespace(name="information", description="This is the information")
 user_namespace = Namespace(name="user", description="tbd")
-
+all_user_namespace = Namespace(name="all-user", description="tbd")
 
 # Adding the namespaces to the api
 api.add_namespace(bookmarklist_namespace)
@@ -49,6 +49,7 @@ api.add_namespace(selection_property_namespace)
 api.add_namespace(text_property_namespace)
 api.add_namespace(information_namespace)
 api.add_namespace((user_namespace))
+api.add_namespace(all_user_namespace)
 
 bo = api.model('BusinessObject', {
     'id': fields.Integer(attribute='_id', description='This is the unique identifier of an business-object ')
@@ -57,8 +58,10 @@ bo = api.model('BusinessObject', {
 user = api.inherit('User', {
     'UserID': fields.String(attribute=lambda x: x.get_user_id(), description='This is the id of the user'),
     'email': fields.String(attribute=lambda x: x.get_email(), description='This is the email of the user'),
-    'displayname': fields.String(attribute=lambda x: x.get_displayname(), description='This is the full name of the user'),
-    'ProfileIMGURL': fields.String(attribute=lambda x: x.get_avatarurl(), description='This is the URL to the profileImage of the profile'),
+    'displayname': fields.String(attribute=lambda x: x.get_displayname(),
+                                 description='This is the full name of the user'),
+    'ProfileIMGURL': fields.String(attribute=lambda x: x.get_avatarurl(),
+                                   description='This is the URL to the profileImage of the profile'),
 })
 
 message = api.inherit('Message', bo, {
@@ -69,10 +72,10 @@ message = api.inherit('Message', bo, {
 })
 
 information = api.inherit('Information', bo, {
-    'profileID': fields.Integer(attribute= lambda x: x.get_profile_id(), description='This is the profile ID of an information'),
-    'valueID': fields.Integer(attribute= lambda x: x.get_value_id(), description='This is the ValueID of an information')
+    'profileID': fields.Integer(attribute=lambda x: x.get_profile_id(),
+                                description='This is the profile ID of an information'),
+    'valueID': fields.Integer(attribute=lambda x: x.get_value_id(), description='This is the ValueID of an information')
 })
-
 
 bookmarklist = api.inherit('Bookmarklist', {
     'user': fields.Nested(user)
@@ -82,16 +85,20 @@ blocklist = api.inherit('Blocklist', {
     'user': fields.Nested(user)
 })
 
-
 profile = api.inherit('Profile', bo, {
-    'UserID': fields.Integer(attribute=lambda x: x.get_user_id(), description='This is the unique identifier of a profiles user '),
-    'isPersonal': fields.Boolean(attribute=lambda x: x.get_is_personal(), description='This is the unique identifier of a bool ')
+    'UserID': fields.Integer(attribute=lambda x: x.get_user_id(),
+                             description='This is the unique identifier of a profiles user '),
+    'isPersonal': fields.Boolean(attribute=lambda x: x.get_is_personal(),
+                                 description='This is the unique identifier of a bool ')
 })
 
 property = api.inherit('Property', bo, {
-    'name': fields.String(attribute=lambda x: x.get_name(), description='This is the unique identifier of a property name'),
-    'isSelection': fields.Boolean(attribute=lambda x: x.get_is_selection(), description='This is the unique identifier of a property type'),
-    'description': fields.String(attribute=lambda x: x.get_description(), description='This is the unique identifier of a property description')
+    'name': fields.String(attribute=lambda x: x.get_name(),
+                          description='This is the unique identifier of a property name'),
+    'isSelection': fields.Boolean(attribute=lambda x: x.get_is_selection(),
+                                  description='This is the unique identifier of a property type'),
+    'description': fields.String(attribute=lambda x: x.get_description(),
+                                 description='This is the unique identifier of a property description')
 })
 
 selection_property = api.inherit('SelectionProperty', bo, property, {
@@ -106,6 +113,7 @@ profile_similarity = {
     'profile': fields.Nested(profile),
     'similarity': fields.Float
 }
+
 
 @bookmarklist_namespace.route('/<int:user_id>')
 @bookmarklist_namespace.response(500, 'TBD')
@@ -124,7 +132,7 @@ class Bookmarklist_api(Resource):
         response = adm.get_bookmarklist_by_user_id(user_id)
         return response
 
-    #@secured
+    # @secured
     def post(self, user_id):
         """
         Adding a new user to the users bookmarklist
@@ -283,6 +291,7 @@ class PersonalProfileList_api(Resource):
         response = adm.get_all_personal_profiles()
         return response
 
+
 @personal_profile_namespace.route('/sorted')
 class PersonalProfileSimilarity_api(Resource):
     @personal_profile_namespace.marshal_list_with(profile_similarity)
@@ -304,6 +313,7 @@ class PersonalProfileSimilarity_api(Resource):
         else:
             return '', 500
 
+
 @personal_profile_namespace.route('/<int:id>')
 class PersonalProfile_api(Resource):
     @personal_profile_namespace.marshal_with(profile)
@@ -317,7 +327,6 @@ class PersonalProfile_api(Resource):
         response = adm.get_profile_by_id(id)
         return response
 
-
     @personal_profile_namespace.marshal_with(profile)
     def delete(self, id):
         """
@@ -329,6 +338,7 @@ class PersonalProfile_api(Resource):
         prof = adm.get_profile_by_id(id)
         response = adm.delete_profile(prof)
         return response
+
 
 @personal_profile_namespace.route('/by_user/<int:id>')
 class PersonalProfileByUser_api(Resource):
@@ -356,6 +366,7 @@ class PersonalProfileByUser_api(Resource):
         response = adm.create_personal_profile_for_user(user)
         return response
 
+
 @search_profile_namespace.route('/by_user/<int:id>')
 class SearchProfilesByUser_api(Resource):
     @search_profile_namespace.marshal_list_with(profile)
@@ -370,7 +381,6 @@ class SearchProfilesByUser_api(Resource):
         response = adm.get_search_profiles_of_user(user)
         return response
 
-
     @search_profile_namespace.marshal_with(profile)
     def post(self, id):
         """
@@ -382,6 +392,7 @@ class SearchProfilesByUser_api(Resource):
         user = adm.get_user_by_id(id)
         response = adm.create_search_profile_for_user(user)
         return response
+
 
 @search_profile_namespace.route('/<int:id>')
 class SearchProfile_api(Resource):
@@ -396,7 +407,6 @@ class SearchProfile_api(Resource):
         response = adm.get_profile_by_id(id)
         return response
 
-
     @search_profile_namespace.marshal_with(profile)
     def delete(self, id):
         """
@@ -408,6 +418,7 @@ class SearchProfile_api(Resource):
         prof = adm.get_profile_by_id(id)
         response = adm.delete_profile(prof)
         return response
+
 
 @selection_property_namespace.route('/<int:id>')
 class SelectionProperty_api(Resource):
@@ -452,6 +463,7 @@ class SelectionProperty_api(Resource):
         response = adm.delete_selection_property(sel_prop)
         return response
 
+
 @selection_property_namespace.route('/selection_properties')
 class SelectionPropertyList_api(Resource):
     @selection_property_namespace.marshal_with(selection_property)
@@ -483,6 +495,7 @@ class SelectionPropertyList_api(Resource):
         adm = Administration()
         response = adm.get_all_selection_properties()
         return response
+
 
 @selection_property_namespace.route('/options/<int:id>')
 class SelectionPropertyOptions_api(Resource):
@@ -562,6 +575,7 @@ class TextProperty_api(Resource):
         response = adm.delete_text_property(text_prop)
         return response
 
+
 @text_property_namespace.route('/text_properties')
 class TextPropertyList_api(Resource):
     @text_property_namespace.marshal_with(text_property)
@@ -592,6 +606,7 @@ class TextPropertyList_api(Resource):
         adm = Administration()
         response = adm.get_all_text_properties()
         return response
+
 
 @text_property_namespace.route('/entries/<int:id>')
 class TextPropertyEntries_api(Resource):
@@ -666,6 +681,7 @@ class Information_api(Resource):
         response = adm.delete_info(info)
         return response
 
+
 @information_namespace.route('/infos')
 class InformationList_api(Resource):
     @information_namespace.marshal_list_with(information)
@@ -678,6 +694,7 @@ class InformationList_api(Resource):
         prof = Profile.from_dict(api.payload)
         response = adm.get_infos_from_profile(prof)
         return response
+
 
 @information_namespace.route('/content/<int:id>')
 class InformationContent_api(Resource):
@@ -708,11 +725,13 @@ class Init_user_api(Resource):
         adm = Administration()
         return adm.get_user_by_email(email)
 
+
 @user_namespace.route('/<int:id>')
 class User_api(Resource):
     """
     HINT: The user_id 1000 returns all users
     """
+
     @user_namespace.marshal_list_with(user, code=200)
     def get(self, id):
         """
@@ -732,26 +751,51 @@ class User_api(Resource):
     @user_namespace.marshal_with(user, code=200)
     @user_namespace.expect(user)
     def post(self, id):
+        """
+        Create a new user
+        :param id: the id of the user -> nopt used
+        :return: the created user
+        """
         adm = Administration()
-        payload = api.payload
-        return adm.add_new_user(payload)
+        return adm.add_new_user(api.payload)
 
     @user_namespace.marshal_with(user, code=200)
     @user_namespace.expect(user)
     def delete(self, id):
+        """
+        Delete a user
+        :param id: the id of the user which should be deleted
+        :return: the deleted user
+        """
         adm = Administration()
-        return adm.delete_user(id, api.payload)
+        payload = api.payload
+        return adm.delete_user_with_all_relations(payload)
 
     @user_namespace.marshal_with(user, code=200)
     @user_namespace.expect(user)
     def put(self, id):
+        """
+        Update a user
+        :param id: the id of the user which is going to be updated
+        :return: the updated user
+        """
         adm = Administration()
         return adm.update_user(id, api.payload)
 
 
+@all_user_namespace.route('/<int:id>')
+class All_User_api(Resource):
 
+    @user_namespace.marshal_with(user, code=200)
+    def get(self, id):
+        """
+        Get a specific user by user_id
+        :param user_id:
+        :return: the wanted user
+        """
+        adm = Administration()
+        return adm.get_all_user_by_id(id)
 
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
-

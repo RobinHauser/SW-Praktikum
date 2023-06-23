@@ -44,6 +44,7 @@ export default class BlockListItem extends React.Component{
 
     render() {
         const{blockedUser}=this.props;
+        console.log(blockedUser)
 
         return (
             <ListItem
@@ -57,9 +58,7 @@ export default class BlockListItem extends React.Component{
                 }
             >
                 <ListItemAvatar>
-                    <Avatar>
-                        <Person2SharpIcon />
-                    </Avatar>
+                    <Avatar src={blockedUser.getAvatarURL()} />
                 </ListItemAvatar>
                 <ListItemText primary={blockedUser.getDisplayname()} />
             </ListItem>

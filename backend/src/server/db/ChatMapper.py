@@ -73,12 +73,24 @@ class ChatMapper(Mapper.Mapper):
                     return IndexError
 
             else:
-                command1 = f'INSERT INTO chatrelation (ChatID ,UserID) VALUES (%s, %s) '
-                data = (chatid, payload.get('UserID'))
-                command2 = f'INSERT INTO chatrelation (ChatID, UserID) VALUES (%s, %s)'
-                data2 = (chatid, user_id)
-                cursor.execute(command1, data)
-                cursor.execute(command2, data2)
+                command3 = f'SELECT * FROM blocklist WHERE UserID={payload.get("UserID")}'
+                cursor.execute(command3)
+                v3 = cursor.fetchall()
+                command4 = f'SELECT * FROM block WHERE BlocklistID= {v3[0][0]}'
+                cursor.execute(command4)
+                v4 = cursor.fetchall()
+
+                for i in v4:
+                    if int(i[2]) == int(user_id):
+                        return result
+                else:
+                    command1 = f'INSERT INTO chatrelation (ChatID ,UserID) VALUES (%s, %s) '
+                    data = (chatid, payload.get('UserID'))
+                    command2 = f'INSERT INTO chatrelation (ChatID, UserID) VALUES (%s, %s)'
+                    data2 = (chatid, user_id)
+                    cursor.execute(command1, data)
+                    cursor.execute(command2, data2)
+
 
         self._cnx.commit()
         cursor.close()

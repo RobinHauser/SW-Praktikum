@@ -44,6 +44,7 @@ class ViewedMapper(Mapper.Mapper):
         viewedlist_id = cursor.fetchall()[0][0]
         viewed_user_id = int(payload.get('UserID'))
 
+
         cursor.execute(f'INSERT INTO view (ViewedListID, UserID) VALUES ({viewedlist_id}, {viewed_user_id})')
 
         self._cnx.commit()

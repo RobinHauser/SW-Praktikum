@@ -100,7 +100,7 @@ class ExtendedProfileCard extends Component {
         return (
             <Box sx={{width: "100%"}}>
                 <DialogContent>
-                    <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
+                    <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={showedUser.getAvatarURL()}></Avatar>
                     <DialogTitle sx={{textAlign: "center"}}>Profil Übersicht </DialogTitle>
                     <List>
                         <ListItem sx={{textAlign: "center", borderBottom: 1, borderColor: "#37474f"}}>
