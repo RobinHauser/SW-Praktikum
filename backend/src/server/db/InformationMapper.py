@@ -98,7 +98,7 @@ class InformationMapper(Mapper):
 
         return result
 
-    def find_by_profile(self, profile):
+    def find_by_profile(self, id):
         """
         Returns a list of all information objects assigned to the profile
         :param profile: the unique id of the profile
@@ -108,7 +108,7 @@ class InformationMapper(Mapper):
         cursor = self._cnx.cursor()
 
         # Retrieve assigned infos by ProfileID
-        command = "SELECT * FROM information WHERE ProfileID={}".format(profile.get_id())
+        command = f"SELECT * FROM information WHERE ProfileID={id}"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
