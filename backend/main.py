@@ -3,13 +3,11 @@ import json
 from flask import Flask, request
 from flask_cors import CORS
 from flask_restx import Resource, Api, Namespace, fields
+from src.server.Administration import Administration
 
-from backend.SecurityDecorator import secured
-from backend.src.server.Administration import Administration
-
-from backend.src.server.bo.SelectionProperty import SelectionProperty
-from backend.src.server.bo.TextProperty import TextProperty
-from backend.src.server.bo.Profile import Profile
+from src.server.bo.SelectionProperty import SelectionProperty
+from src.server.bo.TextProperty import TextProperty
+from src.server.bo.Profile import Profile
 
 app = Flask(__name__)
 
@@ -108,11 +106,6 @@ selection_property = api.inherit('SelectionProperty', bo, property, {
 text_property = api.inherit('TextProperty', bo, property, {
 
 })
-
-profile_similarity = {
-    'profile': fields.Nested(profile),
-    'similarity': fields.Float
-}
 
 
 @bookmarklist_namespace.route('/<int:user_id>')
@@ -290,28 +283,6 @@ class PersonalProfileList_api(Resource):
         adm = Administration()
         response = adm.get_all_personal_profiles()
         return response
-
-
-@personal_profile_namespace.route('/sorted')
-class PersonalProfileSimilarity_api(Resource):
-    @personal_profile_namespace.marshal_list_with(profile_similarity)
-    def get(self):
-        """
-        gets a list of all personal profiles sorted by similarity.
-        the similarity is based on a comparison with a given search profile (payload).
-        :return: list of all personal profiles sorted by similarity to the given search profile
-        """
-        adm = Administration()
-        proposal = Profile.from_dict(api.payload)
-        if proposal is not None:
-            search = adm.get_profile_by_id(proposal.get_id())
-            if search is not None:
-                response = adm.get_sorted_list_of_personal_profiles(search)
-                return response
-            else:
-                return '', 500
-        else:
-            return '', 500
 
 
 @personal_profile_namespace.route('/<int:id>')

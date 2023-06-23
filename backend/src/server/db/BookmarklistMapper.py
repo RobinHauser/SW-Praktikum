@@ -1,6 +1,6 @@
 import json
 
-from backend.src.server.db.Mapper import Mapper
+from src.server.db.Mapper import Mapper
 
 
 class BookmarklistMapper(Mapper):

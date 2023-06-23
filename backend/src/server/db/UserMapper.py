@@ -1,8 +1,8 @@
-from backend.src.server.bo.Profile import Profile
-from backend.src.server.bo.User import User
-from backend.src.server.db.InformationMapper import InformationMapper
-from backend.src.server.db.Mapper import Mapper
-from backend.src.server.db.ProfileMapper import ProfileMapper
+from src.server.bo.Profile import Profile
+from src.server.bo.User import User
+from src.server.db.InformationMapper import InformationMapper
+from src.server.db.Mapper import Mapper
+from src.server.db.ProfileMapper import ProfileMapper
 
 
 class UserMapper(Mapper):

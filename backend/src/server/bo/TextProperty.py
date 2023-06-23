@@ -1,6 +1,6 @@
-from backend.src.server.bo.BusinessObject import BusinessObject
-from backend.src.server.bo.Property import Property
-from backend.src.server.bo.Information import Information
+from src.server.bo.BusinessObject import BusinessObject
+from src.server.bo.Property import Property
+from src.server.bo.Information import Information
 
 class TextProperty(Property):
     def __init__(self):

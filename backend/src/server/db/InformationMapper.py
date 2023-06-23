@@ -8,8 +8,8 @@ delete: deleting an information object from a profile
 
 import json
 
-from backend.src.server.bo.Information import Information
-from backend.src.server.db.Mapper import Mapper
+from src.server.bo.Information import Information
+from src.server.db.Mapper import Mapper
 
 class InformationMapper(Mapper):
 
