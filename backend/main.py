@@ -670,17 +670,17 @@ class Information_api(Resource):
         response = adm.delete_info(info)
         return response
 
-@information_namespace.route('/infos')
+@information_namespace.route('/<int:id>')
 class InformationList_api(Resource):
     @information_namespace.marshal_list_with(information)
-    def get(self):
+    def get(self, id):
         """
         gets all information objects of a given profile
         :return: a list of all information objects assigned to the given profile
         """
         adm = Administration()
-        prof = Profile.from_dict(api.payload)
-        response = adm.get_infos_from_profile(prof)
+        #prof = Profile.from_dict(api.payload)
+        response = adm.get_infos_from_profile(id)
         return response
 
 @information_namespace.route('/content/<int:id>')
