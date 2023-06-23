@@ -8,9 +8,7 @@
 import UserBO from "./UserBO";
 import MessageBO from "./MessageBO";
 import ChatBO from "./ChatBO";
-import InformationBO from "./InformationBO";
-import ProfileBO from "./ChatBO";
-import SearchProfileBO from "./ProfileBO";
+import ProfileBO from "./ProfileBO";
 
 export default class SopraDatingAPI {
 
@@ -84,7 +82,7 @@ export default class SopraDatingAPI {
 
     // SearchProfile related
     #getSearchProfileURL = (searchprofileID) => {
-        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
+        return `${this.#SopraDatingServerBaseURL}/search-profile/${searchprofileID}`;
     }
     #getSearchProfilesURL = (userID) => {
         return `${this.#SopraDatingServerBaseURL}/search-profile/by_user/${userID}`;
@@ -335,7 +333,6 @@ export default class SopraDatingAPI {
         return this.#fetchAdvanced(this.#getAllProfilesURL())
             .then((responseJSON) => {
                 let profileBOs = ProfileBO.fromJSON(responseJSON);
-                // console.log(blocklistBOs)
                 return new Promise(function (resolve) {
                     resolve(profileBOs)
                 })
@@ -343,15 +340,19 @@ export default class SopraDatingAPI {
     }
 
     getSearchProfile(searchprofileID) {
-        return this.#fetchAdvanced(this.#getSearchProfileURL(searchprofileID)).then((responseJSON) => {
-            return responseJSON
-        })
+        return this.#fetchAdvanced(this.#getSearchProfileURL(searchprofileID))
+            .then((responseJSON) => {
+                let ProfileBOs = ProfileBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(ProfileBOs[0])
+                })
+            })
     }
 
      getSearchProfiles(UserID) {
         return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID))
             .then((responseJSON) => {
-                let SearchProfileBOs = SearchProfileBO.fromJSON(responseJSON);
+                let SearchProfileBOs = ProfileBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
                     resolve(SearchProfileBOs)
                 })
