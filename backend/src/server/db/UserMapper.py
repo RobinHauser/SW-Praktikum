@@ -69,7 +69,6 @@ class UserMapper(Mapper):
             if int(i.get_user_id()) == int(id):
                 result.remove(i)
 
-        print(result)
 
         for j in result:
             command3 = f'SELECT * FROM blocklist WHERE UserID={j.get_user_id()}' #Iteriert durch alle Blocklists der User
@@ -94,9 +93,7 @@ class UserMapper(Mapper):
         if len(v2) is not 0:
             result1 = result.copy()
             for i in result1:
-                print(i.get_user_id())
                 for j in v2:
-                    print(j[2])
                     if int(i.get_user_id()) == int(j[2]):
                         result.remove(i)                            #Entfernt User aus Liste, wenn er blockiert wurde
 
