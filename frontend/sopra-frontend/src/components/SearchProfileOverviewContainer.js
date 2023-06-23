@@ -24,7 +24,7 @@ class SearchProfileOverviewContainer extends Component {
     }
 
     getSearchProfiles = () => {
-        SopraDatingAPI.getAPI().getSearchProfiles(this.props.user)
+        SopraDatingAPI.getAPI().getSearchProfiles(this.props.user.getUserID())
             .then(SearchProfileBOs => {
                 this.setState({
                     searchprofiles: SearchProfileBOs,
@@ -57,7 +57,7 @@ class SearchProfileOverviewContainer extends Component {
 
                         <List id="searchprofieoverviewlist" sx={{width: '100%', maxWidth: 700}}>
                             {this.state.searchprofiles.map((item) => (
-                                <SearchProfileOverviewItem name={"Suchprofil " + item.getProfileID()} profile={item}></SearchProfileOverviewItem>
+                                <SearchProfileOverviewItem key={item.getProfileID()} name={"Suchprofil " + item.getProfileID()} profile={item}></SearchProfileOverviewItem>
                             ))}
                         </List>
                         <Link  to="/SearchProfile">
