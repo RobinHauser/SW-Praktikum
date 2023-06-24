@@ -146,7 +146,7 @@ class UserMapper(Mapper):
         :return: the found user
         """
         cursor = self._cnx.cursor()
-        command = f'SELECT * FROM user WHERE Email = "{email}"'
+        command = f"SELECT * FROM user WHERE Email = '{email}'"
         cursor.execute(command)
         tuples = cursor.fetchone()
 
