@@ -107,6 +107,9 @@ export default class SopraDatingAPI {
     #getViewedlistURL = (userID) => `${this.#SopraDatingServerBaseURL}/view/${userID}`
 
     // similarityMeasure related
+    #getUsersSortedBySimilarityMeasureURL = (searchprofileID) => {
+        return `${this.#SopraDatingServerBaseURL}/personal-profile/sorted/${searchprofileID}`
+    }
 
 
     /**
@@ -367,6 +370,7 @@ export default class SopraDatingAPI {
      getSearchProfiles(UserID) {
         return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID))
             .then((responseJSON) => {
+                console.log(responseJSON)
                 let SearchProfileBOs = ProfileBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
                     resolve(SearchProfileBOs)
@@ -430,6 +434,16 @@ export default class SopraDatingAPI {
 
     getViewedlist(userID) {
         return this.#fetchAdvanced(this.#getViewedlistURL(userID))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
+
+    getUsersSortedBySimilarityMeasure(searchprofileID) {
+        return this.#fetchAdvanced(this.#getUsersSortedBySimilarityMeasureURL(searchprofileID))
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
