@@ -9,6 +9,7 @@ import UserBO from "./UserBO";
 import MessageBO from "./MessageBO";
 import ChatBO from "./ChatBO";
 import ProfileBO from "./ProfileBO";
+import InformationBO from "./InformationBO";
 
 export default class SopraDatingAPI {
 
@@ -98,7 +99,7 @@ export default class SopraDatingAPI {
     }
 
     #getInformationsByProfileURL = (profileID) => {
-        return `${this.#SopraDatingServerBaseURL}/information/${profileID}`
+        return `${this.#SopraDatingServerBaseURL}/information/infos/${profileID}`
     }
 
     // viewedList related
@@ -404,9 +405,9 @@ export default class SopraDatingAPI {
     getInformationsByProfile(profileID) {
         return this.#fetchAdvanced(this.#getInformationsByProfileURL(profileID))
             .then((responseJSON) => {
-                let profileBOs = ProfileBO.fromJSON(responseJSON);
+                let informationBOs = InformationBO.fromJSON(responseJSON);
                 return new Promise( function (resolve) {
-                    resolve(profileBOs)
+                    resolve(informationBOs)
                 })
             }).catch(e => console.log(e))
     }

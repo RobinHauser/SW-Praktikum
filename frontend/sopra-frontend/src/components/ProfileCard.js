@@ -2,13 +2,11 @@ import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 import Avatar from "@mui/material/Avatar";
 import {Component} from "react";
 import Dialog from "@mui/material/Dialog";
 import ExtendedProfileCard from "./ExtendedProfileCard";
 import SopraDatingAPI from "../api/SopraDatingAPI";
-import Grid from "@mui/material/Unstable_Grid2";
 import {ListItem, ListItemText} from "@mui/material";
 
 /**
@@ -103,7 +101,6 @@ class ProfileCard extends Component {
     render() {
         const {openDialog, informations} = this.state;
         const {showedUser, onUserRemoved} = this.props;
-        console.log(informations)
 
         return (
             <div>
@@ -127,25 +124,15 @@ class ProfileCard extends Component {
                         <Typography gutterBottom variant="h5" component="div">
                             {showedUser.getDisplayname()}
                         </Typography>
-                        {/*{userList.length > 0 ? (*/}
-                        {/*    userList.map((userListItem) => (*/}
-                        {/*        <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>*/}
-                        {/*            <ProfileCard */}
-                        {/*                key={userListItem.getUserID()}*/}
-                        {/*                user={this.state.user}*/}
-                        {/*                showedUser={userListItem}*/}
-                        {/*                showOnlyNewUser={showOnlyNewUser}*/}
-                        {/*                onUserRemoved={this.handleRemoveUser}>*/}
-                        {/*            </ProfileCard>*/}
-                        {/*        </Grid>*/}
-                        {/*    ))*/}
-                        {/*) : (*/}
-                        {/*    <ListItem>*/}
-                        {/*        <ListItemText sx={{ textAlign: 'center' }}>*/}
-                        {/*            <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>*/}
-                        {/*        </ListItemText>*/}
-                        {/*    </ListItem>*/}
-                        {/*)}*/}
+                        {informations.length > 0 ? (
+                            informations.map((informationListItem) => (
+                                <Typography key={informationListItem.getValueID()} variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                                    {`${informationListItem.getProperty()}: ${informationListItem.getValue()}`}
+                                </Typography>
+                            ))
+                        ) : (
+                            <Typography variant="body1">Keine Informationen zu diesem Profil vorhanden</Typography>
+                        )}
                     </CardContent>
                 </Card>
                 <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
@@ -153,7 +140,8 @@ class ProfileCard extends Component {
                     <ExtendedProfileCard
                         showedUser={showedUser}
                         onUserRemoved={onUserRemoved}
-                        user={this.props.user}>
+                        user={this.props.user}
+                        informations={this.state.informations}>
                     </ExtendedProfileCard>
                 </Dialog>
             </div>

@@ -81,59 +81,23 @@ class   ExtendedProfileCard extends Component {
     }
 
     render() {
-        const{showedUser} = this.props;
+        const{showedUser, informations} = this.props;
 
         return (
             <Box sx={{width: "100%"}}>
                 <DialogContent>
                     <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={showedUser.getAvatarURL()}></Avatar>
-                    <DialogTitle sx={{textAlign: "center"}}>Profil Übersicht </DialogTitle>
+                    <DialogTitle sx={{textAlign: "center", fontSize: '30px'}}>Profil Übersicht </DialogTitle>
                     <List>
-                        <ListItem sx={{textAlign: "center", borderBottom: 1, borderColor: "#37474f"}}>
-                            <Typography gutterBottom variant="h5" component="div">
-                                {showedUser.getDisplayname()}
-                            </Typography>
-                        </ListItem>
-                        <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
-                            <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                                Alter:
-                            </Typography>
-                        </ListItem>
-                        <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
-                            <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                                Geschlecht:
-                            </Typography>
-                        </ListItem>
-                        <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
-                            <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                                Geschlecht:
-                            </Typography>
-                        </ListItem>
-                        <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
-                            <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                                Raucher:
-                            </Typography>
-                        </ListItem>
-                        <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
-                            <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                                Religion:
-                            </Typography>
-                        </ListItem>
-                        <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
-                            <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                                Haarfarbe: Brunette
-                            </Typography>
-                        </ListItem>
-                        <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
-                            <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                                Geburtsdatum:
-                            </Typography>
-                        </ListItem>
-                        <ListItem sx={{borderBottom: 1, borderColor: "#eceff1"}}>
-                            <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                                Körpergröße:
-                            </Typography>
-                        </ListItem>
+                        {informations.length > 0 ? (
+                            informations.map((informationListItem) => (
+                                <ListItem sx={{borderBottom: 1, borderColor: "#eceff1", fontSize: '20px'}} key={informationListItem.getValueID()}>
+                                    {`${informationListItem.getProperty()}: ${informationListItem.getValue()}`}
+                                </ListItem>
+                            ))
+                        ) : (
+                            <Typography variant="body1">Keine Informationen zu diesem Profil vorhanden</Typography>
+                        )}
                     </List>
                     <Box sx={{marginTop: 5, display: 'flex', justifyContent: 'space-between'}}>
                         <Tooltip title="User blockieren">
