@@ -75,11 +75,11 @@ class UserMapper(Mapper):
             cursor.execute(command3)
             v3 = cursor.fetchall()
 
-            if len(v3) is not 0:
+            if len(v3) != 0:
                 command4 = f'SELECT * FROM block WHERE BlocklistID= {v3[0][0]} AND BlockedUserID = {id}' #Prüft ob User mit id=id Blockiert ist
                 cursor.execute(command4)
                 v4 = cursor.fetchall()
-                if len(v4) is not 0:
+                if len(v4) != 0:
                     for i in v4:
                         result.remove(j)      # Entfernt User wenn Blockiert
 
@@ -90,7 +90,7 @@ class UserMapper(Mapper):
         command2 = f'SELECT * FROM block WHERE BlocklistID= {v[0][0]}'      #Prüft wen User mit id=id blockiert hat
         cursor.execute(command2)
         v2 = cursor.fetchall()
-        if len(v2) is not 0:
+        if len(v2) != 0:
             result1 = result.copy()
             for i in result1:
                 for j in v2:
