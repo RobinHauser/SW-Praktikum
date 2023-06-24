@@ -6,16 +6,43 @@ import {Component} from "react";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import {Link} from "react-router-dom";
+import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
  */
 
-class SearchProfileOverviewContainer extends Component
-{
-    render() {
-        const {name} = this.props
+class SearchProfileOverviewContainer extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            searchprofiles: [],
+            error: null,
+        };
+    }
+
+    getSearchProfiles = () => {
+        SopraDatingAPI.getAPI().getSearchProfiles(this.props.user.getUserID())
+            .then(SearchProfileBOs => {
+                this.setState({
+                    searchprofiles: SearchProfileBOs,
+                    error: null
+                });
+            })
+            .catch(e => {
+                this.setState({
+                    searchprofiles: [],
+                    error: e
+                });
+            });
+    };
+
+    componentDidMount() {
+        this.getSearchProfiles();
+    }
+    render() {
         return (
             <div>
                 <Grid
@@ -29,8 +56,8 @@ class SearchProfileOverviewContainer extends Component
                     <Grid>
 
                         <List id="searchprofieoverviewlist" sx={{width: '100%', maxWidth: 700}}>
-                            {name.map((item) => (
-                                <SearchProfileOverviewItem name={item}></SearchProfileOverviewItem>
+                            {this.state.searchprofiles.map((item) => (
+                                <SearchProfileOverviewItem key={item.getProfileID()} name={"Suchprofil " + item.getProfileID()} profile={item}></SearchProfileOverviewItem>
                             ))}
                         </List>
                         <Link  to="/SearchProfile">

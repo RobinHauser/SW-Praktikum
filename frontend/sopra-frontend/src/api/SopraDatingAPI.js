@@ -7,10 +7,8 @@
  */
 import UserBO from "./UserBO";
 import MessageBO from "./MessageBO";
-import chatb from "./ChatBO";
 import ChatBO from "./ChatBO";
-import InformationBO from "./InformationBO";
-import ProfileBO from "./ChatBO";
+import ProfileBO from "./ProfileBO";
 
 export default class SopraDatingAPI {
 
@@ -84,10 +82,10 @@ export default class SopraDatingAPI {
 
     // SearchProfile related
     #getSearchProfileURL = (searchprofileID) => {
-        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
+        return `${this.#SopraDatingServerBaseURL}/search-profile/${searchprofileID}`;
     }
     #getSearchProfilesURL = (userID) => {
-        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${userID}`;
+        return `${this.#SopraDatingServerBaseURL}/search-profile/by_user/${userID}`;
     }
     #addSearchProfileURL = () => {
         return `${this.#SopraDatingServerBaseURL}/searchprofile`;
@@ -322,11 +320,9 @@ export default class SopraDatingAPI {
     }
 
     getChatMessages(chatID) {
-        console.log("test:"+ this.#getChatMessagesURL(chatID))
         return this.#fetchAdvanced(this.#getChatMessagesURL(chatID))
             .then((responseJSON) => {
                 let messageBOs = MessageBO.fromJSON(responseJSON);
-                // console.log(messageBOs)
                 return new Promise(function (resolve) {
                     resolve(messageBOs)
                 })
@@ -337,7 +333,6 @@ export default class SopraDatingAPI {
         return this.#fetchAdvanced(this.#getAllProfilesURL())
             .then((responseJSON) => {
                 let profileBOs = ProfileBO.fromJSON(responseJSON);
-                // console.log(blocklistBOs)
                 return new Promise(function (resolve) {
                     resolve(profileBOs)
                 })
@@ -345,15 +340,23 @@ export default class SopraDatingAPI {
     }
 
     getSearchProfile(searchprofileID) {
-        return this.#fetchAdvanced(this.#getSearchProfileURL(searchprofileID)).then((responseJSON) => {
-            return responseJSON
-        })
+        return this.#fetchAdvanced(this.#getSearchProfileURL(searchprofileID))
+            .then((responseJSON) => {
+                let ProfileBOs = ProfileBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(ProfileBOs[0])
+                })
+            })
     }
 
-    getSearchProfiles(userID) {
-        return this.#fetchAdvanced(this.#getSearchProfilesURL(userID)).then((responseJSON) => {
-            return responseJSON
-        })
+     getSearchProfiles(UserID) {
+        return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID))
+            .then((responseJSON) => {
+                let SearchProfileBOs = ProfileBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(SearchProfileBOs)
+                })
+            })
     }
 
     addSearchProfile(searchprofileBO) {

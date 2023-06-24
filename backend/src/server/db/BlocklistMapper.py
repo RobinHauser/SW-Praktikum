@@ -2,8 +2,10 @@ import json
 
 from backend.src.server.bo import Blocklist
 from backend.src.server.db import Mapper
+from backend.src.server.bo import User
 
 Blocklist = Blocklist.Blocklist
+User = User.User
 
 
 class BlocklistMapper(Mapper.Mapper):
@@ -39,32 +41,37 @@ class BlocklistMapper(Mapper.Mapper):
             if blocks is not None:
                 user_ids = [block[2] for block in blocks]
 
-                # Retrieve user by UserID
-                command3 = "SELECT * FROM user WHERE UserID IN ({})".format(','.join(str(uid) for uid in user_ids)) #TODO FIX error when list is empty
-                cursor.execute(command3)
-                users = cursor.fetchall()
+                if len(user_ids) != 0:
+                    # Retrieve user by UserID
+                    command3 = "SELECT * FROM user WHERE UserID IN ({})".format(','.join(str(uid) for uid in user_ids))
+                    cursor.execute(command3)
+                    users = cursor.fetchall()
 
-                # Form the user into a json and add it to the list
-                for user in users:
-                    jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "ProfileIMGURL": "{user[3]}"}}'
-                    userJSON = json.loads(jsstr)
-                    result.append(userJSON)
+                    if len(users) != 0:
+                        for user in users:
+                            new_user = User()
+                            new_user.set_user_id(user[0])
+                            new_user.set_email(user[1])
+                            new_user.set_displayname(user[2])
+                            new_user.set_avatarurl(user[3])
+                            result.append(new_user)
 
+        self._cnx.commit()
         cursor.close()
         return result
 
-    def insert(self, user_id, payload):
+    def insert(self, user_id, blocked_user):
         """
         Adding a user to the blocklist of a user
         :param user_id: the unique id of the user with the blocklist
-        :param payload: the dic of the user to be added
+        :param blocked_user: the dic of the user to be added
         :return: the added user
         """
         cursor = self._cnx.cursor()
         cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')   #TODO BlocklistID schon vorher gesetzt?
 
         blocklist_id = cursor.fetchall()[0][0]
-        blocked_user_id = int(payload.get('UserID'))
+        blocked_user_id = blocked_user.get_user_id()
 
         cursor.execute(
             f'INSERT INTO block (BlocklistID, BlockedUserID) VALUES ({blocklist_id}, {blocked_user_id})')
@@ -72,16 +79,16 @@ class BlocklistMapper(Mapper.Mapper):
         self._cnx.commit()
         cursor.close()
 
-        return payload
+        return blocked_user
 
     def update(self, blocklist):
         pass
 
-    def delete(self, user_id, payload):
+    def delete(self, user_id, blocked_user):
         """
         Removing a user from the blocklist of a user
         :param user_id: the unique id of the user with the blocklist
-        :param payload: the dic of the user to be deleted
+        :param blocked_user: the dic of the user to be deleted
         :return: the removed user
         """
         cursor = self._cnx.cursor()
@@ -89,7 +96,7 @@ class BlocklistMapper(Mapper.Mapper):
         cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')
 
         blocklist_id = cursor.fetchall()[0][0]
-        blocked_user_id = int(payload.get('UserID'))
+        blocked_user_id = blocked_user.get_user_id()
 
         cursor.execute(
             f'DELETE FROM block WHERE BlocklistID = {blocklist_id} AND BlockedUserID = {blocked_user_id}')
@@ -97,11 +104,7 @@ class BlocklistMapper(Mapper.Mapper):
         self._cnx.commit()
         cursor.close()
 
-        return payload
+        return blocked_user
 
-    def find_by_email(self, email):
-        pass
 
-    def find_by_name(self, name):
-        pass
 
