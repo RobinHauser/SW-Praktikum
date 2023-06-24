@@ -34,7 +34,9 @@ export default class SopraDatingAPI {
     #getUserURL = (email) => {
         return `${this.#SopraDatingServerBaseURL}/init-user/${email}`;
     };
-
+    #getUserByIdURL = (id) => {
+        return `${this.#SopraDatingServerBaseURL}/user/${id}`;
+    };
     #postUserURL = () => {
         return `${this.#SopraDatingServerBaseURL}/user/1000`
     };
@@ -159,7 +161,15 @@ export default class SopraDatingAPI {
                 })
         })
     }
-
+    getUserbyId(id) {
+        return this.#fetchAdvanced(this.#getUserByIdURL(id))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
     postUser(userBO) {
         return this.#fetchAdvanced(this.#postUserURL(), {
             method: 'POST',
