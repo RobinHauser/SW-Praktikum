@@ -251,32 +251,38 @@ class Administration():
     '''
 
     def get_bookmarklist_by_user_id(self, user_id):
-        mapper = BookmarklistMapper()
-        return mapper.find_by_id(user_id)
+        with BookmarklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
 
-    def add_user_to_bookmarklist(self, user_id, payload):
-        bookmarklistmapper = BookmarklistMapper()
-        return bookmarklistmapper.insert(user_id, payload)
+    def add_user_to_bookmarklist(self, user_id, bookmarked_user):
+        if bookmarked_user is not None:
+            self.remove_user_from_blocklist(user_id, bookmarked_user)
+            with BookmarklistMapper() as mapper:
+                return mapper.insert(user_id, bookmarked_user)
 
-    def remove_user_from_bookmarklist(self, user_id, payload):
-        bookmarklistmapper = BookmarklistMapper()
-        return bookmarklistmapper.delete(user_id, payload)
+    def remove_user_from_bookmarklist(self, user_id, bookmarked_user):
+        if bookmarked_user is not None:
+            with BookmarklistMapper() as mapper:
+                return mapper.delete(user_id, bookmarked_user)
 
     '''
         Blocklist Methoden
     '''
 
     def get_blocklist_by_user_id(self, user_id):
-        blocklistmapper = BlocklistMapper()
-        return blocklistmapper.find_by_id(user_id)
+        with BlocklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
 
-    def add_user_to_blocklist(self, user_id, payload):
-        blocklistmapper = BlocklistMapper()
-        return blocklistmapper.insert(user_id, payload)
+    def add_user_to_blocklist(self, user_id, blocked_user):
+        if blocked_user is not None:
+            self.remove_user_from_bookmarklist(user_id, blocked_user)
+            with BlocklistMapper() as mapper:
+                return mapper.insert(user_id, blocked_user)
 
-    def delete_blocklist(self, user_id, payload):
-        blocklistmapper = BlocklistMapper()
-        return blocklistmapper.delete(user_id, payload)
+    def remove_user_from_blocklist(self, user_id, blocked_user):
+        if blocked_user is not None:
+            with BlocklistMapper() as mapper:
+                return mapper.delete(user_id, blocked_user)
 
 
     '''
@@ -451,33 +457,41 @@ class Administration():
     def get_sorted_list_of_personal_profiles(self, search_profile):
         search_infos = self.get_infos_from_profile(search_profile)
         search_info_content = {}
-        for info in search_infos:
+        for info in search_infos: #dict erstellen mit allen infos des suchprofils
             search_content = self.get_info_content(info)
             search_info_content[search_content["property"]] = search_content["value"]
 
-        personal_profiles = self.get_all_personal_profiles()
+        users = self.get_all_user_by_id(search_profile.get_user_id())
+        personal_profiles = []
+        for u in users:
+            personal_profiles.append(self.get_personal_profile_of_user(u))
         similarity_profiles = []
 
         for profile in personal_profiles:
-            profile_id = profile.get_id()
             infos = self.get_infos_from_profile(profile)
             info_content = {}
-            for info in infos:
+            for info in infos: #dict erstellen mit allen infos des aktuell iterierten profils
                 content = self.get_info_content(info)
                 info_content[content["property"]] = content["value"]
 
             sim = SimilarityMeasure(search_info_content, info_content)
             similarity = sim.get_similarity_measure()
-            profile_and_sim = {}
+
+            profile_and_sim = {} #dict erstellen mit profilen und ähnlichkeitsmaßen
             profile_and_sim['profile'] = profile
             profile_and_sim['similarity'] = similarity
             similarity_profiles.append(profile_and_sim)
 
-
+        #dict sortieren nach ähnlichkeit
         similarity_profiles = sorted(similarity_profiles, key=lambda x: x['similarity'], reverse=True)
 
-        # sorted_users = []
-        # for s in similarity_profiles:
-        #     prof = s["profile"]
+        #anstatt von profilen soll das frontend eine liste sortierter user bekommen:
+        sorted_users = []
+        for s in similarity_profiles:
+            prof = s["profile"]
+            user_id = prof.get_user_id()
+            user = self.get_user_by_id(user_id)
+            sorted_users.append(user)
 
-        return similarity_profiles
+        # return similarity_profiles
+        return sorted_users

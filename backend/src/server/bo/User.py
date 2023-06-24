@@ -32,3 +32,13 @@ class User(BusinessObject):
 
     def set_avatarurl(self, avatarurl):
         self.__avatarurl = avatarurl
+
+
+    @staticmethod
+    def from_dict(dict): #todo default wert setzen
+        user = User()
+        user.set_user_id(dict["UserID"])
+        user.set_email(dict["email"])
+        user.set_displayname(dict["displayname"])
+        user.set_avatarurl(dict["ProfileIMGURL"])
+        return user
