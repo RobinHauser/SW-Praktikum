@@ -1,6 +1,7 @@
 import json
 
 from backend.src.server.db import Mapper
+from backend.src.server.bo.User import User
 
 
 class ViewedMapper(Mapper.Mapper):
@@ -15,9 +16,12 @@ class ViewedMapper(Mapper.Mapper):
         result = []
         cursor = self._cnx.cursor()
 
-        command2 = f'SELECT UserID FROM profile_relation WHERE ProfileID = {id}'
-        cursor.execute(command2)
-        user_id = cursor.fetchall()
+        if id >= 4000:
+            command2 = f'SELECT UserID FROM profile_relation WHERE ProfileID = {id}'
+            cursor.execute(command2)
+            user_id = cursor.fetchall()
+        else:
+            user_id = [(id,)]
 
 
         # Get viewedList id of the user
@@ -34,10 +38,17 @@ class ViewedMapper(Mapper.Mapper):
         for user_id in user_ids:
             command = "SELECT * FROM user WHERE UserID={}".format(user_id[0])
             cursor.execute(command)
-            user = cursor.fetchone()
-            jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "ProfileIMGURL": "{user[3]}"}}'
-            userJSON = json.loads(jsstr)
-            result.append(userJSON)
+            tuples = cursor.fetchone()
+            user = User()
+            user.set_user_id(tuples[0])
+            user.set_email(tuples[1])
+            user.set_displayname(tuples[2])
+            user.set_avatarurl(tuples[3])
+            result.append(user)
+
+           # jsstr = f'{{"UserID": "{user[0]}", "email": "{user[1]}", "displayname": "{user[2]}", "ProfileIMGURL": "{user[3]}"}}'
+           # userJSON = json.loads(jsstr)
+           # result.append(userJSON)
 
         cursor.close()
         return result

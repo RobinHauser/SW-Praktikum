@@ -8,11 +8,11 @@ class Mapper(AbstractContextManager, ABC):
 
     def __init__(self):
 
-        self._cnx = connector.connect(user='root', password='sopra_2023', host="localhost", database='datenbank')
+        self._cnx = connector.connect(user='root', password='sopra_2023', host="127.0.0.1", database='datenbank')
 
     def __enter__(self):
 
-        self._cnx = connector.connect(user='root', password='sopra_2023', host="localhost", database='datenbank')
+        self._cnx = connector.connect(user='root', password='sopra_2023', host="127.0.0.1", database='datenbank')
 
         return self
 

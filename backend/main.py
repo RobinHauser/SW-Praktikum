@@ -208,6 +208,7 @@ class Blocklist_api(Resource):
 @view_namespace.route('/<int:id>')
 class View_api(Resource):
     # @secured
+    @view_namespace.marshal_list_with(user)
     def get(self, id):
         """
         get a list of users the given user has been seen
