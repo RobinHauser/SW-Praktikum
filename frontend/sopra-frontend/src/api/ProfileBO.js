@@ -9,7 +9,7 @@ export default class ProfileBO extends BusinessObject{
    * Constructs a new ProfileBO object.
    *
    * @param {*} user_id - id of User.
-   * @param {*} is_personal - decides whether the profile is a personal or a ssearchprofile
+   * @param {*} is_personal - decides whether the profile is a personal or a searchprofile
    * @param {*} profileID - profileID of the SearchProfileBO
    */
   constructor(user_id, is_personal, profileID) {
