@@ -1,16 +1,14 @@
-import json
-
 from flask import Flask, request
 from flask_cors import CORS
 from flask_restx import Resource, Api, Namespace, fields
 
-from backend.SecurityDecorator import secured
-from backend.src.server.Administration import Administration
+from SecurityDecorator import secured
+from src.server.Administration import Administration
 
-from backend.src.server.bo.SelectionProperty import SelectionProperty
-from backend.src.server.bo.TextProperty import TextProperty
-from backend.src.server.bo.Profile import Profile
-from backend.src.server.bo.User import User
+from src.server.bo.SelectionProperty import SelectionProperty
+from src.server.bo.TextProperty import TextProperty
+from src.server.bo.Profile import Profile
+from src.server.bo.User import User
 
 app = Flask(__name__)
 
