@@ -14,18 +14,19 @@ import SopraDatingAPI from "../api/SopraDatingAPI";
 import Typography from "@mui/material/Typography";
 import UserBO from "../api/UserBO";
 
-export default class GridContainer extends React.Component{
+export default class GridContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             anchorEl: null,
             selectedSearchprofile: null,
-            searchprofiles: ["Suchprofil 1", "Suchprofil 2", "Suchprofil 3"],
+            searchprofiles: [],
             userList: [],
             showOnlyNewUser: true,
             viewedList: [],
             user: null,
-            blocklist: []
+            blocklist: [],
+            error: null
         };
     }
 
@@ -37,33 +38,67 @@ export default class GridContainer extends React.Component{
             })
         })
         this.getAllUsers()
+        await this.getSearchProfiles()
     }
 
-getBlocklist = async () => {
-    try {
-        const UserBOs = await SopraDatingAPI.getAPI().getBlocklist(this.state.user.getUserID());
-        return UserBOs;
-    } catch (e) {
-        console.log(e);
-        return [];
-    }
-};
+    getBlocklist = async () => {
+        try {
+            const UserBOs = await SopraDatingAPI.getAPI().getBlocklist(this.state.user.getUserID());
+            return UserBOs;
+        } catch (e) {
+            console.log(e);
+            return [];
+        }
+    };
 
-getAllUsers = async () => {
-    try {
-        let userBOs = await SopraDatingAPI.getAPI().getAllUsers();
-        SopraDatingAPI.getAPI().getAllUsersFiltered(this.state.user.getUserID()).then((userBOs) => {
-            this.setState({
-                userList: userBOs
+    getAllUsers = async () => {
+        try {
+            let userBOs = await SopraDatingAPI.getAPI().getAllUsers();
+            SopraDatingAPI.getAPI().getAllUsersFiltered(this.state.user.getUserID()).then((userBOs) => {
+                this.setState({
+                    userList: userBOs
+                })
             })
-        })
-    } catch (error) {
-        console.log(error);
-        this.setState({
-            userList: []
-        });
+        } catch (error) {
+            console.log(error);
+            this.setState({
+                userList: []
+            });
+        }
+    };
+
+    getSearchProfiles = async () => {
+        let wait = await SopraDatingAPI.getAPI().getAllUsers();
+        SopraDatingAPI.getAPI().getSearchProfiles(this.state.user.getUserID())
+            .then(SearchProfileBOs => {
+                this.setState({
+                    searchprofiles: SearchProfileBOs,
+                    error: null
+                });
+            })
+            .catch(e => {
+                this.setState({
+                    searchprofiles: [],
+                    error: e
+                });
+            });
+    };
+
+    getUsersSortedBySimilarityMeasure = (searchprofileID) => {
+        SopraDatingAPI.getAPI().getUsersSortedBySimilarityMeasure(searchprofileID)
+            .then(UserBOs => {
+                this.setState({
+                    userList: UserBOs,
+                    error: null
+                });
+            })
+            .catch(e => {
+                this.setState({
+                    searchprofiles: [],
+                    error: e
+                });
+            });
     }
-};
 
     /**
      * Fetches the user list based on the selected search profile ID
@@ -108,15 +143,15 @@ getAllUsers = async () => {
                     this.setState({
                         viewedList: UserBOs
                     });
-                resolve();
-            })
-            .catch(e => {
-                // In case of an error, reset the viewed user list state
-                this.setState({
-                    viewedList: []
+                    resolve();
+                })
+                .catch(e => {
+                    // In case of an error, reset the viewed user list state
+                    this.setState({
+                        viewedList: []
+                    });
+                    reject(e);
                 });
-                reject(e);
-            });
         });
     };
 
@@ -127,7 +162,7 @@ getAllUsers = async () => {
      */
     handleSearchProfileMenuClick = (event) => {
         // Set the anchor element for the search profile menu
-        this.setState({ anchorEl: event.currentTarget });
+        this.setState({anchorEl: event.currentTarget});
     };
 
     /**
@@ -135,17 +170,24 @@ getAllUsers = async () => {
      */
     handleCloseSearchprofile = () => {
         // Close the search profile menu
-        this.setState({ anchorEl: null });
+        this.setState({anchorEl: null});
     };
 
      /**
       * Handles the click event on a search profile item in the menu
       *
-      * @param {string} searchprofile - The selected search profile
+      * @param {string} searchprofileID - The selected search profile
       */
-    handleSearchprofileItemClick = (searchprofile) => {
+    handleSearchprofileItemClick = (searchprofileID) => {
         // Set the selected search profile and close the menu
-        this.setState({ selectedSearchprofile: searchprofile, anchorEl: null });
+        this.getUsersSortedBySimilarityMeasure(searchprofileID)
+        this.handleCloseSearchprofile()
+    };
+
+    handleNoSelectionClick = () => {
+        // Set the selected search profile and close the menu
+        this.getAllUsers();
+        this.handleCloseSearchprofile();
     };
 
     /**
@@ -153,7 +195,7 @@ getAllUsers = async () => {
      * Updates the user list accordingly
      */
     handleShowOnlyNewUser = async () => {
-         // Fetch the viewed user list and update the user list based on the showOnlyNewUser state
+        // Fetch the viewed user list and update the user list based on the showOnlyNewUser state
         await this.getViewedlist(1); // Todo dynamisch einlesen
         await this.getUserListBySearchprofile(1);
         await this.getUserListBySearchprofile(1);
@@ -162,7 +204,7 @@ getAllUsers = async () => {
 
         // If the viewedList is not empty, filter the nonViewedList based on the viewedUsers
         let nonViewedList = userList;
-        if(viewedList.length > 0) {
+        if (viewedList.length > 0) {
             nonViewedList = userList.filter(user =>
                 viewedList.some(viewedUser => user.getUserID() !== viewedUser.getUserID())
             )
@@ -188,7 +230,7 @@ getAllUsers = async () => {
     };
 
     render() {
-        const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList } = this.state;
+        const {anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList} = this.state;
         const open = Boolean(anchorEl);
 
         return (
@@ -200,7 +242,7 @@ getAllUsers = async () => {
                             aria-haspopup="true"
                             onClick={this.handleSearchProfileMenuClick}
                             variant="contained"
-                            endIcon={<ArrowDropDownIcon />}
+                            endIcon={<ArrowDropDownIcon/>}
                         >
                             {selectedSearchprofile ? selectedSearchprofile : 'Suchprofile'}
                         </Button>
@@ -212,22 +254,23 @@ getAllUsers = async () => {
                         onClose={this.handleCloseSearchprofile}
                     >
                         <MenuItem
-                            onClick = {() => this.handleSearchprofileItemClick("Keine Auswahl")}
-                            sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
+                            onClick={() => this.handleNoSelectionClick()}
+                            sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
                         >
                             Keine Auswahl
                         </MenuItem>
                         {searchprofiles.map((searchprofileItem) => (
                             <MenuItem
-                                onClick = {() => this.handleSearchprofileItemClick(searchprofileItem)}
-                                sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
-                                key={1} // Todo key dynamisch einlesen
+                                onClick={() => this.handleSearchprofileItemClick(searchprofileItem.getProfileID())}
+                                sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
+                                key={searchprofileItem.getProfileID()}
                             >
-                                {searchprofileItem}
+                                {`Suchprofil: ${searchprofileItem.getProfileID()}`}
                             </MenuItem>
                         ))}
                     </Menu>
-                    <Tooltip title={ showOnlyNewUser ? "nur noch nicht angesehene Nutzer anzeigen" : "alle Nutzer anzeigen" }>
+                    <Tooltip
+                        title={showOnlyNewUser ? "nur noch nicht angesehene Nutzer anzeigen" : "alle Nutzer anzeigen"}>
                         <Switch
                             onChange={this.handleShowOnlyNewUser}
                             color="primary"
@@ -245,7 +288,7 @@ getAllUsers = async () => {
                                 },
                             }}
                             icon={<VisibilityIcon/>}
-                            checkedIcon={<VisibilityOffIcon />}
+                            checkedIcon={<VisibilityOffIcon/>}
                         />
                     </Tooltip>
                 </Box>
@@ -266,12 +309,12 @@ getAllUsers = async () => {
                                 </ProfileCard>
                             </Grid>
                         ))
-                        ) : (
-                            <ListItem>
-                                <ListItemText sx={{ textAlign: 'center' }}>
-                                    <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>
-                                </ListItemText>
-                            </ListItem>
+                    ) : (
+                        <ListItem>
+                            <ListItemText sx={{textAlign: 'center'}}>
+                                <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>
+                            </ListItemText>
+                        </ListItem>
                     )}
                 </Grid>
             </Box>
