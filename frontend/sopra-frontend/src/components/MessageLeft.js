@@ -15,11 +15,11 @@ class MessageLeft extends Component {
      * @returns MessageLeft - the rendered component
      */
     render() {
-        const {content, timeStamp} = this.props;
+        const {content, timeStamp, avatarLink} = this.props;
         return (
             <div>
                 <ListItem>
-                    <Avatar src={placeHolderImage}></Avatar>
+                    <Avatar src={avatarLink}></Avatar>
                     <Paper sx={{my: 1, ml: 1, textAlign: "left", width: "75vh", backgroundColor: "#e1f5fe"}}
                            elevation={3}>
                         <Typography noWrap={false} sx={{m: 2}}>{content}</Typography>

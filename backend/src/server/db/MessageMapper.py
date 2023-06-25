@@ -62,6 +62,16 @@ class MessageMapper(Mapper.Mapper):
     def insert(self, user_id, payload):     # TODO Cahnge to Chat ID when CHATMAPPER is finished
         cursor = self._cnx.cursor()
 
+        command3 = f'SELECT * FROM blocklist WHERE UserID={payload.get("UserID")}'
+        cursor.execute(command3)
+        v3 = cursor.fetchall()
+        command4 = f'SELECT * FROM block WHERE BlocklistID= {v3[0][0]}'
+        cursor.execute(command4)
+        v4 = cursor.fetchall()
+        for i in v4:
+            if int(i[2]) == int(user_id):
+                return IndexError
+
         command = "INSERT INTO message (Sender, Content, Timestamp) VALUES (%s, %s, %s)"
         data = (user_id, payload.get('Content'), payload.get('TimeStamp'))
         cursor.execute(command, data)

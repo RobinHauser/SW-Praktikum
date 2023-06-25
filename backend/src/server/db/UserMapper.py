@@ -65,13 +65,14 @@ class UserMapper(Mapper):
                 result = None
 
 
-        for i in result:
-            if int(i.get_user_id()) == int(id):
-                result.remove(i)
+        for user in result:
+            if int(user.get_user_id()) == int(id):
+                result.remove(user)
 
+        print(result)
 
-        for j in result:
-            command3 = f'SELECT * FROM blocklist WHERE UserID={j.get_user_id()}' #Iteriert durch alle Blocklists der User
+        for blocklist in result:
+            command3 = f'SELECT * FROM blocklist WHERE UserID={blocklist.get_user_id()}' #Iteriert durch alle Blocklists der User
             cursor.execute(command3)
             v3 = cursor.fetchall()
 
@@ -79,23 +80,23 @@ class UserMapper(Mapper):
                 command4 = f'SELECT * FROM block WHERE BlocklistID= {v3[0][0]} AND BlockedUserID = {id}' #Prüft ob User mit id=id Blockiert ist
                 cursor.execute(command4)
                 v4 = cursor.fetchall()
-                if len(v4) != 0:
-                    for i in v4:
-                        result.remove(j)      # Entfernt User wenn Blockiert
+                if len(v4) is not 0:
+                    for user in v4:
+                        result.remove(blocklist)      # Entfernt User wenn Blockiert
 
         command = f'SELECT * FROM blocklist WHERE UserID={id}'  #Holt sich Blocklist des Users, wo UserID = id
         cursor.execute(command)
         v = cursor.fetchall()
-
-        command2 = f'SELECT * FROM block WHERE BlocklistID= {v[0][0]}'      #Prüft wen User mit id=id blockiert hat
-        cursor.execute(command2)
-        v2 = cursor.fetchall()
-        if len(v2) != 0:
-            result1 = result.copy()
-            for i in result1:
-                for j in v2:
-                    if int(i.get_user_id()) == int(j[2]):
-                        result.remove(i)                            #Entfernt User aus Liste, wenn er blockiert wurde
+        if v:
+            command2 = f'SELECT * FROM block WHERE BlocklistID= {v[0][0]}'      #Prüft wen User mit id=id blockiert hat
+            cursor.execute(command2)
+            v2 = cursor.fetchall()
+            if len(v2) is not 0:
+                result1 = result.copy()
+                for user in result1:
+                    for blocklist in v2:
+                        if int(user.get_user_id()) == int(blocklist[2]):
+                            result.remove(user)                            #Entfernt User aus Liste, wenn er blockiert wurde
 
         print(result)
 

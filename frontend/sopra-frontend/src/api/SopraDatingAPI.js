@@ -9,6 +9,7 @@ import UserBO from "./UserBO";
 import MessageBO from "./MessageBO";
 import ChatBO from "./ChatBO";
 import ProfileBO from "./ProfileBO";
+import InformationBO from "./InformationBO";
 
 export default class SopraDatingAPI {
 
@@ -34,7 +35,9 @@ export default class SopraDatingAPI {
     #getUserURL = (email) => {
         return `${this.#SopraDatingServerBaseURL}/init-user/${email}`;
     };
-
+    #getUserByIdURL = (id) => {
+        return `${this.#SopraDatingServerBaseURL}/user/${id}`;
+    };
     #postUserURL = () => {
         return `${this.#SopraDatingServerBaseURL}/user/1000`
     };
@@ -73,7 +76,7 @@ export default class SopraDatingAPI {
     #getChatMessagesURL = (chatID) => `http://127.0.0.1:8000/message/${chatID}`; //TODO change ID
 
     // Profile related
-    #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
+    #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/personal-profile/by_user/${userID}`;
     #updateProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
     #getAllProfilesURL = () => `${this.#SopraDatingServerBaseURL}/personal-profile/personal_profiles`
 
@@ -87,14 +90,18 @@ export default class SopraDatingAPI {
     #getSearchProfilesURL = (userID) => {
         return `${this.#SopraDatingServerBaseURL}/search-profile/by_user/${userID}`;
     }
-    #addSearchProfileURL = () => {
-        return `${this.#SopraDatingServerBaseURL}/searchprofile`;
+    #addSearchProfileURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/search-profile/by_user/${userID}`;
     }
     #updateSearchProfileURL = (searchprofileID) => {
         return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
     #deleteSearchProfileURL = (searchprofileID) => {
-        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
+        return `${this.#SopraDatingServerBaseURL}/search-profile/${searchprofileID}`;
+    }
+
+    #getInformationsByProfileURL = (profileID) => {
+        return `${this.#SopraDatingServerBaseURL}/information/infos/${profileID}`
     }
 
     // viewedList related
@@ -102,6 +109,9 @@ export default class SopraDatingAPI {
     #getViewedlistURL = (userID) => `${this.#SopraDatingServerBaseURL}/view/${userID}`
 
     // similarityMeasure related
+    #getUsersSortedBySimilarityMeasureURL = (searchprofileID) => {
+        return `${this.#SopraDatingServerBaseURL}/personal-profile/sorted/${searchprofileID}`
+    }
 
 
     /**
@@ -159,7 +169,15 @@ export default class SopraDatingAPI {
                 })
         })
     }
-
+    getUserbyId(id) {
+        return this.#fetchAdvanced(this.#getUserByIdURL(id))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
     postUser(userBO) {
         return this.#fetchAdvanced(this.#postUserURL(), {
             method: 'POST',
@@ -188,7 +206,7 @@ export default class SopraDatingAPI {
     }
 
     addUserToBookmarklist(userID, userBO) {
-        console.log(JSON.stringify(userBO))
+        // console.log(JSON.stringify(userBO))
         return this.#fetchAdvanced(this.#addUserToBookmarklistURL(userID), {
             method: 'POST',
             headers: {
@@ -339,6 +357,16 @@ export default class SopraDatingAPI {
             })
     }
 
+    getProfile(userID) {
+        return this.#fetchAdvanced(this.#getProfileURL(userID))
+            .then((responseJSON) => {
+                let profileBOs = ProfileBO.fromJSON(responseJSON);
+                return new Promise( function (resolve) {
+                    resolve(profileBOs[0])
+                })
+            })
+    }
+
     getSearchProfile(searchprofileID) {
         return this.#fetchAdvanced(this.#getSearchProfileURL(searchprofileID))
             .then((responseJSON) => {
@@ -352,6 +380,7 @@ export default class SopraDatingAPI {
      getSearchProfiles(UserID) {
         return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID))
             .then((responseJSON) => {
+                console.log(responseJSON)
                 let SearchProfileBOs = ProfileBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
                     resolve(SearchProfileBOs)
@@ -359,14 +388,13 @@ export default class SopraDatingAPI {
             })
     }
 
-    addSearchProfile(searchprofileBO) {
-        return this.#fetchAdvanced(this.#addSearchProfileURL(), {
+    addSearchProfile(UserID) {
+        return this.#fetchAdvanced(this.#addSearchProfileURL(UserID), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json'
             },
-            body: JSON.stringify(searchprofileBO)
         })
     }
 
@@ -381,10 +409,25 @@ export default class SopraDatingAPI {
         })
     }
 
-    deleteSearchProfile(searchprofileID) {
-        return this.#fetchAdvanced(this.#deleteSearchProfileURL(searchprofileID), {
+    deleteSearchProfile(profileID) {
+        return this.#fetchAdvanced(this.#deleteSearchProfileURL(profileID), {
             method: 'DELETE'
+        }).then((responseJSON) => {
+            let ProfileBOs = ProfileBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(ProfileBOs);
+            })
         })
+    }
+
+    getInformationsByProfile(profileID) {
+        return this.#fetchAdvanced(this.#getInformationsByProfileURL(profileID))
+            .then((responseJSON) => {
+                let informationBOs = InformationBO.fromJSON(responseJSON);
+                return new Promise( function (resolve) {
+                    resolve(informationBOs)
+                })
+            }).catch(e => console.log(e))
     }
 
     addUserToViewedlist(userID, userBO) {
@@ -405,6 +448,16 @@ export default class SopraDatingAPI {
 
     getViewedlist(userID) {
         return this.#fetchAdvanced(this.#getViewedlistURL(userID))
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(userBOs)
+                })
+        })
+    }
+
+    getUsersSortedBySimilarityMeasure(searchprofileID) {
+        return this.#fetchAdvanced(this.#getUsersSortedBySimilarityMeasureURL(searchprofileID))
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
