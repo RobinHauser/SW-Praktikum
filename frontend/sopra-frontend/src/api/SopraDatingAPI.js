@@ -89,14 +89,14 @@ export default class SopraDatingAPI {
     #getSearchProfilesURL = (userID) => {
         return `${this.#SopraDatingServerBaseURL}/search-profile/by_user/${userID}`;
     }
-    #addSearchProfileURL = () => {
-        return `${this.#SopraDatingServerBaseURL}/searchprofile`;
+    #addSearchProfileURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/search-profile/by_user/${userID}`;
     }
     #updateSearchProfileURL = (searchprofileID) => {
         return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
     #deleteSearchProfileURL = (searchprofileID) => {
-        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
+        return `${this.#SopraDatingServerBaseURL}/search-profile/${searchprofileID}`;
     }
 
     // viewedList related
@@ -369,14 +369,13 @@ export default class SopraDatingAPI {
             })
     }
 
-    addSearchProfile(searchprofileBO) {
-        return this.#fetchAdvanced(this.#addSearchProfileURL(), {
+    addSearchProfile(UserID) {
+        return this.#fetchAdvanced(this.#addSearchProfileURL(UserID), {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json'
             },
-            body: JSON.stringify(searchprofileBO)
         })
     }
 
@@ -391,9 +390,14 @@ export default class SopraDatingAPI {
         })
     }
 
-    deleteSearchProfile(searchprofileID) {
-        return this.#fetchAdvanced(this.#deleteSearchProfileURL(searchprofileID), {
+    deleteSearchProfile(profileID) {
+        return this.#fetchAdvanced(this.#deleteSearchProfileURL(profileID), {
             method: 'DELETE'
+        }).then((responseJSON) => {
+            let ProfileBOs = ProfileBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(ProfileBOs);
+            })
         })
     }
 
