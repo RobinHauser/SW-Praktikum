@@ -227,9 +227,10 @@ class InformationMapper(Mapper):
                 cursor.execute(command4)
                 prop_tuple = cursor.fetchone()
                 prop = prop_tuple[1]
+                is_select = prop_tuple[2]
 
                 if content:
-                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}"}}'
+                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}", "is_select": "{is_select}"}}'
                     content_json = json.loads(jsstr)
 
         self._cnx.commit()
