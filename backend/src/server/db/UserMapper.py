@@ -76,7 +76,7 @@ class UserMapper(Mapper):
             cursor.execute(command3)
             v3 = cursor.fetchall()
 
-            if len(v3) is not 0:
+            if len(v3) != 0:
                 command4 = f'SELECT * FROM block WHERE BlocklistID= {v3[0][0]} AND BlockedUserID = {id}' #Prüft ob User mit id=id Blockiert ist
                 cursor.execute(command4)
                 v4 = cursor.fetchall()
@@ -147,7 +147,7 @@ class UserMapper(Mapper):
         :return: the found user
         """
         cursor = self._cnx.cursor()
-        command = f'SELECT * FROM user WHERE Email = "{email}"'
+        command = f"SELECT * FROM user WHERE Email = '{email}'"
         cursor.execute(command)
         tuples = cursor.fetchone()
 

@@ -435,9 +435,24 @@ class Administration():
     '''
 
 
-    def get_viewed_list_by_user_id(self, user_id):
+    def get_viewed_list_by_user_id(self, id):
         viewedMapper = ViewedMapper()
-        return viewedMapper.find_by_id(user_id)
+        viewed_user = viewedMapper.find_by_id(id)
+
+        if id <= 4000:
+            sorted_user = self.get_all_user_by_id(id)
+        else:
+            search_profile = self.get_profile_by_id(id)
+            sorted_user = self.get_sorted_list_of_personal_profiles(search_profile)
+        if len(viewed_user) == 0 or len(sorted_user) == 0:
+            return sorted_user
+        for user in sorted_user:
+            user.get_user_id()
+            for viewed in viewed_user:
+                if user.get_user_id() == viewed.get_user_id():
+                    sorted_user.remove(user)
+        return sorted_user
+
 
 
     def add_user_to_viewedList(self, user_id, payload):

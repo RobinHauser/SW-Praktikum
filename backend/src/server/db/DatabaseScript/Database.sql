@@ -229,3 +229,22 @@ insert into information (InformationID, ProfileID, ValueID) VALUES (5002, 4004, 
 insert into information (InformationID, ProfileID, ValueID) VALUES (5003, 4002, 7004);
 insert into information (InformationID, ProfileID, ValueID) VALUES (5004, 4001, 7005);
 insert into information (InformationID, ProfileID, ValueID) VALUES (5005, 4006, 7008);
+
+
+-- blocklists erstellen
+insert into blocklist (BlocklistID, UserID) VALUES (1,1);
+insert into blocklist (BlocklistID, UserID) VALUES (2,2);
+insert into blocklist (BlocklistID, UserID) VALUES (3,3);
+insert into blocklist (BlocklistID, UserID) VALUES (4,4);
+insert into blocklist (BlocklistID, UserID) VALUES (5,5);
+insert into blocklist (BlocklistID, UserID) VALUES (6,6);
+
+
+-- bookmarklisten erstellen
+insert into bookmarklist (BookmarklistID, UserID) VALUES (1, 1);
+insert into bookmarklist (BookmarklistID, UserID) VALUES (2, 2);
+insert into bookmarklist (BookmarklistID, UserID) VALUES (3, 3);
+insert into bookmarklist (BookmarklistID, UserID) VALUES (4, 4);
+insert into bookmarklist (BookmarklistID, UserID) VALUES (5, 5);
+insert into bookmarklist (BookmarklistID, UserID) VALUES (6, 6);
+

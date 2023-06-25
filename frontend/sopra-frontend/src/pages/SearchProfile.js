@@ -205,9 +205,6 @@ class SearchProfile extends Component {
         const openSelect = Boolean(anchorElSelect)
         const openFreeText = Boolean(anchorElFreeText)
 
-        console.log(this.state.SearchProfileId)
-        console.log(this.state.searchprofile)
-
         return (
             <div className="App">
                 <AppHeader avatar={this.props.avatar}></AppHeader>

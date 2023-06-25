@@ -205,28 +205,29 @@ class Blocklist_api(Resource):
         return response
 
 
-@view_namespace.route('/<int:user_id>')
+@view_namespace.route('/<int:id>')
 class View_api(Resource):
     # @secured
-    def get(self, user_id):
+    @view_namespace.marshal_list_with(user)
+    def get(self, id):
         """
         get a list of users the given user has been seen
         :param user_id: the id of the user we want to get the viewed list of
         :return: return a list of all users the user hass been seen
         """
         adm = Administration()
-        response = adm.get_viewed_list_by_user_id(user_id)
+        response = adm.get_viewed_list_by_user_id(id)
         return response
 
     # @secured
-    def post(self, user_id):
+    def post(self, id):
         """
         Add a new user to the viewed list
         :param user_id: the id of the user we want to add another user to his viewed list
         :return: the added user
         """
         adm = Administration()
-        response = adm.add_user_to_viewedList(user_id, api.payload)
+        response = adm.add_user_to_viewedList(id, api.payload)
         return response
 
     # @secured
@@ -802,8 +803,8 @@ class All_User_api(Resource):
     def get(self, id):
         """
         Get a specific user by user_id
-        :param user_id:
-        :return: the wanted user
+        :param user_id: id of the user who wants to get all users
+        :return: all users except the user which are blocked by the user with the given id or blocked the user with the given id
         """
         adm = Administration()
         return adm.get_all_user_by_id(id)
