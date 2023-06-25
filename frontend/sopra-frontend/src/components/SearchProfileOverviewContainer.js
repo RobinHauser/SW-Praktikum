@@ -23,6 +23,12 @@ class SearchProfileOverviewContainer extends Component {
         };
     }
 
+    deleteSearchProfileHandler = (searchprofile) => {
+        this.setState({
+            searchprofiles: this.state.searchprofiles.filter(profile => profile.getProfileID() !== searchprofile.getProfileID())
+        });
+    };
+
     getSearchProfiles = () => {
         SopraDatingAPI.getAPI().getSearchProfiles(this.props.user.getUserID())
             .then(SearchProfileBOs => {
@@ -34,6 +40,26 @@ class SearchProfileOverviewContainer extends Component {
             .catch(e => {
                 this.setState({
                     searchprofiles: [],
+                    error: e
+                });
+            });
+    };
+
+    addButtonClick() {
+        this.addSearchProfile();
+        setTimeout(() => {
+            this.getSearchProfiles()
+        }, 100)
+    }
+
+    addSearchProfile = () => {
+        SopraDatingAPI.getAPI().addSearchProfile(this.props.user.getUserID())
+            .then(() => {
+                this.setState({
+                    error: null
+                });
+            }).catch(e => {
+                this.setState({
                     error: e
                 });
             });
@@ -52,17 +78,22 @@ class SearchProfileOverviewContainer extends Component {
                     direction="row"
                     justifyContent="center"
                     flexFlow="column wrap">
-
                     <Grid>
-
                         <List id="searchprofieoverviewlist" sx={{width: '100%', maxWidth: 700}}>
                             {this.state.searchprofiles.map((item) => (
-                                <SearchProfileOverviewItem key={item.getProfileID()} name={"Suchprofil " + item.getProfileID()} profile={item}></SearchProfileOverviewItem>
+                                <SearchProfileOverviewItem key={item.getProfileID()}
+                                                           name={"Suchprofil " + item.getProfileID()}
+                                                           profile={item}
+                                                           onSearchProfileRemoved={this.deleteSearchProfileHandler}
+                                ></SearchProfileOverviewItem>
                             ))}
                         </List>
-                        <Link  to="/SearchProfile">
-                            <Button sx={{marginTop: '20px', fontWeight:'bold'}} variant="outlined" startIcon={<AddIcon />}>Suchprofil hinzufügen</Button>
-                        </Link>
+                            <Button
+                                sx={{marginTop: '20px', fontWeight:'bold', marginBottom: '40px'}}
+                                variant="outlined"
+                                startIcon={<AddIcon />}
+                                onClick={() => this.addButtonClick()}
+                            >Suchprofil hinzufügen</Button>
                     </Grid>
                 </Grid>
             </div>
