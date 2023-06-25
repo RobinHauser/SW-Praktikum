@@ -18,7 +18,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 /**
  * @author [Jannik Haug, Michael Bergdolt]
  */
-class   ExtendedProfileCard extends Component {
+class ExtendedProfileCard extends Component {
     constructor(props) {
         super(props);
 
@@ -33,7 +33,7 @@ class   ExtendedProfileCard extends Component {
      * Calls the API to remove the user from the bookmarklist and to add it to the blocklist
      */
     blockUser = () => {
-        const { showedUser, user } = this.props;
+        const {showedUser, user} = this.props;
         SopraDatingAPI.getAPI().addUserToBlocklist(user.getUserID(), showedUser).then(() => {
             this.setState({
                 addingError: null
@@ -69,20 +69,34 @@ class   ExtendedProfileCard extends Component {
      * Calls the API to add to the bookmarklist
      */
     addUserToBookmarklist = () => {
-        const { showedUser, user} = this.props;
+        const {showedUser, user} = this.props;
         SopraDatingAPI.getAPI().addUserToBookmarklist(user.getUserID(), showedUser).then(() => {
             this.setState({
                 removeError: null
             })
         }).catch(e =>
-        this.setState({
-            removeError: e
-        }))
+            this.setState({
+                removeError: e
+            }))
     }
-
+    addUserToChat = (userToAdd) => {
+        SopraDatingAPI.getAPI().addUserToChat(this.props.user.getUserID(), userToAdd)
+            .then(() => {
+                alert("Der User wurde dem Chat hinzugefügt ")
+            })
+            .catch(error => {
+                alert("Der User kann nicht erneut einem Chat hinzugefügt werden ")
+            })
+    }
+    chatButtonFunction(userToAdd) {
+        let addObject = {
+            "UserID": userToAdd
+        }
+        this.addUserToChat(addObject)
+    }
     render() {
-        const{showedUser} = this.props;
-
+        const {showedUser} = this.props;
+        const showedUserId = parseInt(this.props.showedUser.getUserID())
         return (
             <Box sx={{width: "100%"}}>
                 <DialogContent>
@@ -144,12 +158,9 @@ class   ExtendedProfileCard extends Component {
                             <FavoriteIcon onClick={() => this.addUserToBookmarklist()}
                                           sx={{cursor: 'pointer', width: 35, height: 35}}></FavoriteIcon>
                         </Tooltip>
-                        <Tooltip title="Zum Chat">
-                            <Link to="/Chat">
-                                <ChatIcon sx={{cursor: 'pointer', width: 35, height: 35}}>
-                                </ChatIcon>
-                            </Link>
-                        </Tooltip>
+                            <Tooltip title="User zum Chat hinzufügen">
+                                <ChatIcon onClick={() => this.chatButtonFunction(showedUserId)} sx={{cursor: 'pointer', width: 35, height: 35}}></ChatIcon>
+                            </Tooltip>
                     </Box>
                 </DialogContent>
             </Box>

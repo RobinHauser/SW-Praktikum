@@ -3,11 +3,14 @@ import json
 from flask import Flask, request
 from flask_cors import CORS
 from flask_restx import Resource, Api, Namespace, fields
-from src.server.Administration import Administration
 
-from src.server.bo.SelectionProperty import SelectionProperty
-from src.server.bo.TextProperty import TextProperty
-from src.server.bo.Profile import Profile
+from backend.SecurityDecorator import secured
+from backend.src.server.Administration import Administration
+
+from backend.src.server.bo.SelectionProperty import SelectionProperty
+from backend.src.server.bo.TextProperty import TextProperty
+from backend.src.server.bo.Profile import Profile
+from backend.src.server.bo.User import User
 
 app = Flask(__name__)
 
@@ -107,6 +110,11 @@ text_property = api.inherit('TextProperty', bo, property, {
 
 })
 
+profile_similarity = {
+    'profile': fields.Nested(profile),
+    'similarity': fields.Float
+}
+
 
 @bookmarklist_namespace.route('/<int:user_id>')
 @bookmarklist_namespace.response(500, 'TBD')
@@ -115,6 +123,7 @@ text_property = api.inherit('TextProperty', bo, property, {
 class Bookmarklist_api(Resource):
 
     # @secured
+    @bookmarklist_namespace.marshal_list_with(user)
     def get(self, user_id):
         """
         Getting the bookmark list of a specific user
@@ -126,6 +135,7 @@ class Bookmarklist_api(Resource):
         return response
 
     # @secured
+    @bookmarklist_namespace.marshal_with(user)
     def post(self, user_id):
         """
         Adding a new user to the users bookmarklist
@@ -133,18 +143,21 @@ class Bookmarklist_api(Resource):
         :return: the user that was added to the bookmarklist
         """
         adm = Administration()
-        response = adm.add_user_to_bookmarklist(user_id, api.payload)
+        bookmarked_user = User.from_dict(api.payload)
+        response = adm.add_user_to_bookmarklist(user_id, bookmarked_user)
         return response
 
     # @secured
+    @bookmarklist_namespace.marshal_with(user)
     def delete(self, user_id):
         """
         Removing a user from the users bookmarklist
-        :param user_id: the id of the user we want to remove a user from his bookmarklist
-        :return: the user that was removed to the bookmarklist
+        :param user_id: the id of the user whose bookmarklist we want to remove a user from
+        :return: the user that was removed from the bookmarklist
         """
         adm = Administration()
-        response = adm.remove_user_from_bookmarklist(user_id, api.payload)
+        bookmarked_user = User.from_dict(api.payload)
+        response = adm.remove_user_from_bookmarklist(user_id, bookmarked_user)
         return response
 
 
@@ -154,6 +167,7 @@ class Bookmarklist_api(Resource):
 @blocklist_namespace.response(200, 'TBD')
 class Blocklist_api(Resource):
     # @secured
+    @blocklist_namespace.marshal_list_with(user)
     def get(self, user_id):
         """
         Getting list of all blocked users of a user
@@ -165,25 +179,29 @@ class Blocklist_api(Resource):
         return response
 
     # @secured
+    @blocklist_namespace.marshal_with(user)
     def post(self, user_id):
         """
         Adding a new user to the users blocklist
-        :param user_id: the id of the user we want to add another user to his blocklist
+        :param user_id: the id of the user to whose blocklist we add another user to (from payload)
         :return: the user that was added to the blocklist
         """
         adm = Administration()
-        response = adm.add_user_to_blocklist(user_id, api.payload)
+        new_user = User.from_dict(api.payload)
+        response = adm.add_user_to_blocklist(user_id, new_user)
         return response
 
     # @secured
+    @blocklist_namespace.marshal_with(user)
     def delete(self, user_id):
         """
         Removing a user from the users blocklist
-        :param user_id: the id of the user we want to remove a user from his blocklist
+        :param user_id: the id of the user whose blocklist we want to remove a user from
         :return: the user that was removed from the blocklist
         """
         adm = Administration()
-        response = adm.delete_blocklist(user_id, json.loads(request.data))
+        blocked_user = User.from_dict(api.payload)
+        response = adm.remove_user_from_blocklist(user_id, blocked_user)
         return response
 
 
@@ -283,6 +301,25 @@ class PersonalProfileList_api(Resource):
         adm = Administration()
         response = adm.get_all_personal_profiles()
         return response
+
+
+@personal_profile_namespace.route('/sorted/<int:id>')
+class PersonalProfileSimilarity_api(Resource):
+    @personal_profile_namespace.marshal_list_with(user)
+    def get(self, id):
+        """
+        gets a list of all personal profiles sorted by similarity.
+        :param id: id of the search profile we want to base the similarity on
+        :return: list of all personal profiles sorted by similarity to the given search profile
+        """
+        adm = Administration()
+        search = adm.get_profile_by_id(id)
+        if search is not None:
+            response = adm.get_sorted_list_of_personal_profiles(search)
+            return response
+        else:
+            return '', 500
+
 
 
 @personal_profile_namespace.route('/<int:id>')
@@ -653,17 +690,21 @@ class Information_api(Resource):
         return response
 
 
-@information_namespace.route('/infos')
+@information_namespace.route('/infos/<int:id>')
 class InformationList_api(Resource):
-    @information_namespace.marshal_list_with(information)
-    def get(self):
+    # @information_namespace.marshal_list_with(information)
+    def get(self, id):
         """
-        gets all information objects of a given profile
-        :return: a list of all information objects assigned to the given profile
+        gets the content of all information objects of a given profile
+        :param id: id of the profile we want to get information from
+        :return: a list of the content of all information objects assigned to the given profile
         """
         adm = Administration()
-        prof = Profile.from_dict(api.payload)
-        response = adm.get_infos_from_profile(prof)
+        prof = adm.get_profile_by_id(id)
+        infos = adm.get_infos_from_profile(prof)
+        response = []
+        for info in infos:
+            response.append(adm.get_info_content(info))
         return response
 
 
