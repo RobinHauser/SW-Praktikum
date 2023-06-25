@@ -380,7 +380,7 @@ export default class SopraDatingAPI {
      getSearchProfiles(UserID) {
         return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID))
             .then((responseJSON) => {
-                console.log(responseJSON)
+                // console.log(responseJSON)
                 let SearchProfileBOs = ProfileBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
                     resolve(SearchProfileBOs)

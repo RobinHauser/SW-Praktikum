@@ -133,26 +133,22 @@ export default class GridContainer extends React.Component {
      *
      * @returns {Promise} A promise that resolves when the viewed user list is fetched successfully
      */
-    getViewedlist = () => {
-        return new Promise((resolve, reject) => {
-            // Call the API to get the viewed user list for the current user
-            SopraDatingAPI.getAPI()
-                .getViewedlist(this.props.user.getUserID())
-                .then(UserBOs => {
-                    // Update the viewed user list state
-                    this.setState({
-                        viewedList: UserBOs
-                    });
-                    resolve();
-                })
-                .catch(e => {
-                    // In case of an error, reset the viewed user list state
-                    this.setState({
-                        viewedList: []
-                    });
-                    reject(e);
+    getViewedlist = (id) => {
+        // Call the API to get the viewed user list for the current user
+        SopraDatingAPI.getAPI()
+            .getViewedlist(id)
+            .then(UserBOs => {
+                // Update the viewed user list state
+                this.setState({
+                    userList: UserBOs
                 });
-        });
+            })
+            .catch(e => {
+                // In case of an error, reset the viewed user list state
+                this.setState({
+                    userList: []
+                });
+            });
     };
 
     /**
@@ -173,19 +169,25 @@ export default class GridContainer extends React.Component {
         this.setState({anchorEl: null});
     };
 
-     /**
-      * Handles the click event on a search profile item in the menu
-      *
-      * @param {string} searchprofileID - The selected search profile
-      */
-    handleSearchprofileItemClick = (searchprofileID) => {
+    /**
+     * Handles the click event on a search profile item in the menu
+     *
+     * @param {string} searchprofile - The selected search profile
+     */
+    handleSearchprofileItemClick = (searchprofile) => {
+        this.setState({
+            selectedSearchprofile: searchprofile
+        })
         // Set the selected search profile and close the menu
-        this.getUsersSortedBySimilarityMeasure(searchprofileID)
+        this.getUsersSortedBySimilarityMeasure(searchprofile.getProfileID())
         this.handleCloseSearchprofile()
     };
 
     handleNoSelectionClick = () => {
         // Set the selected search profile and close the menu
+        this.setState({
+            selectedSearchprofile: null
+        })
         this.getAllUsers();
         this.handleCloseSearchprofile();
     };
@@ -194,27 +196,25 @@ export default class GridContainer extends React.Component {
      * Toggles between showing only new users or all users based on the state
      * Updates the user list accordingly
      */
-    handleShowOnlyNewUser = async () => {
-        // Fetch the viewed user list and update the user list based on the showOnlyNewUser state
-        await this.getViewedlist(1); // Todo dynamisch einlesen
-        await this.getUserListBySearchprofile(1);
-        await this.getUserListBySearchprofile(1);
+    handleShowOnlyNewUser = () => {
+        const {showOnlyNewUser, selectedSearchprofile} = this.state
+        this.setState({
+            showOnlyNewUser: !showOnlyNewUser
+        })
 
-        const {userList, viewedList, showOnlyNewUser} = this.state
-
-        // If the viewedList is not empty, filter the nonViewedList based on the viewedUsers
-        let nonViewedList = userList;
-        if (viewedList.length > 0) {
-            nonViewedList = userList.filter(user =>
-                viewedList.some(viewedUser => user.getUserID() !== viewedUser.getUserID())
-            )
+        if (showOnlyNewUser) {
+            if (selectedSearchprofile === null) {
+                this.getViewedlist(this.props.user.getUserID())
+            } else {
+                this.getViewedlist(selectedSearchprofile.getProfileID())
+            }
+        } else {
+            if (selectedSearchprofile === null) {
+                this.getAllUsers()
+            } else {
+                this.getUsersSortedBySimilarityMeasure(selectedSearchprofile.getProfileID())
+            }
         }
-
-        // Toggle the showOnlyNewUser state and update the user list accordingly
-        this.setState(() => ({
-            showOnlyNewUser: !showOnlyNewUser,
-            userList: showOnlyNewUser ? nonViewedList : userList
-        }));
     };
 
     /**
@@ -244,7 +244,7 @@ export default class GridContainer extends React.Component {
                             variant="contained"
                             endIcon={<ArrowDropDownIcon/>}
                         >
-                            {selectedSearchprofile ? selectedSearchprofile : 'Suchprofile'}
+                            {selectedSearchprofile ? `Suchprofil ${selectedSearchprofile.getProfileID()}` : 'Keine Auswahl'}
                         </Button>
                     </Tooltip>
                     <Menu
@@ -261,7 +261,7 @@ export default class GridContainer extends React.Component {
                         </MenuItem>
                         {searchprofiles.map((searchprofileItem) => (
                             <MenuItem
-                                onClick={() => this.handleSearchprofileItemClick(searchprofileItem.getProfileID())}
+                                onClick={() => this.handleSearchprofileItemClick(searchprofileItem)}
                                 sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
                                 key={searchprofileItem.getProfileID()}
                             >
