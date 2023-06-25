@@ -81,11 +81,13 @@ class ProfilePropertySelect extends Component {
     }
 
     render() {
-        const {InformationsBoValue, InformationsBoProp, InformationsBoId} = this.props;
+        const {InformationsBoValue, InformationsBoProp, InformationsBoId, InformationsBoPropId, InformationsBoPropDescr} = this.props;
         const {openDialogSelect, properties, newProperty, isAddingNewProperty} = this.state;
         console.log(InformationsBoValue)
         console.log(InformationsBoProp)
         console.log(InformationsBoId)
+        console.log(InformationsBoPropId)
+        console.log(InformationsBoPropDescr)
         return (
             <div>
                <ListItem
@@ -122,7 +124,11 @@ class ProfilePropertySelect extends Component {
                         isAddingNewProperty={isAddingNewProperty}
                         handleNewPropertyChange={this.handleNewPropertyChange}
                         handleAddProperty={this.handleAddProperty}
-                        value={InformationsBoValue}
+                        InformationsBoProp={InformationsBoProp}
+                        InformationsBoValue={InformationsBoValue}
+                        InformationsBoId={InformationsBoId}
+                        InformationsBoPropId={InformationsBoPropId}
+                        InformationsBoPropDescr={InformationsBoPropDescr}
                     />
             </div>
         );

@@ -81,10 +81,10 @@ class Profile extends Component {
                     loadingProgressProfile: false,
                     error: null
                 }))
-            .then(()=> {
-                setTimeout(()=>{
+            .then(() => {
+                setTimeout(() => {
                     this.getInformations(this.state.personalProfile.getProfileID())
-                },100)
+                }, 100)
             })
             .catch(e =>
                 this.setState({
@@ -102,26 +102,10 @@ class Profile extends Component {
                     informations: responseJSON
                 })
             }).catch(() => {
-                this.setState({
-                    informations: []
-                })
+            this.setState({
+                informations: []
             })
-    }
-    getCurrentUserId = () => {
-        SopraDatingAPI.getAPI().getUser(this.props.email)
-            .then(userBo =>
-                this.setState({
-                    currentUser: userBo,
-                    loadingProgressUser: false,
-                    error: null
-                }))
-            .catch(e =>
-                this.setState({
-                    currentUser: [],
-                    loadingProgressUser: false,
-                    error: e
-                })
-            )
+        })
     }
 
     handleOpenSelectDialog() {
@@ -148,9 +132,9 @@ class Profile extends Component {
         const exampleProperties = ["Value 1", "Value 2", "Value 3"];
         this.setState({properties: exampleProperties});
         console.log(this.props.user)
-            this.setState({
-                currentUser: this.props.user
-            })
+        this.setState({
+            currentUser: this.props.user
+        })
         await this.getPersonalProfile()
 
     }
@@ -310,7 +294,11 @@ class Profile extends Component {
                             }
                         >
                             {informations.map((InformationsBo) => (
-                                <ProfilePropertySelect InformationsBoValue={InformationsBo.getValue()} InformationsBoProp={InformationsBo.getProperty()} InformationsBoId={InformationsBo.getValueID()} />
+                                <ProfilePropertySelect InformationsBoValue={InformationsBo.getValue()}
+                                                       InformationsBoProp={InformationsBo.getProperty()}
+                                                       InformationsBoId={InformationsBo.getValueID()}
+                                                       InformationsBoPropId={InformationsBo.getPropID()}
+                                                       InformationsBoPropDescr={InformationsBo.getPropDescription()}/>
                             ))}
                         </List>
                         <Button

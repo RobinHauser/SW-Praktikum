@@ -11,6 +11,7 @@ import json
 from backend.src.server.bo.Information import Information
 from backend.src.server.db.Mapper import Mapper
 
+
 class InformationMapper(Mapper):
 
     def __init__(self):
@@ -80,7 +81,7 @@ class InformationMapper(Mapper):
         if assignments:
             value_ids = [ass[0] for ass in assignments]
 
-            #Retrieve Informations by ValueID
+            # Retrieve Informations by ValueID
             command2 = "SELECT * FROM information WHERE ValueID IN ({})".format(
                 ','.join(str(v_id) for v_id in value_ids))
             cursor.execute(command2)
@@ -119,7 +120,6 @@ class InformationMapper(Mapper):
             info.set_value_id(value_id)
             result.append(info)
 
-
         self._cnx.commit()
         cursor.close()
 
@@ -138,10 +138,11 @@ class InformationMapper(Mapper):
 
         for maxid in tuples:
             if maxid[0] is not None:
-                if maxid[0]+1 > 6000:
-                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
+                if maxid[0] + 1 > 6000:
+                    raise ValueError(
+                        "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
                 else:
-                    info.set_id(maxid[0]+1)
+                    info.set_id(maxid[0] + 1)
             else:
                 info.set_id(5001)
 
@@ -186,7 +187,6 @@ class InformationMapper(Mapper):
 
         return info
 
-
     #
     # def add_info_to_profile(self, profile_id, payload): #siehe profile methoden
     #     pass
@@ -228,9 +228,11 @@ class InformationMapper(Mapper):
                 prop_tuple = cursor.fetchone()
                 prop = prop_tuple[1]
                 is_select = prop_tuple[2]
+                prop_description = prop_tuple[3]
 
                 if content:
-                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}", "is_select": "{is_select}"}}'
+                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}", "isSelect": "{is_select}", "propDescription": "{prop_description}",' \
+                            f' "propID": "{prop_id}"}}'
                     content_json = json.loads(jsstr)
 
         self._cnx.commit()

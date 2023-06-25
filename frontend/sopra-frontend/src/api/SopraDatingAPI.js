@@ -105,7 +105,7 @@ export default class SopraDatingAPI {
     }
 
     // viewedList related
-    #addUserToViewedlistURL = (userID)=>`${this.#SopraDatingServerBaseURL}/view/${userID}`;
+    #addUserToViewedlistURL = (userID) => `${this.#SopraDatingServerBaseURL}/view/${userID}`;
     #getViewedlistURL = (userID) => `${this.#SopraDatingServerBaseURL}/view/${userID}`
 
     // similarityMeasure related
@@ -113,6 +113,14 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/personal-profile/sorted/${searchprofileID}`
     }
 
+    //property related
+    #getAlleValuesFromPropertyByPropertyIdURL = (propertyID) => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/options/${propertyID}`
+    }
+
+    #deleteSelectionValueItemURL = (valueId) => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/options/${valueId}`
+    }
 
     /**
      * Get the Singleton instance
@@ -147,7 +155,7 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
-        })
+            })
     }
 
     getAllUsersFiltered(userID) {
@@ -157,7 +165,7 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
-        })
+            })
     }
 
     getUser(email) {
@@ -167,8 +175,9 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
-        })
+            })
     }
+
     getUserbyId(id) {
         return this.#fetchAdvanced(this.#getUserByIdURL(id))
             .then((responseJSON) => {
@@ -176,8 +185,9 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
-        })
+            })
     }
+
     postUser(userBO) {
         return this.#fetchAdvanced(this.#postUserURL(), {
             method: 'POST',
@@ -194,7 +204,7 @@ export default class SopraDatingAPI {
         })
     }
 
-    getUserListBySearchprofile(searchProfileID=1) {
+    getUserListBySearchprofile(searchProfileID = 1) {
         return this.#fetchAdvanced(this.#getUserListBySearchprofileURL(searchProfileID))
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
@@ -202,7 +212,7 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
-        })
+            })
     }
 
     addUserToBookmarklist(userID, userBO) {
@@ -294,7 +304,7 @@ export default class SopraDatingAPI {
         })
     }
 
-    addUserToChat(ownUserId ,partnerUserId) {
+    addUserToChat(ownUserId, partnerUserId) {
         return this.#fetchAdvanced(this.#addUserToChatURL(ownUserId), {
             method: 'POST',
             headers: {
@@ -361,7 +371,7 @@ export default class SopraDatingAPI {
         return this.#fetchAdvanced(this.#getProfileURL(userID))
             .then((responseJSON) => {
                 let profileBOs = ProfileBO.fromJSON(responseJSON);
-                return new Promise( function (resolve) {
+                return new Promise(function (resolve) {
                     resolve(profileBOs[0])
                 })
             })
@@ -377,7 +387,7 @@ export default class SopraDatingAPI {
             })
     }
 
-     getSearchProfiles(UserID) {
+    getSearchProfiles(UserID) {
         return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID))
             .then((responseJSON) => {
                 console.log(responseJSON)
@@ -420,7 +430,7 @@ export default class SopraDatingAPI {
         return this.#fetchAdvanced(this.#getInformationsByProfileURL(profileID))
             .then((responseJSON) => {
                 let informationBOs = InformationBO.fromJSON(responseJSON);
-                return new Promise( function (resolve) {
+                return new Promise(function (resolve) {
                     resolve(informationBOs)
                 })
             }).catch(e => console.log(e))
@@ -449,7 +459,7 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
-        })
+            })
     }
 
     getUsersSortedBySimilarityMeasure(searchprofileID) {
@@ -459,6 +469,31 @@ export default class SopraDatingAPI {
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
+            })
+    }
+
+    getAllSelectionValuesByPropertyID(propertyID) {
+        return this.#fetchAdvanced(this.#getAlleValuesFromPropertyByPropertyIdURL(propertyID))
+            .then((responseJSON) => {
+                let informationBO = InformationBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(informationBO)
+                })
+            })
+    }
+    deleteSelectionValueItem(valueId) {
+        return this.#fetchAdvanced(this.#deleteSelectionValueItemURL(valueId), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+        }).then((responseJSON) => {
+            let userBOs = UserBO.fromJSON(responseJSON)[0];
+            // console.info(userBOs);
+            return new Promise(function (resolve) {
+                resolve(userBOs);
+            })
         })
     }
 }
