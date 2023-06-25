@@ -11,12 +11,17 @@ class ViewedMapper(Mapper.Mapper):
     def find_all(self):
         pass
 
-    def find_by_id(self, user_id):
+    def find_by_id(self, id):
         result = []
         cursor = self._cnx.cursor()
 
+        command2 = f'SELECT UserID FROM profile_relation WHERE ProfileID = {id}'
+        cursor.execute(command2)
+        user_id = cursor.fetchall()
+
+
         # Get viewedList id of the user
-        command = "SELECT ViewedListID FROM viewedlist WHERE UserID={}".format(user_id)
+        command = "SELECT ViewedListID FROM viewedlist WHERE UserID={}".format(user_id[0][0])
         cursor.execute(command)
 
         viewedList_id = cursor.fetchone()[0]
@@ -37,9 +42,9 @@ class ViewedMapper(Mapper.Mapper):
         cursor.close()
         return result
 
-    def insert(self, user_id, payload):
+    def insert(self, id, payload):
         cursor = self._cnx.cursor()
-        cursor.execute(f'SELECT ViewedListID FROM viewedlist WHERE UserID = {user_id}')
+        cursor.execute(f'SELECT ViewedListID FROM viewedlist WHERE UserID = {id}')
 
         viewedlist_id = cursor.fetchall()[0][0]
         viewed_user_id = int(payload.get('UserID'))

@@ -435,9 +435,16 @@ class Administration():
     '''
 
 
-    def get_viewed_list_by_user_id(self, user_id):
+    def get_viewed_list_by_user_id(self, id):
         viewedMapper = ViewedMapper()
-        return viewedMapper.find_by_id(user_id)
+        viewed_user = viewedMapper.find_by_id(id)
+        search_profile = self.get_profile_by_id(id)
+        sorted_user = self.get_sorted_list_of_personal_profiles(search_profile)
+        for user in sorted_user:
+            if user in viewed_user:
+                sorted_user.remove(user)
+        return sorted_user
+
 
 
     def add_user_to_viewedList(self, user_id, payload):
