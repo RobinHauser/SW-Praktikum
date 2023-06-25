@@ -15,7 +15,7 @@ To deploy to the database you need to do the following things:
 ## Deploy Frontend
 * go to directory /frontend/sopra-frontend
 * go to the terminal 
-* run the following command: `$ npm run build` ## Deploy Frontend
+* run the following command: `$ npm run build`
 * execute the following command: `$ gcloud config set project sopra-projekt-frontend`
 * run the following command: `$ gcloud app deploy
 
