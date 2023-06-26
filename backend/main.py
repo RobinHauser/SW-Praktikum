@@ -12,6 +12,7 @@ from src.server.bo.User import User
 
 app = Flask(__name__)
 
+# Allowing all resources to have access.
 CORS(app, resources=r'/*')
 
 api = Api(app,
@@ -27,13 +28,13 @@ chat_namespace = Namespace(name="chat", description="This is the Chat")
 message_namespace = Namespace(name="message", description="This is the Message")
 personal_profile_namespace = Namespace(name="personal-profile", description="This is the Profile")
 search_profile_namespace = Namespace(name="search-profile", description="This is the Search Profile")
-view_namespace = Namespace(name="view", description="tbd")
-init_user_namespace = Namespace(name="init-user", description="tbd")
+view_namespace = Namespace(name="view", description="This is the Viewedlist")
+init_user_namespace = Namespace(name="init-user", description="This if for the init user")
 selection_property_namespace = Namespace(name="selection-property", description="This is the selection property")
 text_property_namespace = Namespace(name="text-property", description="This is the text property")
 information_namespace = Namespace(name="information", description="This is the information")
-user_namespace = Namespace(name="user", description="tbd")
-all_user_namespace = Namespace(name="all-user", description="tbd")
+user_namespace = Namespace(name="user", description="This is the user")
+all_user_namespace = Namespace(name="all-user", description="Getting all users")
 
 # Adding the namespaces to the api
 api.add_namespace(bookmarklist_namespace)
@@ -47,7 +48,7 @@ api.add_namespace(init_user_namespace)
 api.add_namespace(selection_property_namespace)
 api.add_namespace(text_property_namespace)
 api.add_namespace(information_namespace)
-api.add_namespace((user_namespace))
+api.add_namespace(user_namespace)
 api.add_namespace(all_user_namespace)
 
 bo = api.model('BusinessObject', {
@@ -115,9 +116,9 @@ profile_similarity = {
 
 
 @bookmarklist_namespace.route('/<int:user_id>')
-@bookmarklist_namespace.response(500, 'TBD')
+@bookmarklist_namespace.response(500, 'Something bad happened in the backend.')
 @bookmarklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
-@bookmarklist_namespace.response(200, 'TBD')
+@bookmarklist_namespace.response(200, 'The request was ok')
 class Bookmarklist_api(Resource):
 
     # @secured
@@ -160,9 +161,9 @@ class Bookmarklist_api(Resource):
 
 
 @blocklist_namespace.route('/<int:user_id>')
-@blocklist_namespace.response(500, 'TBD')
+@blocklist_namespace.response(500, 'Something bad happened in the backend.')
 @blocklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
-@blocklist_namespace.response(200, 'TBD')
+@blocklist_namespace.response(200, 'The request was ok')
 class Blocklist_api(Resource):
     # @secured
     @blocklist_namespace.marshal_list_with(user)
@@ -204,6 +205,9 @@ class Blocklist_api(Resource):
 
 
 @view_namespace.route('/<int:user_id>')
+@view_namespace.response(500, 'Something bad happened in the backend.')
+@view_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@view_namespace.response(200, 'The request was ok')
 class View_api(Resource):
     # @secured
     def get(self, user_id):
@@ -240,6 +244,9 @@ class View_api(Resource):
 
 
 @chat_namespace.route('/<int:user_id>')
+@chat_namespace.response(500, 'Something bad happened in the backend.')
+@chat_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@chat_namespace.response(200, 'The request was ok')
 class Chat_api(Resource):
     def get(self, user_id):
         """
@@ -266,6 +273,9 @@ class Chat_api(Resource):
 
 
 @message_namespace.route('/<int:id>')
+@message_namespace.response(500, 'Something bad happend in the backend.')
+@message_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@message_namespace.response(200, 'The request was ok')
 class Message_api(Resource):
     def get(self, id):  # Chat ID
         """
@@ -289,6 +299,9 @@ class Message_api(Resource):
 
 
 @personal_profile_namespace.route('/personal_profiles')
+@personal_profile_namespace.response(500, 'Something bad happend in the backend.')
+@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfileList_api(Resource):
     @personal_profile_namespace.marshal_list_with(profile)
     def get(self):
@@ -302,6 +315,9 @@ class PersonalProfileList_api(Resource):
 
 
 @personal_profile_namespace.route('/sorted/<int:id>')
+@personal_profile_namespace.response(500, 'Something bad happend in the backend.')
+@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfileSimilarity_api(Resource):
     @personal_profile_namespace.marshal_list_with(user)
     def get(self, id):
@@ -321,6 +337,9 @@ class PersonalProfileSimilarity_api(Resource):
 
 
 @personal_profile_namespace.route('/<int:id>')
+@personal_profile_namespace.response(500, 'Something bad happend in the backend.')
+@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfile_api(Resource):
     @personal_profile_namespace.marshal_with(profile)
     def get(self, id):
@@ -347,6 +366,9 @@ class PersonalProfile_api(Resource):
 
 
 @personal_profile_namespace.route('/by_user/<int:id>')
+@personal_profile_namespace.response(500, 'Something bad happend in the backend.')
+@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfileByUser_api(Resource):
     @personal_profile_namespace.marshal_with(profile)
     def get(self, id):
@@ -374,6 +396,9 @@ class PersonalProfileByUser_api(Resource):
 
 
 @search_profile_namespace.route('/by_user/<int:id>')
+@search_profile_namespace.response(500, 'Something bad happend in the backend.')
+@search_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@search_profile_namespace.response(200, 'The request was ok')
 class SearchProfilesByUser_api(Resource):
     @search_profile_namespace.marshal_list_with(profile)
     def get(self, id):
@@ -401,6 +426,9 @@ class SearchProfilesByUser_api(Resource):
 
 
 @search_profile_namespace.route('/<int:id>')
+@search_profile_namespace.response(500, 'Something bad happend in the backend.')
+@search_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@search_profile_namespace.response(200, 'The request was ok')
 class SearchProfile_api(Resource):
     @search_profile_namespace.marshal_with(profile)
     def get(self, id):
@@ -427,6 +455,9 @@ class SearchProfile_api(Resource):
 
 
 @selection_property_namespace.route('/<int:id>')
+@selection_property_namespace.response(500, 'Something bad happend in the backend.')
+@selection_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@selection_property_namespace.response(200, 'The request was ok')
 class SelectionProperty_api(Resource):
     @selection_property_namespace.marshal_with(selection_property)
     def get(self, id):
@@ -471,6 +502,9 @@ class SelectionProperty_api(Resource):
 
 
 @selection_property_namespace.route('/selection_properties')
+@selection_property_namespace.response(500, 'Something bad happend in the backend.')
+@selection_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@selection_property_namespace.response(200, 'The request was ok')
 class SelectionPropertyList_api(Resource):
     @selection_property_namespace.marshal_with(selection_property)
     def post(self):
@@ -504,6 +538,9 @@ class SelectionPropertyList_api(Resource):
 
 
 @selection_property_namespace.route('/options/<int:id>')
+@selection_property_namespace.response(500, 'Something bad happend in the backend.')
+@selection_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@selection_property_namespace.response(200, 'The request was ok')
 class SelectionPropertyOptions_api(Resource):
     def get(self, id):
         """
@@ -539,6 +576,9 @@ class SelectionPropertyOptions_api(Resource):
 
 
 @text_property_namespace.route('/<int:id>')
+@text_property_namespace.response(500, 'Something bad happend in the backend.')
+@text_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@text_property_namespace.response(200, 'The request was ok')
 class TextProperty_api(Resource):
     @text_property_namespace.marshal_with(text_property)
     def get(self, id):
@@ -583,6 +623,9 @@ class TextProperty_api(Resource):
 
 
 @text_property_namespace.route('/text_properties')
+@text_property_namespace.response(500, 'Something bad happend in the backend.')
+@text_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@text_property_namespace.response(200, 'The request was ok')
 class TextPropertyList_api(Resource):
     @text_property_namespace.marshal_with(text_property)
     def post(self):
@@ -615,6 +658,9 @@ class TextPropertyList_api(Resource):
 
 
 @text_property_namespace.route('/entries/<int:id>')
+@text_property_namespace.response(500, 'Something bad happend in the backend.')
+@text_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@text_property_namespace.response(200, 'The request was ok')
 class TextPropertyEntries_api(Resource):
     def post(self, id):
         """
@@ -639,6 +685,9 @@ class TextPropertyEntries_api(Resource):
 
 
 @information_namespace.route('/<int:id>')
+@information_namespace.response(500, 'Something bad happend in the backend.')
+@information_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@information_namespace.response(200, 'The request was ok')
 class Information_api(Resource):
     @information_namespace.marshal_with(information)
     def post(self, id):
@@ -689,6 +738,9 @@ class Information_api(Resource):
 
 
 @information_namespace.route('/infos/<int:id>')
+@information_namespace.response(500, 'Something bad happend in the backend.')
+@information_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@information_namespace.response(200, 'The request was ok')
 class InformationList_api(Resource):
     # @information_namespace.marshal_list_with(information)
     def get(self, id):
@@ -707,6 +759,9 @@ class InformationList_api(Resource):
 
 
 @information_namespace.route('/content/<int:id>')
+@information_namespace.response(500, 'Something bad happend in the backend.')
+@information_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@information_namespace.response(200, 'The request was ok')
 class InformationContent_api(Resource):
     def get(self, id):
         """
@@ -724,6 +779,9 @@ class InformationContent_api(Resource):
 
 
 @init_user_namespace.route('/<string:email>')
+@init_user_namespace.response(500, 'Something bad happend in the backend.')
+@init_user_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@init_user_namespace.response(200, 'The request was ok')
 class Init_user_api(Resource):
     @init_user_namespace.marshal_with(user, code=200)
     def get(self, email):
@@ -737,6 +795,9 @@ class Init_user_api(Resource):
 
 
 @user_namespace.route('/<int:id>')
+@user_namespace.response(500, 'Something bad happend in the backend.')
+@user_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@user_namespace.response(200, 'The request was ok')
 class User_api(Resource):
     """
     HINT: The user_id 1000 returns all users
@@ -794,6 +855,9 @@ class User_api(Resource):
 
 
 @all_user_namespace.route('/<int:id>')
+@all_user_namespace.response(500, 'Something bad happend in the backend.')
+@all_user_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@all_user_namespace.response(200, 'The request was ok')
 class All_User_api(Resource):
 
     @user_namespace.marshal_with(user, code=200)

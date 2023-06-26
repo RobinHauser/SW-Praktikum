@@ -1,23 +1,22 @@
 from abc import ABC, abstractmethod
 from contextlib import AbstractContextManager
-import mysql
 import mysql.connector as connector
 
 
 class Mapper(AbstractContextManager, ABC):
 
     def __init__(self):
-
         self._cnx = connector.connect(user='root', password='sopra_2023', host="localhost", database='datenbank')
 
     def __enter__(self):
-
         self._cnx = connector.connect(user='root', password='sopra_2023', host="localhost", database='datenbank')
 
         return self
 
-
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        This is closing the database connection
+        """
         self._cnx.close()
 
     @abstractmethod
@@ -39,6 +38,3 @@ class Mapper(AbstractContextManager, ABC):
     @abstractmethod
     def delete(self, object, payload):
         pass
-
-
-
