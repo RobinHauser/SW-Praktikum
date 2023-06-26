@@ -12,7 +12,6 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Typography from "@mui/material/Typography";
-import UserBO from "../api/UserBO";
 
 export default class GridContainer extends React.Component {
     constructor(props) {
@@ -37,7 +36,7 @@ export default class GridContainer extends React.Component {
                 user: user
             })
         })
-        this.getAllUsers()
+        await this.getAllUsers()
         await this.getSearchProfiles()
     }
 

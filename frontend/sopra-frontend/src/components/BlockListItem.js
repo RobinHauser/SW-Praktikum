@@ -44,7 +44,7 @@ export default class BlockListItem extends React.Component{
 
     render() {
         const{blockedUser}=this.props;
-        console.log(blockedUser)
+        // console.log(blockedUser)
 
         return (
             <ListItem
