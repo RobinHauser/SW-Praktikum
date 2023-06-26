@@ -64,12 +64,9 @@ class UserMapper(Mapper):
             except IndexError:
                 result = None
 
-
         for user in result:
             if int(user.get_user_id()) == int(id):
                 result.remove(user)
-
-        print(result)
 
         for blocklist in result:
             command3 = f'SELECT * FROM blocklist WHERE UserID={blocklist.get_user_id()}' #Iteriert durch alle Blocklists der User
