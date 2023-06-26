@@ -16,8 +16,11 @@ export default class SopraDatingAPI {
     // Singleton instance
     static #api = null;
 
+    // deployed Python backend
+    // #SopraDatingServerBaseURL = 'https://sopra-projekt-390609.ey.r.appspot.com/';
+
     // Local Python backend
-    #SopraDatingServerBaseURL = 'https://sopra-projekt-390609.ey.r.appspot.com/';
+    #SopraDatingServerBaseURL = 'http://127.0.0.1:8000'
 
     // Local http-fake-backend
     //#SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
