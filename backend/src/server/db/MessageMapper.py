@@ -1,5 +1,5 @@
-from backend.src.server.bo import Message
-from backend.src.server.db import Mapper
+from src.server.bo import Message
+from src.server.db import Mapper
 import json
 Message = Message.Message
 
