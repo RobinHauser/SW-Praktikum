@@ -1,4 +1,4 @@
-from backend.src.server.bo.BusinessObject import BusinessObject
+from src.server.bo.BusinessObject import BusinessObject
 
 
 class Chat(BusinessObject):
