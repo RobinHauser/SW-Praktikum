@@ -446,8 +446,8 @@ class Administration():
             sorted_user = self.get_sorted_list_of_personal_profiles(search_profile)
         if len(viewed_user) == 0 or len(sorted_user) == 0:
             return sorted_user
-        for user in sorted_user:
-            user.get_user_id()
+        sorted_user1 = sorted_user.copy()
+        for user in sorted_user1:
             for viewed in viewed_user:
                 if user.get_user_id() == viewed.get_user_id():
                     sorted_user.remove(user)

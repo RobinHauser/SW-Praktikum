@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import List from "@mui/material/List";
-import {ListItem} from "@mui/material";
+import {Alert, ListItem} from "@mui/material";
 import placeHolderImage from "../static/images/profileImagePlaceholder.jpeg";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
@@ -24,7 +24,9 @@ class ExtendedProfileCard extends Component {
 
         this.state = {
             addingError: null,
-            removeError: null
+            removeError: null,
+            successAlert: "",
+            warningAlert: ""
         }
     }
 
@@ -72,8 +74,12 @@ class ExtendedProfileCard extends Component {
         const { showedUser, user} = this.props;
         SopraDatingAPI.getAPI().addUserToBookmarklist(user.getUserID(), showedUser).then(() => {
             this.setState({
-                removeError: null
+                removeError: null,
+                successAlert: "User zur Merkliste hinzugefügt"
             })
+            setTimeout(() => {
+                this.setState({ successAlert: "" });
+            }, 3000);
         }).catch(e =>
         this.setState({
             removeError: e
@@ -82,10 +88,21 @@ class ExtendedProfileCard extends Component {
     addUserToChat = (userToAdd) => {
         SopraDatingAPI.getAPI().addUserToChat(this.props.user.getUserID(), userToAdd)
             .then(() => {
-                alert("Der User wurde dem Chat hinzugefügt ")
+                this.setState({
+                    removeError: null,
+                    successAlert: "User zum Chat hinzugefügt"
+                })
+                setTimeout(() => {
+                    this.setState({ successAlert: "" });
+                }, 3000);
             })
             .catch(error => {
-                alert("Der User kann nicht erneut einem Chat hinzugefügt werden ")
+                this.setState({
+                    warningAlert: "Der User kann nicht erneut zum Chat hinzugefügt werden"
+                })
+                setTimeout(() => {
+                    this.setState({warningAlert: ""})
+                }, 3000)
             })
     }
     chatButtonFunction(userToAdd) {
@@ -96,6 +113,7 @@ class ExtendedProfileCard extends Component {
     }
     render() {
         const {showedUser, informations} = this.props;
+        const {successAlert, warningAlert} = this.state;
         const showedUserId = parseInt(this.props.showedUser.getUserID())
         return (
             <Box sx={{width: "100%"}}>
@@ -126,6 +144,12 @@ class ExtendedProfileCard extends Component {
                                 <ChatIcon onClick={() => this.chatButtonFunction(showedUserId)} sx={{cursor: 'pointer', width: 35, height: 35}}></ChatIcon>
                             </Tooltip>
                     </Box>
+                    {successAlert.length > 0 && (
+                        <Alert severity="success"> {successAlert}</Alert>
+                    )}
+                    {warningAlert.length > 0 && (
+                        <Alert severity="warning"> {warningAlert}</Alert>
+                    )}
                 </DialogContent>
             </Box>
         )
