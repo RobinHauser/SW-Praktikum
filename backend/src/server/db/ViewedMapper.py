@@ -28,6 +28,9 @@ class ViewedMapper(Mapper.Mapper):
         command = "SELECT ViewedListID FROM viewedlist WHERE UserID={}".format(user_id[0][0])
         cursor.execute(command)
 
+        if len(cursor.fetchall()) == 0:
+            return result
+
         viewedList_id = cursor.fetchone()[0]
 
         command = "SELECT UserID FROM view WHERE ViewedListID={}".format(viewedList_id)
@@ -59,6 +62,14 @@ class ViewedMapper(Mapper.Mapper):
 
         viewedlist_id = cursor.fetchall()[0][0]
         viewed_user_id = int(payload.get('UserID'))
+
+        command = f'SELECT * FROM view WHERE ViewedListID = {viewedlist_id}'
+        cursor.execute(command)
+        users = cursor.fetchall()
+
+        for user in users:
+            if user[2] == viewed_user_id:
+                return payload
 
 
         cursor.execute(f'INSERT INTO view (ViewedListID, UserID) VALUES ({viewedlist_id}, {viewed_user_id})')

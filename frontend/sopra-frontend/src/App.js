@@ -163,7 +163,7 @@ class App extends React.Component {
                         <Route path={'/'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
                         <Route path={'/*'} element={currentUser ? <Navigate replace to={'/main'}/> : <SignIn onSignIn={this.handleSignIn}/>}/>
                         <Route path={'/main'} element={<Secured user={currentUser}><Main avatar={profileImageURL} user={user} onUserLogin={this.getUser}/> </Secured>}/>
-                        <Route path={'/profile'} element={<Secured user={currentUser}><Profile avatar={profileImageURL} name={profileDisplayName} email={profileEmail}/> </Secured>}/>
+                        <Route path={'/profile'} element={<Secured user={currentUser}><Profile avatar={profileImageURL} name={profileDisplayName} email={profileEmail} onUserLogin={this.getUser} user={user}/> </Secured>}/>
                         <Route path={'/bookmarkList'} element={<Secured user={currentUser}><BookmarkList avatar={profileImageURL} user={user}/> </Secured>}/>
                         <Route path={'/blockList'} element={<Secured user={currentUser}><BlockList avatar={profileImageURL} user={user}/> </Secured>}/>
                         <Route path={'/searchProfileOverview'} element={<Secured user={currentUser}><SearchProfileOverview avatar={profileImageURL} user={user}/> </Secured>}/>

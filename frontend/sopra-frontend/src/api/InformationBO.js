@@ -5,19 +5,26 @@ import BusinessObject from './BusinessObject';
  */
 export default class InformationBO extends BusinessObject {
 
+
     /**
      * Constructs a new Information object.
      *
      * @param {int} valueID - id of Information
      * @param {str} value - Value of the information
      * @param {str} property - Property of the InformationBO
+     * @param {str} isSelect - Binary information if the property is a select or text type
+     * @param {str} propDescription - Description of the property
+     * @param {int} propID - id of property
      *
      */
-    constructor(valueID, value, property) {
+    constructor(valueID, value, property, isSelect, propDescription, propID ) {
         super();
         this.property = property;
         this.valueID = valueID;
         this.value = value;
+        this.propDescription = propDescription;
+        this.propID = propID
+        this.isSelect = isSelect;
     }
 
     /**
@@ -73,7 +80,57 @@ export default class InformationBO extends BusinessObject {
     getValue() {
         return this.value;
     }
+    /**
+     * Sets the isSelect of this InformationBO.
+     *
+     * @param {int} isSelect - the new isSelect of this InformationBO.
+     */
+    setIsSelect(isSelect) {
+        this.isSelect = isSelect;
+    }
 
+    /**
+     * Gets the isSelect of this InformationBo
+     *
+     * @return {int} isSelect - the isSelect of this InformationBO
+     */
+    getIsSelect() {
+        return this.isSelect;
+    }
+    /**
+     * Sets the propDescription of this InformationBO.
+     *
+     * @param {str} propDescription - the new propDescription of this InformationBO.
+     */
+    setPropDescription(propDescription) {
+        this.propDescription = propDescription;
+    }
+
+    /**
+     * Gets the propDescription of this InformationBo
+     *
+     * @return {str} propDescription - the propDescription of this InformationBO
+     */
+    getPropDescription() {
+        return this.propDescription;
+    }
+        /**
+     * Sets the propID of this InformationBO.
+     *
+     * @param {int} propID - the new propID of this InformationBO.
+     */
+    setPropID(propID) {
+        this.propID = propID;
+    }
+
+    /**
+     * Gets the propID of this InformationBo
+     *
+     * @return {int} propID - the propID of this InformationBO
+     */
+    getPropID() {
+        return this.propID;
+    }
     /**
      * Returns an Array of UserBOs from a given JSON structure
      */
