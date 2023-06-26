@@ -10,6 +10,11 @@ class ChatMapper(Mapper.Mapper):
         super().__init__()
 
     def find_all(self, user_id):
+        """
+        Returns a list of all other users a user(with a user_id) has blocked
+        :param user_id: the unique id of the user
+        :return: list of all chats this user has
+        """
         result = []
         cursor = self._cnx.cursor()
         cursor.execute(f'SELECT ChatID FROM chatrelation WHERE UserID={user_id}')
@@ -33,7 +38,7 @@ class ChatMapper(Mapper.Mapper):
                             jsstr = f'{{"userID": "{user[0]}", "email": "{user[1]}", "displayName": "{user[2]}","profileImgUrl": "{user[3]}", "chatID": "{i[0]}"}}'
                             user_json = json.loads(jsstr)
                             result.append(user_json)
-                            #TODO userID mit kleinem oder großem "u"?
+
 
         self._cnx.commit()
         cursor.close()
@@ -44,6 +49,11 @@ class ChatMapper(Mapper.Mapper):
         pass
 
     def insert(self, user_id, payload):     # Own User_ID and in Payload User_ID of the other User
+        """
+        Returns a list of all other users a user(with a user_id) has blocked
+        :param user_id: the unique id of the user, and payload
+        :return: new chat
+        """
         result = []
         cursor = self._cnx.cursor()
 

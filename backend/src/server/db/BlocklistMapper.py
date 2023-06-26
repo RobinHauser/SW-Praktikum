@@ -70,9 +70,11 @@ class BlocklistMapper(Mapper.Mapper):
         cursor = self._cnx.cursor()
         cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')   #TODO BlocklistID schon vorher gesetzt?
 
+        #Get blocklist id out of SQL Command
         blocklist_id = cursor.fetchall()[0][0]
         blocked_user_id = blocked_user.get_user_id()
 
+        # Insert User into block - Blocklist relation Table
         cursor.execute(
             f'INSERT INTO block (BlocklistID, BlockedUserID) VALUES ({blocklist_id}, {blocked_user_id})')
 
