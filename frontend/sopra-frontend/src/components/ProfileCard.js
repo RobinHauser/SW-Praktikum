@@ -2,12 +2,12 @@ import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 import Avatar from "@mui/material/Avatar";
 import {Component} from "react";
 import Dialog from "@mui/material/Dialog";
 import ExtendedProfileCard from "./ExtendedProfileCard";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import {ListItem, ListItemText} from "@mui/material";
 
 /**
  * @author [Jannik Haug, Theo Klautke, Michael Bergdolt]
@@ -19,13 +19,45 @@ class ProfileCard extends Component {
         this.state = {
             openDialog: false,
             selectedValue: null,
-            addingError: null
+            addingError: null,
+            showedProfile: null,
+            informations: []
         };
 
         this.handleOpenDialog = this.handleOpenDialog.bind(this);
         this.handleCloseDialog = this.handleCloseDialog.bind(this);
     }
+    async componentDidMount() {
+        const profile = this.getProfileOfShowedUser();
+        await this.setState({
+            showedProfile: profile
+        })
+        this.getInformationsByProfile();
+    }
 
+    getProfileOfShowedUser = () => {
+        return SopraDatingAPI.getAPI().getProfile(this.props.showedUser.getUserID())
+            .then(responseJSON => {
+                return new Promise( (resolve) => {
+                    resolve(responseJSON)
+                })
+            })
+    }
+
+    getInformationsByProfile = () => {
+        this.state.showedProfile.then((profile) => {
+            SopraDatingAPI.getAPI().getInformationsByProfile(profile.getProfileID())
+            .then(responseJSON => {
+                this.setState({
+                    informations: responseJSON
+                })
+            }).catch(() => {
+                this.setState({
+                    informations: []
+                })
+            })
+        })
+    }
     /**
      * Adds the user to the viewed user list.
      * Calls the API to update the viewed user list in the backend.
@@ -67,7 +99,7 @@ class ProfileCard extends Component {
     }
 
     render() {
-        const {openDialog} = this.state;
+        const {openDialog, informations} = this.state;
         const {showedUser, onUserRemoved} = this.props;
 
         return (
@@ -92,27 +124,15 @@ class ProfileCard extends Component {
                         <Typography gutterBottom variant="h5" component="div">
                             {showedUser.getDisplayname()}
                         </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Alter:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Geschlecht:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Raucher:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Religion:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Haarfarbe:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Geburtsdatum:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Körpergröße:
-                        </Typography>
+                        {informations.length > 0 ? (
+                            informations.map((informationListItem) => (
+                                <Typography key={informationListItem.getValueID()} variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                                    {`${informationListItem.getProperty()}: ${informationListItem.getValue()}`}
+                                </Typography>
+                            ))
+                        ) : (
+                            <Typography variant="body1">Keine Informationen zu diesem Profil vorhanden</Typography>
+                        )}
                     </CardContent>
                 </Card>
                 <Dialog open={openDialog} onClose={() => this.handleCloseDialog(null)}>
@@ -120,7 +140,8 @@ class ProfileCard extends Component {
                     <ExtendedProfileCard
                         showedUser={showedUser}
                         onUserRemoved={onUserRemoved}
-                        user={this.props.user}>
+                        user={this.props.user}
+                        informations={this.state.informations}>
                     </ExtendedProfileCard>
                 </Dialog>
             </div>

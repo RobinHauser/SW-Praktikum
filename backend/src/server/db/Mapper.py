@@ -10,7 +10,6 @@ class Mapper(AbstractContextManager, ABC):
 
     def __enter__(self):
         self._cnx = connector.connect(user='root', password='sopra_2023', host="localhost", database='datenbank')
-
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

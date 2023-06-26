@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, request
 from flask_cors import CORS
 from flask_restx import Resource, Api, Namespace, fields
@@ -116,9 +118,9 @@ profile_similarity = {
 
 
 @bookmarklist_namespace.route('/<int:user_id>')
-@bookmarklist_namespace.response(500, 'Something bad happened in the backend.')
+@bookmarklist_namespace.response(500, 'TBD')
 @bookmarklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
-@bookmarklist_namespace.response(200, 'The request was ok')
+@bookmarklist_namespace.response(200, 'TBD')
 class Bookmarklist_api(Resource):
 
     # @secured
@@ -161,9 +163,9 @@ class Bookmarklist_api(Resource):
 
 
 @blocklist_namespace.route('/<int:user_id>')
-@blocklist_namespace.response(500, 'Something bad happened in the backend.')
+@blocklist_namespace.response(500, 'TBD')
 @blocklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
-@blocklist_namespace.response(200, 'The request was ok')
+@blocklist_namespace.response(200, 'TBD')
 class Blocklist_api(Resource):
     # @secured
     @blocklist_namespace.marshal_list_with(user)
@@ -204,31 +206,32 @@ class Blocklist_api(Resource):
         return response
 
 
-@view_namespace.route('/<int:user_id>')
 @view_namespace.response(500, 'Something bad happened in the backend.')
 @view_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @view_namespace.response(200, 'The request was ok')
+@view_namespace.route('/<int:id>')
 class View_api(Resource):
     # @secured
-    def get(self, user_id):
+    @view_namespace.marshal_list_with(user)
+    def get(self, id):
         """
         get a list of users the given user has been seen
         :param user_id: the id of the user we want to get the viewed list of
         :return: return a list of all users the user hass been seen
         """
         adm = Administration()
-        response = adm.get_viewed_list_by_user_id(user_id)
+        response = adm.get_viewed_list_by_user_id(id)
         return response
 
     # @secured
-    def post(self, user_id):
+    def post(self, id):
         """
         Add a new user to the viewed list
         :param user_id: the id of the user we want to add another user to his viewed list
         :return: the added user
         """
         adm = Administration()
-        response = adm.add_user_to_viewedList(user_id, api.payload)
+        response = adm.add_user_to_viewedList(id, api.payload)
         return response
 
     # @secured
@@ -244,9 +247,6 @@ class View_api(Resource):
 
 
 @chat_namespace.route('/<int:user_id>')
-@chat_namespace.response(500, 'Something bad happened in the backend.')
-@chat_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
-@chat_namespace.response(200, 'The request was ok')
 class Chat_api(Resource):
     def get(self, user_id):
         """
@@ -864,8 +864,8 @@ class All_User_api(Resource):
     def get(self, id):
         """
         Get a specific user by user_id
-        :param user_id:
-        :return: the wanted user
+        :param user_id: id of the user who wants to get all users
+        :return: all users except the user which are blocked by the user with the given id or blocked the user with the given id
         """
         adm = Administration()
         return adm.get_all_user_by_id(id)

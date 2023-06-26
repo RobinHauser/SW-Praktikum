@@ -7,7 +7,7 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveCircleSharpIcon from "@mui/icons-material/RemoveCircleSharp";
 import InfoSelectDialog from "./InfoSelectDialog";
-
+import InformationBO from "../api/InformationBO";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -81,14 +81,19 @@ class ProfilePropertySelect extends Component {
     }
 
     render() {
-        const {value} = this.props;
+        const {InformationsBoValue, InformationsBoProp, InformationsBoId, InformationsBoPropId, InformationsBoPropDescr} = this.props;
         const {openDialogSelect, properties, newProperty, isAddingNewProperty} = this.state;
+        console.log(InformationsBoValue)
+        console.log(InformationsBoProp)
+        console.log(InformationsBoId)
+        console.log(InformationsBoPropId)
+        console.log(InformationsBoPropDescr)
         return (
             <div>
                <ListItem
                     sx={{ '&:hover': { bgcolor: '#c6e2ff' }, borderRadius: '10px' }}
                >
-                    <ListItemText primary={`Eigenschaft ${value}: Value`} />
+                    <ListItemText primary={`Eigenschaft ${InformationsBoProp}: ${InformationsBoValue}` } />
                     <ListItemSecondaryAction>
                         <Tooltip title="Auswahl-Eigenschaft bearbeiten">
                           <IconButton onClick={this.handleOpenDialogSelect}>
@@ -119,7 +124,11 @@ class ProfilePropertySelect extends Component {
                         isAddingNewProperty={isAddingNewProperty}
                         handleNewPropertyChange={this.handleNewPropertyChange}
                         handleAddProperty={this.handleAddProperty}
-                        value={value}
+                        InformationsBoProp={InformationsBoProp}
+                        InformationsBoValue={InformationsBoValue}
+                        InformationsBoId={InformationsBoId}
+                        InformationsBoPropId={InformationsBoPropId}
+                        InformationsBoPropDescr={InformationsBoPropDescr}
                     />
             </div>
         );
