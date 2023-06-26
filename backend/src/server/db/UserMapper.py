@@ -100,8 +100,6 @@ class UserMapper(Mapper):
                         if int(user.get_user_id()) == int(blocklist[2]):
                             result.remove(user)                            # Removes all blocked users of unique user from result
 
-        print(result)
-
         self._cnx.commit()
         cursor.close()
 
