@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import IconButton from "@mui/material/IconButton";
 import EditSharpIcon from '@mui/icons-material/EditSharp';
 import {ListItem, ListItemText} from "@mui/material";
@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveCircleSharpIcon from "@mui/icons-material/RemoveCircleSharp";
 import InfoSelectDialog from "./InfoSelectDialog";
 import InformationBO from "../api/InformationBO";
+import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -38,18 +39,51 @@ class ProfilePropertySelect extends Component {
         this.setState({properties: exampleProperties});
     }
 
+    deletePropertyFromSystemButton = () => {
+        console.log(this.props.InformationsBoPropId)
+        this.deleteProperty(this.props.InformationsBoPropId)
+    }
+    deleteProperty = (propertyId) => {
+        SopraDatingAPI.getAPI().deletePropertyFromSystemById(propertyId).then(() => {
+            this.setState({
+                deletingError: null
+            });
+            alert("Löschen aus dem System war erfolgreich")
+            //this.props.onUserRemoved(blockedUser);
+        }).catch(e => {
+            this.setState({
+                deletingError: e
+            });
+        });
+    }
+    deleteInformationFromProfileButton = () => {
+        this.deleteInformation(this.props.InformationsBoInfoId)
+    }
+    deleteInformation = (informationId) => {
+        SopraDatingAPI.getAPI().deleteInformationById(informationId).then(() => {
+            this.setState({
+                deletingError: null
+            });
+            alert("Löschen aus dem System war erfolgreich")
+            //this.props.onUserRemoved(blockedUser);
+        }).catch(e => {
+            this.setState({
+                deletingError: e
+            });
+        });
+    }
+
     handleOpenDialogSelect() {
         this.setState({openDialogSelect: true});
     }
 
     handleCloseDialogInfo() {
-        const { isAddingNewProperty } = this.state;
+        const {isAddingNewProperty} = this.state;
         console.log(this.state.openDialogSelect)
         if (isAddingNewProperty) {
-            this.setState({ isAddingNewProperty: false });
-        }
-        else {
-            this.setState({ openDialogSelect: false });
+            this.setState({isAddingNewProperty: false});
+        } else {
+            this.setState({openDialogSelect: false});
         }
     }
 
@@ -58,17 +92,17 @@ class ProfilePropertySelect extends Component {
     }
 
     handleDeleteItemClick(value) {
-      const { properties } = this.state;
-      const updatedProperties = properties.filter((property) => property !== value);
-      this.setState({ properties: updatedProperties });
+        const {properties} = this.state;
+        const updatedProperties = properties.filter((property) => property !== value);
+        this.setState({properties: updatedProperties});
     }
 
     handleAddItemClick() {
-        this.setState({openDialogSelect:true, isAddingNewProperty: true });
+        this.setState({openDialogSelect: true, isAddingNewProperty: true});
     }
 
     handleNewPropertyChange(event) {
-        this.setState({newProperty: event.target.value });
+        this.setState({newProperty: event.target.value});
     }
 
     handleAddProperty() {
@@ -81,55 +115,64 @@ class ProfilePropertySelect extends Component {
     }
 
     render() {
-        const {InformationsBoValue, InformationsBoProp, InformationsBoId, InformationsBoPropId, InformationsBoPropDescr} = this.props;
+        const {
+            InformationsBoValue,
+            InformationsBoProp,
+            InformationsBoId,
+            InformationsBoPropId,
+            InformationsBoPropDescr,
+            InformationsBoInfoId
+        } = this.props;
         const {openDialogSelect, properties, newProperty, isAddingNewProperty} = this.state;
         console.log(InformationsBoValue)
         console.log(InformationsBoProp)
         console.log(InformationsBoId)
         console.log(InformationsBoPropId)
         console.log(InformationsBoPropDescr)
+        console.log(InformationsBoInfoId)
         return (
             <div>
-               <ListItem
-                    sx={{ '&:hover': { bgcolor: '#c6e2ff' }, borderRadius: '10px' }}
-               >
-                    <ListItemText primary={`Eigenschaft ${InformationsBoProp}: ${InformationsBoValue}` } />
+                <ListItem
+                    sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}
+                >
+                    <ListItemText primary={`Eigenschaft ${InformationsBoProp}: ${InformationsBoValue}`}/>
                     <ListItemSecondaryAction>
                         <Tooltip title="Auswahl-Eigenschaft bearbeiten">
-                          <IconButton onClick={this.handleOpenDialogSelect}>
-                            <EditSharpIcon />
-                          </IconButton>
+                            <IconButton onClick={this.handleOpenDialogSelect}>
+                                <EditSharpIcon/>
+                            </IconButton>
                         </Tooltip>
-                        <Tooltip title="Eigenschaft aus Profil entfernen">
-                          <IconButton onClick={this.handleRemoveItemClick}>
-                            <RemoveCircleSharpIcon/>
-                          </IconButton>
+                        <Tooltip title="Information aus Profil entfernen">
+                            <IconButton onClick={this.deleteInformationFromProfileButton}>
+                                <RemoveCircleSharpIcon/>
+                            </IconButton>
                         </Tooltip>
-                        <Tooltip title="Eigenschaft aus App löschen">
-                          <IconButton onClick={this.handleDeleteItemClick}>
-                            <DeleteIcon />
-                          </IconButton>
+                        <Tooltip title="Eigenschaft aus dem System entfernen">
+                            <IconButton onClick={this.deletePropertyFromSystemButton}>
+                                <DeleteIcon/>
+                            </IconButton>
                         </Tooltip>
-                      </ListItemSecondaryAction>
-                    </ListItem>
+                    </ListItemSecondaryAction>
+                </ListItem>
 
-                    <InfoSelectDialog
-                        openDialogSelect={openDialogSelect}
-                        handleCloseDialogInfo={this.handleCloseDialogInfo}
-                        handleListItemClick={this.handleListItemClick}
-                        handleDeleteItemClick={this.handleDeleteItemClick}
-                        handleAddItemClick={this.handleAddItemClick}
-                        properties={properties}
-                        newProperty={newProperty}
-                        isAddingNewProperty={isAddingNewProperty}
-                        handleNewPropertyChange={this.handleNewPropertyChange}
-                        handleAddProperty={this.handleAddProperty}
-                        InformationsBoProp={InformationsBoProp}
-                        InformationsBoValue={InformationsBoValue}
-                        InformationsBoId={InformationsBoId}
-                        InformationsBoPropId={InformationsBoPropId}
-                        InformationsBoPropDescr={InformationsBoPropDescr}
-                    />
+                <InfoSelectDialog
+                    openDialogSelect={openDialogSelect}
+                    handleCloseDialogInfo={this.handleCloseDialogInfo}
+                    handleListItemClick={this.handleListItemClick}
+                    handleDeleteItemClick={this.handleDeleteItemClick}
+                    handleAddItemClick={this.handleAddItemClick}
+                    properties={properties}
+                    newProperty={newProperty}
+                    isAddingNewProperty={isAddingNewProperty}
+                    handleNewPropertyChange={this.handleNewPropertyChange}
+                    handleAddProperty={this.handleAddProperty}
+                    InformationsBoProp={InformationsBoProp}
+                    InformationsBoValue={InformationsBoValue}
+                    InformationsBoId={InformationsBoId}
+                    InformationsBoPropId={InformationsBoPropId}
+                    InformationsBoPropDescr={InformationsBoPropDescr}
+                    InformationsBoInfoId={InformationsBoInfoId}
+                />
             </div>
         );
     }

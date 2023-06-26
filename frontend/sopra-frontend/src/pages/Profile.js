@@ -277,18 +277,6 @@ class Profile extends Component {
                             sx={{width: '100%', maxWidth: 700}}
                             subheader={
                                 <ListSubheader sx={{fontSize: 20, color: 'black'}}>
-                                    Auswahl-Eigenschaften bearbeiten
-                                </ListSubheader>
-                            }
-                        >
-                            {[1, 2, 3, 4, 5, 6, 7].map((value) => (
-                                <ProfilePropertySelect key={value} value={value}/>
-                            ))}
-                        </List>
-                        <List
-                            sx={{width: '100%', maxWidth: 700}}
-                            subheader={
-                                <ListSubheader sx={{fontSize: 20, color: 'black'}}>
                                     Auswahl-Eigenschaften TEST
                                 </ListSubheader>
                             }
@@ -298,7 +286,8 @@ class Profile extends Component {
                                                        InformationsBoProp={InformationsBo.getProperty()}
                                                        InformationsBoId={InformationsBo.getValueID()}
                                                        InformationsBoPropId={InformationsBo.getPropID()}
-                                                       InformationsBoPropDescr={InformationsBo.getPropDescription()}/>
+                                                       InformationsBoPropDescr={InformationsBo.getPropDescription()}
+                                                       InformationsBoInfoId={InformationsBo.getInformationId()}/>
                             ))}
                         </List>
                         <Button

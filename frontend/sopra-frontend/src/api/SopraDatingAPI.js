@@ -117,9 +117,21 @@ export default class SopraDatingAPI {
     #getAlleValuesFromPropertyByPropertyIdURL = (propertyID) => {
         return `${this.#SopraDatingServerBaseURL}/selection-property/options/${propertyID}`
     }
+    #postNewValueForPropertyWithPropertyIdURL = (propertyID) => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/options/${propertyID}`
+    }
 
     #deleteSelectionValueItemURL = (valueId) => {
         return `${this.#SopraDatingServerBaseURL}/selection-property/options/${valueId}`
+    }
+    #updateValueOfInformationObjectByIdURL = (valueId) => {
+        return `${this.#SopraDatingServerBaseURL}/information/${valueId}`
+    }
+    #deleteInformationByIdURL = (informationId) => {
+        return `${this.#SopraDatingServerBaseURL}/information/${informationId}`
+    }
+    #deletePropertyInSystemByIdURL = (propertyId) => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/${propertyId}`
     }
 
     /**
@@ -485,6 +497,7 @@ export default class SopraDatingAPI {
                 })
             })
     }
+
     deleteSelectionValueItem(valueId) {
         return this.#fetchAdvanced(this.#deleteSelectionValueItemURL(valueId), {
             method: 'DELETE',
@@ -497,6 +510,68 @@ export default class SopraDatingAPI {
             // console.info(userBOs);
             return new Promise(function (resolve) {
                 resolve(userBOs);
+            })
+        })
+    }
+
+    addSelectionValueItem(userID, valueBo) {
+        return this.#fetchAdvanced(this.#postNewValueForPropertyWithPropertyIdURL(userID), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(valueBo)
+        }).then((responseJSON) => {
+            let informationBo = InformationBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(informationBo)
+            })
+        })
+    }
+
+    updateValueOfInformationObject(infoId, valueBo) {
+        return this.#fetchAdvanced(this.#updateValueOfInformationObjectByIdURL(infoId), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(valueBo)
+        }).then((responseJSON) => {
+            let informationBo = InformationBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(informationBo)
+            })
+        })
+    }
+
+    deleteInformationById(informationId) {
+        return this.#fetchAdvanced(this.#deleteInformationByIdURL(informationId), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+        }).then((responseJSON) => {
+            let informationBo = InformationBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(informationBo);
+            })
+        })
+    }
+
+    deletePropertyFromSystemById(propertyId) {
+        return this.#fetchAdvanced(this.#deletePropertyInSystemByIdURL(propertyId), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+        }).then((responseJSON) => {
+            let informationBo = InformationBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(informationBo);
             })
         })
     }
