@@ -29,46 +29,33 @@ export default class GridContainer extends React.Component {
         };
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         // Fetch the initial user list based on the search profile
-        await this.props.onUserLogin().then(user => {
+        this.props.onUserLogin().then(user => {
             this.setState({
                 user: user
             })
+            this.getAllUsers(user)
+            this.getSearchProfiles(user)
         })
-        await this.getAllUsers()
-        await this.getSearchProfiles()
     }
 
-    getBlocklist = async () => {
-        try {
-            const UserBOs = await SopraDatingAPI.getAPI().getBlocklist(this.state.user.getUserID());
-            return UserBOs;
-        } catch (e) {
-            console.log(e);
-            return [];
-        }
-    };
-
-    getAllUsers = async () => {
-        try {
-            let userBOs = await SopraDatingAPI.getAPI().getAllUsers();
-            SopraDatingAPI.getAPI().getAllUsersFiltered(this.state.user.getUserID()).then((userBOs) => {
+    getAllUsers = (user) => {
+        SopraDatingAPI.getAPI().getAllUsersFiltered(user.getUserID())
+            .then(userBOs => {
                 this.setState({
                     userList: userBOs
                 })
             })
-        } catch (error) {
-            console.log(error);
-            this.setState({
-                userList: []
-            });
-        }
-    };
+            .catch(e =>
+                this.setState({
+                    userList: []
+                })
+            );
+    }
 
-    getSearchProfiles = async () => {
-        let wait = await SopraDatingAPI.getAPI().getAllUsers();
-        SopraDatingAPI.getAPI().getSearchProfiles(this.state.user.getUserID())
+    getSearchProfiles = (user) => {
+        SopraDatingAPI.getAPI().getSearchProfiles(user.getUserID())
             .then(SearchProfileBOs => {
                 this.setState({
                     searchprofiles: SearchProfileBOs,
@@ -100,37 +87,7 @@ export default class GridContainer extends React.Component {
     }
 
     /**
-     * Fetches the user list based on the selected search profile ID
-     *
-     * @param {number} searchProfileID - The ID of the selected search profile
-     * @returns {Promise} A promise that resolves when the user list is fetched successfully
-     */
-    getUserListBySearchprofile = (searchProfileID) => {
-        return new Promise((resolve, reject) => {
-            // Call the API to get the user list based on the search profile
-            SopraDatingAPI.getAPI()
-                .getUserListBySearchprofile(searchProfileID)
-                .then(UserBOs => {
-                    // Update the user list state
-                    this.setState({
-                        userList: UserBOs
-                    });
-                    resolve();
-                })
-                .catch(e => {
-                    // In case of an error, reset the user list state
-                    this.setState({
-                        userList: []
-                    });
-                    reject(e);
-                });
-        });
-    };
-
-    /**
      * Fetches the viewed user list for the current user
-     *
-     * @returns {Promise} A promise that resolves when the viewed user list is fetched successfully
      */
     getViewedlist = (id) => {
         // Call the API to get the viewed user list for the current user
@@ -187,7 +144,7 @@ export default class GridContainer extends React.Component {
         this.setState({
             selectedSearchprofile: null
         })
-        this.getAllUsers();
+        this.getAllUsers(this.state.user);
         this.handleCloseSearchprofile();
     };
 
@@ -203,13 +160,13 @@ export default class GridContainer extends React.Component {
 
         if (showOnlyNewUser) {
             if (selectedSearchprofile === null) {
-                this.getViewedlist(this.props.user.getUserID())
+                this.getViewedlist(this.state.user.getUserID())
             } else {
                 this.getViewedlist(selectedSearchprofile.getProfileID())
             }
         } else {
             if (selectedSearchprofile === null) {
-                this.getAllUsers()
+                this.getAllUsers(this.state.user)
             } else {
                 this.getUsersSortedBySimilarityMeasure(selectedSearchprofile.getProfileID())
             }
