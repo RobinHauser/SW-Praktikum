@@ -1,8 +1,8 @@
 import json
 
-from backend.src.server.bo.TextProperty import TextProperty
-from backend.src.server.db import Mapper as Mapper
-from backend.src.server.bo.Information import Information
+from src.server.bo.TextProperty import TextProperty
+from src.server.db import Mapper as Mapper
+from src.server.bo.Information import Information
 
 class TextPropertyMapper(Mapper.Mapper):
     def __init__(self):

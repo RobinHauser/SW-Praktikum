@@ -1,7 +1,5 @@
-import json
-
-from backend.src.server.db import Mapper
-from backend.src.server.bo.User import User
+from src.server.bo.User import User
+from src.server.db import Mapper
 
 
 class ViewedMapper(Mapper.Mapper):

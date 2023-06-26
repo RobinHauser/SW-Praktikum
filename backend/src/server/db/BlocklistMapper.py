@@ -1,8 +1,6 @@
-import json
-
-from backend.src.server.bo import Blocklist
-from backend.src.server.db import Mapper
-from backend.src.server.bo import User
+from src.server.bo import Blocklist
+from src.server.db import Mapper
+from src.server.bo import User
 
 Blocklist = Blocklist.Blocklist
 User = User.User
