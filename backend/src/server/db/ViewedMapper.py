@@ -27,15 +27,13 @@ class ViewedMapper(Mapper.Mapper):
         # Get viewedList id of the user
         command = "SELECT ViewedListID FROM viewedlist WHERE UserID={}".format(user_id[0][0])
         cursor.execute(command)
+        viewedList_id = cursor.fetchall()
 
-        if len(cursor.fetchall()) == 0:
+        if len(viewedList_id) == 0:
             return result
 
-        viewedList_id = cursor.fetchone()[0]
-
-        command = "SELECT UserID FROM view WHERE ViewedListID={}".format(viewedList_id)
+        command = f'SELECT UserID FROM view WHERE ViewedListID={viewedList_id[0][0]}'
         cursor.execute(command)
-
         user_ids = cursor.fetchall()
 
         for user_id in user_ids:
