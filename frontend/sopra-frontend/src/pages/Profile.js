@@ -32,6 +32,7 @@ import CachedIcon from "@mui/icons-material/Cached";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
+ * @author [Jannik Haug](https://github.com/JannikHaug)
  */
 
 class Profile extends Component {
@@ -75,6 +76,10 @@ class Profile extends Component {
 
     }
 
+    /**
+     * Called after the component did mount.
+     * It retrieves the personal profile of the current user
+     */
     getPersonalProfile = async () => {
         SopraDatingAPI.getAPI().getProfile(this.props.user.getUserID())
             .then(userBo =>
@@ -97,6 +102,10 @@ class Profile extends Component {
             )
         ;
     }
+    /**
+     * Gets all information of a profile
+     * @param {int} id - id of the current personal profile
+     */
     getInformations = async (id) => {
         SopraDatingAPI.getAPI().getInformationsByProfile(id)
             .then(responseJSON => {
@@ -110,14 +119,23 @@ class Profile extends Component {
         })
     }
 
+    /**
+     * Handles the dialog open for selection dialog
+     */
     handleOpenSelectDialog() {
         this.setState({openSelectDialog: true});
     }
 
+    /**
+     * Handles the dialog open for free text dialog
+     */
     handleOpenFreeTextDialog() {
         this.setState({openFreeTextDialog: true});
     }
 
+    /**
+     * Handles the dialog close for dialogs
+     */
     handleCloseDialogProp() {
         const {isAddingNewProperty} = this.state;
         if (isAddingNewProperty) {
@@ -130,6 +148,10 @@ class Profile extends Component {
         }
     }
 
+    /**
+     * Called after the component did mount.
+     * Sets the current system user and gets the personal profile
+     */
     async componentDidMount() {
         const exampleProperties = ["Value 1", "Value 2", "Value 3"];
         this.setState({properties: exampleProperties});
@@ -137,7 +159,6 @@ class Profile extends Component {
             currentUser: this.props.user
         })
         await this.getPersonalProfile()
-
     }
 
     handleOpenDialogSelect() {
@@ -163,7 +184,6 @@ class Profile extends Component {
         const updatedProperties = properties.filter((property) => property !== value);
         this.setState({properties: updatedProperties});
     }
-
 
     handleAddItemClick() {
         this.setState({openDialogSelect: true, isAddingNewProperty: true});
@@ -221,7 +241,10 @@ class Profile extends Component {
         this.handleOpenDialogFreeText();
     };
 
-
+    /**
+     * Renders the class component
+     * @returns Profile - the rendered component
+     */
     render() {
         const {value} = this.props;
         const {
@@ -298,22 +321,22 @@ class Profile extends Component {
                                 informations.map((InformationsBo, index) => (
                                     parseInt(InformationsBo.getIsSelect()) === 1 ? (
                                         <ProfilePropertySelect Key={index}
-                                            InformationsBoValue={InformationsBo.getValue()}
-                                            InformationsBoProp={InformationsBo.getProperty()}
-                                            InformationsBoId={InformationsBo.getValueID()}
-                                            InformationsBoPropId={InformationsBo.getPropID()}
-                                            InformationsBoPropDescr={InformationsBo.getPropDescription()}
-                                            InformationsBoInfoId={InformationsBo.getInformationId()}
-                                            InformationsBoIsSelection={InformationsBo.getIsSelect()}
+                                                               InformationsBoValue={InformationsBo.getValue()}
+                                                               InformationsBoProp={InformationsBo.getProperty()}
+                                                               InformationsBoId={InformationsBo.getValueID()}
+                                                               InformationsBoPropId={InformationsBo.getPropID()}
+                                                               InformationsBoPropDescr={InformationsBo.getPropDescription()}
+                                                               InformationsBoInfoId={InformationsBo.getInformationId()}
+                                                               InformationsBoIsSelection={InformationsBo.getIsSelect()}
                                         />
                                     ) : (
                                         <ProfilePropertyFreeText Key={index}
-                                            InformationsBoValue={InformationsBo.getValue()}
-                                            InformationsBoProp={InformationsBo.getProperty()}
-                                            InformationsBoId={InformationsBo.getValueID()}
-                                            InformationsBoPropId={InformationsBo.getPropID()}
-                                            InformationsBoPropDescr={InformationsBo.getPropDescription()}
-                                            InformationsBoInfoId={InformationsBo.getInformationId()}
+                                                                 InformationsBoValue={InformationsBo.getValue()}
+                                                                 InformationsBoProp={InformationsBo.getProperty()}
+                                                                 InformationsBoId={InformationsBo.getValueID()}
+                                                                 InformationsBoPropId={InformationsBo.getPropID()}
+                                                                 InformationsBoPropDescr={InformationsBo.getPropDescription()}
+                                                                 InformationsBoInfoId={InformationsBo.getInformationId()}
                                         />
 
                                     )

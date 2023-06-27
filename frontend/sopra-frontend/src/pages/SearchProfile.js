@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
-import {List, ListSubheader} from "@mui/material";
+import {CircularProgress, List, ListSubheader} from "@mui/material";
 import ProfilePropertySelect from "../components/ProfilePropertySelect";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import Tooltip from "@mui/material/Tooltip";
@@ -22,6 +22,8 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import Box from "@mui/material/Box";
+import CachedIcon from "@mui/icons-material/Cached";
 
 
 /**
@@ -45,8 +47,13 @@ class SearchProfile extends Component {
             anchorElFreeText: null,
             globalPropertiesSelect: ["Auswahl-Eigenschaft 1", "Auswahl-Eigenschaft 2", "Auswahl-Eigenschaft 3"],
             globalPropertiesFreeText: ["Freitext-Eigenschaft 1", "Freitext-Eigenschaft 2", "Freitext-Eigenschaft 3"],
-            searchprofile: null,
-            error: null
+            currentUser: null,
+            personalProfile: null,
+            loadingProgressUser: false,
+            loadingProgressProfile: false,
+            error: null,
+            informations: null,
+            SearchProfileId: null
         };
 
         this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -69,9 +76,28 @@ class SearchProfile extends Component {
         const exampleProperties = ["Value 1", "Value 2", "Value 3"];
         this.setState({properties: exampleProperties});
         this.getSearchProfileId()
-        this.getSearchProfile()
+        console.log(this.props.user)
+        this.getInformations(this.state.SearchProfileId)
+        //this.getSearchProfile()
     }
 
+    /**
+     * Gets all information of a profile
+     * @param {int} id - id of the current personal profile
+     */
+    getInformations = async (id) => {
+        SopraDatingAPI.getAPI().getInformationsByProfile(id)
+            .then(responseJSON => {
+                console.log(responseJSON)
+                this.setState({
+                    informations: responseJSON
+                })
+            }).catch(() => {
+            this.setState({
+                informations: []
+            })
+        })
+    }
     getSearchProfile = () => {
         SopraDatingAPI.getAPI().getSearchProfile(this.state.SearchProfileId)
             .then(SearchProfileBO => {
@@ -91,7 +117,7 @@ class SearchProfile extends Component {
     getSearchProfileId() {
         const urlSearchProfileId = window.location.pathname.split('/')
         this.state.SearchProfileId = urlSearchProfileId[2]
-        console.log()
+        console.log(this.state.SearchProfileId)
     }
 
     handleOpenSelectDialog() {
@@ -199,228 +225,258 @@ class SearchProfile extends Component {
     render() {
         const {value} = this.props;
         const {
-            openSelectDialog, openFreeTextDialog, openDialogSelect, openDialogFreeText, properties, newProperty,
-            isAddingNewProperty, globalPropertiesSelect, globalPropertiesFreeText, anchorElSelect, anchorElFreeText
+            openSelectDialog,
+            openFreeTextDialog,
+            openDialogSelect,
+            openDialogFreeText,
+            properties,
+            newProperty,
+            isAddingNewProperty,
+            globalPropertiesSelect,
+            globalPropertiesFreeText,
+            anchorElSelect,
+            anchorElFreeText,
+            user,
+            currentUser,
+            personalProfile,
+            informations
         } = this.state;
         const openSelect = Boolean(anchorElSelect)
         const openFreeText = Boolean(anchorElFreeText)
-
-        return (
-            <div className="App">
-                <AppHeader avatar={this.props.avatar}></AppHeader>
-                <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
-                    <List
-                        sx={{width: '100%', maxWidth: 700}}
-                        subheader={
-                            <ListSubheader sx={{fontSize: 20, color: 'black', display: 'flex', alignItems: 'center'}}>
-                                <Link to="/SearchProfileOverview">
-                                    <Tooltip title="Zurück zur Übersicht" fontSize="large" sx={{
-                                        color: "#2979ff",
-                                        marginTop: '15px'
-                                    }}>
-                                        <KeyboardDoubleArrowLeftIcon></KeyboardDoubleArrowLeftIcon>
-                                    </Tooltip>
-                                </Link>
-                                <span style={{flexGrow: 1}}>Auswahl-Eigenschaften bearbeiten</span>
-                            </ListSubheader>
-                        }
-                    >
-
-                        {[1, 2, 3, 4, 5, 6, 7].map((value) => (
-                            <ProfilePropertySelect key={value} value={value}/>
-                        ))}
-                    </List>
-                    <Button
-                        onClick={this.handleOpenSelectDialog}
-                        sx={{marginTop: '20px', fontWeight: 'bold'}}
-                        variant="outlined"
-                        startIcon={<AddIcon/>}
-                    >
-                        Auswahl-Eigenschaft hinzufügen
-                    </Button>
-
-                    <Tooltip title={"Auswahl-Eigenschaften, die ins Profil geladen werden können."}>
-                        <Button
-                            aria-controls="dropdown-menu"
-                            aria-haspopup="true"
-                            onClick={this.handleGlobalPropertiesMenuSelectClick}
-                            variant="contained"
-                            endIcon={<ArrowDropDownIcon/>}
-                            sx={{marginTop: '25px'}}
+        if (!informations) {
+            return (
+                <div>
+                    <AppHeader avatar={this.props.avatar}></AppHeader>
+                    <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh'}}>
+                        <CircularProgress></CircularProgress>
+                    </Box>
+                </div>
+            )
+        } else {
+            return (
+                <div className="App">
+                    <AppHeader avatar={this.props.avatar}></AppHeader>
+                    <Container
+                        style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
+                        <List
+                            sx={{width: '100%', maxWidth: 700}}
+                            subheader={
+                                <ListSubheader
+                                    sx={{fontSize: 20, color: 'black', display: 'flex', alignItems: 'center'}}>
+                                    <Link to="/SearchProfileOverview">
+                                        <Tooltip title="Zurück zur Übersicht" fontSize="large" sx={{
+                                            color: "#2979ff",
+                                            marginTop: '15px'
+                                        }}>
+                                            <KeyboardDoubleArrowLeftIcon></KeyboardDoubleArrowLeftIcon>
+                                        </Tooltip>
+                                    </Link>
+                                    <span style={{flexGrow: 1}}>Eigenschaften bearbeiten</span>
+                                    <Button variant="contained"
+                                            onClick={() => this.getInformations(this.state.SearchProfileId)}>
+                                        <CachedIcon></CachedIcon>
+                                    </Button>
+                                </ListSubheader>
+                            }
                         >
-                            Auswahl-Eigenschaft laden
-                        </Button>
-                    </Tooltip>
-                    <Menu
-                        id="dropdown-menu"
-                        anchorEl={anchorElSelect}
-                        open={openSelect}
-                        onClose={this.handleCloseGlobalPropertiesSelect}
-                    >
-                        {globalPropertiesSelect.map((globalPropertyItemSelect) => (
-                            <MenuItem
-                                onClick={() => this.handleGlobalPropertiesItemClickSelect()}
-                                sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
-                                key={1}
-                            >
-                                {globalPropertyItemSelect}
-                            </MenuItem>
-                        ))}
-                    </Menu>
+                            {informations.length > 0 ? (
+                                informations.map((InformationsBo, index) => (
+                                    parseInt(InformationsBo.getIsSelect()) === 1 ? (
+                                        <ProfilePropertySelect Key={index}
+                                                               InformationsBoValue={InformationsBo.getValue()}
+                                                               InformationsBoProp={InformationsBo.getProperty()}
+                                                               InformationsBoId={InformationsBo.getValueID()}
+                                                               InformationsBoPropId={InformationsBo.getPropID()}
+                                                               InformationsBoPropDescr={InformationsBo.getPropDescription()}
+                                                               InformationsBoInfoId={InformationsBo.getInformationId()}
+                                                               InformationsBoIsSelection={InformationsBo.getIsSelect()}
+                                        />
+                                    ) : (
+                                        <ProfilePropertyFreeText Key={index}
+                                                                 InformationsBoValue={InformationsBo.getValue()}
+                                                                 InformationsBoProp={InformationsBo.getProperty()}
+                                                                 InformationsBoId={InformationsBo.getValueID()}
+                                                                 InformationsBoPropId={InformationsBo.getPropID()}
+                                                                 InformationsBoPropDescr={InformationsBo.getPropDescription()}
+                                                                 InformationsBoInfoId={InformationsBo.getInformationId()}
+                                        />
 
-                    <Dialog open={openSelectDialog} onClose={() => this.handleCloseDialogProp(null)}>
-                        <DialogTitle>Auswahl-Eigenschaft hinzufügen</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                Füge eine neue Auswahl-Eigenschaft hinzu, indem du den Name und die Beschreibung der
-                                Eigenschaft angibst.
-                            </DialogContentText>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
-                                label="Name"
-                                fullWidth
-                                variant="standard"
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
-                                label="Beschreibung"
-                                fullWidth
-                                variant="standard"
-                            />
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
-                            <Button onClick={this.handleOpenDialogSelect}>Anlegen</Button>
-                        </DialogActions>
-                    </Dialog>
+                                    )
+                                ))
+                            ) : (
+                                <p>Keine Informationen im Profil enthalten</p>
+                            )}
+                        </List>
+                        <Box sx={{display: 'flex', justifyContent: 'space-evenly'}}>
+                            <Container style={{
+                                display: 'grid',
+                                placeItems: 'center',
+                                marginTop: '50px',
+                                marginBottom: '50px'
+                            }}>
+                                <Button
+                                    onClick={this.handleOpenSelectDialog}
+                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
+                                    variant="outlined"
+                                    startIcon={<AddIcon/>}
+                                >
+                                    Auswahl-Eigenschaft hinzufügen
+                                </Button>
 
-                    <InfoSelectDialog
-                        openDialogSelect={openDialogSelect}
-                        handleCloseDialogInfo={this.handleCloseDialogInfo}
-                        handleListItemClick={this.handleListItemClick}
-                        handleDeleteItemClick={this.handleDeleteItemClick}
-                        handleAddItemClick={this.handleAddItemClick}
-                        properties={properties}
-                        newProperty={newProperty}
-                        isAddingNewProperty={isAddingNewProperty}
-                        handleNewPropertyChange={this.handleNewPropertyChange}
-                        handleAddProperty={this.handleAddProperty}
-                        value={value}
-                    />
+                                <Tooltip title={"Auswahl-Eigenschaften, die ins Profil geladen werden können."}>
+                                    <Button
+                                        aria-controls="dropdown-menu"
+                                        aria-haspopup="true"
+                                        onClick={this.handleGlobalPropertiesMenuSelectClick}
+                                        variant="contained"
+                                        endIcon={<ArrowDropDownIcon/>}
+                                        sx={{marginTop: '25px'}}
+                                    >
+                                        Auswahl-Eigenschaft laden
+                                    </Button>
+                                </Tooltip>
+                                <Menu
+                                    id="dropdown-menu"
+                                    anchorEl={anchorElSelect}
+                                    open={openSelect}
+                                    onClose={this.handleCloseGlobalPropertiesSelect}
+                                >
+                                    {globalPropertiesSelect.map((globalPropertyItemSelect) => (
+                                        <MenuItem
+                                            onClick={() => this.handleGlobalPropertiesItemClickSelect()}
+                                            sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
+                                            key={1}
+                                        >
+                                            {globalPropertyItemSelect}
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </Container>
+                            <Container style={{
+                                display: 'grid',
+                                placeItems: 'center',
+                                marginTop: '50px',
+                                marginBottom: '50px'
+                            }}>
+                                <Button
+                                    onClick={this.handleOpenFreeTextDialog}
+                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
+                                    variant="outlined"
+                                    startIcon={<AddIcon/>}
+                                >
+                                    Freitext-Eigenschaft hinzufügen
+                                </Button>
 
-                </Container>
+                                <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
+                                    <Button
+                                        aria-controls="dropdown-menu"
+                                        aria-haspopup="true"
+                                        onClick={this.handleGlobalPropertiesMenuFreeTextClick}
+                                        variant="contained"
+                                        endIcon={<ArrowDropDownIcon/>}
+                                        sx={{marginTop: '25px'}}
 
-                <hr/>
+                                    >
+                                        Freitext-Eigenschaft laden
+                                    </Button>
+                                </Tooltip>
+                                <Menu
+                                    id="dropdown-menu"
+                                    anchorEl={anchorElFreeText}
+                                    open={openFreeText}
+                                    onClose={this.handleCloseGlobalPropertiesFreeText}
+                                >
+                                    {globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
+                                        <MenuItem
+                                            onClick={() => this.handleGlobalPropertiesItemClickFreeText()}
+                                            sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
+                                            key={1}
+                                        >
+                                            {globalPropertyItemFreeText}
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </Container>
+                        </Box>
+                        <Dialog open={openSelectDialog} onClose={() => this.handleCloseDialogProp(null)}>
+                            <DialogTitle>Auswahl-Eigenschaft hinzufügen</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Füge eine neue Auswahl-Eigenschaft hinzu, indem du den Name und die Beschreibung der
+                                    Eigenschaft angibst.
+                                </DialogContentText>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="name"
+                                    label="Name"
+                                    fullWidth
+                                    variant="standard"
+                                />
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="name"
+                                    label="Beschreibung"
+                                    fullWidth
+                                    variant="standard"
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
+                                <Button onClick={this.handleOpenDialogSelect}>Anlegen</Button>
+                            </DialogActions>
+                        </Dialog>
 
-                <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
-                    <List
-                        sx={{width: '100%', maxWidth: 700}}
-                        subheader={
-                            <ListSubheader sx={{fontSize: 20, color: 'black'}}>
-                                Freitext-Eigenschaften bearbeiten
-                            </ListSubheader>
-                        }
-                    >
-                        {[1, 2, 3, 4, 5, 6, 7].map((value) => (
-                            <ProfilePropertyFreeText key={value} value={value}/>
-                        ))}
-                    </List>
-                    <Button
-                        onClick={this.handleOpenFreeTextDialog}
-                        sx={{marginTop: '20px', fontWeight: 'bold'}}
-                        variant="outlined"
-                        startIcon={<AddIcon/>}
-                    >
-                        Freitext-Eigenschaft hinzufügen
-                    </Button>
 
-                    <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
-                        <Button
-                            aria-controls="dropdown-menu"
-                            aria-haspopup="true"
-                            onClick={this.handleGlobalPropertiesMenuFreeTextClick}
-                            variant="contained"
-                            endIcon={<ArrowDropDownIcon/>}
-                            sx={{marginTop: '25px'}}
+                    </Container>
 
-                        >
-                            Freitext-Eigenschaft laden
-                        </Button>
+                    <hr/>
 
-                    </Tooltip>
-                    <Menu
-                        id="dropdown-menu"
-                        anchorEl={anchorElFreeText}
-                        open={openFreeText}
-                        onClose={this.handleCloseGlobalPropertiesFreeText}
-                    >
-                        {globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
-                            <MenuItem
-                                onClick={() => this.handleGlobalPropertiesItemClickFreeText()}
-                                sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
-                                key={1}
-                            >
-                                {globalPropertyItemFreeText}
-                            </MenuItem>
-                        ))}
-                    </Menu>
+                    <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
 
-                    <Dialog open={openFreeTextDialog} onClose={() => this.handleCloseDialogProp(null)}>
-                        <DialogTitle>Freitext-Eigenschaft hinzufügen</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                Füge eine neue Freitext-Eigenschaft hinzu, indem du den Name und die Beschreibung der
-                                Eigenschaft angibst.
-                            </DialogContentText>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
-                                label="Name"
-                                fullWidth
-                                variant="standard"
-                            />
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="name"
-                                label="Beschreibung"
-                                fullWidth
-                                variant="standard"
-                            />
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
-                            <Button onClick={this.handleOpenDialogFreeText}>Anlegen</Button>
-                        </DialogActions>
-                    </Dialog>
+                        <Dialog open={openFreeTextDialog} onClose={() => this.handleCloseDialogProp(null)}>
+                            <DialogTitle>Freitext-Eigenschaft hinzufügen</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Füge eine neue Freitext-Eigenschaft hinzu, indem du den Name und die Beschreibung
+                                    der
+                                    Eigenschaft angibst.
+                                </DialogContentText>
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="name"
+                                    label="Name"
+                                    fullWidth
+                                    variant="standard"
+                                />
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="name"
+                                    label="Beschreibung"
+                                    fullWidth
+                                    variant="standard"
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
+                                <Button onClick={this.handleOpenDialogFreeText}>Anlegen</Button>
+                            </DialogActions>
+                        </Dialog>
 
-                    <InfoFreeTextDialog
-                        openDialogFreeText={openDialogFreeText}
-                        handleCloseDialogFreeText={this.handleCloseDialogFreeText}
-                        handleClick={this.handleClick}
-                        value={value}
-                    />
+                        <InfoFreeTextDialog
+                            openDialogFreeText={openDialogFreeText}
+                            handleCloseDialogFreeText={this.handleCloseDialogFreeText}
+                            handleClick={this.handleClick}
+                            value={value}
+                        />
 
-                    <Link to="/SearchProfileOverview">
-                        <Tooltip title="Suchprofil löschen" fontSize="large">
-                            <Button variant="outlined" sx={{
-                                color: "red",
-                                borderColor: 'red',
-                                '&:hover': {background: 'transparent', borderColor: 'red'},
-                                fontWeight: 'bold',
-                                marginTop: '50px'
-                            }}
-                                    startIcon={<DeleteIcon/>}>Suchprofil löschen</Button>
-                        </Tooltip>
-                    </Link>
-                </Container>
-            </div>
-        );
+                    </Container>
+                </div>
+            );
+        }
     }
 }
 
