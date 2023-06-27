@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
+ * @author [Jannik Haug](https://github.com/JannikHaug)
  */
 
 class ProfilePropertySelect extends Component {
@@ -37,10 +38,16 @@ class ProfilePropertySelect extends Component {
 
     componentDidMount() {
     }
-
+    /**
+     * triggers the deleteProperty function to delete the current prop out of the system
+     */
     deletePropertyFromSystemButton = () => {
         this.deleteProperty(this.props.InformationsBoPropId)
     }
+    /**
+     * deletes the current prop out of the system / db
+     * @param {int} propertyId - id of the property to be deleted
+     */
     deleteProperty = (propertyId) => {
         SopraDatingAPI.getAPI().deleteSelectPropertyFromSystemById(propertyId).then(() => {
             this.setState({
@@ -54,15 +61,22 @@ class ProfilePropertySelect extends Component {
             });
         });
     }
+    /**
+    * triggers the deletion of the current information out of the profile
+    */
     deleteInformationFromProfileButton = () => {
         this.deleteInformation(this.props.InformationsBoInfoId)
     }
+    /**
+    * triggers the deletion of the current information out of the profile
+     * @param {int} informationId - id of the information to be deleted ot of the profile
+    */
     deleteInformation = (informationId) => {
         SopraDatingAPI.getAPI().deleteInformationById(informationId).then(() => {
             this.setState({
                 deletingError: null
             });
-            alert("Löschen aus dem System war erfolgreich")
+            alert("Löschen aus dem Profil war erfolgreich")
             //this.props.onUserRemoved(blockedUser);
         }).catch(e => {
             this.setState({
@@ -110,7 +124,10 @@ class ProfilePropertySelect extends Component {
         }
         this.handleCloseDialogInfo();
     }
-
+    /**
+     * Renders the class component
+     * @returns ProfilePropertySelect - the rendered component
+     */
     render() {
         const {
             InformationsBoValue,

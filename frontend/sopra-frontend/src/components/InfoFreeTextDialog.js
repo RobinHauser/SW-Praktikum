@@ -11,6 +11,7 @@ import ValueBo from "../api/ValueBo";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
+ * @author [Jannik Haug](https://github.com/JannikHaug)
  */
 
 class InfoFreeTextDialog extends Component {
@@ -27,16 +28,22 @@ class InfoFreeTextDialog extends Component {
         };
     }
 
-
+    /**
+    * triggers the function to post a new value for property and add it to the information object
+    */
     addButtonFunction = () => {
         const content = this.state.textFieldContent
         const valueBo = {
             "entry": `${content}`,
         }
         this.postNewValue(this.props.InformationsBoPropId, valueBo, parseInt(this.props.InformationsBoInfoId))
-
-
     }
+    /**
+    * posts a new value for a prop and triggers the function to add it to the current information object
+     * @param {int} propId - id of the current property
+     * @param {ValueBo} valueBo - includes the value content
+     * @param {int} informationId - id of the current information object
+    */
     postNewValue = (propId, valueBo, informationId) => {
         SopraDatingAPI.getAPI().addTextPropertyValueById(propId, valueBo)
             .then((responseJSON) => {
@@ -60,6 +67,11 @@ class InfoFreeTextDialog extends Component {
             alert(error)
         })
     }
+    /**
+    * update the value with the new value to the current information object
+    * @param {ValueBo} valueBo - includes the value content
+    * @param {int} informationId - id of the current information object
+    */
     updateInformation = (informationId, valueBo) => {
         console.log(informationId)
         SopraDatingAPI.getAPI().updateValueOfInformationObject(informationId, valueBo)
@@ -74,12 +86,18 @@ class InfoFreeTextDialog extends Component {
             })
         )
     }
-
+  /**
+     * Gets the current text, written in the text field
+     * @param {Object} event
+     */
     handleInputChange = (event) => {
         this.setState({textFieldContent: event.target.value})
         console.log(this.state.textFieldContent)
     }
-
+    /**
+     * Renders the class component
+     * @returns InfoFreeTextDialog - the rendered component
+     */
     render() {
         const {
             openDialogFreeText,
