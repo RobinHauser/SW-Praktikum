@@ -29,82 +29,83 @@ export default class GridContainer extends React.Component {
         };
     }
 
-    componentDidMount() {
-        // Fetch the initial user list based on the search profile
-        this.props.onUserLogin().then(user => {
-            this.setState({
-                user: user
-            })
-            this.getAllUsers(user)
-            this.getSearchProfiles(user)
-        })
-    }
-
-    getAllUsers = (user) => {
-        SopraDatingAPI.getAPI().getAllUsersFiltered(user.getUserID())
-            .then(userBOs => {
-                this.setState({
-                    userList: userBOs
-                })
-            })
-            .catch(e =>
-                this.setState({
-                    userList: []
-                })
-            );
-    }
-
-    getSearchProfiles = (user) => {
-        SopraDatingAPI.getAPI().getSearchProfiles(user.getUserID())
-            .then(SearchProfileBOs => {
-                this.setState({
-                    searchprofiles: SearchProfileBOs,
-                    error: null
-                });
-            })
-            .catch(e => {
-                this.setState({
-                    searchprofiles: [],
-                    error: e
-                });
-            });
-    };
-
-    getUsersSortedBySimilarityMeasure = (searchprofileID) => {
-        SopraDatingAPI.getAPI().getUsersSortedBySimilarityMeasure(searchprofileID)
-            .then(UserBOs => {
-                this.setState({
-                    userList: UserBOs,
-                    error: null
-                });
-            })
-            .catch(e => {
-                this.setState({
-                    searchprofiles: [],
-                    error: e
-                });
-            });
+    /**
+     * Lifecycle method, which is called when the component gets inserted into the browsers DOM.
+     *
+     * Loads all Users which are not blocked or blocked the current user
+     * Sets the user in the state
+     */
+    async componentDidMount() {
+        try {
+            const user = await this.props.onUserLogin();
+            this.setState({user});
+            await this.getAllUsers(user);
+            await this.getSearchProfiles(user);
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     /**
-     * Fetches the viewed user list for the current user
+     * Fetches all Users to display for the current user
+     *
+     * @param {UserBO} user
      */
-    getViewedlist = (id) => {
-        // Call the API to get the viewed user list for the current user
-        SopraDatingAPI.getAPI()
-            .getViewedlist(id)
-            .then(UserBOs => {
-                // Update the viewed user list state
-                this.setState({
-                    userList: UserBOs
-                });
-            })
-            .catch(e => {
-                // In case of an error, reset the viewed user list state
-                this.setState({
-                    userList: []
-                });
+    getAllUsers = async (user) => {
+        try {
+            const userBOs = await SopraDatingAPI.getAPI().getAllUsersFiltered(user.getUserID());
+            this.setState({userList: userBOs});
+        } catch (error) {
+            this.setState({userList: []});
+        }
+    };
+
+    /**
+     * Fetches all Searchprofiles of the user
+     *
+     * @param {UserBO} user
+     */
+    getSearchProfiles = async (user) => {
+        try {
+            const searchProfileBOs = await SopraDatingAPI.getAPI().getSearchProfiles(user.getUserID());
+            this.setState({searchprofiles: searchProfileBOs, error: null});
+        } catch (error) {
+            this.setState({searchprofiles: [], error});
+        }
+    };
+
+    /**
+     * Fetches all users of the searchprofile selected by the user
+     *
+     * @param {int} searchprofileID
+     */
+    getUsersSortedBySimilarityMeasure = async (searchprofileID) => {
+        try {
+            const UserBOs = await SopraDatingAPI.getAPI().getUsersSortedBySimilarityMeasure(searchprofileID);
+            this.setState({userList: UserBOs, error: null});
+        } catch (error) {
+            this.setState({userList: [], error});
+        }
+    };
+
+    /**
+     * Fetches the list to display if the current user only want to see new Profiles
+     *
+     * @param {int} id - can be the UserID if no Searchprofile is selected or can be a SearchprofileID
+     */
+    getViewedlist = async (id) => {
+        try {
+            const userList = await SopraDatingAPI.getAPI().getViewedlist(id);
+            this.setState({
+                userList: userList,
+                error: null
             });
+        } catch (error) {
+            this.setState({
+                userList: [],
+                error: error
+            });
+        }
     };
 
     /**
@@ -128,23 +129,34 @@ export default class GridContainer extends React.Component {
     /**
      * Handles the click event on a search profile item in the menu
      *
+     * checks if the user only want to see new other user. Fetches based on that
      * @param {string} searchprofile - The selected search profile
      */
     handleSearchprofileItemClick = (searchprofile) => {
-        this.setState({
-            selectedSearchprofile: searchprofile
-        })
         // Set the selected search profile and close the menu
-        this.getUsersSortedBySimilarityMeasure(searchprofile.getProfileID())
+        this.setState({selectedSearchprofile: searchprofile})
+        if(!this.state.showOnlyNewUser) {
+            this.getViewedlist(searchprofile.getProfileID())
+        } else {
+            this.getUsersSortedBySimilarityMeasure(searchprofile.getProfileID())
+        }
         this.handleCloseSearchprofile()
     };
 
+    /**
+     * Handles the click event on "no Selection" in the list
+     *
+     * checks if the user only want to see new other user. Fetches based on that
+     */
     handleNoSelectionClick = () => {
+        const {showOnlyNewUser, user} = this.state;
         // Set the selected search profile and close the menu
-        this.setState({
-            selectedSearchprofile: null
-        })
-        this.getAllUsers(this.state.user);
+        this.setState({selectedSearchprofile: null})
+        if(!showOnlyNewUser) {
+            this.getViewedlist(user.getUserID())
+        } else {
+            this.getAllUsers(user)
+        }
         this.handleCloseSearchprofile();
     };
 
@@ -153,20 +165,18 @@ export default class GridContainer extends React.Component {
      * Updates the user list accordingly
      */
     handleShowOnlyNewUser = () => {
-        const {showOnlyNewUser, selectedSearchprofile} = this.state
-        this.setState({
-            showOnlyNewUser: !showOnlyNewUser
-        })
+        const {showOnlyNewUser, selectedSearchprofile, user} = this.state;
+        this.setState({showOnlyNewUser: !showOnlyNewUser});
 
         if (showOnlyNewUser) {
             if (selectedSearchprofile === null) {
-                this.getViewedlist(this.state.user.getUserID())
+                this.getViewedlist(user.getUserID())
             } else {
                 this.getViewedlist(selectedSearchprofile.getProfileID())
             }
         } else {
             if (selectedSearchprofile === null) {
-                this.getAllUsers(this.state.user)
+                this.getAllUsers(user)
             } else {
                 this.getUsersSortedBySimilarityMeasure(selectedSearchprofile.getProfileID())
             }
@@ -186,7 +196,7 @@ export default class GridContainer extends React.Component {
     };
 
     render() {
-        const {anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList} = this.state;
+        const {anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList, user} = this.state;
         const open = Boolean(anchorEl);
 
         return (
@@ -258,7 +268,7 @@ export default class GridContainer extends React.Component {
                             <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>
                                 <ProfileCard
                                     key={userListItem.getUserID()}
-                                    user={this.state.user}
+                                    user={user}
                                     showedUser={userListItem}
                                     showOnlyNewUser={showOnlyNewUser}
                                     onUserRemoved={this.handleRemoveUser}>

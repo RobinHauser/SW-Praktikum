@@ -93,22 +93,28 @@ class App extends React.Component {
     /**
      * Setter for a new User
      */
-    setUser = () => {
-        const {profileImageURL, profileDisplayName, profileEmail} = this.state;
-        const newUser = new UserBO("", profileDisplayName, profileEmail, profileImageURL);
-        return SopraDatingAPI.getAPI().postUser(newUser)
-            .then(UserBOs => {
-                return new Promise(function (resolve) {
-                    resolve(UserBOs[0])
-                })
-            })
-            .catch(e => {
-                this.setState({
-                    user: [],
-                    appError: e
-                });
+    setUser = async () => {
+        try {
+            const {profileImageURL, profileDisplayName, profileEmail} = this.state;
+            const newUser = new UserBO("", profileDisplayName, profileEmail, profileImageURL);
+
+            const userBOs = await SopraDatingAPI.getAPI().postUser(newUser);
+            const newUserBO = userBOs[0];
+
+            this.setState({
+                appError: null,
+                user: newUserBO,
             });
-    }
+
+            return newUserBO;
+        } catch (error) {
+            this.setState({
+                user: [],
+                appError: error,
+            });
+            throw error;
+        }
+    };
 
     /**
      * Getter for the current User
