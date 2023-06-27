@@ -23,11 +23,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import SopraDatingAPI from "../api/SopraDatingAPI";
-import UserBO from "../api/UserBO";
-import ProfileBO from "../api/ProfileBO";
-import InformationBO from "../api/InformationBO";
-import MessageRight from "../components/MessageRight";
-import MessageLeft from "../components/MessageLeft";
 import CachedIcon from "@mui/icons-material/Cached";
 
 /**
@@ -56,7 +51,9 @@ class Profile extends Component {
             loadingProgressUser: false,
             loadingProgressProfile: false,
             error: null,
-            informations: null
+            informations: null,
+            PropertyNameText: '',
+            PropertyDescriptionText: ''
         };
 
         this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -142,6 +139,43 @@ class Profile extends Component {
 
     }
 
+    addSelectionPropertyClickHandler = () => {
+        this.buttonAddProperty();
+        this.handleOpenDialogSelect();
+    }
+
+    buttonAddProperty() {
+        console.log("Hallo")
+        const name = this.state.PropertyNameText
+        const description = this.state.PropertyDescriptionText
+        let propertyBO = {
+            "name": name,
+            "description": description
+        }
+        this.addSelectionProperty(propertyBO)
+        this.setState({PropertyNameText: '', PropertyDescriptionText: ''})
+        }
+
+    addSelectionProperty = (propertyBO) => {
+        SopraDatingAPI.getAPI().addSelectionProperty(propertyBO)
+            .then(() => {
+                this.setState({
+                    error: null
+                });
+            }).catch(e => {
+                this.setState({
+                    error: e
+                });
+            });
+    };
+
+    handleInputChangeName = (event) => {
+        this.setState({PropertyNameText: event.target.value});
+    }
+
+    handleInputChangeDescription = (event) => {
+        this.setState({PropertyDescriptionText: event.target.value});
+    }
     handleOpenDialogSelect() {
         this.setState({openDialogSelect: true});
     }
@@ -417,25 +451,27 @@ class Profile extends Component {
                                     Eigenschaft angibst.
                                 </DialogContentText>
                                 <TextField
+                                    value={this.state.PropertyNameText}
+                                    onChange={this.handleInputChangeName}
                                     autoFocus
                                     margin="dense"
                                     id="name"
                                     label="Name"
                                     fullWidth
-                                    variant="standard"
-                                />
+                                    variant="standard"/>
                                 <TextField
+                                    value={this.state.PropertyDescriptionText}
+                                    onChange={this.handleInputChangeDescription}
                                     autoFocus
                                     margin="dense"
                                     id="name"
                                     label="Beschreibung"
                                     fullWidth
-                                    variant="standard"
-                                />
+                                    variant="standard"/>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
-                                <Button onClick={this.handleOpenDialogSelect}>Anlegen</Button>
+                                <Button onClick={this.addSelectionPropertyClickHandler}>Anlegen</Button>
                             </DialogActions>
                         </Dialog>
 

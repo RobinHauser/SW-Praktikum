@@ -10,6 +10,7 @@ import MessageBO from "./MessageBO";
 import ChatBO from "./ChatBO";
 import ProfileBO from "./ProfileBO";
 import InformationBO from "./InformationBO";
+import PropertyBO from "./PropertyBO";
 import ValueBo from "./ValueBo";
 
 export default class SopraDatingAPI {
@@ -142,6 +143,10 @@ export default class SopraDatingAPI {
     }
     #addNewTextValueToTextPropertyURL = (propertyId) => {
         return `${this.#SopraDatingServerBaseURL}/text-property/entries/${propertyId}`
+    }
+
+    #addSelectionPropertyURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/selection_properties`;
     }
 
     /**
@@ -507,7 +512,6 @@ export default class SopraDatingAPI {
                 })
             })
     }
-
     deleteSelectionValueItem(valueId) {
         return this.#fetchAdvanced(this.#deleteSelectionValueItemURL(valueId), {
             method: 'DELETE',
@@ -616,5 +620,22 @@ export default class SopraDatingAPI {
             })
         })
     }
+
+    addSelectionProperty(propertyBO) {
+        console.log(propertyBO)
+        return this.#fetchAdvanced(this.#addSelectionPropertyURL(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(propertyBO)
+        }).then((responseJSON) => {
+            let propertyBO = PropertyBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(propertyBO)
+            })
+        })
+    };
 
 }
