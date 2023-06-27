@@ -2,15 +2,11 @@ import * as React from 'react';
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
 import GridContainer from "../components/GridContainer";
-import react, {Component} from "react";
+import react from "react";
 
 export default class Main extends react.Component{
-    // componentDidMount() {
-    //     this.props.onUserLogin();
-    // }
 
     render() {
-        // console.log(this.props.user)
         return (
             <div className="App">
                 <AppHeader avatar={this.props.avatar}></AppHeader>

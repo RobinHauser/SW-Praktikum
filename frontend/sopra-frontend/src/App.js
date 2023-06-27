@@ -72,8 +72,6 @@ class App extends React.Component {
                         profileEmail: user.toJSON().email,
                         authError: null,
                         authLoading: false
-                    }, () => {
-                        this.getUser();
                     });
                 }).catch(e => {
                     this.setState({
@@ -95,63 +93,58 @@ class App extends React.Component {
     /**
      * Setter for a new User
      */
-    setUser = () => {
-        const {profileImageURL, profileDisplayName, profileEmail} = this.state;
-        const newUser = new UserBO("", profileDisplayName, profileEmail, profileImageURL);
-        SopraDatingAPI.getAPI().postUser(newUser)
-            .then(UserBOs => {
-                this.setState({
-                    appError: null,
-                    user: UserBOs[0]
-                })
-            })
-            .catch(e => {
-                this.setState({
-                    user: [],
-                    appError: e
-                });
+    setUser = async () => {
+        try {
+            const {profileImageURL, profileDisplayName, profileEmail} = this.state;
+            const newUser = new UserBO("", profileDisplayName, profileEmail, profileImageURL);
+
+            const userBOs = await SopraDatingAPI.getAPI().postUser(newUser);
+            const newUserBO = userBOs[0];
+
+            this.setState({
+                appError: null,
+                user: newUserBO,
             });
-    }
+
+            return newUserBO;
+        } catch (error) {
+            this.setState({
+                user: [],
+                appError: error,
+            });
+            throw error;
+        }
+    };
 
     /**
      * Getter for the current User
      */
-    getUser = () => {
-        // Todo kommentiertes löschen sobald Schnittstelle läuft
-        // let testUser = UserBO.fromJSON(
-        //         {
-        //         "UserID": "1005",
-	    //         "displayname": "Michi B",
-        //         "email": "michaelbergdolt20@gmail.com",
-	    //         "dateOfBirth": "20.03.2003"
-        //         }
-        // );
-        // this.setState({
-        //     user: testUser[0]
-        // })
-        //console.log(this.state.currentUser.email)
-        return SopraDatingAPI.getAPI().getUser(this.state.currentUser.email)
-            .then(UserBO => {
-                if(UserBO.length === 0) {
-                    this.setUser()
-                } else {
-                    this.setState({
-                    appError: null,
-                    user: UserBO[0]
-                })
-                }
-                return new Promise(function (resolve) {
-                    resolve(UserBO[0])
-                })
-            })
-            .catch(e =>
+    getUser = async () => {
+        try {
+            const userBO = await SopraDatingAPI.getAPI().getUser(this.state.currentUser.email);
+
+            if (userBO.length === 0) {
+                const newUserBO = await this.setUser();
                 this.setState({
-                    appError: e,
-                    user: null
-                })
-            )
-        ;
-    }
+                    appError: null,
+                    user: newUserBO,
+                });
+                return newUserBO;
+            } else {
+                this.setState({
+                    appError: null,
+                    user: userBO[0],
+                });
+                return userBO[0];
+            }
+        } catch (error) {
+            this.setState({
+                appError: error,
+                user: null,
+            });
+            throw error;
+        }
+    };
 
     render() {
         const {currentUser, profileImageURL, profileDisplayName, profileEmail, user} = this.state;
