@@ -34,8 +34,6 @@ class InfoSelectDialog extends Component {
         this.updateInformation(this.props.InformationsBoInfoId, valueBo)
     }
     updateInformation = (informationId, valueBo) => {
-        console.log(valueBo)
-        console.log(informationId)
         SopraDatingAPI.getAPI().updateValueOfInformationObject(informationId, valueBo)
             .then(responseJSON => {
                 this.setState({
@@ -72,7 +70,6 @@ class InfoSelectDialog extends Component {
                 this.getSelectionValues()
             })
             .catch(error => {
-                console.log(error)
                 alert(error)
             })
     }
@@ -111,40 +108,25 @@ class InfoSelectDialog extends Component {
     }
     handleInputChange = (event) => {
         this.setState({textFieldContent: event.target.value})
-        console.log(this.state.textFieldContent)
     }
 
     componentDidMount() {
         this.getSelectionValues()
-        console.log("test: " + this.propertiesList)
-
-
     }
-
     render() {
         const {
             openDialogSelect,
             handleCloseDialogInfo,
-            handleListItemClick,
-            handleDeleteItemClick,
             handleAddItemClick,
-            properties,
-            newProperty,
             isAddingNewProperty,
-            handleNewPropertyChange,
-            handleAddProperty,
             InformationsBoProp,
-            InformationsBoValue,
-            InformationsBoId,
             InformationsBoPropId,
             InformationsBoPropDescr,
-            InformationsBoIsSelection
         } = this.props;
         const {propertiesList} = this.state
         if (!propertiesList) {
             return (<CircularProgress></CircularProgress>)
         } else {
-            console.log(InformationsBoPropDescr)
             return (
                 <div>
                     <Dialog open={openDialogSelect} onClose={() => handleCloseDialogInfo(null)}>
@@ -153,8 +135,8 @@ class InfoSelectDialog extends Component {
                             <DialogContentText>
                                 {InformationsBoPropDescr}
                                 <List>
-                                    {propertiesList.map((property) => (
-                                        <ListItem>
+                                    {propertiesList.map((property, index) => (
+                                        <ListItem key={index}>
                                             <ListItemText
                                                 sx={{
                                                     textAlign: 'center',

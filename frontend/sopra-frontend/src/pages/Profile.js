@@ -73,7 +73,6 @@ class Profile extends Component {
     }
 
     getPersonalProfile = async () => {
-        console.log(this.props.user.getUserID())
         SopraDatingAPI.getAPI().getProfile(this.props.user.getUserID())
             .then(userBo =>
                 this.setState({
@@ -131,7 +130,6 @@ class Profile extends Component {
     async componentDidMount() {
         const exampleProperties = ["Value 1", "Value 2", "Value 3"];
         this.setState({properties: exampleProperties});
-        console.log(this.props.user)
         this.setState({
             currentUser: this.props.user
         })
@@ -279,11 +277,16 @@ class Profile extends Component {
         } = this.state;
         const openSelect = Boolean(anchorElSelect)
         const openFreeText = Boolean(anchorElFreeText)
-        console.log(this.state.informations)
         if (!informations) {
-            return (<CircularProgress></CircularProgress>)
+            return (
+                <div>
+                    <AppHeader avatar={this.props.avatar}></AppHeader>
+                    <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh'}}>
+                        <CircularProgress></CircularProgress>
+                    </Box>
+                </div>
+            )
         } else {
-            console.log(informations)
             return (
                 <div className="App">
                     <AppHeader avatar={this.props.avatar}></AppHeader>
@@ -326,18 +329,19 @@ class Profile extends Component {
                             }
                         >
                             {informations.length > 0 ? (
-                                informations.map((InformationsBo) => (
+                                informations.map((InformationsBo, index) => (
                                     parseInt(InformationsBo.getIsSelect()) === 1 ? (
-                                        <ProfilePropertySelect InformationsBoValue={InformationsBo.getValue()}
-                                                               InformationsBoProp={InformationsBo.getProperty()}
-                                                               InformationsBoId={InformationsBo.getValueID()}
-                                                               InformationsBoPropId={InformationsBo.getPropID()}
-                                                               InformationsBoPropDescr={InformationsBo.getPropDescription()}
-                                                               InformationsBoInfoId={InformationsBo.getInformationId()}
-                                                               InformationsBoIsSelection={InformationsBo.getIsSelect()}
+                                        <ProfilePropertySelect Key={index}
+                                            InformationsBoValue={InformationsBo.getValue()}
+                                            InformationsBoProp={InformationsBo.getProperty()}
+                                            InformationsBoId={InformationsBo.getValueID()}
+                                            InformationsBoPropId={InformationsBo.getPropID()}
+                                            InformationsBoPropDescr={InformationsBo.getPropDescription()}
+                                            InformationsBoInfoId={InformationsBo.getInformationId()}
+                                            InformationsBoIsSelection={InformationsBo.getIsSelect()}
                                         />
                                     ) : (
-                                        <ProfilePropertyFreeText
+                                        <ProfilePropertyFreeText Key={index}
                                             InformationsBoValue={InformationsBo.getValue()}
                                             InformationsBoProp={InformationsBo.getProperty()}
                                             InformationsBoId={InformationsBo.getValueID()}
@@ -475,19 +479,6 @@ class Profile extends Component {
                             </DialogActions>
                         </Dialog>
 
-                        <InfoSelectDialog
-                            openDialogSelect={openDialogSelect}
-                            handleCloseDialogInfo={this.handleCloseDialogInfo}
-                            handleListItemClick={this.handleListItemClick}
-                            handleDeleteItemClick={this.handleDeleteItemClick}
-                            handleAddItemClick={this.handleAddItemClick}
-                            properties={properties}
-                            newProperty={newProperty}
-                            isAddingNewProperty={isAddingNewProperty}
-                            handleNewPropertyChange={this.handleNewPropertyChange}
-                            handleAddProperty={this.handleAddProperty}
-                            value={value}
-                        />
 
                     </Container>
 

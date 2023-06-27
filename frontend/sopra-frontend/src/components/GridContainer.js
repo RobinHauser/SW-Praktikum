@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {ListItem, ListItemText, Switch} from "@mui/material";
+import {Alert, CircularProgress, LinearProgress, ListItem, ListItemText, Switch} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
@@ -25,129 +25,93 @@ export default class GridContainer extends React.Component {
             viewedList: [],
             user: null,
             blocklist: [],
-            error: null
+            error: null,
+            loading: false
         };
     }
 
+    /**
+     * Lifecycle method, which is called when the component gets inserted into the browsers DOM.
+     *
+     * Loads all Users which are not blocked or blocked the current user
+     * Sets the user in the state
+     */
     async componentDidMount() {
-        // Fetch the initial user list based on the search profile
-        await this.props.onUserLogin().then(user => {
-            this.setState({
-                user: user
-            })
-        })
-        await this.getAllUsers()
-        await this.getSearchProfiles()
-    }
-
-    getBlocklist = async () => {
         try {
-            const UserBOs = await SopraDatingAPI.getAPI().getBlocklist(this.state.user.getUserID());
-            return UserBOs;
-        } catch (e) {
-            console.log(e);
-            return [];
-        }
-    };
-
-    getAllUsers = async () => {
-        try {
-            let userBOs = await SopraDatingAPI.getAPI().getAllUsers();
-            SopraDatingAPI.getAPI().getAllUsersFiltered(this.state.user.getUserID()).then((userBOs) => {
-                this.setState({
-                    userList: userBOs
-                })
-            })
+            const user = await this.props.onUserLogin();
+            this.setState({user});
+            await this.getAllUsers(user);
+            await this.getSearchProfiles(user);
         } catch (error) {
-            console.log(error);
-            this.setState({
-                userList: []
-            });
+            console.log(error)
         }
-    };
-
-    getSearchProfiles = async () => {
-        let wait = await SopraDatingAPI.getAPI().getAllUsers();
-        SopraDatingAPI.getAPI().getSearchProfiles(this.state.user.getUserID())
-            .then(SearchProfileBOs => {
-                this.setState({
-                    searchprofiles: SearchProfileBOs,
-                    error: null
-                });
-            })
-            .catch(e => {
-                this.setState({
-                    searchprofiles: [],
-                    error: e
-                });
-            });
-    };
-
-    getUsersSortedBySimilarityMeasure = (searchprofileID) => {
-        SopraDatingAPI.getAPI().getUsersSortedBySimilarityMeasure(searchprofileID)
-            .then(UserBOs => {
-                this.setState({
-                    userList: UserBOs,
-                    error: null
-                });
-            })
-            .catch(e => {
-                this.setState({
-                    searchprofiles: [],
-                    error: e
-                });
-            });
     }
 
     /**
-     * Fetches the user list based on the selected search profile ID
+     * Fetches all Users to display for the current user
      *
-     * @param {number} searchProfileID - The ID of the selected search profile
-     * @returns {Promise} A promise that resolves when the user list is fetched successfully
+     * @param {UserBO} user
      */
-    getUserListBySearchprofile = (searchProfileID) => {
-        return new Promise((resolve, reject) => {
-            // Call the API to get the user list based on the search profile
-            SopraDatingAPI.getAPI()
-                .getUserListBySearchprofile(searchProfileID)
-                .then(UserBOs => {
-                    // Update the user list state
-                    this.setState({
-                        userList: UserBOs
-                    });
-                    resolve();
-                })
-                .catch(e => {
-                    // In case of an error, reset the user list state
-                    this.setState({
-                        userList: []
-                    });
-                    reject(e);
-                });
-        });
+    getAllUsers = async (user) => {
+        try {
+            this.setState({loading: true})
+            const userBOs = await SopraDatingAPI.getAPI().getAllUsersFiltered(user.getUserID());
+            this.setState({userList: userBOs, loading: false});
+        } catch (error) {
+            this.setState({userList: [], loading: false});
+        }
     };
 
     /**
-     * Fetches the viewed user list for the current user
+     * Fetches all Searchprofiles of the user
      *
-     * @returns {Promise} A promise that resolves when the viewed user list is fetched successfully
+     * @param {UserBO} user
      */
-    getViewedlist = (id) => {
-        // Call the API to get the viewed user list for the current user
-        SopraDatingAPI.getAPI()
-            .getViewedlist(id)
-            .then(UserBOs => {
-                // Update the viewed user list state
-                this.setState({
-                    userList: UserBOs
-                });
-            })
-            .catch(e => {
-                // In case of an error, reset the viewed user list state
-                this.setState({
-                    userList: []
-                });
+    getSearchProfiles = async (user) => {
+        try {
+            this.setState({loading: true})
+            const searchProfileBOs = await SopraDatingAPI.getAPI().getSearchProfiles(user.getUserID());
+            this.setState({searchprofiles: searchProfileBOs, error: null, loading: false});
+        } catch (error) {
+            this.setState({searchprofiles: [], error, loading: false});
+        }
+    };
+
+    /**
+     * Fetches all users of the searchprofile selected by the user
+     *
+     * @param {int} searchprofileID
+     */
+    getUsersSortedBySimilarityMeasure = async (searchprofileID) => {
+        try {
+            this.setState({loading: true})
+            const UserBOs = await SopraDatingAPI.getAPI().getUsersSortedBySimilarityMeasure(searchprofileID);
+            this.setState({userList: UserBOs, error: null, loading: false});
+        } catch (error) {
+            this.setState({userList: [], error, loading: false});
+        }
+    };
+
+    /**
+     * Fetches the list to display if the current user only want to see new Profiles
+     *
+     * @param {int} id - can be the UserID if no Searchprofile is selected or can be a SearchprofileID
+     */
+    getViewedlist = async (id) => {
+        try {
+            this.setState({loading: true})
+            const userList = await SopraDatingAPI.getAPI().getViewedlist(id);
+            this.setState({
+                userList: userList,
+                error: null,
+                loading: false
             });
+        } catch (error) {
+            this.setState({
+                userList: [],
+                error: error
+            });
+        }
     };
 
     /**
@@ -171,23 +135,34 @@ export default class GridContainer extends React.Component {
     /**
      * Handles the click event on a search profile item in the menu
      *
+     * checks if the user only want to see new other user. Fetches based on that
      * @param {string} searchprofile - The selected search profile
      */
     handleSearchprofileItemClick = (searchprofile) => {
-        this.setState({
-            selectedSearchprofile: searchprofile
-        })
         // Set the selected search profile and close the menu
-        this.getUsersSortedBySimilarityMeasure(searchprofile.getProfileID())
+        this.setState({selectedSearchprofile: searchprofile})
+        if (!this.state.showOnlyNewUser) {
+            this.getViewedlist(searchprofile.getProfileID())
+        } else {
+            this.getUsersSortedBySimilarityMeasure(searchprofile.getProfileID())
+        }
         this.handleCloseSearchprofile()
     };
 
+    /**
+     * Handles the click event on "no Selection" in the list
+     *
+     * checks if the user only want to see new other user. Fetches based on that
+     */
     handleNoSelectionClick = () => {
+        const {showOnlyNewUser, user} = this.state;
         // Set the selected search profile and close the menu
-        this.setState({
-            selectedSearchprofile: null
-        })
-        this.getAllUsers();
+        this.setState({selectedSearchprofile: null})
+        if (!showOnlyNewUser) {
+            this.getViewedlist(user.getUserID())
+        } else {
+            this.getAllUsers(user)
+        }
         this.handleCloseSearchprofile();
     };
 
@@ -196,20 +171,18 @@ export default class GridContainer extends React.Component {
      * Updates the user list accordingly
      */
     handleShowOnlyNewUser = () => {
-        const {showOnlyNewUser, selectedSearchprofile} = this.state
-        this.setState({
-            showOnlyNewUser: !showOnlyNewUser
-        })
+        const {showOnlyNewUser, selectedSearchprofile, user} = this.state;
+        this.setState({showOnlyNewUser: !showOnlyNewUser});
 
         if (showOnlyNewUser) {
             if (selectedSearchprofile === null) {
-                this.getViewedlist(this.props.user.getUserID())
+                this.getViewedlist(user.getUserID())
             } else {
                 this.getViewedlist(selectedSearchprofile.getProfileID())
             }
         } else {
             if (selectedSearchprofile === null) {
-                this.getAllUsers()
+                this.getAllUsers(user)
             } else {
                 this.getUsersSortedBySimilarityMeasure(selectedSearchprofile.getProfileID())
             }
@@ -229,11 +202,14 @@ export default class GridContainer extends React.Component {
     };
 
     render() {
-        const {anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList} = this.state;
+        const {anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList, user, loading} = this.state;
         const open = Boolean(anchorEl);
 
         return (
             <Box>
+                {loading && (
+                    <LinearProgress sx={{marginBottom: "10px"}}/>
+                )}
                 <Box display="flex" justifyContent="space-between">
                     <Tooltip title={"Suchprofil nach dem gefiltert werden soll"}>
                         <Button
@@ -301,19 +277,20 @@ export default class GridContainer extends React.Component {
                             <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>
                                 <ProfileCard
                                     key={userListItem.getUserID()}
-                                    user={this.state.user}
+                                    user={user}
                                     showedUser={userListItem}
                                     showOnlyNewUser={showOnlyNewUser}
                                     onUserRemoved={this.handleRemoveUser}>
                                 </ProfileCard>
                             </Grid>
                         ))
-                    ) : (
-                        <ListItem>
-                            <ListItemText sx={{textAlign: 'center'}}>
-                                <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>
-                            </ListItemText>
-                        </ListItem>
+                    ) : (loading ? null : (
+                            <ListItem>
+                                <ListItemText sx={{textAlign: 'center'}}>
+                                    <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>
+                                </ListItemText>
+                            </ListItem>
+                        )
                     )}
                 </Grid>
             </Box>

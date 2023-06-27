@@ -36,12 +36,9 @@ class ProfilePropertySelect extends Component {
     }
 
     componentDidMount() {
-        const exampleProperties = ["Value 1", "Value 2", "Value 3"];
-        this.setState({properties: exampleProperties});
     }
 
     deletePropertyFromSystemButton = () => {
-        console.log(this.props.InformationsBoPropId)
         this.deleteProperty(this.props.InformationsBoPropId)
     }
     deleteProperty = (propertyId) => {
@@ -80,7 +77,6 @@ class ProfilePropertySelect extends Component {
 
     handleCloseDialogInfo() {
         const {isAddingNewProperty} = this.state;
-        console.log(this.state.openDialogSelect)
         if (isAddingNewProperty) {
             this.setState({isAddingNewProperty: false});
         } else {
@@ -125,12 +121,6 @@ class ProfilePropertySelect extends Component {
             InformationsBoInfoId
         } = this.props;
         const {openDialogSelect, properties, newProperty, isAddingNewProperty} = this.state;
-        console.log(InformationsBoValue)
-        console.log(InformationsBoProp)
-        console.log(InformationsBoId)
-        console.log(InformationsBoPropId)
-        console.log(InformationsBoPropDescr)
-        console.log(InformationsBoInfoId)
         return (
             <div>
                 <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>
