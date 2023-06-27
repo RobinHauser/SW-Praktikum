@@ -11,9 +11,16 @@ class ViewedMapper(Mapper.Mapper):
         pass
 
     def find_by_id(self, id):
+        """
+        Returns a list of all other users a user(with a user_id) has blocked
+        :param user_id: the unique id of the user OR SearchProfileID of unique SearchProfile
+        :return: a sorted list of users
+        """
+
         result = []
         cursor = self._cnx.cursor()
 
+        # Check if Id is user_id or searchprofile_id
         if id >= 4000:
             command2 = f'SELECT UserID FROM profile_relation WHERE ProfileID = {id}'
             cursor.execute(command2)

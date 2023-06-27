@@ -23,11 +23,32 @@ class InfoSelectDialog extends Component {
             propertiesList: null,
             deletingInProgress: null,
             deletingError: null,
+            textFieldContent: ""
         };
     }
 
+    updateValueInInformationButton = (valueId) => {
+        let valueBo = {
+            "valueID": `${valueId}`,
+        }
+        this.updateInformation(this.props.InformationsBoInfoId, valueBo)
+    }
+    updateInformation = (informationId, valueBo) => {
+        console.log(valueBo)
+        console.log(informationId)
+        SopraDatingAPI.getAPI().updateValueOfInformationObject(informationId, valueBo)
+            .then(responseJSON => {
+                this.setState({
+                    error: null
+                })
+            }).catch(e =>
+            this.setState({
+                error: e
+            })
+        )
+    }
     getSelectionValues = () => {
-        SopraDatingAPI.getAPI().getAllSelectionValuesByPropertyID(6003)
+        SopraDatingAPI.getAPI().getAllSelectionValuesByPropertyID(this.props.InformationsBoPropId)
             .then(responseJSON => {
                 this.setState({
                     propertiesList: responseJSON,
@@ -40,7 +61,29 @@ class InfoSelectDialog extends Component {
             })
         )
     }
+    postNewValue = (propId, valueBo) => {
+        SopraDatingAPI.getAPI().addSelectionValueItem(propId, valueBo)
+            .then(() => {
+                this.setState({
+                    textFieldContent: ""
 
+                })
+                alert("Neue Auswahl erfolgreich hinzugefügt")
+                this.getSelectionValues()
+            })
+            .catch(error => {
+                console.log(error)
+                alert(error)
+            })
+    }
+    addButtonFunction = (id) => {
+        const content = this.state.textFieldContent
+        let valueBo = {
+            "value": `${content}`,
+        }
+        this.postNewValue(id, valueBo)
+        this.getSelectionValues()
+    }
     deleteButtonFunction = (id) => {
         this.deleteSelectionItem(id)
     }
@@ -51,6 +94,7 @@ class InfoSelectDialog extends Component {
                 deletingInProgress: false,
                 deletingError: null
             });
+            alert("Löschen aus dem System war erfolgreich")
             //this.props.onUserRemoved(blockedUser);
         }).catch(e => {
             this.setState({
@@ -64,6 +108,10 @@ class InfoSelectDialog extends Component {
             deletingError: null
         });
         this.getSelectionValues()
+    }
+    handleInputChange = (event) => {
+        this.setState({textFieldContent: event.target.value})
+        console.log(this.state.textFieldContent)
     }
 
     componentDidMount() {
@@ -89,14 +137,14 @@ class InfoSelectDialog extends Component {
             InformationsBoValue,
             InformationsBoId,
             InformationsBoPropId,
-            InformationsBoPropDescr
+            InformationsBoPropDescr,
+            InformationsBoIsSelection
         } = this.props;
         const {propertiesList} = this.state
-        console.log(propertiesList)
-
         if (!propertiesList) {
             return (<CircularProgress></CircularProgress>)
         } else {
+            console.log(InformationsBoPropDescr)
             return (
                 <div>
                     <Dialog open={openDialogSelect} onClose={() => handleCloseDialogInfo(null)}>
@@ -106,10 +154,7 @@ class InfoSelectDialog extends Component {
                                 {InformationsBoPropDescr}
                                 <List>
                                     {propertiesList.map((property) => (
-                                        <ListItem
-                                            //key={property}
-                                            //button
-                                        >
+                                        <ListItem>
                                             <ListItemText
                                                 sx={{
                                                     textAlign: 'center',
@@ -117,7 +162,7 @@ class InfoSelectDialog extends Component {
                                                     justifyContent: 'center',
                                                 }}
                                                 primary={property.getValue()}
-                                                onClick={() => handleListItemClick(property.getValueID())}
+                                                onClick={() => this.updateValueInInformationButton(property.getValueID())}
                                             />
                                             <IconButton
                                                 edge="end"
@@ -147,22 +192,22 @@ class InfoSelectDialog extends Component {
                     </Dialog>
 
                     <Dialog open={openDialogSelect && isAddingNewProperty} onClose={handleCloseDialogInfo}>
-                        <DialogTitle>Neuen Eintrag hinzufügen</DialogTitle>
+                        <DialogTitle>Add a new selection</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
                                 margin="dense"
                                 label="Name des Info-Objekts"
                                 fullWidth
-                                value={newProperty}
-                                onChange={handleNewPropertyChange}
+                                value={this.state.textFieldContent}
+                                onChange={this.handleInputChange}
                             />
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleCloseDialogInfo}>Abbrechen</Button>
                             <Button
-                                onClick={() => handleAddProperty()}
-                                disabled={newProperty.trim() === ""}
+                                onClick={() => this.addButtonFunction(InformationsBoPropId)}
+                                disabled={this.state.textFieldContent.trim() === ""}
                             >
                                 Hinzufügen
                             </Button>
