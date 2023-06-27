@@ -8,83 +8,46 @@ export default class ValueBo {
   /**
    * Constructs a new UserBO object.
    *
-   * @param {*} userID - id of User.
-   * @param {*} displayname - displayname of User
-   * @param {*} email - Email of the User
-   * @param {*} ProfileIMGURL - Avatar URL of the User
+   * @param {*} valueID - id of the value.
+   * @param {*} value - value content
    *
    */
-  constructor(userID, displayname, email, ProfileIMGURL) {
-    this.UserID = userID;
-    this.displayname = displayname;
-    this.email = email;
-    this.ProfileIMGURL = ProfileIMGURL;
+  constructor(valueID, value) {
+    this.valueID = valueID;
+    this.value = value;
+
   }
 
   /**
-   * Sets the ID of this UserBO.
+   * Sets the valueID of this ValueBo.
    *
-   * @param {*} userID - the new userID of this UserBO.
+   * @param {*} valueID - the new userID of this UserBO.
    */
-  setUserID(userID) {
-    this.UserID = userID;
+  setValueId(valueID) {
+    this.valueID = valueID;
   }
 
   /**
-   * Gets the userID of this UserBO.
+   * Gets the valueID of this ValueBo.
    */
-  getUserID() {
-    return parseInt(this.UserID);
+  getValueId() {
+    return parseInt(this.valueID);
   }
 
   /**
-   * Sets the displayname of this UserBO.
+   * Sets the value of this ValueBo.
    *
-   * @param {*} displayname - the new displayname of this UserBO.
+   * @param {*} value - the new value of this ValueBo.
    */
-  setDisplayname(displayname) {
-    this.displayname = displayname;
+  setValue(value) {
+    this.value = value;
   }
 
   /**
-   * Gets the displayname of this UserBO
+   * Gets the value of this ValueBo
    */
-  getDisplayname() {
-    return this.displayname;
-  }
-
-  /**
-   * Sets the email of this UserBO.
-   *
-   * @param {*} email - the new email of this UserBO.
-   */
-  setEmail(email) {
-    this.email = email;
-  }
-
-  /**
-   * Gets the email of this UserBO.
-   */
-  getEmail() {
-    return this.email;
-  }
-
-  /**
-   * Sets Avatar URL of this UserBO.
-   *
-   * @param {*} ProfileIMGURL - the new date of birth of this UserBO.
-   */
-  setAvatarURL(ProfileIMGURL) {
-    this.ProfileIMGURL = ProfileIMGURL;
-  }
-
-  /**
-   * Gets the avatar URL of this UserBO.
-   *
-   * @return {string} avatarURL - the avatar URL of this user
-   */
-  getAvatarURL() {
-    return this.ProfileIMGURL;
+  getValue() {
+    return this.value;
   }
 
   /**
@@ -95,13 +58,13 @@ export default class ValueBo {
 
     if (Array.isArray(users)) {
       users.forEach((a) => {
-        Object.setPrototypeOf(a, UserBO.prototype);
+        Object.setPrototypeOf(a, ValueBo.prototype);
         result.push(a);
       })
     } else {
       // Es handelt sich offenbar um ein singuläres Objekt
       let a = users;
-      Object.setPrototypeOf(a, UserBO.prototype);
+      Object.setPrototypeOf(a, ValueBo.prototype);
       result.push(a);
     }
 

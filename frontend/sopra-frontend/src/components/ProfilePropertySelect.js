@@ -9,6 +9,7 @@ import RemoveCircleSharpIcon from "@mui/icons-material/RemoveCircleSharp";
 import InfoSelectDialog from "./InfoSelectDialog";
 import InformationBO from "../api/InformationBO";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import Box from "@mui/material/Box";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -44,7 +45,7 @@ class ProfilePropertySelect extends Component {
         this.deleteProperty(this.props.InformationsBoPropId)
     }
     deleteProperty = (propertyId) => {
-        SopraDatingAPI.getAPI().deletePropertyFromSystemById(propertyId).then(() => {
+        SopraDatingAPI.getAPI().deleteSelectPropertyFromSystemById(propertyId).then(() => {
             this.setState({
                 deletingError: null
             });
@@ -132,11 +133,13 @@ class ProfilePropertySelect extends Component {
         console.log(InformationsBoInfoId)
         return (
             <div>
-                <ListItem
-                    sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}
-                >
-                    <ListItemText primary={`Eigenschaft ${InformationsBoProp}: ${InformationsBoValue}`}/>
-                    <ListItemSecondaryAction>
+                <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>
+                    <ListItem
+                        sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}
+                    >
+                        <ListItemText primary={`Eigenschaft ${InformationsBoProp}: ${InformationsBoValue}`}/>
+                    </ListItem>
+                    <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>
                         <Tooltip title="Auswahl-Eigenschaft bearbeiten">
                             <IconButton onClick={this.handleOpenDialogSelect}>
                                 <EditSharpIcon/>
@@ -152,9 +155,10 @@ class ProfilePropertySelect extends Component {
                                 <DeleteIcon/>
                             </IconButton>
                         </Tooltip>
-                    </ListItemSecondaryAction>
-                </ListItem>
+                    </Box>
 
+
+                </Box>
                 <InfoSelectDialog
                     openDialogSelect={openDialogSelect}
                     handleCloseDialogInfo={this.handleCloseDialogInfo}

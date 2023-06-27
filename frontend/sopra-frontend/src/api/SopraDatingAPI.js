@@ -10,6 +10,7 @@ import MessageBO from "./MessageBO";
 import ChatBO from "./ChatBO";
 import ProfileBO from "./ProfileBO";
 import InformationBO from "./InformationBO";
+import ValueBo from "./ValueBo";
 
 export default class SopraDatingAPI {
 
@@ -130,8 +131,14 @@ export default class SopraDatingAPI {
     #deleteInformationByIdURL = (informationId) => {
         return `${this.#SopraDatingServerBaseURL}/information/${informationId}`
     }
-    #deletePropertyInSystemByIdURL = (propertyId) => {
+    #deleteSelectPropertyInSystemByIdURL = (propertyId) => {
         return `${this.#SopraDatingServerBaseURL}/selection-property/${propertyId}`
+    }
+    #deleteTextPropertyInSystemByIdURL = (propertyId) => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/${propertyId}`
+    }
+    #addNewTextValueToTextPropertyURL = (propertyId) => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/entries/${propertyId}`
     }
 
     /**
@@ -561,8 +568,8 @@ export default class SopraDatingAPI {
         })
     }
 
-    deletePropertyFromSystemById(propertyId) {
-        return this.#fetchAdvanced(this.#deletePropertyInSystemByIdURL(propertyId), {
+    deleteSelectPropertyFromSystemById(propertyId) {
+        return this.#fetchAdvanced(this.#deleteSelectPropertyInSystemByIdURL(propertyId), {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json, text/plain',
@@ -575,4 +582,36 @@ export default class SopraDatingAPI {
             })
         })
     }
+
+    addTextPropertyValueById(propertyId, valueBo) {
+        return this.#fetchAdvanced(this.#addNewTextValueToTextPropertyURL(propertyId), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(valueBo)
+        }).then((responseJSON) => {
+            let valueBo = ValueBo.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(valueBo)
+            })
+        })
+    }
+
+    deleteTextPropertyFromSystemById(propertyId) {
+        return this.#fetchAdvanced(this.#deleteTextPropertyInSystemByIdURL(propertyId), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+        }).then((responseJSON) => {
+            let informationBo = InformationBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(informationBo);
+            })
+        })
+    }
+
 }

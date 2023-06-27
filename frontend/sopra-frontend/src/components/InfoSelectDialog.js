@@ -64,17 +64,16 @@ class InfoSelectDialog extends Component {
     postNewValue = (propId, valueBo) => {
         SopraDatingAPI.getAPI().addSelectionValueItem(propId, valueBo)
             .then(() => {
-            })
-            .catch(error => {
-                console.log(error)
-                alert(error)
-            })
-            .then(() => {
                 this.setState({
                     textFieldContent: ""
 
                 })
                 alert("Neue Auswahl erfolgreich hinzugefügt")
+                this.getSelectionValues()
+            })
+            .catch(error => {
+                console.log(error)
+                alert(error)
             })
     }
     addButtonFunction = (id) => {
@@ -138,12 +137,14 @@ class InfoSelectDialog extends Component {
             InformationsBoValue,
             InformationsBoId,
             InformationsBoPropId,
-            InformationsBoPropDescr
+            InformationsBoPropDescr,
+            InformationsBoIsSelection
         } = this.props;
         const {propertiesList} = this.state
         if (!propertiesList) {
             return (<CircularProgress></CircularProgress>)
         } else {
+            console.log(InformationsBoPropDescr)
             return (
                 <div>
                     <Dialog open={openDialogSelect} onClose={() => handleCloseDialogInfo(null)}>
@@ -153,10 +154,7 @@ class InfoSelectDialog extends Component {
                                 {InformationsBoPropDescr}
                                 <List>
                                     {propertiesList.map((property) => (
-                                        <ListItem
-                                            //key={property}
-                                            //button
-                                        >
+                                        <ListItem>
                                             <ListItemText
                                                 sx={{
                                                     textAlign: 'center',
