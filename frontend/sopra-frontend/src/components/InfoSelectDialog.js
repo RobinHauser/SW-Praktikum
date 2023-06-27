@@ -14,6 +14,7 @@ import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
+ * @author [Jannik Haug](https://github.com/JannikHaug)
  */
 
 class InfoSelectDialog extends Component {
@@ -27,15 +28,22 @@ class InfoSelectDialog extends Component {
         };
     }
 
+    /**
+     * triggers the function to update the value for property and to update the information object
+     * @param {int} valueId - id of the current value
+     */
     updateValueInInformationButton = (valueId) => {
         let valueBo = {
             "valueID": `${valueId}`,
         }
         this.updateInformation(this.props.InformationsBoInfoId, valueBo)
     }
+    /**
+     * updates the current information object with a new value
+     * @param {ValueBo} valueBo - contains the valueId
+     * @param {int} informationId - id of the current information object
+     */
     updateInformation = (informationId, valueBo) => {
-        console.log(valueBo)
-        console.log(informationId)
         SopraDatingAPI.getAPI().updateValueOfInformationObject(informationId, valueBo)
             .then(responseJSON => {
                 this.setState({
@@ -47,6 +55,9 @@ class InfoSelectDialog extends Component {
             })
         )
     }
+    /**
+     * gets the current selectaion values of a property
+     */
     getSelectionValues = () => {
         SopraDatingAPI.getAPI().getAllSelectionValuesByPropertyID(this.props.InformationsBoPropId)
             .then(responseJSON => {
@@ -61,6 +72,11 @@ class InfoSelectDialog extends Component {
             })
         )
     }
+    /**
+     * posts the new value to the current property object
+     * @param {ValueBo} valueBo - contains the value content
+     * @param {int} propId - id of the current property object
+     */
     postNewValue = (propId, valueBo) => {
         SopraDatingAPI.getAPI().addSelectionValueItem(propId, valueBo)
             .then(() => {
@@ -72,21 +88,32 @@ class InfoSelectDialog extends Component {
                 this.getSelectionValues()
             })
             .catch(error => {
-                console.log(error)
                 alert(error)
             })
     }
-    addButtonFunction = (id) => {
+    /**
+     * button function which triggers the function to post a new value for the current property object
+     * @param {int} propId - id of the current property object
+     */
+    addButtonFunction = (propId) => {
         const content = this.state.textFieldContent
         let valueBo = {
             "value": `${content}`,
         }
-        this.postNewValue(id, valueBo)
+        this.postNewValue(propId, valueBo)
         this.getSelectionValues()
     }
-    deleteButtonFunction = (id) => {
-        this.deleteSelectionItem(id)
+    /**
+     * button function which triggers the function to delete the selected value out of the system / db
+     * @param {int} valueId - id of the current value object
+     */
+    deleteButtonFunction = (valueId) => {
+        this.deleteSelectionItem(valueId)
     }
+    /**
+     * deletes the selected value out of the system / db
+     * @param {int} valueId - id of the current value object
+     */
     deleteSelectionItem = (valueId) => {
         //const { blockedUser, user } = this.props;
         SopraDatingAPI.getAPI().deleteSelectionValueItem(valueId).then(() => {
@@ -109,42 +136,40 @@ class InfoSelectDialog extends Component {
         });
         this.getSelectionValues()
     }
+    /**
+     * handles the textfield input
+     * @param {Event} event
+     */
     handleInputChange = (event) => {
         this.setState({textFieldContent: event.target.value})
-        console.log(this.state.textFieldContent)
     }
 
+    /**
+     * Called after the component did mount.
+     * It retrieves the selection values of the current property object
+     */
     componentDidMount() {
         this.getSelectionValues()
-        console.log("test: " + this.propertiesList)
-
-
     }
 
+    /**
+     * Renders the class component
+     * @returns InfoSelectDialog - the rendered component
+     */
     render() {
         const {
             openDialogSelect,
             handleCloseDialogInfo,
-            handleListItemClick,
-            handleDeleteItemClick,
             handleAddItemClick,
-            properties,
-            newProperty,
             isAddingNewProperty,
-            handleNewPropertyChange,
-            handleAddProperty,
             InformationsBoProp,
-            InformationsBoValue,
-            InformationsBoId,
             InformationsBoPropId,
             InformationsBoPropDescr,
-            InformationsBoIsSelection
         } = this.props;
         const {propertiesList} = this.state
         if (!propertiesList) {
             return (<CircularProgress></CircularProgress>)
         } else {
-            console.log(InformationsBoPropDescr)
             return (
                 <div>
                     <Dialog open={openDialogSelect} onClose={() => handleCloseDialogInfo(null)}>
@@ -153,8 +178,8 @@ class InfoSelectDialog extends Component {
                             <DialogContentText>
                                 {InformationsBoPropDescr}
                                 <List>
-                                    {propertiesList.map((property) => (
-                                        <ListItem>
+                                    {propertiesList.map((property, index) => (
+                                        <ListItem key={index}>
                                             <ListItemText
                                                 sx={{
                                                     textAlign: 'center',

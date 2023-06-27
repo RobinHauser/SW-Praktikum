@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
+ * @author [Jannik Haug](https://github.com/JannikHaug)
  */
 
 class ProfilePropertySelect extends Component {
@@ -36,14 +37,17 @@ class ProfilePropertySelect extends Component {
     }
 
     componentDidMount() {
-        const exampleProperties = ["Value 1", "Value 2", "Value 3"];
-        this.setState({properties: exampleProperties});
     }
-
+    /**
+     * triggers the deleteProperty function to delete the current prop out of the system
+     */
     deletePropertyFromSystemButton = () => {
-        console.log(this.props.InformationsBoPropId)
         this.deleteProperty(this.props.InformationsBoPropId)
     }
+    /**
+     * deletes the current prop out of the system / db
+     * @param {int} propertyId - id of the property to be deleted
+     */
     deleteProperty = (propertyId) => {
         SopraDatingAPI.getAPI().deleteSelectPropertyFromSystemById(propertyId).then(() => {
             this.setState({
@@ -57,15 +61,22 @@ class ProfilePropertySelect extends Component {
             });
         });
     }
+    /**
+    * triggers the deletion of the current information out of the profile
+    */
     deleteInformationFromProfileButton = () => {
         this.deleteInformation(this.props.InformationsBoInfoId)
     }
+    /**
+    * triggers the deletion of the current information out of the profile
+     * @param {int} informationId - id of the information to be deleted ot of the profile
+    */
     deleteInformation = (informationId) => {
         SopraDatingAPI.getAPI().deleteInformationById(informationId).then(() => {
             this.setState({
                 deletingError: null
             });
-            alert("Löschen aus dem System war erfolgreich")
+            alert("Löschen aus dem Profil war erfolgreich")
             //this.props.onUserRemoved(blockedUser);
         }).catch(e => {
             this.setState({
@@ -80,7 +91,6 @@ class ProfilePropertySelect extends Component {
 
     handleCloseDialogInfo() {
         const {isAddingNewProperty} = this.state;
-        console.log(this.state.openDialogSelect)
         if (isAddingNewProperty) {
             this.setState({isAddingNewProperty: false});
         } else {
@@ -114,7 +124,10 @@ class ProfilePropertySelect extends Component {
         }
         this.handleCloseDialogInfo();
     }
-
+    /**
+     * Renders the class component
+     * @returns ProfilePropertySelect - the rendered component
+     */
     render() {
         const {
             InformationsBoValue,
@@ -125,12 +138,6 @@ class ProfilePropertySelect extends Component {
             InformationsBoInfoId
         } = this.props;
         const {openDialogSelect, properties, newProperty, isAddingNewProperty} = this.state;
-        console.log(InformationsBoValue)
-        console.log(InformationsBoProp)
-        console.log(InformationsBoId)
-        console.log(InformationsBoPropId)
-        console.log(InformationsBoPropDescr)
-        console.log(InformationsBoInfoId)
         return (
             <div>
                 <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>

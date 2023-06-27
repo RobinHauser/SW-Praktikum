@@ -162,7 +162,7 @@ class App extends React.Component {
                         <Route path={'/searchProfileOverview'} element={<Secured user={currentUser}><SearchProfileOverview avatar={profileImageURL} user={user}/> </Secured>}/>
                         <Route path={'/conversationOverview'} element={<Secured user={currentUser}><ConversationOverview avatar={profileImageURL} user={user}/> </Secured>}/>
                         <Route path={'/chat/:chatID/:userID'} element={<Secured user={currentUser}><ChatContainer avatar={profileImageURL} user={user}/> </Secured>}/>
-                        <Route path={'/searchProfile/:id'} element={<Secured user={currentUser}><SearchProfile avatar={profileImageURL}/> </Secured>}/>
+                        <Route path={'/searchProfile/:id'} element={<Secured user={currentUser}><SearchProfile avatar={profileImageURL} user={user}/> </Secured>}/>
                     </Route>
                 </Routes>
             </BrowserRouter>

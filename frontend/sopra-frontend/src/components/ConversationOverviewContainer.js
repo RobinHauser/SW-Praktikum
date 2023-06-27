@@ -1,9 +1,11 @@
-import {List} from "@mui/material";
+import {CircularProgress, List} from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import ConversationOverviewItem from "./ConversationOverviewItem";
 import * as React from "react";
 import {Component} from "react";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import AppHeader from "./AppHeader";
+import Box from "@mui/material/Box";
 
 /**
  * @author [Jannik Haug](https://github.com/JannikHaug)
@@ -14,7 +16,8 @@ class ConversationOverviewContainer extends Component {
         super(props);
         this.state = {
             chatList: [],
-            error: null
+            error: null,
+            loading: 1
         };
     }
 
@@ -27,7 +30,8 @@ class ConversationOverviewContainer extends Component {
             .then(user =>
                 this.setState({
                     chatList: user,
-                    error: null
+                    error: null,
+                    loading: 0
                 }))
             .catch(e =>
                 this.setState({
@@ -52,31 +56,40 @@ class ConversationOverviewContainer extends Component {
      */
     render() {
         const {chatList} = this.state
-        return (
-            <div>
-                <Grid
-                    container
-                    alignItems="center"
-                    spacing={0}
-                    direction="row"
-                    justifyContent="center"
-                    flexFlow="column wrap">
-                    <Grid>
-                        <List id="conversationOverviewList" sx={{width: '100%', maxWidth: 700}}>
-                            {chatList.length > 0 ? (
-                                chatList.map((ChatBO) => (
-                                    <ConversationOverviewItem name={ChatBO.getDisplayName()}
-                                                              avatarLink={ChatBO.getProfileImgUrl()} chatBo={ChatBO}/>
-                                ))
-                            ) : (
-                                <p>Noch kein Chat vorhanden.</p>
-                            )}
-                        </List>
+        if (this.state.loading === 1) {
+            return (
+                <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '70vh'}}>
+                    <CircularProgress></CircularProgress>
+                </Box>
+            );
+        } else {
+            return (
+                <div>
+                    <Grid
+                        container
+                        alignItems="center"
+                        spacing={0}
+                        direction="row"
+                        justifyContent="center"
+                        flexFlow="column wrap">
+                        <Grid>
+                            <List id="conversationOverviewList" sx={{width: '100%', maxWidth: 700}}>
+                                {chatList.length > 0 ? (
+                                    chatList.map((ChatBO) => (
+                                        <ConversationOverviewItem name={ChatBO.getDisplayName()}
+                                                                  avatarLink={ChatBO.getProfileImgUrl()}
+                                                                  chatBo={ChatBO}/>
+                                    ))
+                                ) : (
+                                    <p>Noch kein Chat vorhanden.</p>
+                                )}
+                            </List>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </div>
+                </div>
 
-        );
+            );
+        }
     }
 }
 

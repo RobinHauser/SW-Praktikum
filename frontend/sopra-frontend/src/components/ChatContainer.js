@@ -206,7 +206,12 @@ class ChatContainer extends Component {
         const currentUser = parseInt(this.props.user.getUserID())
         const {messageList, currentUserBo} = this.state
         if (!currentUserBo) {
-            return (<CircularProgress></CircularProgress>)
+            return (<div>
+                    <AppHeader avatar={this.props.avatar}></AppHeader>
+                    <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh'}}>
+                        <CircularProgress></CircularProgress>
+                    </Box>
+                </div>)
         } else {
             const currentUserBoSingle = currentUserBo[0]
             return (
