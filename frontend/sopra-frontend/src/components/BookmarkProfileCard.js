@@ -11,6 +11,7 @@ import ChatIcon from "@mui/icons-material/Chat";
 import Box from "@mui/material/Box";
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import {Alert} from "@mui/material";
 
 /**
  * @author [Jannik Haug]
@@ -22,8 +23,44 @@ class BookmarkProfileCard extends Component {
 
         this.state = {
             addingError: null,
-            deletingError: null
+            deletingError: null,
+            showedProfile: null,
+            informations: [],
+            successAlert: "",
+            warningAlert: ""
         };
+    }
+
+    async componentDidMount() {
+        const profile = this.getProfileOfShowedUser();
+        await this.setState({
+            showedProfile: profile
+        })
+        this.getInformationsByProfile();
+    }
+
+    getProfileOfShowedUser = () => {
+        return SopraDatingAPI.getAPI().getProfile(this.props.bookmarkedUser.getUserID())
+            .then(responseJSON => {
+                return new Promise( (resolve) => {
+                    resolve(responseJSON)
+                })
+            })
+    }
+
+    getInformationsByProfile = () => {
+        this.state.showedProfile.then((profile) => {
+            SopraDatingAPI.getAPI().getInformationsByProfile(profile.getProfileID())
+            .then(responseJSON => {
+                this.setState({
+                    informations: responseJSON
+                })
+            }).catch(() => {
+                this.setState({
+                    informations: []
+                })
+            })
+        })
     }
 
     /**
@@ -93,10 +130,20 @@ class BookmarkProfileCard extends Component {
     addUserToChat = (userToAdd) => {
         SopraDatingAPI.getAPI().addUserToChat(this.props.user.getUserID(), userToAdd)
             .then(() => {
-                alert("Der User wurde dem Chat hinzugefügt ")
+                this.setState({
+                    successAlert: "User zum Chat hinzugefügt"
+                })
+                setTimeout(() => {
+                    this.setState({ successAlert: "" });
+                }, 3000);
             })
             .catch(error => {
-                alert("Der User kann nicht erneut einem Chat hinzugefügt werden ")
+                this.setState({
+                    warningAlert: "Der User kann nicht erneut zum Chat hinzugefügt werden"
+                })
+                setTimeout(() => {
+                    this.setState({warningAlert: ""})
+                }, 3000)
             })
     }
 
@@ -114,6 +161,7 @@ class BookmarkProfileCard extends Component {
 
     render() {
         const {bookmarkedUser} = this.props;
+        const {informations, successAlert, warningAlert} = this.state;
         const bookMarkedUserId = parseInt(this.props.bookmarkedUser.getUserID())
         return (
             <div>
@@ -130,32 +178,20 @@ class BookmarkProfileCard extends Component {
                           minWidth: "300px"
                       }} //Quelle: https://stackoverflow.com/questions/37062176/mui-how-to-animate-card-depth-on-hover
                 >
-                    <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={placeHolderImage}></Avatar>
+                    <Avatar sx={{width: 56, height: 56, margin: "auto", mt: 1}} src={bookmarkedUser.getAvatarURL()}></Avatar>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
                             {bookmarkedUser.getDisplayname()}
                         </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Alter:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Geschlecht:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Raucher:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Religion:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Haarfarbe:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Geburtsdatum:
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary" style={{textAlign: "left"}}>
-                            Körpergröße:
-                        </Typography>
+                        {informations.length > 0 ? (
+                            informations.map((informationListItem) => (
+                                <Typography key={informationListItem.getValueID()} variant="h6" color="text.secondary" style={{textAlign: "left"}}>
+                                    {`${informationListItem.getProperty()}: ${informationListItem.getValue()}`}
+                                </Typography>
+                            ))
+                        ) : (
+                            <Typography variant="body1">Keine Informationen zu diesem Profil vorhanden</Typography>
+                        )}
                         <Box sx={{marginTop: 5, display: 'flex', justifyContent: 'space-between'}}>
                             <Tooltip title="User blockieren">
                                 <BlockIcon onClick={() => this.blockUser()}
@@ -169,6 +205,12 @@ class BookmarkProfileCard extends Component {
                                 <ChatIcon onClick={() => this.chatButtonFunction(bookMarkedUserId)} sx={{cursor: 'pointer', width: 35, height: 35}}></ChatIcon>
                             </Tooltip>
                         </Box>
+                        {successAlert.length > 0 && (
+                            <Alert severity="success"> {successAlert}</Alert>
+                        )}
+                        {warningAlert.length > 0 && (
+                            <Alert severity="warning"> {warningAlert}</Alert>
+                        )}
                     </CardContent>
                 </Card>
             </div>

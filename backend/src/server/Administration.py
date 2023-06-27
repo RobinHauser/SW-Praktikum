@@ -1,23 +1,23 @@
-from backend.src.server.bo.BusinessObject import BusinessObject
-from backend.src.server.bo.Profile import Profile
-from backend.src.server.bo.User import User
-from backend.src.server.bo.Property import Property
-from backend.src.server.bo.SelectionProperty import SelectionProperty
-from backend.src.server.bo.TextProperty import TextProperty
-from backend.src.server.bo.Information import Information
-from backend.src.server.bo.SimilarityMeasure import SimilarityMeasure
+from src.server.bo.BusinessObject import BusinessObject
+from src.server.bo.Profile import Profile
+from src.server.bo.User import User
+from src.server.bo.Property import Property
+from src.server.bo.SelectionProperty import SelectionProperty
+from src.server.bo.TextProperty import TextProperty
+from src.server.bo.Information import Information
+from src.server.bo.SimilarityMeasure import SimilarityMeasure
 
-from backend.src.server.db.BlocklistMapper import BlocklistMapper
-from backend.src.server.db.BookmarklistMapper import BookmarklistMapper
-from backend.src.server.db.ProfileMapper import ProfileMapper
-from backend.src.server.db.UserMapper import UserMapper
-from backend.src.server.db.SelectionPropertyMapper import SelectionPropertyMapper
-from backend.src.server.db.TextPropertyMapper import TextPropertyMapper
-from backend.src.server.db.InformationMapper import InformationMapper
-from backend.src.server.db.PropertyMapper import PropertyMapper
-from backend.src.server.db.MessageMapper import MessageMapper
-from backend.src.server.db.ChatMapper import ChatMapper
-from backend.src.server.db.ViewedMapper import ViewedMapper
+from src.server.db.BlocklistMapper import BlocklistMapper
+from src.server.db.BookmarklistMapper import BookmarklistMapper
+from src.server.db.ProfileMapper import ProfileMapper
+from src.server.db.UserMapper import UserMapper
+from src.server.db.SelectionPropertyMapper import SelectionPropertyMapper
+from src.server.db.TextPropertyMapper import TextPropertyMapper
+from src.server.db.InformationMapper import InformationMapper
+from src.server.db.PropertyMapper import PropertyMapper
+from src.server.db.MessageMapper import MessageMapper
+from src.server.db.ChatMapper import ChatMapper
+from src.server.db.ViewedMapper import ViewedMapper
 
 
 
@@ -446,8 +446,8 @@ class Administration():
             sorted_user = self.get_sorted_list_of_personal_profiles(search_profile)
         if len(viewed_user) == 0 or len(sorted_user) == 0:
             return sorted_user
-        for user in sorted_user:
-            user.get_user_id()
+        sorted_user1 = sorted_user.copy()
+        for user in sorted_user1:
             for viewed in viewed_user:
                 if user.get_user_id() == viewed.get_user_id():
                     sorted_user.remove(user)

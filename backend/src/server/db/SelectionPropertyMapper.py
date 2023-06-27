@@ -1,7 +1,7 @@
 import json
 
-from backend.src.server.bo.SelectionProperty import SelectionProperty
-from backend.src.server.db import Mapper as Mapper
+from src.server.bo.SelectionProperty import SelectionProperty
+from src.server.db import Mapper as Mapper
 
 class SelectionPropertyMapper(Mapper.Mapper):
     def __init__(self):

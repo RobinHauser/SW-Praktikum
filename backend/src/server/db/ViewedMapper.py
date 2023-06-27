@@ -1,7 +1,5 @@
-import json
-
-from backend.src.server.db import Mapper
-from backend.src.server.bo.User import User
+from src.server.bo.User import User
+from src.server.db import Mapper
 
 
 class ViewedMapper(Mapper.Mapper):
@@ -13,9 +11,16 @@ class ViewedMapper(Mapper.Mapper):
         pass
 
     def find_by_id(self, id):
+        """
+        Returns a list of all other users a user(with a user_id) has blocked
+        :param user_id: the unique id of the user OR SearchProfileID of unique SearchProfile
+        :return: a sorted list of users
+        """
+
         result = []
         cursor = self._cnx.cursor()
 
+        # Check if Id is user_id or searchprofile_id
         if id >= 4000:
             command2 = f'SELECT UserID FROM profile_relation WHERE ProfileID = {id}'
             cursor.execute(command2)
@@ -27,12 +32,13 @@ class ViewedMapper(Mapper.Mapper):
         # Get viewedList id of the user
         command = "SELECT ViewedListID FROM viewedlist WHERE UserID={}".format(user_id[0][0])
         cursor.execute(command)
+        viewedList_id = cursor.fetchall()
 
-        viewedList_id = cursor.fetchone()[0]
+        if len(viewedList_id) == 0:
+            return result
 
-        command = "SELECT UserID FROM view WHERE ViewedListID={}".format(viewedList_id)
+        command = f'SELECT UserID FROM view WHERE ViewedListID={viewedList_id[0][0]}'
         cursor.execute(command)
-
         user_ids = cursor.fetchall()
 
         for user_id in user_ids:
@@ -59,6 +65,14 @@ class ViewedMapper(Mapper.Mapper):
 
         viewedlist_id = cursor.fetchall()[0][0]
         viewed_user_id = int(payload.get('UserID'))
+
+        command = f'SELECT * FROM view WHERE ViewedListID = {viewedlist_id}'
+        cursor.execute(command)
+        users = cursor.fetchall()
+
+        for user in users:
+            if user[2] == viewed_user_id:
+                return payload
 
 
         cursor.execute(f'INSERT INTO view (ViewedListID, UserID) VALUES ({viewedlist_id}, {viewed_user_id})')

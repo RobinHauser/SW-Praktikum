@@ -1,7 +1,5 @@
-import json
-
-from backend.src.server.db.Mapper import Mapper
-from backend.src.server.bo.User import User
+from src.server.db.Mapper import Mapper
+from src.server.bo.User import User
 
 
 class BookmarklistMapper(Mapper):
@@ -102,7 +100,3 @@ class BookmarklistMapper(Mapper):
         cursor.close()
 
         return bookmarked_user
-
-
-
-#todo delete bookmarklist

@@ -1,8 +1,6 @@
-import json
-
-from backend.src.server.bo import Blocklist
-from backend.src.server.db import Mapper
-from backend.src.server.bo import User
+from src.server.bo import Blocklist
+from src.server.db import Mapper
+from src.server.bo import User
 
 Blocklist = Blocklist.Blocklist
 User = User.User
@@ -70,9 +68,11 @@ class BlocklistMapper(Mapper.Mapper):
         cursor = self._cnx.cursor()
         cursor.execute(f'SELECT BlocklistID FROM blocklist WHERE UserID = {user_id}')   #TODO BlocklistID schon vorher gesetzt?
 
+        #Get blocklist id out of SQL Command
         blocklist_id = cursor.fetchall()[0][0]
         blocked_user_id = blocked_user.get_user_id()
 
+        # Insert User into block - Blocklist relation Table
         cursor.execute(
             f'INSERT INTO block (BlocklistID, BlockedUserID) VALUES ({blocklist_id}, {blocked_user_id})')
 

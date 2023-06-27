@@ -1,5 +1,5 @@
-from backend.src.server.bo import Message
-from backend.src.server.db import Mapper
+from src.server.bo import Message
+from src.server.db import Mapper
 import json
 Message = Message.Message
 
@@ -10,6 +10,11 @@ class MessageMapper(Mapper.Mapper):
         super().__init__()
 
     def find_all(self):
+        """
+        Returns a list of all other users a user(with a user_id) has blocked
+        :param no param needed
+        :return: all messages
+        """
         result = []
         cursor = self._cnx.cursor()
         cursor.execute("SELECT * FROM message")
@@ -30,6 +35,11 @@ class MessageMapper(Mapper.Mapper):
         return result
 
     def find_by_id(self, chat_id):
+        """
+        Returns a list of all other users a user(with a user_id) has blocked
+        :param chat_id: chat_id of the chat of which we want the messages
+        :return: list of all messages in a unique chat container
+        """
         result = []
         cursor = self._cnx.cursor()
         command = "SELECT * FROM chatcontainer WHERE ChatID={}".format(chat_id)
@@ -59,7 +69,12 @@ class MessageMapper(Mapper.Mapper):
 
         return result
 
-    def insert(self, user_id, payload):     # TODO Cahnge to Chat ID when CHATMAPPER is finished
+    def insert(self, user_id, payload):
+        """
+        Returns a list of all other users a user(with a user_id) has blocked
+        :param user_id: the unique id of the user
+        :return: entry of new chat in database
+        """
         cursor = self._cnx.cursor()
 
         command3 = f'SELECT * FROM blocklist WHERE UserID={payload.get("UserID")}'
