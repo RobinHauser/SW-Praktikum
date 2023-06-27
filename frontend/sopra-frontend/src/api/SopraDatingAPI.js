@@ -149,6 +149,11 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/selection-property/selection_properties`;
     }
 
+    #getAllSelectionPropertiesURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/selection_properties`;
+    }
+
+
     /**
      * Get the Singleton instance
      *
@@ -637,5 +642,15 @@ export default class SopraDatingAPI {
             })
         })
     };
+
+    getAllSelectionProperties() {
+        return this.#fetchAdvanced(this.#getAllSelectionPropertiesURL())
+            .then((responseJSON) => {
+                let PropertyBOs = PropertyBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(PropertyBOs)
+                })
+            })
+    }
 
 }

@@ -44,7 +44,7 @@ class Profile extends Component {
             isAddingNewProperty: false,
             anchorElSelect: null,
             anchorElFreeText: null,
-            globalPropertiesSelect: ["Auswahl-Eigenschaft 1", "Auswahl-Eigenschaft 2", "Auswahl-Eigenschaft 3"],
+            globalPropertiesSelect: [],
             globalPropertiesFreeText: ["Freitext-Eigenschaft 1", "Freitext-Eigenschaft 2", "Freitext-Eigenschaft 3"],
             currentUser: null,
             personalProfile: null,
@@ -129,6 +129,7 @@ class Profile extends Component {
 
     async componentDidMount() {
         const exampleProperties = ["Value 1", "Value 2", "Value 3"];
+        this.getAllSelectionProperties()
         this.setState({properties: exampleProperties});
         this.setState({
             currentUser: this.props.user
@@ -152,7 +153,7 @@ class Profile extends Component {
         }
         this.addSelectionProperty(propertyBO)
         this.setState({PropertyNameText: '', PropertyDescriptionText: ''})
-        }
+    }
 
     addSelectionProperty = (propertyBO) => {
         SopraDatingAPI.getAPI().addSelectionProperty(propertyBO)
@@ -161,10 +162,27 @@ class Profile extends Component {
                     error: null
                 });
             }).catch(e => {
+            this.setState({
+                error: e
+            });
+        });
+    };
+
+    getAllSelectionProperties = () => {
+        SopraDatingAPI.getAPI().getAllSelectionProperties()
+            .then(PropertyBOs => {
                 this.setState({
+                    globalPropertiesSelect: PropertyBOs,
+                    error: null
+                });
+            })
+            .catch(e => {
+                this.setState({
+                    GlobalPropertiesSelect: [],
                     error: e
                 });
             });
+
     };
 
     handleInputChangeName = (event) => {
@@ -174,9 +192,12 @@ class Profile extends Component {
     handleInputChangeDescription = (event) => {
         this.setState({PropertyDescriptionText: event.target.value});
     }
+
     handleOpenDialogSelect() {
         this.setState({openDialogSelect: true});
     }
+
+
 
     handleCloseDialogInfo() {
         const {isAddingNewProperty} = this.state;
@@ -229,6 +250,7 @@ class Profile extends Component {
         this.handleCloseDialogProp();
     }
 
+
     handleGlobalPropertiesMenuSelectClick = (event) => {
         this.setState({anchorElSelect: event.currentTarget});
     };
@@ -246,8 +268,7 @@ class Profile extends Component {
     };
 
     handleGlobalPropertiesItemClickSelect = () => {
-        this.setState({anchorElSelect: null});
-        this.handleOpenDialogSelect();
+        this.setState({anchorElSelect: null, openDialogSelect: true});
     };
 
     handleGlobalPropertiesItemClickFreeText = () => {
@@ -332,22 +353,22 @@ class Profile extends Component {
                                 informations.map((InformationsBo, index) => (
                                     parseInt(InformationsBo.getIsSelect()) === 1 ? (
                                         <ProfilePropertySelect Key={index}
-                                            InformationsBoValue={InformationsBo.getValue()}
-                                            InformationsBoProp={InformationsBo.getProperty()}
-                                            InformationsBoId={InformationsBo.getValueID()}
-                                            InformationsBoPropId={InformationsBo.getPropID()}
-                                            InformationsBoPropDescr={InformationsBo.getPropDescription()}
-                                            InformationsBoInfoId={InformationsBo.getInformationId()}
-                                            InformationsBoIsSelection={InformationsBo.getIsSelect()}
+                                                               InformationsBoValue={InformationsBo.getValue()}
+                                                               InformationsBoProp={InformationsBo.getProperty()}
+                                                               InformationsBoId={InformationsBo.getValueID()}
+                                                               InformationsBoPropId={InformationsBo.getPropID()}
+                                                               InformationsBoPropDescr={InformationsBo.getPropDescription()}
+                                                               InformationsBoInfoId={InformationsBo.getInformationId()}
+                                                               InformationsBoIsSelection={InformationsBo.getIsSelect()}
                                         />
                                     ) : (
                                         <ProfilePropertyFreeText Key={index}
-                                            InformationsBoValue={InformationsBo.getValue()}
-                                            InformationsBoProp={InformationsBo.getProperty()}
-                                            InformationsBoId={InformationsBo.getValueID()}
-                                            InformationsBoPropId={InformationsBo.getPropID()}
-                                            InformationsBoPropDescr={InformationsBo.getPropDescription()}
-                                            InformationsBoInfoId={InformationsBo.getInformationId()}
+                                                                 InformationsBoValue={InformationsBo.getValue()}
+                                                                 InformationsBoProp={InformationsBo.getProperty()}
+                                                                 InformationsBoId={InformationsBo.getValueID()}
+                                                                 InformationsBoPropId={InformationsBo.getPropID()}
+                                                                 InformationsBoPropDescr={InformationsBo.getPropDescription()}
+                                                                 InformationsBoInfoId={InformationsBo.getInformationId()}
                                         />
 
                                     )
@@ -390,15 +411,19 @@ class Profile extends Component {
                                     open={openSelect}
                                     onClose={this.handleCloseGlobalPropertiesSelect}
                                 >
-                                    {globalPropertiesSelect.map((globalPropertyItemSelect) => (
-                                        <MenuItem
-                                            onClick={() => this.handleGlobalPropertiesItemClickSelect()}
-                                            sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
-                                            key={1}
-                                        >
-                                            {globalPropertyItemSelect}
-                                        </MenuItem>
-                                    ))}
+                                    {globalPropertiesSelect.length > 0 ? (
+                                        this.state.globalPropertiesSelect.map((globalPropertyItemSelect) => (
+                                            <MenuItem
+                                                key={globalPropertyItemSelect.getPropertyID()}
+                                                onClick={this.handleGlobalPropertiesItemClickSelect}
+                                                sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
+                                            >
+                                                {globalPropertyItemSelect.getPropertyName()}
+                                            </MenuItem>
+                                        ))) : (
+                                        <p>Es gibt keine globalen Eigenschaften.</p>
+                                    )
+                                    }
                                 </Menu>
                             </Container>
                             <Container style={{
@@ -479,6 +504,12 @@ class Profile extends Component {
                             </DialogActions>
                         </Dialog>
 
+                        <InfoSelectDialog
+                            openDialogSelect={openDialogSelect}
+                            handleCloseDialogInfo={this.handleCloseDialogInfo}
+                            handleClick={this.handleClick}
+                            value={value}
+                        />
 
                     </Container>
 
