@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {ListItem, ListItemText, Switch} from "@mui/material";
+import {Alert, CircularProgress, LinearProgress, ListItem, ListItemText, Switch} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
@@ -25,7 +25,8 @@ export default class GridContainer extends React.Component {
             viewedList: [],
             user: null,
             blocklist: [],
-            error: null
+            error: null,
+            loading: false
         };
     }
 
@@ -53,10 +54,11 @@ export default class GridContainer extends React.Component {
      */
     getAllUsers = async (user) => {
         try {
+            this.setState({loading: true})
             const userBOs = await SopraDatingAPI.getAPI().getAllUsersFiltered(user.getUserID());
-            this.setState({userList: userBOs});
+            this.setState({userList: userBOs, loading: false});
         } catch (error) {
-            this.setState({userList: []});
+            this.setState({userList: [], loading: false});
         }
     };
 
@@ -67,10 +69,11 @@ export default class GridContainer extends React.Component {
      */
     getSearchProfiles = async (user) => {
         try {
+            this.setState({loading: true})
             const searchProfileBOs = await SopraDatingAPI.getAPI().getSearchProfiles(user.getUserID());
-            this.setState({searchprofiles: searchProfileBOs, error: null});
+            this.setState({searchprofiles: searchProfileBOs, error: null, loading: false});
         } catch (error) {
-            this.setState({searchprofiles: [], error});
+            this.setState({searchprofiles: [], error, loading: false});
         }
     };
 
@@ -81,10 +84,11 @@ export default class GridContainer extends React.Component {
      */
     getUsersSortedBySimilarityMeasure = async (searchprofileID) => {
         try {
+            this.setState({loading: true})
             const UserBOs = await SopraDatingAPI.getAPI().getUsersSortedBySimilarityMeasure(searchprofileID);
-            this.setState({userList: UserBOs, error: null});
+            this.setState({userList: UserBOs, error: null, loading: false});
         } catch (error) {
-            this.setState({userList: [], error});
+            this.setState({userList: [], error, loading: false});
         }
     };
 
@@ -95,10 +99,12 @@ export default class GridContainer extends React.Component {
      */
     getViewedlist = async (id) => {
         try {
+            this.setState({loading: true})
             const userList = await SopraDatingAPI.getAPI().getViewedlist(id);
             this.setState({
                 userList: userList,
-                error: null
+                error: null,
+                loading: false
             });
         } catch (error) {
             this.setState({
@@ -135,7 +141,7 @@ export default class GridContainer extends React.Component {
     handleSearchprofileItemClick = (searchprofile) => {
         // Set the selected search profile and close the menu
         this.setState({selectedSearchprofile: searchprofile})
-        if(!this.state.showOnlyNewUser) {
+        if (!this.state.showOnlyNewUser) {
             this.getViewedlist(searchprofile.getProfileID())
         } else {
             this.getUsersSortedBySimilarityMeasure(searchprofile.getProfileID())
@@ -152,7 +158,7 @@ export default class GridContainer extends React.Component {
         const {showOnlyNewUser, user} = this.state;
         // Set the selected search profile and close the menu
         this.setState({selectedSearchprofile: null})
-        if(!showOnlyNewUser) {
+        if (!showOnlyNewUser) {
             this.getViewedlist(user.getUserID())
         } else {
             this.getAllUsers(user)
@@ -196,11 +202,14 @@ export default class GridContainer extends React.Component {
     };
 
     render() {
-        const {anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList, user} = this.state;
+        const {anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList, user, loading} = this.state;
         const open = Boolean(anchorEl);
 
         return (
             <Box>
+                {loading && (
+                    <LinearProgress sx={{marginBottom: "10px"}}/>
+                )}
                 <Box display="flex" justifyContent="space-between">
                     <Tooltip title={"Suchprofil nach dem gefiltert werden soll"}>
                         <Button
@@ -275,12 +284,13 @@ export default class GridContainer extends React.Component {
                                 </ProfileCard>
                             </Grid>
                         ))
-                    ) : (
-                        <ListItem>
-                            <ListItemText sx={{textAlign: 'center'}}>
-                                <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>
-                            </ListItemText>
-                        </ListItem>
+                    ) : (loading ? null : (
+                            <ListItem>
+                                <ListItemText sx={{textAlign: 'center'}}>
+                                    <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>
+                                </ListItemText>
+                            </ListItem>
+                        )
                     )}
                 </Grid>
             </Box>
