@@ -205,7 +205,7 @@ class InfoSelectDialog extends Component {
             return (
                 <div>
                     <Dialog open={openDialogSelect} onClose={() => handleCloseDialogInfo(null)}>
-                        <DialogTitle>{`Eigenschaft ${InformationsBoProp}`}</DialogTitle>
+                        <DialogTitle>{`${InformationsBoProp}`}</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
                                 {InformationsBoPropDescr}

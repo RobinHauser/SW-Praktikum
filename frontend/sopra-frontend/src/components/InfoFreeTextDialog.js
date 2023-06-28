@@ -130,7 +130,7 @@ class InfoFreeTextDialog extends Component {
         return (
             <div>
                 <Dialog open={openDialogFreeText} onClose={() => handleCloseDialogFreeText(null)}>
-                    <DialogTitle>{`Eigenschaft ${value}`}</DialogTitle>
+                    <DialogTitle>{`${value}`}</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             {InformationsBoPropDescr}

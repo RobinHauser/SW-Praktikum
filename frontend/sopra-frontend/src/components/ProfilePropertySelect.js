@@ -146,7 +146,7 @@ class ProfilePropertySelect extends Component {
                     <ListItem
                         sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}
                     >
-                        <ListItemText primary={`Eigenschaft ${InformationsBoProp}: ${InformationsBoValue}`}/>
+                        <ListItemText primary={`${InformationsBoProp}: ${InformationsBoValue}`}/>
                     </ListItem>
                     <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>
                         <Tooltip title="Auswahl-Eigenschaft bearbeiten">

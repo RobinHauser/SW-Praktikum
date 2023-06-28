@@ -24,6 +24,8 @@ import MenuItem from "@mui/material/MenuItem";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Box from "@mui/material/Box";
 import CachedIcon from "@mui/icons-material/Cached";
+import PropertySelectMenuItem from "../components/PropertySelectMenuItem";
+import PropertyTextMenuItem from "../components/PropertyTextMenuItem";
 
 
 /**
@@ -45,15 +47,19 @@ class SearchProfile extends Component {
             isAddingNewProperty: false,
             anchorElSelect: null,
             anchorElFreeText: null,
-            globalPropertiesSelect: ["Auswahl-Eigenschaft 1", "Auswahl-Eigenschaft 2", "Auswahl-Eigenschaft 3"],
-            globalPropertiesFreeText: ["Freitext-Eigenschaft 1", "Freitext-Eigenschaft 2", "Freitext-Eigenschaft 3"],
+            globalPropertiesSelect: [],
+            globalPropertiesFreeText: [],
             currentUser: null,
             personalProfile: null,
             loadingProgressUser: false,
             loadingProgressProfile: false,
             error: null,
             informations: null,
-            SearchProfileId: null
+            SearchProfileId: null,
+            PropertySelectionNameText: '',
+            PropertyFreeTextNameText: '',
+            PropertyFreeTextDescriptionText: '',
+            PropertySelectionDescriptionText: ''
         };
 
         this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -76,9 +82,10 @@ class SearchProfile extends Component {
         const exampleProperties = ["Value 1", "Value 2", "Value 3"];
         this.setState({properties: exampleProperties});
         this.getSearchProfileId()
+        this.getAllSelectionProperties()
+        this.getAllFreeTextProperties()
         console.log(this.props.user)
         this.getInformations(this.state.SearchProfileId)
-        //this.getSearchProfile()
     }
 
     /**
@@ -220,7 +227,121 @@ class SearchProfile extends Component {
         this.setState({anchorElFreeText: null});
         this.handleOpenDialogFreeText();
     };
+    getAllSelectionProperties = () => {
+        SopraDatingAPI.getAPI().getAllSelectionProperties()
+            .then(PropertyBOs => {
+                this.setState({
+                    globalPropertiesSelect: PropertyBOs,
+                    error: null
+                });
+            })
+            .catch(e => {
+                this.setState({
+                    GlobalPropertiesSelect: [],
+                    error: e
+                });
+            });
 
+    };
+    getAllFreeTextProperties = () => {
+        SopraDatingAPI.getAPI().getAllFreeTextProperties()
+            .then(PropertyBOs => {
+                this.setState({
+                    globalPropertiesFreeText: PropertyBOs,
+                    error: null
+                });
+            })
+            .catch(e => {
+                this.setState({
+                    GlobalPropertiesFreeText: [],
+                    error: e
+                });
+            });
+
+    };
+
+    isFormValidSelect() {
+        return (
+            this.state.PropertySelectionNameText.trim() !== '' &&
+            this.state.PropertySelectionDescriptionText.trim() !== ''
+        );
+    }
+
+    buttonAddSelectionProperty() {
+        const name = this.state.PropertySelectionNameText
+        const description = this.state.PropertySelectionDescriptionText
+        let propertyBO = {
+            "name": name,
+            "description": description
+        }
+        this.addSelectionProperty(propertyBO)
+        this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
+    }
+
+    handleInputChangeSelectionName = (event) => {
+        this.setState({PropertySelectionNameText: event.target.value});
+    }
+    addFreeTextPropertyClickHandler = () => {
+        this.buttonAddFreeTextProperty();
+    }
+
+    buttonAddFreeTextProperty() {
+        const name = this.state.PropertyFreeTextNameText
+        const description = this.state.PropertyFreeTextDescriptionText
+        let propertyBO = {
+            "name": name,
+            "description": description
+        }
+        this.addFreeTextProperty(propertyBO)
+        this.setState({PropertyFreeTextNameText: '', PropertyFreeTextDescriptionText: ''})
+    }
+
+    addFreeTextProperty = (propertyBO) => {
+        SopraDatingAPI.getAPI().addFreeTextProperty(propertyBO)
+            .then(() => {
+                this.setState({
+                    error: null
+                });
+                this.getAllFreeTextProperties()
+            }).catch(e => {
+            this.setState({
+                error: e
+            });
+        });
+    };
+    handleInputChangeFreeTextName = (event) => {
+        this.setState({PropertyFreeTextNameText: event.target.value});
+    }
+    handleInputChangeFreeTextDescription = (event) => {
+        this.setState({PropertyFreeTextDescriptionText: event.target.value});
+    }
+    addSelectionPropertyClickHandler = () => {
+        this.buttonAddSelectionProperty();
+
+    }
+    handleInputChangeSelectionDescription = (event) => {
+        this.setState({PropertySelectionDescriptionText: event.target.value});
+    }
+    addSelectionProperty = (propertyBO) => {
+        SopraDatingAPI.getAPI().addSelectionProperty(propertyBO)
+            .then(() => {
+                this.setState({
+                    error: null
+                });
+                this.getAllSelectionProperties()
+            }).catch(e => {
+            this.setState({
+                error: e
+            });
+        });
+    };
+
+    isFormValidFreeText() {
+        return (
+            this.state.PropertyFreeTextNameText.trim() !== '' &&
+            this.state.PropertyFreeTextDescriptionText.trim() !== ''
+        );
+    }
 
     render() {
         const {value} = this.props;
@@ -229,16 +350,10 @@ class SearchProfile extends Component {
             openFreeTextDialog,
             openDialogSelect,
             openDialogFreeText,
-            properties,
-            newProperty,
-            isAddingNewProperty,
             globalPropertiesSelect,
             globalPropertiesFreeText,
             anchorElSelect,
             anchorElFreeText,
-            user,
-            currentUser,
-            personalProfile,
             informations
         } = this.state;
         const openSelect = Boolean(anchorElSelect)
@@ -282,7 +397,8 @@ class SearchProfile extends Component {
                             {informations.length > 0 ? (
                                 informations.map((InformationsBo, index) => (
                                     parseInt(InformationsBo.getIsSelect()) === 1 ? (
-                                        <ProfilePropertySelect Key={index}
+                                        <ProfilePropertySelect key={InformationsBo.getInformationId()}
+                                                               UserId={this.props.user.getUserID()}
                                                                InformationsBoValue={InformationsBo.getValue()}
                                                                InformationsBoProp={InformationsBo.getProperty()}
                                                                InformationsBoId={InformationsBo.getValueID()}
@@ -292,7 +408,7 @@ class SearchProfile extends Component {
                                                                InformationsBoIsSelection={InformationsBo.getIsSelect()}
                                         />
                                     ) : (
-                                        <ProfilePropertyFreeText Key={index}
+                                        <ProfilePropertyFreeText key={InformationsBo.getInformationId()}
                                                                  InformationsBoValue={InformationsBo.getValue()}
                                                                  InformationsBoProp={InformationsBo.getProperty()}
                                                                  InformationsBoId={InformationsBo.getValueID()}
@@ -341,15 +457,20 @@ class SearchProfile extends Component {
                                     open={openSelect}
                                     onClose={this.handleCloseGlobalPropertiesSelect}
                                 >
-                                    {globalPropertiesSelect.map((globalPropertyItemSelect) => (
-                                        <MenuItem
-                                            onClick={() => this.handleGlobalPropertiesItemClickSelect()}
-                                            sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
-                                            key={1}
-                                        >
-                                            {globalPropertyItemSelect}
-                                        </MenuItem>
-                                    ))}
+                                    {globalPropertiesSelect.length > 0 ? (
+                                        this.state.globalPropertiesSelect.map((globalPropertyItemSelect) => (
+                                            <PropertySelectMenuItem
+                                                key={globalPropertyItemSelect.getPropertyID()}
+                                                InformationsBoProp={globalPropertyItemSelect.getPropertyName()}
+                                                InformationsBoPropId={globalPropertyItemSelect.getPropertyID()}
+                                                InformationsBoPropDescr={globalPropertyItemSelect.getPropertyDescription()}
+                                                UserId={this.props.user.getUserID()}
+                                                InformationsBoIsSelection={globalPropertyItemSelect.getIsSelection()}
+                                                profileId={this.state.SearchProfileId}></PropertySelectMenuItem>
+                                        ))) : (
+                                        <p>Es gibt keine globalen Eigenschaften.</p>
+                                    )
+                                    }
                                 </Menu>
                             </Container>
                             <Container style={{
@@ -386,15 +507,21 @@ class SearchProfile extends Component {
                                     open={openFreeText}
                                     onClose={this.handleCloseGlobalPropertiesFreeText}
                                 >
-                                    {globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
-                                        <MenuItem
-                                            onClick={() => this.handleGlobalPropertiesItemClickFreeText()}
-                                            sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
-                                            key={1}
-                                        >
-                                            {globalPropertyItemFreeText}
-                                        </MenuItem>
-                                    ))}
+                                    {globalPropertiesFreeText.length > 0 ? (
+                                        this.state.globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
+                                            <PropertyTextMenuItem
+                                                key={globalPropertyItemFreeText.getPropertyID()}
+                                                InformationsBoProp={globalPropertyItemFreeText.getPropertyName()}
+                                                InformationsBoPropId={globalPropertyItemFreeText.getPropertyID()}
+                                                InformationsBoPropDescr={globalPropertyItemFreeText.getPropertyDescription()}
+                                                UserId={this.props.user.getUserID()}
+                                                InformationsBoIsSelection={globalPropertyItemFreeText.getIsSelection()}
+                                                profileId={this.state.SearchProfileId}>
+                                            </PropertyTextMenuItem>
+                                        ))) : (
+                                        <p>Es gibt keine globalen Eigenschaften.</p>
+                                    )
+                                    }
                                 </Menu>
                             </Container>
                         </Box>
@@ -406,28 +533,38 @@ class SearchProfile extends Component {
                                     Eigenschaft angibst.
                                 </DialogContentText>
                                 <TextField
+                                    value={this.state.PropertySelectionNameText}
+                                    onChange={this.handleInputChangeSelectionName}
                                     autoFocus
                                     margin="dense"
                                     id="name"
                                     label="Name"
                                     fullWidth
-                                    variant="standard"
-                                />
+                                    variant="standard"/>
+
                                 <TextField
+                                    value={this.state.PropertySelectionDescriptionText}
+                                    onChange={this.handleInputChangeSelectionDescription}
                                     autoFocus
                                     margin="dense"
                                     id="name"
                                     label="Beschreibung"
                                     fullWidth
-                                    variant="standard"
-                                />
+                                    variant="standard"/>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
-                                <Button onClick={this.handleOpenDialogSelect}>Anlegen</Button>
+                                <Button onClick={this.addSelectionPropertyClickHandler}
+                                        disabled={!this.isFormValidSelect()}>Anlegen
+                                </Button>
                             </DialogActions>
                         </Dialog>
-
+                        <InfoSelectDialog
+                            openDialogSelect={openDialogSelect}
+                            handleCloseDialogInfo={this.handleCloseDialogInfo}
+                            handleClick={this.handleClick}
+                            value={value}
+                        />
 
                     </Container>
 
@@ -444,6 +581,8 @@ class SearchProfile extends Component {
                                     Eigenschaft angibst.
                                 </DialogContentText>
                                 <TextField
+                                    value={this.state.PropertyFreeTextNameText}
+                                    onChange={this.handleInputChangeFreeTextName}
                                     autoFocus
                                     margin="dense"
                                     id="name"
@@ -452,6 +591,8 @@ class SearchProfile extends Component {
                                     variant="standard"
                                 />
                                 <TextField
+                                    value={this.state.PropertyFreeTextDescriptionText}
+                                    onChange={this.handleInputChangeFreeTextDescription}
                                     autoFocus
                                     margin="dense"
                                     id="name"
@@ -462,7 +603,9 @@ class SearchProfile extends Component {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
-                                <Button onClick={this.handleOpenDialogFreeText}>Anlegen</Button>
+                                <Button onClick={this.addFreeTextPropertyClickHandler}
+                                        disabled={!this.isFormValidFreeText()}
+                                >Anlegen</Button>
                             </DialogActions>
                         </Dialog>
 
