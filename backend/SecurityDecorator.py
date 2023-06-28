@@ -14,13 +14,12 @@ def secured(function):
 
     def wrapper(*args, **kwargs):
         # Getting the JWT token from the cookies
-        id_token = request.cookies.get("token")
+        id_token = request.headers.get('Token')
 
         if id_token:
             try:
                 # Checking if the token is valid
-                claims = google.oauth2.id_token.verify_firebase_token(
-                    id_token, firebase_request_adapter)
+                claims = google.oauth2.id_token.verify_firebase_token(id_token, firebase_request_adapter)
 
                 if claims is not None:
                     objects = function(*args, **kwargs)

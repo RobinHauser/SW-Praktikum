@@ -123,7 +123,7 @@ profile_similarity = {
 @bookmarklist_namespace.response(200, 'TBD')
 class Bookmarklist_api(Resource):
 
-    # @secured
+    @secured
     @bookmarklist_namespace.marshal_list_with(user)
     def get(self, user_id):
         """
@@ -135,7 +135,7 @@ class Bookmarklist_api(Resource):
         response = adm.get_bookmarklist_by_user_id(user_id)
         return response
 
-    # @secured
+    @secured
     @bookmarklist_namespace.marshal_with(user)
     def post(self, user_id):
         """
@@ -148,7 +148,7 @@ class Bookmarklist_api(Resource):
         response = adm.add_user_to_bookmarklist(user_id, bookmarked_user)
         return response
 
-    # @secured
+    @secured
     @bookmarklist_namespace.marshal_with(user)
     def delete(self, user_id):
         """
@@ -167,7 +167,7 @@ class Bookmarklist_api(Resource):
 @blocklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @blocklist_namespace.response(200, 'TBD')
 class Blocklist_api(Resource):
-    # @secured
+    @secured
     @blocklist_namespace.marshal_list_with(user)
     def get(self, user_id):
         """
@@ -179,7 +179,7 @@ class Blocklist_api(Resource):
         response = adm.get_blocklist_by_user_id(user_id)
         return response
 
-    # @secured
+    @secured
     @blocklist_namespace.marshal_with(user)
     def post(self, user_id):
         """
@@ -192,7 +192,7 @@ class Blocklist_api(Resource):
         response = adm.add_user_to_blocklist(user_id, new_user)
         return response
 
-    # @secured
+    @secured
     @blocklist_namespace.marshal_with(user)
     def delete(self, user_id):
         """

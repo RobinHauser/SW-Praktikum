@@ -10,6 +10,7 @@ import MessageBO from "./MessageBO";
 import ChatBO from "./ChatBO";
 import ProfileBO from "./ProfileBO";
 import InformationBO from "./InformationBO";
+import PropertyBO from "./PropertyBO";
 import ValueBo from "./ValueBo";
 
 export default class SopraDatingAPI {
@@ -26,6 +27,18 @@ export default class SopraDatingAPI {
     // Local http-fake-backend
     //#SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
+    #token = document.cookie.split("; ").find((row) => row.startsWith("token="))?.split("=")[1];
+
+
+    // Inspired by: https://www.w3schools.blog/get-cookie-by-name-javascript-js
+    #getCookie(cookieName) {
+         let cookie = {};
+        document.cookie.split(';').forEach(function(el) {
+         let [key,value] = el.split('=');
+            cookie[key.trim()] = value;
+        })
+        return cookie[cookieName];
+        }
 
     // User related
     #getAllUsersURL = () => {
@@ -144,6 +157,24 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/text-property/entries/${propertyId}`
     }
 
+    #addSelectionPropertyURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/selection_properties`;
+    }
+
+    #getAllSelectionPropertiesURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/selection_properties`;
+    }
+
+     #addFreeTextPropertyURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/text_properties`;
+    }
+
+    #getAllFreeTextPropertiesURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/text_properties`;
+    }
+
+
+
     /**
      * Get the Singleton instance
      *
@@ -255,7 +286,13 @@ export default class SopraDatingAPI {
     }
 
     getBookmarklist(userID) {
-        return this.#fetchAdvanced(this.#getBookmarklistURL(userID))
+        return this.#fetchAdvanced(this.#getBookmarklistURL(userID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 // console.log(blocklistBOs)
@@ -299,15 +336,22 @@ export default class SopraDatingAPI {
     }
 
     getBlocklist(userID) {
-        return this.#fetchAdvanced(this.#getBlocklistURL(userID))
-            .then((responseJSON) => {
-                let userBOs = UserBO.fromJSON(responseJSON);
-                // console.log(blocklistBOs)
-                return new Promise(function (resolve) {
-                    resolve(userBOs)
-                })
-            })
-    }
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': `${this.#getCookie('token')}`
+        }
+    };
+
+    return this.#fetchAdvanced(this.#getBlocklistURL(userID), requestOptions)
+        .then((responseJSON) => {
+            let userBOs = UserBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(userBOs);
+            });
+        });
+}
 
     removeUserFromBlocklist(userID, userBO) {
         return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(userID), {
@@ -507,7 +551,6 @@ export default class SopraDatingAPI {
                 })
             })
     }
-
     deleteSelectionValueItem(valueId) {
         return this.#fetchAdvanced(this.#deleteSelectionValueItemURL(valueId), {
             method: 'DELETE',
@@ -617,4 +660,57 @@ export default class SopraDatingAPI {
         })
     }
 
+    addSelectionProperty(propertyBO) {
+        console.log(propertyBO)
+        return this.#fetchAdvanced(this.#addSelectionPropertyURL(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(propertyBO)
+        }).then((responseJSON) => {
+            let propertyBO = PropertyBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(propertyBO)
+            })
+        })
+    };
+
+    getAllSelectionProperties() {
+        return this.#fetchAdvanced(this.#getAllSelectionPropertiesURL())
+            .then((responseJSON) => {
+                let PropertyBOs = PropertyBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(PropertyBOs)
+                })
+            })
+    }
+
+    addFreeTextProperty(propertyBO) {
+        console.log(propertyBO)
+        return this.#fetchAdvanced(this.#addFreeTextPropertyURL(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(propertyBO)
+        }).then((responseJSON) => {
+            let propertyBO = PropertyBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(propertyBO)
+            })
+        })
+    };
+
+    getAllFreeTextProperties() {
+        return this.#fetchAdvanced(this.#getAllFreeTextPropertiesURL())
+            .then((responseJSON) => {
+                let PropertyBOs = PropertyBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(PropertyBOs)
+                })
+            })
+    };
 }
