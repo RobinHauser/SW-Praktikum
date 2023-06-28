@@ -5,7 +5,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import * as React from "react";
 import BookmarkProfileCard from "../components/BookmarkProfileCard";
 import SopraDatingAPI from "../api/SopraDatingAPI";
-import {ListItem, ListItemText} from "@mui/material";
+import {ListItem, ListItemText, LinearProgress, ListSubheader} from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 /**
@@ -21,27 +21,32 @@ export default class bookmarkList extends React.Component {
 
         this.state = {
             error: null,
-            bookmarklist: []
+            bookmarklist: [],
+            loading: true
         }
     }
 
     /**
      * Fetches the bookmarklist for the current user
      */
-    getBookmarklist = () => {
-        SopraDatingAPI.getAPI().getBookmarklist(this.props.user.getUserID())
-            .then(UserBOs =>
-                this.setState({
-                    error: null,
-                    bookmarklist: UserBOs
-                }))
-            .catch(e =>
-                this.setState({
-                    error: e,
-                    bookmarklist: []
-                })
-            );
+    getBookmarklist = async () => {
+        try {
+            this.setState({loading: true})
+            const UserBOs = await SopraDatingAPI.getAPI().getBookmarklist(this.props.user.getUserID());
+            this.setState({
+                error: null,
+                bookmarklist: UserBOs,
+                loading: false
+            });
+        } catch (e) {
+            this.setState({
+                error: e,
+                bookmarklist: [],
+                loading: false
+            });
+        }
     };
+
 
     componentDidMount() {
         this.getBookmarklist();
@@ -59,14 +64,22 @@ export default class bookmarkList extends React.Component {
     };
 
     render() {
-        const {bookmarklist} = this.state;
+        const {bookmarklist, loading} = this.state;
 
 
         return (
             <div className="App">
                 <AppHeader avatar={this.props.avatar}></AppHeader>
+                {loading && (
+                    <LinearProgress sx={{marginTop: "10px"}}/>
+                )}
                 <Container style={{marginTop: '50px'}}>
                     <Box>
+                        <ListItem>
+                            <ListItemText sx={{textAlign: 'center'}}>
+                                <Typography variant="h4">Merkliste</Typography>
+                            </ListItemText>
+                        </ListItem>
                         <Grid
                             container
                             spacing={{xs: 10, md: 10}}
@@ -81,17 +94,19 @@ export default class bookmarkList extends React.Component {
                                         </BookmarkProfileCard>
                                     </Grid>
                                 ))
-                            ) : (
-                                <ListItem>
-                                    <ListItemText sx={{ textAlign: 'center' }}>
-                                        <Typography variant="body1">Keine Nutzer auf der Merkliste</Typography>
-                                    </ListItemText>
-                                </ListItem>
-                            )}
+                            ) : loading ? null : (
+                                (
+                                    <ListItem>
+                                        <ListItemText sx={{textAlign: 'center', marginTop: '20px'}}>
+                                            <Typography variant="body1">Keine Nutzer auf der Merkliste</Typography>
+                                        </ListItemText>
+                                    </ListItem>
+                                ))}
                         </Grid>
                     </Box>
                 </Container>
             </div>
-        );
+        )
+            ;
     }
 }

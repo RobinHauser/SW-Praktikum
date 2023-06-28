@@ -1,67 +1,70 @@
 import IconButton from "@mui/material/IconButton";
 import RemoveCircleSharpIcon from '@mui/icons-material/RemoveCircleSharp';
-import {ListItem, ListItemAvatar, ListItemText} from "@mui/material";
-import Person2SharpIcon from '@mui/icons-material/Person2Sharp';
+import {LinearProgress, ListItem, ListItemAvatar, ListItemText} from "@mui/material";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import Box from "@mui/material/Box";
 
-export default class BlockListItem extends React.Component{
+export default class BlockListItem extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            deletingInProgress: false,
-            deletingError: null
+            deletingError: null,
+            loading: false
         }
     }
 
     /**
      * Removes the user from the blocklist
      */
-    removeUser = () => {
-        const { blockedUser, user } = this.props;
-        SopraDatingAPI.getAPI().removeUserFromBlocklist(user.getUserID(), blockedUser).then(() => {
+    removeUser = async () => {
+        const {blockedUser, user} = this.props;
+        try {
+            this.setState({loading: true})
+            await SopraDatingAPI.getAPI().removeUserFromBlocklist(user.getUserID(), blockedUser);
             this.setState({
-                deletingInProgress: false,
+                loading: false,
                 deletingError: null
             });
             this.props.onUserRemoved(blockedUser);
-        }).catch(e => {
+        } catch (error) {
             this.setState({
-                deletingInProgress: false,
-                deletingError: e
+                loading: false,
+                deletingError: error
             });
-        });
-
-        this.setState({
-            deletingInProgress: true,
-            deletingError: null
-        });
+        }
     }
 
+
     render() {
-        const{blockedUser}=this.props;
-        // console.log(blockedUser)
+        const {blockedUser} = this.props;
+        const {loading} = this.state;
 
         return (
-            <ListItem
-                sx={{ '&:hover': { bgcolor: '#c6e2ff' }, borderRadius: '10px' }}
-                secondaryAction={
-                    <Tooltip title="Benutzer entblocken">
-                        <IconButton onClick={this.removeUser}>
-                            <RemoveCircleSharpIcon/>
-                        </IconButton>
-                    </Tooltip>
-                }
-            >
-                <ListItemAvatar>
-                    <Avatar src={blockedUser.getAvatarURL()} />
-                </ListItemAvatar>
-                <ListItemText primary={blockedUser.getDisplayname()} />
-            </ListItem>
+            <Box>
+                <ListItem
+                    sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}
+                    secondaryAction={
+                        <Tooltip title="Benutzer entblocken">
+                            <IconButton onClick={this.removeUser}>
+                                <RemoveCircleSharpIcon/>
+                            </IconButton>
+                        </Tooltip>
+                    }
+                >
+                    <ListItemAvatar>
+                        <Avatar src={blockedUser.getAvatarURL()}/>
+                    </ListItemAvatar>
+                    <ListItemText primary={blockedUser.getDisplayname()}/>
+                </ListItem>
+                {loading && (
+                    <LinearProgress/>
+                )}
+            </Box>
         );
     }
 }

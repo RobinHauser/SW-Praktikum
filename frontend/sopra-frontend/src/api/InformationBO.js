@@ -15,9 +15,10 @@ export default class InformationBO extends BusinessObject {
      * @param {str} isSelect - Binary information if the property is a select or text type
      * @param {str} propDescription - Description of the property
      * @param {int} propID - id of property
+     * @param {int} informationID - id of an information
      *
      */
-    constructor(valueID, value, property, isSelect, propDescription, propID ) {
+    constructor(valueID, value, property, isSelect, propDescription, propID, informationID ) {
         super();
         this.property = property;
         this.valueID = valueID;
@@ -25,6 +26,7 @@ export default class InformationBO extends BusinessObject {
         this.propDescription = propDescription;
         this.propID = propID
         this.isSelect = isSelect;
+        this.informationID = informationID
     }
 
     /**
@@ -114,7 +116,7 @@ export default class InformationBO extends BusinessObject {
     getPropDescription() {
         return this.propDescription;
     }
-        /**
+    /**
      * Sets the propID of this InformationBO.
      *
      * @param {int} propID - the new propID of this InformationBO.
@@ -130,6 +132,23 @@ export default class InformationBO extends BusinessObject {
      */
     getPropID() {
         return this.propID;
+    }
+            /**
+     * Sets the propID of this InformationBO.
+     *
+     * @param {int} informationID - the new informationID of this InformationBO.
+     */
+    setInformationId(informationID) {
+        this.informationID = informationID;
+    }
+
+    /**
+     * Gets the propID of this InformationBo
+     *
+     * @return {int} propID - the propID of this InformationBO
+     */
+    getInformationId() {
+        return this.informationID;
     }
     /**
      * Returns an Array of UserBOs from a given JSON structure

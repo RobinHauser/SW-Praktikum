@@ -242,7 +242,7 @@ class InformationMapper(Mapper):
 
                 if content:
                     jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}", "isSelect": "{is_select}", "propDescription": "{prop_description}",' \
-                            f' "propID": "{prop_id}"}}'
+                            f' "propID": "{prop_id}", "informationID": "{information[0]}"}}'
                     content_json = json.loads(jsstr)
 
         self._cnx.commit()
