@@ -46,15 +46,17 @@ class Profile extends Component {
             anchorElSelect: null,
             anchorElFreeText: null,
             globalPropertiesSelect: [],
-            globalPropertiesFreeText: ["Freitext-Eigenschaft 1", "Freitext-Eigenschaft 2", "Freitext-Eigenschaft 3"],
+            globalPropertiesFreeText: [],
             currentUser: null,
             personalProfile: null,
             loadingProgressUser: false,
             loadingProgressProfile: false,
             error: null,
             informations: null,
-            PropertyNameText: '',
-            PropertyDescriptionText: ''
+            PropertySelectionNameText: '',
+            PropertySelectionDescriptionText: '',
+            PropertyFreeTextNameText: '',
+            PropertyFreeTextDescriptionText: ''
         };
 
         this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -152,6 +154,7 @@ class Profile extends Component {
     async componentDidMount() {
         const exampleProperties = ["Value 1", "Value 2", "Value 3"];
         this.getAllSelectionProperties()
+        this.getAllFreeTextProperties()
         this.setState({properties: exampleProperties});
         this.setState({
             currentUser: this.props.user
@@ -160,24 +163,66 @@ class Profile extends Component {
     }
 
     addSelectionPropertyClickHandler = () => {
-        this.buttonAddProperty();
+        this.buttonAddSelectionProperty();
         this.handleOpenDialogSelect();
     }
 
-    buttonAddProperty() {
-        console.log("Hallo")
-        const name = this.state.PropertyNameText
-        const description = this.state.PropertyDescriptionText
+    addFreeTextPropertyClickHandler = () => {
+        this.buttonAddFreeTextProperty();
+        this.handleOpenDialogFreeText();
+    }
+
+    buttonAddSelectionProperty() {
+        const name = this.state.PropertySelectionNameText
+        const description = this.state.PropertySelectionDescriptionText
         let propertyBO = {
             "name": name,
             "description": description
         }
         this.addSelectionProperty(propertyBO)
-        this.setState({PropertyNameText: '', PropertyDescriptionText: ''})
+        this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
+    }
+
+    isFormValidSelect() {
+    return (
+        this.state.PropertySelectionNameText.trim() !== '' &&
+        this.state.PropertySelectionDescriptionText.trim() !== ''
+    );
+}
+
+    isFormValidFreeText() {
+    return (
+        this.state.PropertyFreeTextNameText.trim() !== '' &&
+        this.state.PropertyFreeTextDescriptionText.trim() !== ''
+    );
+}
+
+    buttonAddFreeTextProperty() {
+        const name = this.state.PropertyFreeTextNameText
+        const description = this.state.PropertyFreeTextDescriptionText
+        let propertyBO = {
+            "name": name,
+            "description": description
+        }
+        this.addFreeTextProperty(propertyBO)
+        this.setState({PropertyFreeTextNameText: '', PropertyFreeTextDescriptionText: ''})
     }
 
     addSelectionProperty = (propertyBO) => {
         SopraDatingAPI.getAPI().addSelectionProperty(propertyBO)
+            .then(() => {
+                this.setState({
+                    error: null
+                });
+            }).catch(e => {
+            this.setState({
+                error: e
+            });
+        });
+    };
+
+    addFreeTextProperty = (propertyBO) => {
+        SopraDatingAPI.getAPI().addFreeTextProperty(propertyBO)
             .then(() => {
                 this.setState({
                     error: null
@@ -206,12 +251,37 @@ class Profile extends Component {
 
     };
 
-    handleInputChangeName = (event) => {
-        this.setState({PropertyNameText: event.target.value});
+    getAllFreeTextProperties = () => {
+        SopraDatingAPI.getAPI().getAllFreeTextProperties()
+            .then(PropertyBOs => {
+                this.setState({
+                    globalPropertiesFreeText: PropertyBOs,
+                    error: null
+                });
+            })
+            .catch(e => {
+                this.setState({
+                    GlobalPropertiesFreeText: [],
+                    error: e
+                });
+            });
+
+    };
+
+    handleInputChangeSelectionName = (event) => {
+        this.setState({PropertySelectionNameText: event.target.value});
     }
 
-    handleInputChangeDescription = (event) => {
-        this.setState({PropertyDescriptionText: event.target.value});
+    handleInputChangeSelectionDescription = (event) => {
+        this.setState({PropertySelectionDescriptionText: event.target.value});
+    }
+
+    handleInputChangeFreeTextName = (event) => {
+        this.setState({PropertyFreeTextNameText: event.target.value});
+    }
+
+    handleInputChangeFreeTextDescription = (event) => {
+        this.setState({PropertyFreeTextDescriptionText: event.target.value});
     }
 
     handleOpenDialogSelect() {
@@ -359,11 +429,11 @@ class Profile extends Component {
 
                     </Card>
                     <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
-                        <Typography sx={{fontSize: 25, color: 'black'}}> Profil </Typography>
                         <Button variant="contained"
                                 onClick={() => this.getInformations(this.state.personalProfile.getProfileID())}>
                             <CachedIcon></CachedIcon>
                         </Button>
+                        <Typography sx={{fontSize: 25, color: 'black', marginTop: '20px'}}> Profil </Typography>
                         <List
                             sx={{width: '100%', maxWidth: 700}}
                             subheader={
@@ -483,15 +553,19 @@ class Profile extends Component {
                                     open={openFreeText}
                                     onClose={this.handleCloseGlobalPropertiesFreeText}
                                 >
-                                    {globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
-                                        <MenuItem
-                                            onClick={() => this.handleGlobalPropertiesItemClickFreeText()}
-                                            sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
-                                            key={1}
-                                        >
-                                            {globalPropertyItemFreeText}
-                                        </MenuItem>
-                                    ))}
+                                     {globalPropertiesFreeText.length > 0 ? (
+                                        this.state.globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
+                                            <MenuItem
+                                                key={globalPropertyItemFreeText.getPropertyID()}
+                                                onClick={this.handleGlobalPropertiesItemClickFreeText}
+                                                sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
+                                            >
+                                                {globalPropertyItemFreeText.getPropertyName()}
+                                            </MenuItem>
+                                        ))) : (
+                                        <p>Es gibt keine globalen Eigenschaften.</p>
+                                    )
+                                    }
                                 </Menu>
                             </Container>
                         </Box>
@@ -503,8 +577,8 @@ class Profile extends Component {
                                     Eigenschaft angibst.
                                 </DialogContentText>
                                 <TextField
-                                    value={this.state.PropertyNameText}
-                                    onChange={this.handleInputChangeName}
+                                    value={this.state.PropertySelectionNameText}
+                                    onChange={this.handleInputChangeSelectionName}
                                     autoFocus
                                     margin="dense"
                                     id="name"
@@ -512,8 +586,8 @@ class Profile extends Component {
                                     fullWidth
                                     variant="standard"/>
                                 <TextField
-                                    value={this.state.PropertyDescriptionText}
-                                    onChange={this.handleInputChangeDescription}
+                                    value={this.state.PropertySelectionDescriptionText}
+                                    onChange={this.handleInputChangeSelectionDescription}
                                     autoFocus
                                     margin="dense"
                                     id="name"
@@ -523,7 +597,7 @@ class Profile extends Component {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
-                                <Button onClick={this.addSelectionPropertyClickHandler}>Anlegen</Button>
+                                <Button onClick={this.addSelectionPropertyClickHandler} disabled={!this.isFormValidSelect()}>Anlegen</Button>
                             </DialogActions>
                         </Dialog>
 
@@ -549,6 +623,8 @@ class Profile extends Component {
                                     Eigenschaft angibst.
                                 </DialogContentText>
                                 <TextField
+                                    value={this.state.PropertyFreeTextNameText}
+                                    onChange={this.handleInputChangeFreeTextName}
                                     autoFocus
                                     margin="dense"
                                     id="name"
@@ -557,6 +633,8 @@ class Profile extends Component {
                                     variant="standard"
                                 />
                                 <TextField
+                                    value={this.state.PropertyFreeTextDescriptionText}
+                                    onChange={this.handleInputChangeFreeTextDescription}
                                     autoFocus
                                     margin="dense"
                                     id="name"
@@ -567,7 +645,7 @@ class Profile extends Component {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
-                                <Button onClick={this.handleOpenDialogFreeText}>Anlegen</Button>
+                                <Button onClick={this.addFreeTextPropertyClickHandler} disabled={!this.isFormValidFreeText()}>Anlegen</Button>
                             </DialogActions>
                         </Dialog>
 

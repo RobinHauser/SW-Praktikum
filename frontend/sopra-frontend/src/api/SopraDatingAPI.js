@@ -153,6 +153,15 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/selection-property/selection_properties`;
     }
 
+     #addFreeTextPropertyURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/text_properties`;
+    }
+
+    #getAllFreeTextPropertiesURL = () => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/text_properties`;
+    }
+
+
 
     /**
      * Get the Singleton instance
@@ -653,4 +662,30 @@ export default class SopraDatingAPI {
             })
     }
 
+    addFreeTextProperty(propertyBO) {
+        console.log(propertyBO)
+        return this.#fetchAdvanced(this.#addFreeTextPropertyURL(), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify(propertyBO)
+        }).then((responseJSON) => {
+            let propertyBO = PropertyBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(propertyBO)
+            })
+        })
+    };
+
+    getAllFreeTextProperties() {
+        return this.#fetchAdvanced(this.#getAllFreeTextPropertiesURL())
+            .then((responseJSON) => {
+                let PropertyBOs = PropertyBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(PropertyBOs)
+                })
+            })
+    };
 }
