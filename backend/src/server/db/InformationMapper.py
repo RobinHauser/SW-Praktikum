@@ -146,6 +146,16 @@ class InformationMapper(Mapper):
             else:
                 info.set_id(5001)
 
+        command = f'SELECT * FROM information WHERE ProfileID={info.get_profile_id()}'
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for i in tuples:
+            v1 = i[2]
+
+            if v1 == info.get_value_id():
+                return info
+
         command = "INSERT INTO information (InformationID, ProfileID, ValueID) VALUES (%s,%s,%s)"
         data = (info.get_id(), info.get_profile_id(), info.get_value_id())
         cursor.execute(command, data)
