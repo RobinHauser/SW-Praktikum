@@ -7,7 +7,6 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import SopraDatingAPI from "../api/SopraDatingAPI";
-import ValueBo from "../api/ValueBo";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -29,8 +28,8 @@ class InfoFreeTextDialog extends Component {
     }
 
     /**
-    * triggers the function to post a new value for property and add it to the information object
-    */
+     * triggers the function to post a new value for property and add it to the information object
+     */
     addButtonFunction = () => {
         const content = this.state.textFieldContent
         const valueBo = {
@@ -39,15 +38,14 @@ class InfoFreeTextDialog extends Component {
         this.postNewValue(this.props.InformationsBoPropId, valueBo, parseInt(this.props.InformationsBoInfoId))
     }
     /**
-    * posts a new value for a prop and triggers the function to add it to the current information object
+     * posts a new value for a prop and triggers the function to add it to the current information object
      * @param {int} propId - id of the current property
      * @param {ValueBo} valueBo - includes the value content
      * @param {int} informationId - id of the current information object
-    */
+     */
     postNewValue = (propId, valueBo, informationId) => {
         SopraDatingAPI.getAPI().addTextPropertyValueById(propId, valueBo)
             .then((responseJSON) => {
-                console.log(responseJSON.getValueId())
                 this.setState({
                     currentInformation: responseJSON,
                     currentInformationId: responseJSON.getValueId()
@@ -55,25 +53,31 @@ class InfoFreeTextDialog extends Component {
                 this.setState({
                     textFieldContent: "",
                 })
-                const valueBo1 = {
-                    "valueID": `${responseJSON.getValueId()}`
+                if (this.props.InformationsBoInfoId === null || typeof this.props.InformationsBoInfoId === 'undefined') {
+                    const informationBo = {
+                        "id": `${this.props.profileId}`
+                    }
+                    this.addNewInformationObject(responseJSON.getValueId(), informationBo)
+
+                } else {
+                    const valueBo1 = {
+                        "valueID": `${responseJSON.getValueId()}`
+                    }
+                    alert("Neue Auswahl erfolgreich hinzugefügt")
+                    this.updateInformation(informationId, valueBo1)
                 }
-                console.log(parseInt(responseJSON.getValueId()))
-                alert("Neue Auswahl erfolgreich hinzugefügt")
-                this.updateInformation(informationId, valueBo1)
+
 
             }).catch(error => {
-            console.log(error)
             alert(error)
         })
     }
     /**
-    * update the value with the new value to the current information object
-    * @param {ValueBo} valueBo - includes the value content
-    * @param {int} informationId - id of the current information object
-    */
+     * update the value with the new value to the current information object
+     * @param {ValueBo} valueBo - includes the value content
+     * @param {int} informationId - id of the current information object
+     */
     updateInformation = (informationId, valueBo) => {
-        console.log(informationId)
         SopraDatingAPI.getAPI().updateValueOfInformationObject(informationId, valueBo)
             .then(responseJSON => {
                 this.setState({
@@ -86,14 +90,32 @@ class InfoFreeTextDialog extends Component {
             })
         )
     }
-  /**
+    /**
+     * adds a new information object
+     * @param {InformationBO} informationBo - contains the profileId
+     * @param {int} valueId - id of the current information object
+     */
+    addNewInformationObject = (valueId, informationBo) => {
+        SopraDatingAPI.getAPI().addNewInformationObjectToProile(valueId, informationBo)
+            .then(responseJSON => {
+                this.setState({
+                    error: null
+                })
+                alert("Die Information wurde erfolgreich zum Profil hinzugefügt")
+            }).catch(e =>
+            this.setState({
+                error: e
+            })
+        )
+    }
+    /**
      * Gets the current text, written in the text field
      * @param {Object} event
      */
     handleInputChange = (event) => {
         this.setState({textFieldContent: event.target.value})
-        console.log(this.state.textFieldContent)
     }
+
     /**
      * Renders the class component
      * @returns InfoFreeTextDialog - the rendered component
@@ -102,16 +124,9 @@ class InfoFreeTextDialog extends Component {
         const {
             openDialogFreeText,
             handleCloseDialogFreeText,
-            handleClick,
             value,
-            InformationsBoValue,
-            InformationsBoProp,
-            InformationsBoId,
-            InformationsBoPropId,
             InformationsBoPropDescr,
-            InformationsBoInfoId
         } = this.props;
-
         return (
             <div>
                 <Dialog open={openDialogFreeText} onClose={() => handleCloseDialogFreeText(null)}>

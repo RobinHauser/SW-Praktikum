@@ -21,10 +21,10 @@ import InfoFreeTextDialog from "../components/InfoFreeTextDialog";
 import Tooltip from "@mui/material/Tooltip";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import CachedIcon from "@mui/icons-material/Cached";
 import PropertySelectMenuItem from "../components/PropertySelectMenuItem";
+import PropertyTextMenuItem from "../components/PropertyTextMenuItem";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -165,12 +165,11 @@ class Profile extends Component {
 
     addSelectionPropertyClickHandler = () => {
         this.buttonAddSelectionProperty();
-        this.handleOpenDialogSelect();
+
     }
 
     addFreeTextPropertyClickHandler = () => {
         this.buttonAddFreeTextProperty();
-        this.handleOpenDialogFreeText();
     }
 
     buttonAddSelectionProperty() {
@@ -215,6 +214,7 @@ class Profile extends Component {
                 this.setState({
                     error: null
                 });
+                this.getAllSelectionProperties()
             }).catch(e => {
             this.setState({
                 error: e
@@ -228,6 +228,7 @@ class Profile extends Component {
                 this.setState({
                     error: null
                 });
+                this.getAllFreeTextProperties()
             }).catch(e => {
             this.setState({
                 error: e
@@ -377,16 +378,10 @@ class Profile extends Component {
             openFreeTextDialog,
             openDialogSelect,
             openDialogFreeText,
-            properties,
-            newProperty,
-            isAddingNewProperty,
             globalPropertiesSelect,
             globalPropertiesFreeText,
             anchorElSelect,
             anchorElFreeText,
-            user,
-            currentUser,
-            personalProfile,
             informations
         } = this.state;
         const openSelect = Boolean(anchorElSelect)
@@ -445,7 +440,7 @@ class Profile extends Component {
                             {informations.length > 0 ? (
                                 informations.map((InformationsBo, index) => (
                                     parseInt(InformationsBo.getIsSelect()) === 1 ? (
-                                        <ProfilePropertySelect Key={index}
+                                        <ProfilePropertySelect key={InformationsBo.getInformationId()}
                                                                UserId={this.props.user.getUserID()}
                                                                InformationsBoValue={InformationsBo.getValue()}
                                                                InformationsBoProp={InformationsBo.getProperty()}
@@ -456,7 +451,7 @@ class Profile extends Component {
                                                                InformationsBoIsSelection={InformationsBo.getIsSelect()}
                                         />
                                     ) : (
-                                        <ProfilePropertyFreeText Key={index}
+                                        <ProfilePropertyFreeText key={InformationsBo.getInformationId()}
                                                                  InformationsBoValue={InformationsBo.getValue()}
                                                                  InformationsBoProp={InformationsBo.getProperty()}
                                                                  InformationsBoId={InformationsBo.getValueID()}
@@ -508,6 +503,7 @@ class Profile extends Component {
                                     {globalPropertiesSelect.length > 0 ? (
                                         this.state.globalPropertiesSelect.map((globalPropertyItemSelect) => (
                                             <PropertySelectMenuItem
+                                                key={globalPropertyItemSelect.getPropertyID()}
                                                 InformationsBoProp={globalPropertyItemSelect.getPropertyName()}
                                                 InformationsBoPropId={globalPropertyItemSelect.getPropertyID()}
                                                 InformationsBoPropDescr={globalPropertyItemSelect.getPropertyDescription()}
@@ -556,13 +552,15 @@ class Profile extends Component {
                                 >
                                     {globalPropertiesFreeText.length > 0 ? (
                                         this.state.globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
-                                            <MenuItem
+                                            <PropertyTextMenuItem
                                                 key={globalPropertyItemFreeText.getPropertyID()}
-                                                onClick={this.handleGlobalPropertiesItemClickFreeText}
-                                                sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
-                                            >
-                                                {globalPropertyItemFreeText.getPropertyName()}
-                                            </MenuItem>
+                                                InformationsBoProp={globalPropertyItemFreeText.getPropertyName()}
+                                                InformationsBoPropId={globalPropertyItemFreeText.getPropertyID()}
+                                                InformationsBoPropDescr={globalPropertyItemFreeText.getPropertyDescription()}
+                                                UserId={this.props.user.getUserID()}
+                                                InformationsBoIsSelection={globalPropertyItemFreeText.getIsSelection()}
+                                                profileId={this.state.personalProfile.getProfileID()}>
+                                            </PropertyTextMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>
                                     )

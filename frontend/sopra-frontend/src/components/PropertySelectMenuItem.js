@@ -1,10 +1,6 @@
 import React, {Component} from "react";
 import MenuItem from "@mui/material/MenuItem";
 import InfoSelectDialog from "./InfoSelectDialog";
-import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import {KeyboardDoubleArrowRight} from "@mui/icons-material";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import Box from "@mui/material/Box";
 
 class PropertySelectMenuItem extends Component {
     constructor(props) {
@@ -37,40 +33,13 @@ class PropertySelectMenuItem extends Component {
         this.handleAddProperty = this.handleAddProperty.bind(this);
     }
 
-    componentDidMount() {
 
-    }
-
-    handleInputChangeSelectionName = (event) => {
-        this.setState({PropertySelectionNameText: event.target.value});
-    }
-
-    handleInputChangeSelectionDescription = (event) => {
-        this.setState({PropertySelectionDescriptionText: event.target.value});
-    }
-
-    handleInputChangeFreeTextName = (event) => {
-        this.setState({PropertyFreeTextNameText: event.target.value});
-    }
-
-    handleInputChangeFreeTextDescription = (event) => {
-        this.setState({PropertyFreeTextDescriptionText: event.target.value});
-    }
-
-    handleOpenDialogSelect() {
-        this.setState({openDialogSelect: true});
-    }
-
-    addSelectionPropertyClickHandler = () => {
-        this.buttonAddSelectionProperty();
-        this.handleOpenDialogSelect();
-    }
-
-    addFreeTextPropertyClickHandler = () => {
-        this.buttonAddFreeTextProperty();
-        this.handleOpenDialogFreeText();
-    }
-
+    /**
+     * handles the dialog closing for component InfoSelectDialog
+     * checks if isAddingNewProperty ist true
+     * sets the isAddingNewProperty to false
+     * sets the openDialogSelect to false
+     */
     handleCloseDialogInfo() {
         const {isAddingNewProperty} = this.state;
         if (isAddingNewProperty) {
@@ -80,25 +49,45 @@ class PropertySelectMenuItem extends Component {
         }
     }
 
+    /**
+     * handles the dialog button click for component InfoSelectDialog
+     * triggers the handleCloseDialogInfo function
+     * triggers the handleCloseDialogProp function
+     */
     handleListItemClick(value) {
         this.handleCloseDialogInfo(value);
         this.handleCloseDialogProp();
     }
 
+    /**
+     * handles the dialog delete button click for component InfoSelectDialog
+     */
     handleDeleteItemClick(value) {
         const {properties} = this.state;
         const updatedProperties = properties.filter((property) => property !== value);
         this.setState({properties: updatedProperties});
     }
 
+    /**
+     * handles the dialog button click for component InfoSelectDialog
+     * sets the isAddingNewProperty to true
+     * sets the openDialogSelect to true
+     */
     handleAddItemClick() {
         this.setState({openDialogSelect: true, isAddingNewProperty: true});
     }
 
+    /**
+     * handles the textfield InfoSelectDialog
+     * retrieves the current text in the textfield and sets newProperty to it
+     */
     handleNewPropertyChange(event) {
         this.setState({newProperty: event.target.value});
     }
 
+    /**
+     * Checks if the textfield is empty and closes the dialog
+     */
     handleAddProperty() {
         const {properties, newProperty} = this.state;
         if (newProperty.trim() !== "") {
@@ -108,45 +97,10 @@ class PropertySelectMenuItem extends Component {
         this.handleCloseDialogInfo();
     }
 
-    handleOpenDialogFreeText() {
-        this.setState({openDialogFreeText: true});
-    }
-
-    handleCloseDialogFreeText() {
-        this.setState({openDialogFreeText: false, selectedValue: this.props.value});
-    }
-
-    handleClick(value) {
-        this.handleCloseDialogFreeText(value);
-        this.handleCloseDialogProp();
-    }
-
-
-    handleGlobalPropertiesMenuSelectClick = (event) => {
-        this.setState({anchorElSelect: event.currentTarget});
-    };
-
-    handleGlobalPropertiesMenuFreeTextClick = (event) => {
-        this.setState({anchorElFreeText: event.currentTarget})
-    }
-
-    handleCloseGlobalPropertiesSelect = () => {
-        this.setState({anchorElSelect: null});
-    };
-
-    handleCloseGlobalPropertiesFreeText = () => {
-        this.setState({anchorElFreeText: null});
-    };
-
-    handleGlobalPropertiesItemClickSelect = () => {
-        this.setState({anchorElSelect: null, openDialogSelect: true});
-    };
-
-    handleGlobalPropertiesItemClickFreeText = () => {
-        this.setState({anchorElFreeText: null});
-        this.handleOpenDialogFreeText();
-    };
-
+    /**
+     * Renders the class component
+     * @returns PropertySelectMenuItem - the rendered component
+     */
     render() {
         const {
             InformationsBoPropDescr,

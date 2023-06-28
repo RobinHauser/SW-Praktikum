@@ -37,11 +37,9 @@ class InfoSelectDialog extends Component {
             const valueBo = {
                 "id": `${this.props.profileId}`,
             }
-            console.log(valueBo)
             this.addNewInformationObject(valueId, valueBo)
 
         } else {
-            console.log(this.props.InformationsBoInfoId)
             const valueBo = {
                 "valueID": `${valueId}`,
             }
@@ -66,8 +64,13 @@ class InfoSelectDialog extends Component {
             })
         )
     }
-    addNewInformationObject = (valueId, valueBo) => {
-        SopraDatingAPI.getAPI().addNewInformationObjectToProile(valueId, valueBo)
+    /**
+     * adds a new information object
+     * @param {InformationBO} informationBo - contains the profileId
+     * @param {int} valueId - id of the current information object
+     */
+    addNewInformationObject = (valueId, informationBo) => {
+        SopraDatingAPI.getAPI().addNewInformationObjectToProile(valueId, informationBo)
             .then(responseJSON => {
                 this.setState({
                     error: null
@@ -171,9 +174,12 @@ class InfoSelectDialog extends Component {
     /**
      * Called after the component did update.
      * It retrieves the selection values of the current property object but only when the dialog opens
+     * Checks if dialog is open and if it was open before.
+     * Only calls getSelection if the dialog is now open and was closed before the update
+     * @param {Object} prevProps - props before the update call
      */
-    componentDidUpdate() {
-        if (this.props.openDialogSelect) {
+    componentDidUpdate(prevProps) {
+        if (this.props.openDialogSelect && !prevProps.openDialogSelect) {
             this.getSelectionValues();
         }
     }
