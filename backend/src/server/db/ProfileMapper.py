@@ -6,6 +6,11 @@ import json
 Profile = Profile.Profile
 Information = Information.Information
 
+"""
+This class manages operations on profile objects. 
+The operations are the same for both search profiles and personal profiles. 
+"""
+
 class ProfileMapper(Mapper.Mapper):
 
     def __init__(self):
@@ -14,7 +19,7 @@ class ProfileMapper(Mapper.Mapper):
     def find_all(self):
         """
         Finds all profiles in the system
-        :return: all existing profiles
+        :return: a list of all existing profiles, both search profiles and personal profiles
         """
         result = []
         cursor = self._cnx.cursor()
@@ -44,7 +49,7 @@ class ProfileMapper(Mapper.Mapper):
     def find_all_personal(self):
         """
         Finds all personal profiles in the system
-        :return: all existing personal profiles
+        :return: a list of all existing personal profiles in the system
         """
         result = []
         cursor = self._cnx.cursor()
@@ -107,7 +112,7 @@ class ProfileMapper(Mapper.Mapper):
     def find_personal_profile_of_owner(self, owner):
         """
         Returns the personal profile of the given user
-        :param owner: user the personal profile belongs to
+        :param owner: the user we want to get the personal profile from
         :return: personal profile of the user
         """
         result = None
@@ -143,8 +148,8 @@ class ProfileMapper(Mapper.Mapper):
     def find_search_profiles_of_owner(self, owner):
         """
         Returns all search profiles belonging to a given user
-        :param owner: user the search profiles belong to
-        :return: all search profiles belonging to the user
+        :param owner: the user we want to get the search profiles from
+        :return: a list of all search profiles belonging to the user
         """
         result = []
         cursor = self._cnx.cursor()
@@ -178,6 +183,8 @@ class ProfileMapper(Mapper.Mapper):
         Returns a list of all profiles that have the given info
         :param information: information that we filter by
         :return: a list of all profiles with that information
+        during development, we planned to use this function to calculate the similarity measure.
+        however, we used another approach, leaving this function unused.
         """
         result = []
         cursor = self._cnx.cursor()
@@ -252,16 +259,10 @@ class ProfileMapper(Mapper.Mapper):
         return profile
 
     def update(self, profile):
-        # cursor = self._cnx.cursor()
-        #
-        # command = "UPDATE profile SET ProfileID=%s, UserID=%s, IsPersonal=%s WHERE ProfileID=%s"
-        # data = (profile.get_id(), profile.get_id())
-        # cursor.execute(command, data)
-        #
-        # self._cnx.commit()
-        # cursor.close()
-        #
-        # return profile
+        """
+        since our profiles have only the attributes user_id and is_personal, we decided there is nothing
+        a profile could be updated with. that is why we left this function empty.
+        """
         pass
 
     def delete(self, profile):
@@ -283,51 +284,3 @@ class ProfileMapper(Mapper.Mapper):
 
         return profile
 
-
-
-
-
-    # def add_info(self, profile, info): #todo evtl überarbeiten: Unterschied, ob Selection oder Text?
-    #     """
-    #     Adding an information to a profile
-    #     :param profile: the profile we are adding infos to
-    #     :param info: the info to be added
-    #     :return: the added info
-    #     """
-    #     cursor = self._cnx.cursor()
-    #
-    #
-    #     command = "INSERT INTO information (ProfileID, ValueID) VALUES ({}, {})".format(profile.get_id(), info.get_id())
-    #     cursor.execute(command)
-    #
-    #     self._cnx.commit()
-    #     cursor.close()
-    #
-    #     return info
-
-    # def remove_info(self, profile, info):
-    #     """
-    #     Removing an information from a profile
-    #     :param profile: the profile we are deleting an info from
-    #     :param info: the info that will be deleted
-    #     :return: the removed info
-    #     """
-    #     cursor = self._cnx.cursor()
-    #
-    #     command = "DELETE FROM info_assignment WHERE ProfileID = {} AND InformationID = {}".format(profile.get_id(), info.get_id())
-    #     cursor.execute(command)
-    #
-    #     self._cnx.commit()
-    #     cursor.close()
-    #
-    #     return info
-
-    # def update_info(self, profile, assignment):
-    #     """
-    #     Updating / changing an information object belonging to the given profile
-    #     :param profile:
-    #     :param assignment:
-    #     :return:
-    #     """
-    #     #todo
-    #     pass

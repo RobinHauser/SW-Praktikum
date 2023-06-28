@@ -1,7 +1,12 @@
 from src.server.bo.Property import Property
 from src.server.db.Mapper import Mapper
 
-
+"""
+This entire mapper class was designed to manage properties. However, the separation of the two property types
+(selection property and text property) led to the creation of the two respective mapper classes. This left the entire
+PropertyMapper class and its functions unused, as well as the Property Operations section in the Admin class. 
+For contingency reasons, we decided not to delete the class and its functions. 
+"""
 class PropertyMapper(Mapper):
     def __init__(self):
         super().__init__()
@@ -133,29 +138,3 @@ class PropertyMapper(Mapper):
         self._cnx.commit()
         cursor.close()
 
-
-#TODO es fehlen die methoden für auswahlen und freitexte. bei insert property müssen
-# ja auch die auswahlen eingefügt werden in occupancies
-
-    def insert_selection(self, property, selection):
-        """
-        creates a new selection option for a given property
-        :param property: property object
-        :return: inserted property entry
-        """
-        cursor = self._cnx.cursor()
-
-        # ID Handling with specified ID range
-        cursor.execute("SELECT MAX(PropertyID) AS maxid FROM property")
-        tuples = cursor.fetchall()
-
-        for maxid in tuples:
-            if maxid[0] is not None:
-                if maxid[0]+1 > 7000:
-                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
-                else:
-                    property.set_id(maxid[0]+1)
-            else:
-                property.set_id(6001)
-
-    # (baustelle)

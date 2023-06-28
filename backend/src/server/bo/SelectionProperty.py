@@ -2,27 +2,19 @@ from src.server.bo.Property import Property
 from src.server.bo.Information import Information
 
 class SelectionProperty(Property):
+    """
+    The attributes, setters and getters for name, is_selection and description are inherited from the Property class.
+    """
     def __init__(self):
         super().__init__()
-        # self._is_selection = True
-        # self.__selections = []
+        self._is_selection = True
 
-    def set_selections(self, selections):
-        self.__selections = selections
-
-    def get_selections(self):
-        return self.__selections
-
-    # def __str__(self):
-    #     return "SelectionProperty: {}, owned by {}, is a personal profile: {}".format(self.get_id(), self.get_user_id(),
-    #                                                                         self.get_is_personal())
 
     @staticmethod
-    def from_dict(dict):  # todo default wert setzen
+    def from_dict(dict = dict()):
         selec = SelectionProperty()
-        #selec.set_id(dict["id"])
+        # the id setter is left out because the id will be set later in the mapper anyway.
         selec.set_name(dict["name"])
         selec.set_is_selection(True)
         selec.set_description(dict["description"])
-        # selec.set_selections(dict["selections"])
         return selec

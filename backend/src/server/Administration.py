@@ -27,7 +27,9 @@ class Administration():
 
 
     '''
-    User - Methoden
+    --------------------------------------------------------------------------------------------------------------
+    User - Functions
+    --------------------------------------------------------------------------------------------------------------
     '''
     def add_new_user(self, payload):
         userMapper = UserMapper()
@@ -75,7 +77,9 @@ class Administration():
 
 
     '''
-    Profile Methoden
+    --------------------------------------------------------------------------------------------------------------
+    Profile - Functions
+    --------------------------------------------------------------------------------------------------------------
     '''
 
     def create_personal_profile_for_user(self, user):
@@ -159,8 +163,11 @@ class Administration():
         for j in persprof:
             self.delete_profile(j)
 
+
     '''
-    Information-Methoden
+    --------------------------------------------------------------------------------------------------------------
+    Information - Functions
+    --------------------------------------------------------------------------------------------------------------
     '''
 
     def create_info(self, profile, value_id):
@@ -206,10 +213,14 @@ class Administration():
             if info is not None:
                 return mapper.get_content_of_info(info)
 
+
     '''
-    Property Methoden 
+    --------------------------------------------------------------------------------------------------------------
+    Property - Functions
+    As mentioned in the PropertyMapper class, the following functions were used earlier but are now replaced with
+    the selection property and text property functions. We did not delete them, just in case. 
+    --------------------------------------------------------------------------------------------------------------
     '''
-    # todo Wird nicht benutzt
 
     def create_property(self, value, is_selection, explanation):
         property = Property()
@@ -246,86 +257,17 @@ class Administration():
 
             mapper.delete(property)
 
-    '''
-        Bookmarklist Methoden
-    '''
-
-    def get_bookmarklist_by_user_id(self, user_id):
-        with BookmarklistMapper() as mapper:
-            return mapper.find_by_id(user_id)
-
-    def add_user_to_bookmarklist(self, user_id, bookmarked_user):
-        if bookmarked_user is not None:
-            self.remove_user_from_blocklist(user_id, bookmarked_user)
-            with BookmarklistMapper() as mapper:
-                return mapper.insert(user_id, bookmarked_user)
-
-    def remove_user_from_bookmarklist(self, user_id, bookmarked_user):
-        if bookmarked_user is not None:
-            with BookmarklistMapper() as mapper:
-                return mapper.delete(user_id, bookmarked_user)
-
-    '''
-        Blocklist Methoden
-    '''
-
-    def get_blocklist_by_user_id(self, user_id):
-        with BlocklistMapper() as mapper:
-            return mapper.find_by_id(user_id)
-
-    def add_user_to_blocklist(self, user_id, blocked_user):
-        if blocked_user is not None:
-            self.remove_user_from_bookmarklist(user_id, blocked_user)
-            with BlocklistMapper() as mapper:
-                return mapper.insert(user_id, blocked_user)
-
-    def remove_user_from_blocklist(self, user_id, blocked_user):
-        if blocked_user is not None:
-            with BlocklistMapper() as mapper:
-                return mapper.delete(user_id, blocked_user)
-
-
-    '''
-       Chat Methoden
-    '''
-
-    def get_chat_by_user_id(self, user_id):
-        chatlistmapper = ChatMapper()
-        return chatlistmapper.find_all(user_id)
-        #with ChatMapper() as mapper:
-            #return chatlistmapper.find_all(user_id)
-
-    def add_chat_to_user(self, user_id, payload):
-        chatmapper = ChatMapper()
-        return chatmapper.insert(user_id, payload)
-        #with ChatMapper() as mapper:
-            #return mapper.insert(user_id, payload)
-
-    '''
-         Message Methoden
-    '''
-
-    def get_messages_by_chat_id(self, chat_id):
-        messagemapper = MessageMapper()
-        return messagemapper.find_by_id(chat_id)
-        #with MessageMapper() as mapper:
-            #return mapper.find_by_id(chat_id)
-
-    def add_message_to_chat(self, user_id, payload):
-        messagemapper = MessageMapper()
-        return messagemapper.insert(user_id, payload)
-        #with MessageMapper() as mapper:
-           #return mapper.insert(user_id, payload)
 
     """
-    SelectionProperty Methoden
+    --------------------------------------------------------------------------------------------------------------
+    SelectionProperty - Functions
+    --------------------------------------------------------------------------------------------------------------
     """
     def create_selection_property(self, name, description):
         sel_prop = SelectionProperty()
         sel_prop.set_name(name)
         sel_prop.set_is_selection(1)
         sel_prop.set_description(description)
-        # sel_prop.set_selections(selections)
 
         with SelectionPropertyMapper() as mapper:
             return mapper.insert(sel_prop)
@@ -374,7 +316,9 @@ class Administration():
             return mapper.remove_selection(value_id)
 
     """
-    TextProperty Methoden
+    --------------------------------------------------------------------------------------------------------------
+    TextProperty - Functions
+    --------------------------------------------------------------------------------------------------------------
     """
     def create_text_property(self, name, description):
         text_prop = TextProperty()
@@ -418,11 +362,6 @@ class Administration():
             if text_prop is not None:
                 return mapper.insert_entry(text_prop, payload) #returns json with ValueID that can be used in create_info
 
-    # def create_text_entry_for_profile(self, profile, text_prop, payload):
-    #     if profile is not None and text_prop is not None:
-    #         value_id = self.add_text_entry(text_prop, payload)
-    #         self.create_info(profile, value_id)
-    #         return payload
 
     def update_text_entry(self, value_id, payload):
         with TextPropertyMapper() as mapper:
@@ -431,7 +370,91 @@ class Administration():
 
 
     '''
-        View Methoden
+    --------------------------------------------------------------------------------------------------------------
+    Bookmarklist - Functions
+    --------------------------------------------------------------------------------------------------------------
+    '''
+
+    def get_bookmarklist_by_user_id(self, user_id):
+        with BookmarklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
+
+    def add_user_to_bookmarklist(self, user_id, bookmarked_user):
+        if bookmarked_user is not None:
+            self.remove_user_from_blocklist(user_id, bookmarked_user)
+            with BookmarklistMapper() as mapper:
+                return mapper.insert(user_id, bookmarked_user)
+
+    def remove_user_from_bookmarklist(self, user_id, bookmarked_user):
+        if bookmarked_user is not None:
+            with BookmarklistMapper() as mapper:
+                return mapper.delete(user_id, bookmarked_user)
+
+    '''
+    --------------------------------------------------------------------------------------------------------------
+    Blocklist - Functions
+    --------------------------------------------------------------------------------------------------------------
+    '''
+
+    def get_blocklist_by_user_id(self, user_id):
+        with BlocklistMapper() as mapper:
+            return mapper.find_by_id(user_id)
+
+    def add_user_to_blocklist(self, user_id, blocked_user):
+        if blocked_user is not None:
+            self.remove_user_from_bookmarklist(user_id, blocked_user)
+            with BlocklistMapper() as mapper:
+                return mapper.insert(user_id, blocked_user)
+
+    def remove_user_from_blocklist(self, user_id, blocked_user):
+        if blocked_user is not None:
+            with BlocklistMapper() as mapper:
+                return mapper.delete(user_id, blocked_user)
+
+
+    '''
+    --------------------------------------------------------------------------------------------------------------
+    Chat - Functions
+    --------------------------------------------------------------------------------------------------------------
+    '''
+
+    def get_chat_by_user_id(self, user_id):
+        chatlistmapper = ChatMapper()
+        return chatlistmapper.find_all(user_id)
+        #with ChatMapper() as mapper:
+            #return chatlistmapper.find_all(user_id)
+
+    def add_chat_to_user(self, user_id, payload):
+        chatmapper = ChatMapper()
+        return chatmapper.insert(user_id, payload)
+        #with ChatMapper() as mapper:
+            #return mapper.insert(user_id, payload)
+
+    '''
+    --------------------------------------------------------------------------------------------------------------
+    Message - Functions
+    --------------------------------------------------------------------------------------------------------------
+    '''
+
+    def get_messages_by_chat_id(self, chat_id):
+        messagemapper = MessageMapper()
+        return messagemapper.find_by_id(chat_id)
+        #with MessageMapper() as mapper:
+            #return mapper.find_by_id(chat_id)
+
+    def add_message_to_chat(self, user_id, payload):
+        messagemapper = MessageMapper()
+        return messagemapper.insert(user_id, payload)
+        #with MessageMapper() as mapper:
+           #return mapper.insert(user_id, payload)
+
+
+
+
+    '''
+    --------------------------------------------------------------------------------------------------------------
+    View - Functions
+    --------------------------------------------------------------------------------------------------------------
     '''
 
 
@@ -466,41 +489,49 @@ class Administration():
 
 
     """
-    Ähnlichkeitsmass - Ausführung
+    --------------------------------------------------------------------------------------------------------------
+    Similarity Measure (Ähnlichkeitsmass)
     (Die Logik, die hinter der Berechnung des Ähnlichkeitsmaßes steckt, ist in der Datei SimilarityMeasure.py zu finden)
+    The logic behind the calculation of similarities can be found in the SimilarityMeasure class (SimilarityMeasure.py). 
+    --------------------------------------------------------------------------------------------------------------
     """
     def get_sorted_list_of_personal_profiles(self, search_profile):
+        # create dict with all infos assigned to the search profile
         search_infos = self.get_infos_from_profile(search_profile)
         search_info_content = {}
-        for info in search_infos: #dict erstellen mit allen infos des suchprofils
+        for info in search_infos:
             search_content = self.get_info_content(info)
             search_info_content[search_content["property"]] = search_content["value"]
 
+        # get all existing users, except yourself, users you blocked and users you were blocked by.
         users = self.get_all_user_by_id(search_profile.get_user_id())
         personal_profiles = []
         for u in users:
             personal_profiles.append(self.get_personal_profile_of_user(u))
         similarity_profiles = []
 
+        # create dict for each personal profile with all infos of the respective profile
         for profile in personal_profiles:
             infos = self.get_infos_from_profile(profile)
             info_content = {}
-            for info in infos: #dict erstellen mit allen infos des aktuell iterierten profils
+            for info in infos:
                 content = self.get_info_content(info)
                 info_content[content["property"]] = content["value"]
 
+            # perform the similarity measure calculation
             sim = SimilarityMeasure(search_info_content, info_content)
             similarity = sim.get_similarity_measure()
 
-            profile_and_sim = {} #dict erstellen mit profilen und ähnlichkeitsmaßen
+            # create dict with all profiles and the respective similarity figures based on the search profile
+            profile_and_sim = {}
             profile_and_sim['profile'] = profile
             profile_and_sim['similarity'] = similarity
             similarity_profiles.append(profile_and_sim)
 
-        #dict sortieren nach ähnlichkeit
+        # sort dict by similarity
         similarity_profiles = sorted(similarity_profiles, key=lambda x: x['similarity'], reverse=True)
 
-        #anstatt von profilen soll das frontend eine liste sortierter user bekommen:
+        # instead of profiles, the frontend expects a list of users:
         sorted_users = []
         for s in similarity_profiles:
             prof = s["profile"]
@@ -508,5 +539,4 @@ class Administration():
             user = self.get_user_by_id(user_id)
             sorted_users.append(user)
 
-        # return similarity_profiles
         return sorted_users

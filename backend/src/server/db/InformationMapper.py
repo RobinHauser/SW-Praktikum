@@ -1,10 +1,4 @@
-"""
-get: getting a list of all information objects of a profile
 
-post: adding a new information object to a profile
-
-delete: deleting an information object from a profile
-"""
 
 import json
 
@@ -12,6 +6,9 @@ from src.server.bo.Information import Information
 from src.server.db.Mapper import Mapper
 
 
+"""
+This class manages operations on information objects. 
+"""
 class InformationMapper(Mapper):
 
     def __init__(self):
@@ -20,7 +17,7 @@ class InformationMapper(Mapper):
     def find_all(self):
         """
         Finds all existing information objects
-        :return: all existing information objects
+        :return: a list of all existing information objects
         """
         result = []
         cursor = self._cnx.cursor()
@@ -81,7 +78,7 @@ class InformationMapper(Mapper):
         if assignments:
             value_ids = [ass[0] for ass in assignments]
 
-            # Retrieve Informations by ValueID
+            # Retrieve Information by ValueID
             command2 = "SELECT * FROM information WHERE ValueID IN ({})".format(
                 ','.join(str(v_id) for v_id in value_ids))
             cursor.execute(command2)
@@ -146,15 +143,40 @@ class InformationMapper(Mapper):
             else:
                 info.set_id(5001)
 
+        # check if an info of the new info's property is already created for the current user
+        # first, get all value_ids of the infos assigned to the current profile
         command = f'SELECT * FROM information WHERE ProfileID={info.get_profile_id()}'
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        infos_of_profile = cursor.fetchall()
+        value_ids_of_profile = [inf[2] for inf in infos_of_profile]
 
-        for i in tuples:
-            v1 = i[2]
+        # get the property type of each info (or rather of each value_id)
+        props_of_profile = []
+        for v_id in value_ids_of_profile:
+            command2 = "SELECT * FROM property_assignment WHERE ValueID = {}".format(v_id)
+            cursor.execute(command2)
+            assignment = cursor.fetchone()
 
-            if v1 == info.get_value_id():
-                return info
+            command3 = "SELECT * FROM property WHERE PropertyID = {}".format(assignment[1])
+            cursor.execute(command3)
+            prop_profile = cursor.fetchone()[0]
+            props_of_profile.append(prop_profile)
+
+        # get the property type of the new info we want to create
+        command4 = "SELECT * FROM property_assignment WHERE ValueID = {}".format(info.get_value_id())
+        cursor.execute(command4)
+        assignment = cursor.fetchone()
+
+        command5 = "SELECT * FROM property WHERE PropertyID = {}".format(assignment[1])
+        cursor.execute(command5)
+        prop = cursor.fetchone()[0]
+
+        # if you try to create an info of a certain property type and the current profile already has an info of
+        # that property type, you get an IndexError. This accomplishes that you can only add one info object of a certain
+        # property per profile.
+        if prop in props_of_profile:
+            return IndexError
+
 
         command = "INSERT INTO information (InformationID, ProfileID, ValueID) VALUES (%s,%s,%s)"
         data = (info.get_id(), info.get_profile_id(), info.get_value_id())
@@ -197,23 +219,15 @@ class InformationMapper(Mapper):
 
         return info
 
-    #
-    # def add_info_to_profile(self, profile_id, payload): #siehe profile methoden
-    #     pass
-    #     # überprüfen ob es sich bei der jeweiligen property dieses info-objekts
-    #     # um dropdown oder um freitext handelt.
-    #     # wenn dropdown: hole das info-objekt aus der datenbank (mapper find_by_id)
-    #     # wenn freitext: zuerst create_info,
-    #     # hole dann dieses info-objekt aus der datenbank (mapper find_by_id)
-    #
 
     def get_content_of_info(self, info):
         """
         gets the value of an info object
         :param info: info we want to get the content from
-        :return: a dictionary with the content of the information object
+        :return: a dictionary (json) with the content of the information object
         """
         cursor = self._cnx.cursor()
+        content_json = {}
 
         # Retrieving information
         command = "SELECT * FROM information WHERE InformationID = {}".format(info.get_id())
@@ -238,14 +252,14 @@ class InformationMapper(Mapper):
                 prop_tuple = cursor.fetchone()
                 prop = prop_tuple[1]
                 is_select = prop_tuple[2]
-                prop_description = prop_tuple[3]
 
+                # Creating a json containing all the important content of an information
                 if content:
-                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}", "isSelect": "{is_select}", "propDescription": "{prop_description}",' \
-                            f' "propID": "{prop_id}", "informationID": "{information[0]}"}}'
+                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}", "isSelection": "{is_select}"}}'
                     content_json = json.loads(jsstr)
 
         self._cnx.commit()
         cursor.close()
 
         return content_json
+

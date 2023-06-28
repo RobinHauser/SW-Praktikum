@@ -116,14 +116,18 @@ profile_similarity = {
     'similarity': fields.Float
 }
 
-
+"""
+--------------------------------------------------------------------------------------------------------------
+Bookmarklist
+--------------------------------------------------------------------------------------------------------------
+"""
 @bookmarklist_namespace.route('/<int:user_id>')
 @bookmarklist_namespace.response(500, 'TBD')
 @bookmarklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @bookmarklist_namespace.response(200, 'TBD')
 class Bookmarklist_api(Resource):
 
-    # @secured
+    @secured
     @bookmarklist_namespace.marshal_list_with(user)
     def get(self, user_id):
         """
@@ -135,7 +139,7 @@ class Bookmarklist_api(Resource):
         response = adm.get_bookmarklist_by_user_id(user_id)
         return response
 
-    # @secured
+    @secured
     @bookmarklist_namespace.marshal_with(user)
     def post(self, user_id):
         """
@@ -148,7 +152,7 @@ class Bookmarklist_api(Resource):
         response = adm.add_user_to_bookmarklist(user_id, bookmarked_user)
         return response
 
-    # @secured
+    @secured
     @bookmarklist_namespace.marshal_with(user)
     def delete(self, user_id):
         """
@@ -161,13 +165,18 @@ class Bookmarklist_api(Resource):
         response = adm.remove_user_from_bookmarklist(user_id, bookmarked_user)
         return response
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Blocklist
+--------------------------------------------------------------------------------------------------------------
+"""
 
 @blocklist_namespace.route('/<int:user_id>')
 @blocklist_namespace.response(500, 'TBD')
 @blocklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @blocklist_namespace.response(200, 'TBD')
 class Blocklist_api(Resource):
-    # @secured
+    @secured
     @blocklist_namespace.marshal_list_with(user)
     def get(self, user_id):
         """
@@ -179,7 +188,7 @@ class Blocklist_api(Resource):
         response = adm.get_blocklist_by_user_id(user_id)
         return response
 
-    # @secured
+    @secured
     @blocklist_namespace.marshal_with(user)
     def post(self, user_id):
         """
@@ -192,7 +201,7 @@ class Blocklist_api(Resource):
         response = adm.add_user_to_blocklist(user_id, new_user)
         return response
 
-    # @secured
+    @secured
     @blocklist_namespace.marshal_with(user)
     def delete(self, user_id):
         """
@@ -205,13 +214,18 @@ class Blocklist_api(Resource):
         response = adm.remove_user_from_blocklist(user_id, blocked_user)
         return response
 
+"""
+--------------------------------------------------------------------------------------------------------------
+View
+--------------------------------------------------------------------------------------------------------------
+"""
 
 @view_namespace.response(500, 'Something bad happened in the backend.')
 @view_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @view_namespace.response(200, 'The request was ok')
 @view_namespace.route('/<int:id>')
 class View_api(Resource):
-    # @secured
+    @secured
     @view_namespace.marshal_list_with(user)
     def get(self, id):
         """
@@ -223,7 +237,7 @@ class View_api(Resource):
         response = adm.get_viewed_list_by_user_id(id)
         return response
 
-    # @secured
+    @secured
     def post(self, id):
         """
         Add a new user to the viewed list
@@ -234,7 +248,7 @@ class View_api(Resource):
         response = adm.add_user_to_viewedList(id, api.payload)
         return response
 
-    # @secured
+    @secured
     def delete(self, user_id):
         """
         Remove a user from a viewed list
@@ -246,8 +260,15 @@ class View_api(Resource):
         return response
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Chat
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @chat_namespace.route('/<int:user_id>')
 class Chat_api(Resource):
+    @secured
     def get(self, user_id):
         """
         Get the chat associated to a user
@@ -258,6 +279,7 @@ class Chat_api(Resource):
         response = adm.get_chat_by_user_id(user_id)
         return response
 
+    @secured
     def post(self, user_id):
         """
         Start a new chat with a user
@@ -268,15 +290,22 @@ class Chat_api(Resource):
         response = adm.add_chat_to_user(user_id, api.payload)
         return response
 
+    @secured
     def delete(self):
         pass
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Message
+--------------------------------------------------------------------------------------------------------------
+"""
 
 @message_namespace.route('/<int:id>')
 @message_namespace.response(500, 'Something bad happend in the backend.')
 @message_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @message_namespace.response(200, 'The request was ok')
 class Message_api(Resource):
+    @secured
     def get(self, id):  # Chat ID
         """
         Get all messages associated to a chat
@@ -287,6 +316,7 @@ class Message_api(Resource):
         response = adm.get_messages_by_chat_id(id)
         return response
 
+    @secured
     def post(self, id):  # User ID
         """
         Add a new message to a chat
@@ -298,11 +328,19 @@ class Message_api(Resource):
         return response
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Personal Profile
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @personal_profile_namespace.route('/personal_profiles')
 @personal_profile_namespace.response(500, 'Something bad happend in the backend.')
-@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(401,
+                                     'The user is unauthorized to perform this request. Set a valid token to go on.')
 @personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfileList_api(Resource):
+    @secured
     @personal_profile_namespace.marshal_list_with(profile)
     def get(self):
         """
@@ -316,9 +354,11 @@ class PersonalProfileList_api(Resource):
 
 @personal_profile_namespace.route('/sorted/<int:id>')
 @personal_profile_namespace.response(500, 'Something bad happend in the backend.')
-@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(401,
+                                     'The user is unauthorized to perform this request. Set a valid token to go on.')
 @personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfileSimilarity_api(Resource):
+    @secured
     @personal_profile_namespace.marshal_list_with(user)
     def get(self, id):
         """
@@ -335,12 +375,13 @@ class PersonalProfileSimilarity_api(Resource):
             return '', 500
 
 
-
 @personal_profile_namespace.route('/<int:id>')
 @personal_profile_namespace.response(500, 'Something bad happend in the backend.')
-@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(401,
+                                     'The user is unauthorized to perform this request. Set a valid token to go on.')
 @personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfile_api(Resource):
+    @secured
     @personal_profile_namespace.marshal_with(profile)
     def get(self, id):
         """
@@ -352,6 +393,7 @@ class PersonalProfile_api(Resource):
         response = adm.get_profile_by_id(id)
         return response
 
+    @secured
     @personal_profile_namespace.marshal_with(profile)
     def delete(self, id):
         """
@@ -367,9 +409,11 @@ class PersonalProfile_api(Resource):
 
 @personal_profile_namespace.route('/by_user/<int:id>')
 @personal_profile_namespace.response(500, 'Something bad happend in the backend.')
-@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(401,
+                                     'The user is unauthorized to perform this request. Set a valid token to go on.')
 @personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfileByUser_api(Resource):
+    @secured
     @personal_profile_namespace.marshal_with(profile)
     def get(self, id):
         """
@@ -382,6 +426,7 @@ class PersonalProfileByUser_api(Resource):
         response = adm.get_personal_profile_of_user(user)
         return response
 
+    @secured
     @personal_profile_namespace.marshal_with(profile)
     def post(self, id):
         """
@@ -395,11 +440,18 @@ class PersonalProfileByUser_api(Resource):
         return response
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Search Profile
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @search_profile_namespace.route('/by_user/<int:id>')
 @search_profile_namespace.response(500, 'Something bad happend in the backend.')
 @search_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @search_profile_namespace.response(200, 'The request was ok')
 class SearchProfilesByUser_api(Resource):
+    @secured
     @search_profile_namespace.marshal_list_with(profile)
     def get(self, id):
         """
@@ -412,6 +464,7 @@ class SearchProfilesByUser_api(Resource):
         response = adm.get_search_profiles_of_user(user)
         return response
 
+    @secured
     @search_profile_namespace.marshal_with(profile)
     def post(self, id):
         """
@@ -430,6 +483,7 @@ class SearchProfilesByUser_api(Resource):
 @search_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @search_profile_namespace.response(200, 'The request was ok')
 class SearchProfile_api(Resource):
+    @secured
     @search_profile_namespace.marshal_with(profile)
     def get(self, id):
         """
@@ -441,6 +495,7 @@ class SearchProfile_api(Resource):
         response = adm.get_profile_by_id(id)
         return response
 
+    @secured
     @search_profile_namespace.marshal_with(profile)
     def delete(self, id):
         """
@@ -454,11 +509,19 @@ class SearchProfile_api(Resource):
         return response
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Selection Property
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @selection_property_namespace.route('/<int:id>')
 @selection_property_namespace.response(500, 'Something bad happend in the backend.')
-@selection_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@selection_property_namespace.response(401,
+                                       'The user is unauthorized to perform this request. Set a valid token to go on.')
 @selection_property_namespace.response(200, 'The request was ok')
 class SelectionProperty_api(Resource):
+    @secured
     @selection_property_namespace.marshal_with(selection_property)
     def get(self, id):
         """
@@ -470,6 +533,7 @@ class SelectionProperty_api(Resource):
         response = adm.get_selection_property_by_id(id)
         return response
 
+    @secured
     @selection_property_namespace.marshal_with(selection_property)
     def put(self, id):
         """
@@ -488,6 +552,7 @@ class SelectionProperty_api(Resource):
         else:
             return '', 500
 
+    @secured
     @selection_property_namespace.marshal_with(selection_property)
     def delete(self, id):
         """
@@ -503,9 +568,11 @@ class SelectionProperty_api(Resource):
 
 @selection_property_namespace.route('/selection_properties')
 @selection_property_namespace.response(500, 'Something bad happend in the backend.')
-@selection_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@selection_property_namespace.response(401,
+                                       'The user is unauthorized to perform this request. Set a valid token to go on.')
 @selection_property_namespace.response(200, 'The request was ok')
 class SelectionPropertyList_api(Resource):
+    @secured
     @selection_property_namespace.marshal_with(selection_property)
     def post(self):
         """
@@ -520,12 +587,12 @@ class SelectionPropertyList_api(Resource):
             name = proposal.get_name()
             # is_selection = proposal.get_is_selection()
             description = proposal.get_description()
-            # selections = proposal.get_selections()
             result = adm.create_selection_property(name, description)
             return result, 200
         else:
             return '', 500
 
+    @secured
     @selection_property_namespace.marshal_list_with(selection_property)
     def get(self):
         """
@@ -539,9 +606,11 @@ class SelectionPropertyList_api(Resource):
 
 @selection_property_namespace.route('/options/<int:id>')
 @selection_property_namespace.response(500, 'Something bad happend in the backend.')
-@selection_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@selection_property_namespace.response(401,
+                                       'The user is unauthorized to perform this request. Set a valid token to go on.')
 @selection_property_namespace.response(200, 'The request was ok')
 class SelectionPropertyOptions_api(Resource):
+    @secured
     def get(self, id):
         """
         gets the selectable options of a selection property
@@ -553,6 +622,7 @@ class SelectionPropertyOptions_api(Resource):
         response = adm.retrieve_options(sel_prop)
         return response
 
+    @secured
     def post(self, id):
         """
         adds a selectable option to the given selection property
@@ -564,6 +634,7 @@ class SelectionPropertyOptions_api(Resource):
         response = adm.add_option(sel_prop, api.payload)
         return response
 
+    @secured
     def delete(self, id):
         """
         deletes the given selectable option
@@ -575,11 +646,18 @@ class SelectionPropertyOptions_api(Resource):
         return ''
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Text Property
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @text_property_namespace.route('/<int:id>')
 @text_property_namespace.response(500, 'Something bad happend in the backend.')
 @text_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @text_property_namespace.response(200, 'The request was ok')
 class TextProperty_api(Resource):
+    @secured
     @text_property_namespace.marshal_with(text_property)
     def get(self, id):
         """
@@ -591,6 +669,7 @@ class TextProperty_api(Resource):
         response = adm.get_text_property_by_id(id)
         return response
 
+    @secured
     @text_property_namespace.marshal_with(text_property)
     def put(self, id):
         """
@@ -609,6 +688,7 @@ class TextProperty_api(Resource):
         else:
             return '', 500
 
+    @secured
     @text_property_namespace.marshal_with(text_property)
     def delete(self, id):
         """
@@ -627,6 +707,7 @@ class TextProperty_api(Resource):
 @text_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @text_property_namespace.response(200, 'The request was ok')
 class TextPropertyList_api(Resource):
+    @secured
     @text_property_namespace.marshal_with(text_property)
     def post(self):
         """
@@ -646,6 +727,7 @@ class TextPropertyList_api(Resource):
         else:
             return '', 500
 
+    @secured
     @text_property_namespace.marshal_list_with(text_property)
     def get(self):
         """
@@ -662,6 +744,7 @@ class TextPropertyList_api(Resource):
 @text_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @text_property_namespace.response(200, 'The request was ok')
 class TextPropertyEntries_api(Resource):
+    @secured
     def post(self, id):
         """
         creates a new text entry for a specified text property
@@ -673,6 +756,7 @@ class TextPropertyEntries_api(Resource):
         response = adm.add_text_entry(text_prop, api.payload)
         return response
 
+    @secured
     def put(self, id):
         """
         updates an existing text entry of a text property
@@ -684,11 +768,18 @@ class TextPropertyEntries_api(Resource):
         return response
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Information
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @information_namespace.route('/<int:id>')
 @information_namespace.response(500, 'Something bad happend in the backend.')
 @information_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @information_namespace.response(200, 'The request was ok')
 class Information_api(Resource):
+    @secured
     @information_namespace.marshal_with(information)
     def post(self, id):
         """
@@ -702,6 +793,7 @@ class Information_api(Resource):
         response = adm.create_info(prof, id)
         return response
 
+    @secured
     @information_namespace.marshal_with(information)
     def get(self, id):
         """
@@ -713,6 +805,7 @@ class Information_api(Resource):
         response = adm.get_info_by_id(id)
         return response
 
+    @secured
     def put(self, id):
         """
         updates the information object with the given id
@@ -724,6 +817,7 @@ class Information_api(Resource):
         response = adm.update_info(info, api.payload)
         return response
 
+    @secured
     @information_namespace.marshal_with(information)
     def delete(self, id):
         """
@@ -743,6 +837,7 @@ class Information_api(Resource):
 @information_namespace.response(200, 'The request was ok')
 class InformationList_api(Resource):
     # @information_namespace.marshal_list_with(information)
+    @secured
     def get(self, id):
         """
         gets the content of all information objects of a given profile
@@ -762,7 +857,8 @@ class InformationList_api(Resource):
 @information_namespace.response(500, 'Something bad happend in the backend.')
 @information_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @information_namespace.response(200, 'The request was ok')
-class InformationContent_api(Resource):
+class InformationContent_api(Resource):  #
+    @secured
     def get(self, id):
         """
         gets the content of an information object
@@ -778,11 +874,18 @@ class InformationContent_api(Resource):
             return '', 500
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+User
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @init_user_namespace.route('/<string:email>')
 @init_user_namespace.response(500, 'Something bad happend in the backend.')
 @init_user_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @init_user_namespace.response(200, 'The request was ok')
 class Init_user_api(Resource):
+    @secured
     @init_user_namespace.marshal_with(user, code=200)
     def get(self, email):
         """
@@ -799,28 +902,26 @@ class Init_user_api(Resource):
 @user_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @user_namespace.response(200, 'The request was ok')
 class User_api(Resource):
-    """
-    HINT: The user_id 1000 returns all users
-    """
-
+    @secured
     @user_namespace.marshal_list_with(user, code=200)
     def get(self, id):
         """
-        Get a specific user by user_id
-        :param user_id:
+        Get a specific user by user_id or if the user_id 1000 is given it will return a list of all users
+        :param user_id: --
         :return: the wanted user
         """
 
-        if id == 1000:
+        if id == 1000:  # Get all users
             adm = Administration()
             return adm.get_all_users()
 
-        else:
+        else:  # Get a specific user
             adm = Administration()
             return adm.get_user_by_id(id)
 
     @user_namespace.marshal_with(user, code=200)
     @user_namespace.expect(user)
+    @secured
     def post(self, id):
         """
         Create a new user
@@ -832,6 +933,7 @@ class User_api(Resource):
 
     @user_namespace.marshal_with(user, code=200)
     @user_namespace.expect(user)
+    @secured
     def delete(self, id):
         """
         Delete a user
@@ -844,6 +946,7 @@ class User_api(Resource):
 
     @user_namespace.marshal_with(user, code=200)
     @user_namespace.expect(user)
+    @secured
     def put(self, id):
         """
         Update a user
@@ -861,6 +964,7 @@ class User_api(Resource):
 class All_User_api(Resource):
 
     @user_namespace.marshal_with(user, code=200)
+    @secured
     def get(self, id):
         """
         Get a specific user by user_id
@@ -870,6 +974,9 @@ class All_User_api(Resource):
         adm = Administration()
         return adm.get_all_user_by_id(id)
 
+"""
+--------------------------------------------------------------------------------------------------------------
+"""
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
