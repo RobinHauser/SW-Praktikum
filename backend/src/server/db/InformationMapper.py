@@ -142,16 +142,41 @@ class InformationMapper(Mapper):
                     info.set_id(maxid[0] + 1)
             else:
                 info.set_id(5001)
-        #todo
+
+        # check if an info of the new info's property is already created for the current user
+        # first, get all value_ids of the infos assigned to the current profile
         command = f'SELECT * FROM information WHERE ProfileID={info.get_profile_id()}'
         cursor.execute(command)
-        tuples = cursor.fetchall()
+        infos_of_profile = cursor.fetchall()
+        value_ids_of_profile = [inf[2] for inf in infos_of_profile]
 
-        for i in tuples:
-            v1 = i[2]
+        # get the property type of each info (or rather of each value_id)
+        props_of_profile = []
+        for v_id in value_ids_of_profile:
+            command2 = "SELECT * FROM property_assignment WHERE ValueID = {}".format(v_id)
+            cursor.execute(command2)
+            assignment = cursor.fetchone()
 
-            if v1 == info.get_value_id():
-                return info
+            command3 = "SELECT * FROM property WHERE PropertyID = {}".format(assignment[1])
+            cursor.execute(command3)
+            prop_profile = cursor.fetchone()[0]
+            props_of_profile.append(prop_profile)
+
+        # get the property type of the new info we want to create
+        command4 = "SELECT * FROM property_assignment WHERE ValueID = {}".format(info.get_value_id())
+        cursor.execute(command4)
+        assignment = cursor.fetchone()
+
+        command5 = "SELECT * FROM property WHERE PropertyID = {}".format(assignment[1])
+        cursor.execute(command5)
+        prop = cursor.fetchone()[0]
+
+        # if you try to create an info of a certain property type and the current profile already has an info of
+        # that property type, you get an IndexError. This accomplishes that you can only add one info object of a certain
+        # property per profile.
+        if prop in props_of_profile:
+            return IndexError
+
 
         command = "INSERT INTO information (InformationID, ProfileID, ValueID) VALUES (%s,%s,%s)"
         data = (info.get_id(), info.get_profile_id(), info.get_value_id())
@@ -237,3 +262,4 @@ class InformationMapper(Mapper):
         cursor.close()
 
         return content_json
+
