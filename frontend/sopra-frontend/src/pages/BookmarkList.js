@@ -5,7 +5,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import * as React from "react";
 import BookmarkProfileCard from "../components/BookmarkProfileCard";
 import SopraDatingAPI from "../api/SopraDatingAPI";
-import {ListItem, ListItemText, LinearProgress, ListSubheader} from "@mui/material";
+import {ListItem, ListItemText, LinearProgress, ListSubheader, Skeleton} from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 /**
@@ -94,7 +94,33 @@ export default class bookmarkList extends React.Component {
                                         </BookmarkProfileCard>
                                     </Grid>
                                 ))
-                            ) : loading ? null : (
+                            ) : loading ? (
+                                <>
+                                    {Array.from(Array(9)).map((_, index) => (
+                                        <Grid xs={4} sm={4} md={4} key={index}>
+                                            <div>
+                                                <Box display="flex" justifyContent="center" alignItems="center"
+                                                     flexDirection="column" height="100%">
+                                                    <Skeleton variant="circular" animation="wave" width={50}
+                                                              height={50} sx={{marginBottom: "10px"}}/>
+                                                    <Skeleton variant="rounded" animation="wave" width={300}
+                                                              height={40} sx={{marginBottom: "5px"}}/>
+                                                    <Skeleton variant="rounded" animation="wave" width={300}
+                                                              height={20} sx={{marginBottom: "5px"}}/>
+                                                    <Skeleton variant="rounded" animation="wave" width={300}
+                                                              height={20} sx={{marginBottom: "5px"}}/>
+                                                    <Skeleton variant="rounded" animation="wave" width={300}
+                                                              height={20} sx={{marginBottom: "5px"}}/>
+                                                    <Skeleton variant="rounded" animation="wave" width={300}
+                                                              height={20} sx={{marginBottom: "5px"}}/>
+                                                    <Skeleton variant="rounded" animation="wave" width={300}
+                                                              height={30} sx={{marginBottom: "5px"}}/>
+                                                </Box>
+                                            </div>
+                                        </Grid>
+                                    ))}
+                                </>
+                            ) : (
                                 (
                                     <ListItem>
                                         <ListItemText sx={{textAlign: 'center', marginTop: '20px'}}>

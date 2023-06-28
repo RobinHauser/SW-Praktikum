@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {Alert, CircularProgress, LinearProgress, ListItem, ListItemText, Switch} from "@mui/material";
+import {LinearProgress, ListItem, ListItemText, Skeleton, Switch} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
@@ -284,7 +284,33 @@ export default class GridContainer extends React.Component {
                                 </ProfileCard>
                             </Grid>
                         ))
-                    ) : (loading ? null : (
+                    ) : (loading ? (
+                            <>
+                                {Array.from(Array(9)).map((_, index) => (
+                                    <Grid xs={4} sm={4} md={4} key={index}>
+                                        <div>
+                                            <Box display="flex" justifyContent="center" alignItems="center"
+                                                 flexDirection="column" height="100%">
+                                                <Skeleton variant="circular" animation="wave" width={50}
+                                                          height={50} sx={{marginBottom: "10px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={40} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={20} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={20} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={20} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={20} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={30} sx={{marginBottom: "5px"}}/>
+                                            </Box>
+                                        </div>
+                                    </Grid>
+                                ))}
+                            </>
+                        ) : (
                             <ListItem>
                                 <ListItemText sx={{textAlign: 'center'}}>
                                     <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>
