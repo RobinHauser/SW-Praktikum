@@ -1,16 +1,13 @@
-"""
-get: getting a list of all information objects of a profile
 
-post: adding a new information object to a profile
-
-delete: deleting an information object from a profile
-"""
 
 import json
 
 from backend.src.server.bo.Information import Information
 from backend.src.server.db.Mapper import Mapper
 
+"""
+This class manages operations on information objects. 
+"""
 class InformationMapper(Mapper):
 
     def __init__(self):
@@ -19,7 +16,7 @@ class InformationMapper(Mapper):
     def find_all(self):
         """
         Finds all existing information objects
-        :return: all existing information objects
+        :return: a list of all existing information objects
         """
         result = []
         cursor = self._cnx.cursor()
@@ -80,7 +77,7 @@ class InformationMapper(Mapper):
         if assignments:
             value_ids = [ass[0] for ass in assignments]
 
-            #Retrieve Informations by ValueID
+            #Retrieve Information by ValueID
             command2 = "SELECT * FROM information WHERE ValueID IN ({})".format(
                 ','.join(str(v_id) for v_id in value_ids))
             cursor.execute(command2)
@@ -187,23 +184,14 @@ class InformationMapper(Mapper):
         return info
 
 
-    #
-    # def add_info_to_profile(self, profile_id, payload): #siehe profile methoden
-    #     pass
-    #     # überprüfen ob es sich bei der jeweiligen property dieses info-objekts
-    #     # um dropdown oder um freitext handelt.
-    #     # wenn dropdown: hole das info-objekt aus der datenbank (mapper find_by_id)
-    #     # wenn freitext: zuerst create_info,
-    #     # hole dann dieses info-objekt aus der datenbank (mapper find_by_id)
-    #
-
     def get_content_of_info(self, info):
         """
         gets the value of an info object
         :param info: info we want to get the content from
-        :return: a dictionary with the content of the information object
+        :return: a dictionary (json) with the content of the information object
         """
         cursor = self._cnx.cursor()
+        content_json = {}
 
         # Retrieving information
         command = "SELECT * FROM information WHERE InformationID = {}".format(info.get_id())
@@ -227,9 +215,11 @@ class InformationMapper(Mapper):
                 cursor.execute(command4)
                 prop_tuple = cursor.fetchone()
                 prop = prop_tuple[1]
+                is_select = prop_tuple[2]
 
+                # Creating a json containing all the important content of an information
                 if content:
-                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}"}}'
+                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}", "isSelection": "{is_select}"}}'
                     content_json = json.loads(jsstr)
 
         self._cnx.commit()

@@ -115,7 +115,11 @@ profile_similarity = {
     'similarity': fields.Float
 }
 
-
+"""
+--------------------------------------------------------------------------------------------------------------
+Bookmarklist
+--------------------------------------------------------------------------------------------------------------
+"""
 @bookmarklist_namespace.route('/<int:user_id>')
 @bookmarklist_namespace.response(500, 'TBD')
 @bookmarklist_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
@@ -160,6 +164,11 @@ class Bookmarklist_api(Resource):
         response = adm.remove_user_from_bookmarklist(user_id, bookmarked_user)
         return response
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Blocklist
+--------------------------------------------------------------------------------------------------------------
+"""
 
 @blocklist_namespace.route('/<int:user_id>')
 @blocklist_namespace.response(500, 'TBD')
@@ -204,6 +213,11 @@ class Blocklist_api(Resource):
         response = adm.remove_user_from_blocklist(user_id, blocked_user)
         return response
 
+"""
+--------------------------------------------------------------------------------------------------------------
+View
+--------------------------------------------------------------------------------------------------------------
+"""
 
 @view_namespace.route('/<int:user_id>')
 class View_api(Resource):
@@ -241,6 +255,12 @@ class View_api(Resource):
         return response
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Chat
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @chat_namespace.route('/<int:user_id>')
 class Chat_api(Resource):
     def get(self, user_id):
@@ -266,6 +286,11 @@ class Chat_api(Resource):
     def delete(self):
         pass
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Message
+--------------------------------------------------------------------------------------------------------------
+"""
 
 @message_namespace.route('/<int:id>')
 class Message_api(Resource):
@@ -289,6 +314,12 @@ class Message_api(Resource):
         response = adm.add_message_to_chat(id, api.payload)
         return response
 
+
+"""
+--------------------------------------------------------------------------------------------------------------
+Personal Profile
+--------------------------------------------------------------------------------------------------------------
+"""
 
 @personal_profile_namespace.route('/personal_profiles')
 class PersonalProfileList_api(Resource):
@@ -375,6 +406,12 @@ class PersonalProfileByUser_api(Resource):
         return response
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Search Profile
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @search_profile_namespace.route('/by_user/<int:id>')
 class SearchProfilesByUser_api(Resource):
     @search_profile_namespace.marshal_list_with(profile)
@@ -427,6 +464,12 @@ class SearchProfile_api(Resource):
         response = adm.delete_profile(prof)
         return response
 
+
+"""
+--------------------------------------------------------------------------------------------------------------
+Selection Property
+--------------------------------------------------------------------------------------------------------------
+"""
 
 @selection_property_namespace.route('/<int:id>')
 class SelectionProperty_api(Resource):
@@ -488,7 +531,6 @@ class SelectionPropertyList_api(Resource):
             name = proposal.get_name()
             # is_selection = proposal.get_is_selection()
             description = proposal.get_description()
-            # selections = proposal.get_selections()
             result = adm.create_selection_property(name, description)
             return result, 200
         else:
@@ -539,6 +581,12 @@ class SelectionPropertyOptions_api(Resource):
         adm.remove_option(id)
         return ''
 
+
+"""
+--------------------------------------------------------------------------------------------------------------
+Text Property
+--------------------------------------------------------------------------------------------------------------
+"""
 
 @text_property_namespace.route('/<int:id>')
 class TextProperty_api(Resource):
@@ -640,6 +688,12 @@ class TextPropertyEntries_api(Resource):
         return response
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+Information
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @information_namespace.route('/<int:id>')
 class Information_api(Resource):
     @information_namespace.marshal_with(information)
@@ -725,6 +779,12 @@ class InformationContent_api(Resource):
             return '', 500
 
 
+"""
+--------------------------------------------------------------------------------------------------------------
+User
+--------------------------------------------------------------------------------------------------------------
+"""
+
 @init_user_namespace.route('/<string:email>')
 class Init_user_api(Resource):
     @init_user_namespace.marshal_with(user, code=200)
@@ -808,6 +868,9 @@ class All_User_api(Resource):
         adm = Administration()
         return adm.get_all_user_by_id(id)
 
+"""
+--------------------------------------------------------------------------------------------------------------
+"""
 
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

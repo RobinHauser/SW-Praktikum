@@ -4,6 +4,12 @@ from backend.src.server.bo.TextProperty import TextProperty
 from backend.src.server.db import Mapper as Mapper
 from backend.src.server.bo.Information import Information
 
+"""
+This class manages operations on text properties. 
+Except for a few nuances, they are very similar to selection property operations. 
+This class also manages operations on text entries for the respective text property. 
+"""
+
 class TextPropertyMapper(Mapper.Mapper):
     def __init__(self):
         super().__init__()
@@ -90,7 +96,7 @@ class TextPropertyMapper(Mapper.Mapper):
 
     def insert(self, text_prop):
         """
-        creates a new text property entry
+        creates a new text property
         :param text_prop: text property object
         :return: inserted text property
         """
@@ -124,6 +130,7 @@ class TextPropertyMapper(Mapper.Mapper):
         updates given text property
         :param text_prop: text property to be updated
         :return: updated text property
+        Updatable are the name and the description.
         """
         cursor = self._cnx.cursor()
 
@@ -180,9 +187,9 @@ class TextPropertyMapper(Mapper.Mapper):
 
     def insert_entry(self, text_prop, payload):
         """
-        inserts a new freetext entry into occupancy & property_assignment
+        inserts a new text entry into occupancy & property_assignment
         :param text_prop: text property the entry will belong to
-        :param entry: entered freetext by the user
+        :param payload: entered text by the user
         :return: id of the created entry
         """
         cursor = self._cnx.cursor()
@@ -211,21 +218,21 @@ class TextPropertyMapper(Mapper.Mapper):
         cursor.execute(command2, data)
 
         jsstr = f'{{"valueID": "{max_id}", "value": "{entry}"}}'
-        value_id_json = json.loads(jsstr)
+        value_json = json.loads(jsstr)
 
         self._cnx.commit()
         cursor.close()
 
-        return value_id_json
-        #Es wird ein json mit der ValueID returned,
-        #damit man in der zugehörigen Administration-Methode direkt ein info-Objekt anlegen kann.
+        return value_json
+        # A json with the valueID and value of the inserted entry gets returned.
+        # This is necessary for the creation of an information object that must reference this new entry.
 
     def update_entry(self, value_id, payload):
         """
-        updates the user's content of the textfield of a specified text property
-        :param info: concrete info object to be modified
-        :param entry: changed text entry
-        :return: changed entry
+        updates the content of a specific text entry
+        :param value_id: id of the text entry we want to update
+        :param payload: changed text entry
+        :return: changed text entry
         """
         cursor = self._cnx.cursor()
 

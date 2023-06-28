@@ -17,3 +17,11 @@ class Information(BusinessObject):
 
     def get_value_id(self):
         return self.__value_id
+
+    @staticmethod
+    def from_dict(dict = dict()):
+        inf = Information()
+        inf.set_id(dict["id"])
+        inf.set_profile_id(dict["profileID"])
+        inf.set_value_id(dict["valueID"])
+        return inf

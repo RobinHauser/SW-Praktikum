@@ -34,7 +34,7 @@ class SimilarityMeasure:
         """Get the similarity between two strings
 
             The information string of the 2 profiles are split in the lowercase words of the two strings.
-            After that the words of one string are checked on similarity with the words of the other string.
+            After that the words of one string are checked for similarity with the words of the other string.
             Finally, the similar word count is divided through the length of the shorter word list of phrases to get the
             similarity of the two phrases.
             """
@@ -58,13 +58,13 @@ class SimilarityMeasure:
         """
         list_diff = []
 
+        # checking if a property of an info of the search profile is also present in the personal profile we currently look at
         for prop in self.__search_profile:
             if prop in self.__user_profile:
-                if self.__search_profile[prop] != "Keine Angabe" and self.__user_profile[prop] != "Keine Angabe":
-                    if (type(self.__search_profile[prop])) == str:
-                        list_diff.append(self.__get_string_sim(self.__search_profile[prop], self.__user_profile[prop]))
-                    else:
-                        list_diff.append(self.__get_num_sim(self.__search_profile[prop], self.__user_profile[prop]))
+                if (type(self.__search_profile[prop])) == str:
+                    list_diff.append(self.__get_string_sim(self.__search_profile[prop], self.__user_profile[prop]))
+                else:
+                    list_diff.append(self.__get_num_sim(self.__search_profile[prop], self.__user_profile[prop]))
                 # print(f"{i} Ähnlichkeitsmaß: {list_diff[-1]}")
             else:
                 list_diff.append(0)
@@ -78,31 +78,4 @@ class SimilarityMeasure:
         # round the similarity_measure by 2 digits
         return round(similarity_measure, 2)
 
-
-
-
-test_profile1 = {
-    "smoker": "yes",
-    "height": 187,
-    "age": 20,
-    "religion": "ev",
-    "sunday morning": "wenn ich mit einem Kaffee geweckt werden :)"
-}
-test_profile2 = {
-    "smoker": "no",
-    "height": 175,
-    "age": 18,
-    "religion": "ev",
-    "sunday morning": "mit einem Kaffee aufzuwachen"
-}
-test_profile3 = {
-    "smoker": "yes",
-    "height": 187,
-    "age": 20,
-    "religion": "ev",
-    "sunday morning": "wenn ich mit einem Kaffee geweckt werden :)"
-}
-
-# test = SimilarityMeasure(test_profile1, test_profile2)
-# print(f"Ähnlichkeitsmaß: {test.get_similarity_measure()}")
 

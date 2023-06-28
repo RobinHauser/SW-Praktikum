@@ -27,10 +27,10 @@ class Profile(BusinessObject):
         return "Profile: {}, owned by {}, is a personal profile: {}".format(self.get_id(), self.get_user_id(), self.get_is_personal())
 
     @staticmethod
-    def from_dict(dict): #todo default wert setzen
+    def from_dict(dict = dict() ):
         pro = Profile()
         pro.set_id(dict["id"])
-        pro.set_user_id(dict["UserID"])
-        pro.set_is_personal(dict["isPersonal"])
+        # pro.set_user_id(dict["UserID"])
+        # pro.set_is_personal(dict["isPersonal"])
         return pro
-
+        # We did not use the setters of user_id and is_personal for a convenient payload handling in the POST information interface
