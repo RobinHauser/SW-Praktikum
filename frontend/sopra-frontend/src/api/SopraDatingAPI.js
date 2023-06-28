@@ -27,6 +27,18 @@ export default class SopraDatingAPI {
     // Local http-fake-backend
     //#SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
+    #token = document.cookie.split("; ").find((row) => row.startsWith("token="))?.split("=")[1];
+
+
+    // Inspired by: https://www.w3schools.blog/get-cookie-by-name-javascript-js
+    #getCookie(cookieName) {
+         let cookie = {};
+        document.cookie.split(';').forEach(function(el) {
+         let [key,value] = el.split('=');
+            cookie[key.trim()] = value;
+        })
+        return cookie[cookieName];
+        }
 
     // User related
     #getAllUsersURL = () => {
@@ -274,7 +286,13 @@ export default class SopraDatingAPI {
     }
 
     getBookmarklist(userID) {
-        return this.#fetchAdvanced(this.#getBookmarklistURL(userID))
+        return this.#fetchAdvanced(this.#getBookmarklistURL(userID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 // console.log(blocklistBOs)
@@ -318,15 +336,22 @@ export default class SopraDatingAPI {
     }
 
     getBlocklist(userID) {
-        return this.#fetchAdvanced(this.#getBlocklistURL(userID))
-            .then((responseJSON) => {
-                let userBOs = UserBO.fromJSON(responseJSON);
-                // console.log(blocklistBOs)
-                return new Promise(function (resolve) {
-                    resolve(userBOs)
-                })
-            })
-    }
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': `${this.#getCookie('token')}`
+        }
+    };
+
+    return this.#fetchAdvanced(this.#getBlocklistURL(userID), requestOptions)
+        .then((responseJSON) => {
+            let userBOs = UserBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(userBOs);
+            });
+        });
+}
 
     removeUserFromBlocklist(userID, userBO) {
         return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(userID), {
