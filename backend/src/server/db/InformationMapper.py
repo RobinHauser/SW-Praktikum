@@ -252,10 +252,11 @@ class InformationMapper(Mapper):
                 prop_tuple = cursor.fetchone()
                 prop = prop_tuple[1]
                 is_select = prop_tuple[2]
+                prop_description = prop_tuple[3]
 
-                # Creating a json containing all the important content of an information
                 if content:
-                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}", "isSelection": "{is_select}"}}'
+                    jsstr = f'{{"valueID": "{content[0]}", "value": "{content[1]}", "property": "{prop}", "isSelect": "{is_select}", "propDescription": "{prop_description}",' \
+                            f' "propID": "{prop_id}", "informationID": "{information[0]}"}}'
                     content_json = json.loads(jsstr)
 
         self._cnx.commit()

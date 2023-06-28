@@ -48,7 +48,9 @@ class PropertySelectMenuItem extends Component {
             this.setState({openDialogSelect: false});
         }
     }
-
+    handleOpenDialogSelect() {
+        this.setState({openDialogSelect: true});
+    }
     /**
      * handles the dialog button click for component InfoSelectDialog
      * triggers the handleCloseDialogInfo function

@@ -835,7 +835,8 @@ export default class SopraDatingAPI {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(valueBo)
         }).then((responseJSON) => {
