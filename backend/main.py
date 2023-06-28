@@ -305,7 +305,8 @@ class Message_api(Resource):
 
 @personal_profile_namespace.route('/personal_profiles')
 @personal_profile_namespace.response(500, 'Something bad happend in the backend.')
-@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(401,
+                                     'The user is unauthorized to perform this request. Set a valid token to go on.')
 @personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfileList_api(Resource):
     @secured
@@ -322,7 +323,8 @@ class PersonalProfileList_api(Resource):
 
 @personal_profile_namespace.route('/sorted/<int:id>')
 @personal_profile_namespace.response(500, 'Something bad happend in the backend.')
-@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(401,
+                                     'The user is unauthorized to perform this request. Set a valid token to go on.')
 @personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfileSimilarity_api(Resource):
     @secured
@@ -342,10 +344,10 @@ class PersonalProfileSimilarity_api(Resource):
             return '', 500
 
 
-
 @personal_profile_namespace.route('/<int:id>')
 @personal_profile_namespace.response(500, 'Something bad happend in the backend.')
-@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(401,
+                                     'The user is unauthorized to perform this request. Set a valid token to go on.')
 @personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfile_api(Resource):
     @secured
@@ -376,7 +378,8 @@ class PersonalProfile_api(Resource):
 
 @personal_profile_namespace.route('/by_user/<int:id>')
 @personal_profile_namespace.response(500, 'Something bad happend in the backend.')
-@personal_profile_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@personal_profile_namespace.response(401,
+                                     'The user is unauthorized to perform this request. Set a valid token to go on.')
 @personal_profile_namespace.response(200, 'The request was ok')
 class PersonalProfileByUser_api(Resource):
     @secured
@@ -471,7 +474,8 @@ class SearchProfile_api(Resource):
 
 @selection_property_namespace.route('/<int:id>')
 @selection_property_namespace.response(500, 'Something bad happend in the backend.')
-@selection_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@selection_property_namespace.response(401,
+                                       'The user is unauthorized to perform this request. Set a valid token to go on.')
 @selection_property_namespace.response(200, 'The request was ok')
 class SelectionProperty_api(Resource):
     @secured
@@ -521,7 +525,8 @@ class SelectionProperty_api(Resource):
 
 @selection_property_namespace.route('/selection_properties')
 @selection_property_namespace.response(500, 'Something bad happend in the backend.')
-@selection_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@selection_property_namespace.response(401,
+                                       'The user is unauthorized to perform this request. Set a valid token to go on.')
 @selection_property_namespace.response(200, 'The request was ok')
 class SelectionPropertyList_api(Resource):
     @secured
@@ -559,7 +564,8 @@ class SelectionPropertyList_api(Resource):
 
 @selection_property_namespace.route('/options/<int:id>')
 @selection_property_namespace.response(500, 'Something bad happend in the backend.')
-@selection_property_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
+@selection_property_namespace.response(401,
+                                       'The user is unauthorized to perform this request. Set a valid token to go on.')
 @selection_property_namespace.response(200, 'The request was ok')
 class SelectionPropertyOptions_api(Resource):
     @secured
@@ -797,7 +803,7 @@ class InformationList_api(Resource):
 @information_namespace.response(500, 'Something bad happend in the backend.')
 @information_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @information_namespace.response(200, 'The request was ok')
-class InformationContent_api(Resource):#
+class InformationContent_api(Resource):  #
     @secured
     def get(self, id):
         """
@@ -836,24 +842,20 @@ class Init_user_api(Resource):
 @user_namespace.response(401, 'The user is unauthorized to perform this request. Set a valid token to go on.')
 @user_namespace.response(200, 'The request was ok')
 class User_api(Resource):
-    """
-    HINT: The user_id 1000 returns all users
-    """
-
     @secured
     @user_namespace.marshal_list_with(user, code=200)
     def get(self, id):
         """
-        Get a specific user by user_id
-        :param user_id:
+        Get a specific user by user_id or if the user_id 1000 is given it will return a list of all users
+        :param user_id: --
         :return: the wanted user
         """
 
-        if id == 1000:
+        if id == 1000:  # Get all users
             adm = Administration()
             return adm.get_all_users()
 
-        else:
+        else:  # Get a specific user
             adm = Administration()
             return adm.get_user_by_id(id)
 
