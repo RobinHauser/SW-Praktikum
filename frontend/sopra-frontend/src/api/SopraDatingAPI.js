@@ -202,7 +202,13 @@ export default class SopraDatingAPI {
         )
 
     getAllUsers() {
-        return this.#fetchAdvanced(this.#getAllUsersURL())
+        return this.#fetchAdvanced(this.#getAllUsersURL(), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -212,7 +218,13 @@ export default class SopraDatingAPI {
     }
 
     getAllUsersFiltered(userID) {
-        return this.#fetchAdvanced(this.#getAllUsersFilteredURL(userID))
+        return this.#fetchAdvanced(this.#getAllUsersFilteredURL(userID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -222,7 +234,13 @@ export default class SopraDatingAPI {
     }
 
     getUser(email) {
-        return this.#fetchAdvanced(this.#getUserURL(email))
+        return this.#fetchAdvanced(this.#getUserURL(email), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -232,7 +250,13 @@ export default class SopraDatingAPI {
     }
 
     getUserbyId(id) {
-        return this.#fetchAdvanced(this.#getUserByIdURL(id))
+        return this.#fetchAdvanced(this.#getUserByIdURL(id), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -247,6 +271,7 @@ export default class SopraDatingAPI {
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(userBO)
         }).then((responseJSON) => {
@@ -275,6 +300,7 @@ export default class SopraDatingAPI {
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(userBO)
         }).then((responseJSON) => {
@@ -290,7 +316,7 @@ export default class SopraDatingAPI {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'token': `${this.#getCookie('token')}`
+                'Token': `${this.#getCookie('token')}`
             }
         })
             .then((responseJSON) => {
@@ -308,6 +334,7 @@ export default class SopraDatingAPI {
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(userBO)
         }).then((responseJSON) => {
@@ -324,7 +351,8 @@ export default class SopraDatingAPI {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(userBO)
         }).then((responseJSON) => {
@@ -358,7 +386,8 @@ export default class SopraDatingAPI {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(userBO)
         }).then((responseJSON) => {
@@ -375,14 +404,21 @@ export default class SopraDatingAPI {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(partnerUserId)
         })
     }
 
     getUserChats(userID) {
-        return this.#fetchAdvanced(this.#getUserChatsURL(userID)).then((responseJSON) => {
+        return this.#fetchAdvanced(this.#getUserChatsURL(userID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        }).then((responseJSON) => {
             let chatBOs = ChatBO.fromJSON(responseJSON);
             console.log("chatBOS:", chatBOs)
             return new Promise(function (resolve) {
@@ -402,7 +438,8 @@ export default class SopraDatingAPI {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(messageBO)
         }).then((responseJSON) => {
@@ -414,7 +451,13 @@ export default class SopraDatingAPI {
     }
 
     getChatMessages(chatID) {
-        return this.#fetchAdvanced(this.#getChatMessagesURL(chatID))
+        return this.#fetchAdvanced(this.#getChatMessagesURL(chatID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let messageBOs = MessageBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -434,7 +477,13 @@ export default class SopraDatingAPI {
     }
 
     getProfile(userID) {
-        return this.#fetchAdvanced(this.#getProfileURL(userID))
+        return this.#fetchAdvanced(this.#getProfileURL(userID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let profileBOs = ProfileBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -444,7 +493,13 @@ export default class SopraDatingAPI {
     }
 
     getSearchProfile(searchprofileID) {
-        return this.#fetchAdvanced(this.#getSearchProfileURL(searchprofileID))
+        return this.#fetchAdvanced(this.#getSearchProfileURL(searchprofileID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let ProfileBOs = ProfileBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -454,7 +509,13 @@ export default class SopraDatingAPI {
     }
 
     getSearchProfiles(UserID) {
-        return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID))
+        return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 // console.log(responseJSON)
                 let SearchProfileBOs = ProfileBO.fromJSON(responseJSON);
@@ -469,7 +530,8 @@ export default class SopraDatingAPI {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
         })
     }
@@ -487,7 +549,12 @@ export default class SopraDatingAPI {
 
     deleteSearchProfile(profileID) {
         return this.#fetchAdvanced(this.#deleteSearchProfileURL(profileID), {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
         }).then((responseJSON) => {
             let ProfileBOs = ProfileBO.fromJSON(responseJSON)[0];
             return new Promise(function (resolve) {
@@ -497,7 +564,13 @@ export default class SopraDatingAPI {
     }
 
     getInformationsByProfile(profileID) {
-        return this.#fetchAdvanced(this.#getInformationsByProfileURL(profileID))
+        return this.#fetchAdvanced(this.#getInformationsByProfileURL(profileID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let informationBOs = InformationBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -511,7 +584,8 @@ export default class SopraDatingAPI {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(userBO)
         }).then((responseJSON) => {
@@ -523,7 +597,13 @@ export default class SopraDatingAPI {
     }
 
     getViewedlist(userID) {
-        return this.#fetchAdvanced(this.#getViewedlistURL(userID))
+        return this.#fetchAdvanced(this.#getViewedlistURL(userID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -533,7 +613,13 @@ export default class SopraDatingAPI {
     }
 
     getUsersSortedBySimilarityMeasure(searchprofileID) {
-        return this.#fetchAdvanced(this.#getUsersSortedBySimilarityMeasureURL(searchprofileID))
+        return this.#fetchAdvanced(this.#getUsersSortedBySimilarityMeasureURL(searchprofileID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -543,7 +629,13 @@ export default class SopraDatingAPI {
     }
 
     getAllSelectionValuesByPropertyID(propertyID) {
-        return this.#fetchAdvanced(this.#getAlleValuesFromPropertyByPropertyIdURL(propertyID))
+        return this.#fetchAdvanced(this.#getAlleValuesFromPropertyByPropertyIdURL(propertyID), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let informationBO = InformationBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -556,7 +648,8 @@ export default class SopraDatingAPI {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
         }).then((responseJSON) => {
             let userBOs = UserBO.fromJSON(responseJSON)[0];
@@ -572,7 +665,8 @@ export default class SopraDatingAPI {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(valueBo)
         }).then((responseJSON) => {
@@ -588,7 +682,8 @@ export default class SopraDatingAPI {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(valueBo)
         }).then((responseJSON) => {
@@ -604,7 +699,8 @@ export default class SopraDatingAPI {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
         }).then((responseJSON) => {
             let informationBo = InformationBO.fromJSON(responseJSON)[0];
@@ -619,7 +715,8 @@ export default class SopraDatingAPI {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
         }).then((responseJSON) => {
             let informationBo = InformationBO.fromJSON(responseJSON)[0];
@@ -634,7 +731,8 @@ export default class SopraDatingAPI {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(valueBo)
         }).then((responseJSON) => {
@@ -650,7 +748,8 @@ export default class SopraDatingAPI {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
         }).then((responseJSON) => {
             let informationBo = InformationBO.fromJSON(responseJSON)[0];
@@ -667,6 +766,7 @@ export default class SopraDatingAPI {
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(propertyBO)
         }).then((responseJSON) => {
@@ -678,7 +778,13 @@ export default class SopraDatingAPI {
     };
 
     getAllSelectionProperties() {
-        return this.#fetchAdvanced(this.#getAllSelectionPropertiesURL())
+        return this.#fetchAdvanced(this.#getAllSelectionPropertiesURL(), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let PropertyBOs = PropertyBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
@@ -694,6 +800,7 @@ export default class SopraDatingAPI {
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
             },
             body: JSON.stringify(propertyBO)
         }).then((responseJSON) => {
@@ -705,7 +812,13 @@ export default class SopraDatingAPI {
     };
 
     getAllFreeTextProperties() {
-        return this.#fetchAdvanced(this.#getAllFreeTextPropertiesURL())
+        return this.#fetchAdvanced(this.#getAllFreeTextPropertiesURL(), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            }
+        })
             .then((responseJSON) => {
                 let PropertyBOs = PropertyBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {

@@ -90,7 +90,7 @@ export default class BlockList extends React.Component {
                         ) : ( loading ? (
                              <>
                                     {Array.from(Array(4)).map((_, index) => (
-                                            <Skeleton variant="rounded" animation="wave"
+                                            <Skeleton key={index} variant="rounded" animation="wave"
                                                       height={45} sx={{marginBottom: "5px"}}/>
                                     ))}
                                 </>
