@@ -30,7 +30,7 @@ class Profile(BusinessObject):
     def from_dict(dict): #todo default wert setzen
         pro = Profile()
         pro.set_id(dict["id"])
-        pro.set_user_id(dict["UserID"])
-        pro.set_is_personal(dict["isPersonal"])
+        # pro.set_user_id(dict["UserID"])
+        # pro.set_is_personal(dict["isPersonal"])
         return pro
 

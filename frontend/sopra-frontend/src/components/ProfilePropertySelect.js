@@ -135,7 +135,9 @@ class ProfilePropertySelect extends Component {
             InformationsBoId,
             InformationsBoPropId,
             InformationsBoPropDescr,
-            InformationsBoInfoId
+            InformationsBoInfoId,
+            InformationsBoIsSelection,
+            UserId
         } = this.props;
         const {openDialogSelect, properties, newProperty, isAddingNewProperty} = this.state;
         return (
@@ -183,6 +185,8 @@ class ProfilePropertySelect extends Component {
                     InformationsBoPropId={InformationsBoPropId}
                     InformationsBoPropDescr={InformationsBoPropDescr}
                     InformationsBoInfoId={InformationsBoInfoId}
+                    UserId={UserId}
+                    InformationsBoIsSelection={InformationsBoIsSelection}
                 />
             </div>
         );

@@ -5,7 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import {CircularProgress, ListItem, ListItemText} from "@mui/material";
+import {CircularProgress, LinearProgress, ListItem, ListItemText} from "@mui/material";
 import List from "@mui/material/List";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -24,7 +24,7 @@ class InfoSelectDialog extends Component {
             propertiesList: null,
             deletingInProgress: null,
             deletingError: null,
-            textFieldContent: ""
+            textFieldContent: "",
         };
     }
 
@@ -33,10 +33,20 @@ class InfoSelectDialog extends Component {
      * @param {int} valueId - id of the current value
      */
     updateValueInInformationButton = (valueId) => {
-        let valueBo = {
-            "valueID": `${valueId}`,
+        if (this.props.InformationsBoInfoId === null || typeof this.props.InformationsBoInfoId === 'undefined') {
+            const valueBo = {
+                "id": `${this.props.profileId}`,
+            }
+            console.log(valueBo)
+            this.addNewInformationObject(valueId, valueBo)
+
+        } else {
+            console.log(this.props.InformationsBoInfoId)
+            const valueBo = {
+                "valueID": `${valueId}`,
+            }
+            this.updateInformation(this.props.InformationsBoInfoId, valueBo)
         }
-        this.updateInformation(this.props.InformationsBoInfoId, valueBo)
     }
     /**
      * updates the current information object with a new value
@@ -49,6 +59,20 @@ class InfoSelectDialog extends Component {
                 this.setState({
                     error: null
                 })
+                alert("Die Information wurde erfolgreich aktualisiert")
+            }).catch(e =>
+            this.setState({
+                error: e
+            })
+        )
+    }
+    addNewInformationObject = (valueId, valueBo) => {
+        SopraDatingAPI.getAPI().addNewInformationObjectToProile(valueId, valueBo)
+            .then(responseJSON => {
+                this.setState({
+                    error: null
+                })
+                alert("Die Information wurde erfolgreich zum Profil hinzugefügt")
             }).catch(e =>
             this.setState({
                 error: e
@@ -145,11 +169,13 @@ class InfoSelectDialog extends Component {
     }
 
     /**
-     * Called after the component did mount.
-     * It retrieves the selection values of the current property object
+     * Called after the component did update.
+     * It retrieves the selection values of the current property object but only when the dialog opens
      */
-    componentDidMount() {
-        this.getSelectionValues()
+    componentDidUpdate() {
+        if (this.props.openDialogSelect) {
+            this.getSelectionValues();
+        }
     }
 
     /**
@@ -168,7 +194,7 @@ class InfoSelectDialog extends Component {
         } = this.props;
         const {propertiesList} = this.state
         if (!propertiesList) {
-            return (<CircularProgress></CircularProgress>)
+            //return (<LinearProgress></LinearProgress>)
         } else {
             return (
                 <div>

@@ -153,14 +153,16 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/selection-property/selection_properties`;
     }
 
-     #addFreeTextPropertyURL = () => {
+    #addFreeTextPropertyURL = () => {
         return `${this.#SopraDatingServerBaseURL}/text-property/text_properties`;
     }
 
     #getAllFreeTextPropertiesURL = () => {
         return `${this.#SopraDatingServerBaseURL}/text-property/text_properties`;
     }
-
+    #addNewInformationToProfileURL = (valueId) => {
+        return `${this.#SopraDatingServerBaseURL}/information/${valueId}`
+    }
 
 
     /**
@@ -526,6 +528,7 @@ export default class SopraDatingAPI {
                 })
             })
     }
+
     deleteSelectionValueItem(valueId) {
         return this.#fetchAdvanced(this.#deleteSelectionValueItemURL(valueId), {
             method: 'DELETE',
@@ -688,4 +691,20 @@ export default class SopraDatingAPI {
                 })
             })
     };
+
+    addNewInformationObjectToProile(valueId, valueBo) {
+        return this.#fetchAdvanced(this.#addNewInformationToProfileURL(valueId), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(valueBo)
+        }).then((responseJSON) => {
+            let ProfileBo = ProfileBO.fromJSON(responseJSON)[0];
+            return new Promise(function (resolve) {
+                resolve(ProfileBo)
+            })
+        })
+    }
 }

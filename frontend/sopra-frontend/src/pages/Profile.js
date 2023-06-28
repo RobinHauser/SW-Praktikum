@@ -24,6 +24,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import CachedIcon from "@mui/icons-material/Cached";
+import PropertySelectMenuItem from "../components/PropertySelectMenuItem";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -184,18 +185,18 @@ class Profile extends Component {
     }
 
     isFormValidSelect() {
-    return (
-        this.state.PropertySelectionNameText.trim() !== '' &&
-        this.state.PropertySelectionDescriptionText.trim() !== ''
-    );
-}
+        return (
+            this.state.PropertySelectionNameText.trim() !== '' &&
+            this.state.PropertySelectionDescriptionText.trim() !== ''
+        );
+    }
 
     isFormValidFreeText() {
-    return (
-        this.state.PropertyFreeTextNameText.trim() !== '' &&
-        this.state.PropertyFreeTextDescriptionText.trim() !== ''
-    );
-}
+        return (
+            this.state.PropertyFreeTextNameText.trim() !== '' &&
+            this.state.PropertyFreeTextDescriptionText.trim() !== ''
+        );
+    }
 
     buttonAddFreeTextProperty() {
         const name = this.state.PropertyFreeTextNameText
@@ -287,7 +288,6 @@ class Profile extends Component {
     handleOpenDialogSelect() {
         this.setState({openDialogSelect: true});
     }
-
 
 
     handleCloseDialogInfo() {
@@ -446,6 +446,7 @@ class Profile extends Component {
                                 informations.map((InformationsBo, index) => (
                                     parseInt(InformationsBo.getIsSelect()) === 1 ? (
                                         <ProfilePropertySelect Key={index}
+                                                               UserId={this.props.user.getUserID()}
                                                                InformationsBoValue={InformationsBo.getValue()}
                                                                InformationsBoProp={InformationsBo.getProperty()}
                                                                InformationsBoId={InformationsBo.getValueID()}
@@ -506,13 +507,13 @@ class Profile extends Component {
                                 >
                                     {globalPropertiesSelect.length > 0 ? (
                                         this.state.globalPropertiesSelect.map((globalPropertyItemSelect) => (
-                                            <MenuItem
-                                                key={globalPropertyItemSelect.getPropertyID()}
-                                                onClick={this.handleGlobalPropertiesItemClickSelect}
-                                                sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
-                                            >
-                                                {globalPropertyItemSelect.getPropertyName()}
-                                            </MenuItem>
+                                            <PropertySelectMenuItem
+                                                InformationsBoProp={globalPropertyItemSelect.getPropertyName()}
+                                                InformationsBoPropId={globalPropertyItemSelect.getPropertyID()}
+                                                InformationsBoPropDescr={globalPropertyItemSelect.getPropertyDescription()}
+                                                UserId={this.props.user.getUserID()}
+                                                InformationsBoIsSelection={globalPropertyItemSelect.getIsSelection()}
+                                                profileId={this.state.personalProfile.getProfileID()}></PropertySelectMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>
                                     )
@@ -553,7 +554,7 @@ class Profile extends Component {
                                     open={openFreeText}
                                     onClose={this.handleCloseGlobalPropertiesFreeText}
                                 >
-                                     {globalPropertiesFreeText.length > 0 ? (
+                                    {globalPropertiesFreeText.length > 0 ? (
                                         this.state.globalPropertiesFreeText.map((globalPropertyItemFreeText) => (
                                             <MenuItem
                                                 key={globalPropertyItemFreeText.getPropertyID()}
@@ -597,7 +598,8 @@ class Profile extends Component {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
-                                <Button onClick={this.addSelectionPropertyClickHandler} disabled={!this.isFormValidSelect()}>Anlegen</Button>
+                                <Button onClick={this.addSelectionPropertyClickHandler}
+                                        disabled={!this.isFormValidSelect()}>Anlegen</Button>
                             </DialogActions>
                         </Dialog>
 
@@ -645,7 +647,8 @@ class Profile extends Component {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.handleCloseDialogProp}>Abbrechen</Button>
-                                <Button onClick={this.addFreeTextPropertyClickHandler} disabled={!this.isFormValidFreeText()}>Anlegen</Button>
+                                <Button onClick={this.addFreeTextPropertyClickHandler}
+                                        disabled={!this.isFormValidFreeText()}>Anlegen</Button>
                             </DialogActions>
                         </Dialog>
 
