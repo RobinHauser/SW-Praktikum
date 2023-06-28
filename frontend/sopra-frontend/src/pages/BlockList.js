@@ -1,44 +1,48 @@
 import * as React from 'react';
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
-import {List, ListItem, ListItemText, ListSubheader} from "@mui/material";
+import {LinearProgress, List, ListItem, ListItemText, ListSubheader, Skeleton} from "@mui/material";
 import BlockListItem from "../components/BlockListItem";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Unstable_Grid2";
+import Box from "@mui/material/Box";
 
 /**
  * Shows the Blocklist with all Profiles, that are Blocked by the User
  *
  * @author [Michael Bergdolt]
  */
-export default class BlockList extends React.Component{
+export default class BlockList extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             blocklist: [],
-            error: null
+            error: null,
+            loading: true
         };
     }
 
     /**
      * Fetches the blocklist for the current user
      */
-    getBlocklist = () => {
-        SopraDatingAPI.getAPI().getBlocklist(this.props.user.getUserID())
-            .then(UserBOs => {
-                this.setState({
-                    blocklist: UserBOs,
-                    error: null
-                });
-            })
-            .catch(e => {
-                this.setState({
-                    blocklist: [],
-                    error: e
-                });
+    getBlocklist = async () => {
+        try {
+            this.setState({loading: true})
+            const UserBOs = await SopraDatingAPI.getAPI().getBlocklist(this.props.user.getUserID());
+            this.setState({
+                blocklist: UserBOs,
+                error: null,
+                loading: false
             });
+        } catch (e) {
+            this.setState({
+                blocklist: [],
+                error: e
+            });
+        }
     };
 
     componentDidMount() {
@@ -58,11 +62,14 @@ export default class BlockList extends React.Component{
 
 
     render() {
-        const { blocklist } = this.state;
+        const {blocklist, loading} = this.state;
 
         return (
             <div className="App">
                 <AppHeader avatar={this.props.avatar}></AppHeader>
+                {loading && (
+                    <LinearProgress sx={{marginTop: "10px"}}/>
+                )}
                 <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px'}}>
                     <List
                         sx={{width: '100%', maxWidth: 700}}
@@ -80,13 +87,20 @@ export default class BlockList extends React.Component{
                                     blockedUser={blocklistItem}
                                     onUserRemoved={this.removeUserHandler}/>
                             ))
+                        ) : ( loading ? (
+                             <>
+                                    {Array.from(Array(4)).map((_, index) => (
+                                            <Skeleton key={index} variant="rounded" animation="wave"
+                                                      height={45} sx={{marginBottom: "5px"}}/>
+                                    ))}
+                                </>
                         ) : (
                             <ListItem>
-                                <ListItemText sx={{ textAlign: 'center' }}>
+                                <ListItemText sx={{textAlign: 'center'}}>
                                     <Typography variant="body1">Keine Nutzer blockiert</Typography>
                                 </ListItemText>
                             </ListItem>
-                        )}
+                        ))}
                     </List>
                 </Container>
             </div>

@@ -2,8 +2,9 @@
 
 import json
 
-from backend.src.server.bo.Information import Information
-from backend.src.server.db.Mapper import Mapper
+from src.server.bo.Information import Information
+from src.server.db.Mapper import Mapper
+
 
 """
 This class manages operations on information objects. 
@@ -77,7 +78,7 @@ class InformationMapper(Mapper):
         if assignments:
             value_ids = [ass[0] for ass in assignments]
 
-            #Retrieve Information by ValueID
+            # Retrieve Information by ValueID
             command2 = "SELECT * FROM information WHERE ValueID IN ({})".format(
                 ','.join(str(v_id) for v_id in value_ids))
             cursor.execute(command2)
@@ -116,7 +117,6 @@ class InformationMapper(Mapper):
             info.set_value_id(value_id)
             result.append(info)
 
-
         self._cnx.commit()
         cursor.close()
 
@@ -135,12 +135,23 @@ class InformationMapper(Mapper):
 
         for maxid in tuples:
             if maxid[0] is not None:
-                if maxid[0]+1 > 6000:
-                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
+                if maxid[0] + 1 > 6000:
+                    raise ValueError(
+                        "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
                 else:
-                    info.set_id(maxid[0]+1)
+                    info.set_id(maxid[0] + 1)
             else:
                 info.set_id(5001)
+        #todo
+        command = f'SELECT * FROM information WHERE ProfileID={info.get_profile_id()}'
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for i in tuples:
+            v1 = i[2]
+
+            if v1 == info.get_value_id():
+                return info
 
         command = "INSERT INTO information (InformationID, ProfileID, ValueID) VALUES (%s,%s,%s)"
         data = (info.get_id(), info.get_profile_id(), info.get_value_id())

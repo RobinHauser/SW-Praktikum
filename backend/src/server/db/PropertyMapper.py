@@ -1,5 +1,5 @@
-from backend.src.server.bo.Property import Property
-from backend.src.server.db.Mapper import Mapper
+from src.server.bo.Property import Property
+from src.server.db.Mapper import Mapper
 
 """
 This entire mapper class was designed to manage properties. However, the separation of the two property types

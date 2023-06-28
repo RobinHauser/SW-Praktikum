@@ -1,8 +1,8 @@
-from backend.src.server.bo.Profile import Profile
-from backend.src.server.bo.User import User
-from backend.src.server.db.InformationMapper import InformationMapper
-from backend.src.server.db.Mapper import Mapper
-from backend.src.server.db.ProfileMapper import ProfileMapper
+from src.server.bo.Profile import Profile
+from src.server.bo.User import User
+from src.server.db.InformationMapper import InformationMapper
+from src.server.db.Mapper import Mapper
+from src.server.db.ProfileMapper import ProfileMapper
 
 
 class UserMapper(Mapper):
@@ -44,6 +44,11 @@ class UserMapper(Mapper):
         return result
 
     def find_all_by_id(self, id):
+        """
+        Returns a list of all other users a user(with a user_id) has blocked
+        :param user_id: the unique id of the user
+        :return: a sorted list of users
+        """
         result = []
         cursor = self._cnx.cursor()
         command = f'SELECT * FROM user'
@@ -64,43 +69,36 @@ class UserMapper(Mapper):
             except IndexError:
                 result = None
 
+        for user in result:
+            if int(user.get_user_id()) == int(id):
+                result.remove(user)
 
-        for i in result:
-            if int(i.get_user_id()) == int(id):
-                result.remove(i)
-
-        print(result)
-
-        for j in result:
-            command3 = f'SELECT * FROM blocklist WHERE UserID={j.get_user_id()}' #Iteriert durch alle Blocklists der User
+        for blocklist in result:
+            command3 = f'SELECT * FROM blocklist WHERE UserID={blocklist.get_user_id()}' # Iterates of all Users
             cursor.execute(command3)
             v3 = cursor.fetchall()
 
-            if len(v3) is not 0:
-                command4 = f'SELECT * FROM block WHERE BlocklistID= {v3[0][0]} AND BlockedUserID = {id}' #Prüft ob User mit id=id Blockiert ist
+            if len(v3) != 0:
+                command4 = f'SELECT * FROM block WHERE BlocklistID= {v3[0][0]} AND BlockedUserID = {id}' # Check if unique user is blocked by someone
                 cursor.execute(command4)
                 v4 = cursor.fetchall()
                 if len(v4) is not 0:
-                    for i in v4:
-                        result.remove(j)      # Entfernt User wenn Blockiert
+                    for user in v4:
+                        result.remove(blocklist)      # Removes user from result if blocked
 
-        command = f'SELECT * FROM blocklist WHERE UserID={id}'  #Holt sich Blocklist des Users, wo UserID = id
+        command = f'SELECT * FROM blocklist WHERE UserID={id}'  # Get blocklist of unique user
         cursor.execute(command)
         v = cursor.fetchall()
-
-        command2 = f'SELECT * FROM block WHERE BlocklistID= {v[0][0]}'      #Prüft wen User mit id=id blockiert hat
-        cursor.execute(command2)
-        v2 = cursor.fetchall()
-        if len(v2) is not 0:
-            result1 = result.copy()
-            for i in result1:
-                print(i.get_user_id())
-                for j in v2:
-                    print(j[2])
-                    if int(i.get_user_id()) == int(j[2]):
-                        result.remove(i)                            #Entfernt User aus Liste, wenn er blockiert wurde
-
-        print(result)
+        if v:
+            command2 = f'SELECT * FROM block WHERE BlocklistID= {v[0][0]}'      # Check which users are blocked by unique user
+            cursor.execute(command2)
+            v2 = cursor.fetchall()
+            if len(v2) is not 0:
+                result1 = result.copy()
+                for user in result1:
+                    for blocklist in v2:
+                        if int(user.get_user_id()) == int(blocklist[2]):
+                            result.remove(user)                            # Removes all blocked users of unique user from result
 
         self._cnx.commit()
         cursor.close()
@@ -149,7 +147,7 @@ class UserMapper(Mapper):
         :return: the found user
         """
         cursor = self._cnx.cursor()
-        command = f'SELECT * FROM user WHERE Email = "{email}"'
+        command = f"SELECT * FROM user WHERE Email = '{email}'"
         cursor.execute(command)
         tuples = cursor.fetchone()
 

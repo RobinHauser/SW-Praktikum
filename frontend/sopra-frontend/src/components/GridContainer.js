@@ -6,118 +6,112 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {ListItem, ListItemText, Switch} from "@mui/material";
+import {LinearProgress, ListItem, ListItemText, Skeleton, Switch} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Tooltip from "@mui/material/Tooltip";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Typography from "@mui/material/Typography";
-import UserBO from "../api/UserBO";
 
-export default class GridContainer extends React.Component{
+export default class GridContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             anchorEl: null,
             selectedSearchprofile: null,
-            searchprofiles: ["Suchprofil 1", "Suchprofil 2", "Suchprofil 3"],
+            searchprofiles: [],
             userList: [],
             showOnlyNewUser: true,
             viewedList: [],
             user: null,
-            blocklist: []
+            blocklist: [],
+            error: null,
+            loading: false
         };
     }
 
+    /**
+     * Lifecycle method, which is called when the component gets inserted into the browsers DOM.
+     *
+     * Loads all Users which are not blocked or blocked the current user
+     * Sets the user in the state
+     */
     async componentDidMount() {
-        // Fetch the initial user list based on the search profile
-        await this.props.onUserLogin().then(user => {
-            this.setState({
-                user: user
-            })
-        })
-        this.getAllUsers()
+        try {
+            const user = await this.props.onUserLogin();
+            this.setState({user});
+            await this.getAllUsers(user);
+            await this.getSearchProfiles(user);
+        } catch (error) {
+            console.log(error)
+        }
     }
-
-getBlocklist = async () => {
-    try {
-        const UserBOs = await SopraDatingAPI.getAPI().getBlocklist(this.state.user.getUserID());
-        return UserBOs;
-    } catch (e) {
-        console.log(e);
-        return [];
-    }
-};
-
-getAllUsers = async () => {
-    try {
-        let userBOs = await SopraDatingAPI.getAPI().getAllUsers();
-        SopraDatingAPI.getAPI().getAllUsersFiltered(this.state.user.getUserID()).then((userBOs) => {
-            this.setState({
-                userList: userBOs
-            })
-        })
-    } catch (error) {
-        console.log(error);
-        this.setState({
-            userList: []
-        });
-    }
-};
 
     /**
-     * Fetches the user list based on the selected search profile ID
+     * Fetches all Users to display for the current user
      *
-     * @param {number} searchProfileID - The ID of the selected search profile
-     * @returns {Promise} A promise that resolves when the user list is fetched successfully
+     * @param {UserBO} user
      */
-    getUserListBySearchprofile = (searchProfileID) => {
-        return new Promise((resolve, reject) => {
-            // Call the API to get the user list based on the search profile
-            SopraDatingAPI.getAPI()
-                .getUserListBySearchprofile(searchProfileID)
-                .then(UserBOs => {
-                    // Update the user list state
-                    this.setState({
-                        userList: UserBOs
-                    });
-                    resolve();
-                })
-                .catch(e => {
-                    // In case of an error, reset the user list state
-                    this.setState({
-                        userList: []
-                    });
-                    reject(e);
-                });
-        });
+    getAllUsers = async (user) => {
+        try {
+            this.setState({loading: true})
+            const userBOs = await SopraDatingAPI.getAPI().getAllUsersFiltered(user.getUserID());
+            this.setState({userList: userBOs, loading: false});
+        } catch (error) {
+            this.setState({userList: [], loading: false});
+        }
     };
 
     /**
-     * Fetches the viewed user list for the current user
+     * Fetches all Searchprofiles of the user
      *
-     * @returns {Promise} A promise that resolves when the viewed user list is fetched successfully
+     * @param {UserBO} user
      */
-    getViewedlist = () => {
-        return new Promise((resolve, reject) => {
-            // Call the API to get the viewed user list for the current user
-            SopraDatingAPI.getAPI()
-                .getViewedlist(this.props.user.getUserID())
-                .then(UserBOs => {
-                    // Update the viewed user list state
-                    this.setState({
-                        viewedList: UserBOs
-                    });
-                resolve();
-            })
-            .catch(e => {
-                // In case of an error, reset the viewed user list state
-                this.setState({
-                    viewedList: []
-                });
-                reject(e);
+    getSearchProfiles = async (user) => {
+        try {
+            this.setState({loading: true})
+            const searchProfileBOs = await SopraDatingAPI.getAPI().getSearchProfiles(user.getUserID());
+            this.setState({searchprofiles: searchProfileBOs, error: null, loading: false});
+        } catch (error) {
+            this.setState({searchprofiles: [], error, loading: false});
+        }
+    };
+
+    /**
+     * Fetches all users of the searchprofile selected by the user
+     *
+     * @param {int} searchprofileID
+     */
+    getUsersSortedBySimilarityMeasure = async (searchprofileID) => {
+        try {
+            this.setState({loading: true})
+            const UserBOs = await SopraDatingAPI.getAPI().getUsersSortedBySimilarityMeasure(searchprofileID);
+            this.setState({userList: UserBOs, error: null, loading: false});
+        } catch (error) {
+            this.setState({userList: [], error, loading: false});
+        }
+    };
+
+    /**
+     * Fetches the list to display if the current user only want to see new Profiles
+     *
+     * @param {int} id - can be the UserID if no Searchprofile is selected or can be a SearchprofileID
+     */
+    getViewedlist = async (id) => {
+        try {
+            this.setState({loading: true})
+            const userList = await SopraDatingAPI.getAPI().getViewedlist(id);
+            this.setState({
+                userList: userList,
+                error: null,
+                loading: false
             });
-        });
+        } catch (error) {
+            this.setState({
+                userList: [],
+                error: error
+            });
+        }
     };
 
     /**
@@ -127,7 +121,7 @@ getAllUsers = async () => {
      */
     handleSearchProfileMenuClick = (event) => {
         // Set the anchor element for the search profile menu
-        this.setState({ anchorEl: event.currentTarget });
+        this.setState({anchorEl: event.currentTarget});
     };
 
     /**
@@ -135,44 +129,64 @@ getAllUsers = async () => {
      */
     handleCloseSearchprofile = () => {
         // Close the search profile menu
-        this.setState({ anchorEl: null });
+        this.setState({anchorEl: null});
     };
 
-     /**
-      * Handles the click event on a search profile item in the menu
-      *
-      * @param {string} searchprofile - The selected search profile
-      */
+    /**
+     * Handles the click event on a search profile item in the menu
+     *
+     * checks if the user only want to see new other user. Fetches based on that
+     * @param {string} searchprofile - The selected search profile
+     */
     handleSearchprofileItemClick = (searchprofile) => {
         // Set the selected search profile and close the menu
-        this.setState({ selectedSearchprofile: searchprofile, anchorEl: null });
+        this.setState({selectedSearchprofile: searchprofile})
+        if (!this.state.showOnlyNewUser) {
+            this.getViewedlist(searchprofile.getProfileID())
+        } else {
+            this.getUsersSortedBySimilarityMeasure(searchprofile.getProfileID())
+        }
+        this.handleCloseSearchprofile()
+    };
+
+    /**
+     * Handles the click event on "no Selection" in the list
+     *
+     * checks if the user only want to see new other user. Fetches based on that
+     */
+    handleNoSelectionClick = () => {
+        const {showOnlyNewUser, user} = this.state;
+        // Set the selected search profile and close the menu
+        this.setState({selectedSearchprofile: null})
+        if (!showOnlyNewUser) {
+            this.getViewedlist(user.getUserID())
+        } else {
+            this.getAllUsers(user)
+        }
+        this.handleCloseSearchprofile();
     };
 
     /**
      * Toggles between showing only new users or all users based on the state
      * Updates the user list accordingly
      */
-    handleShowOnlyNewUser = async () => {
-         // Fetch the viewed user list and update the user list based on the showOnlyNewUser state
-        await this.getViewedlist(1); // Todo dynamisch einlesen
-        await this.getUserListBySearchprofile(1);
-        await this.getUserListBySearchprofile(1);
+    handleShowOnlyNewUser = () => {
+        const {showOnlyNewUser, selectedSearchprofile, user} = this.state;
+        this.setState({showOnlyNewUser: !showOnlyNewUser});
 
-        const {userList, viewedList, showOnlyNewUser} = this.state
-
-        // If the viewedList is not empty, filter the nonViewedList based on the viewedUsers
-        let nonViewedList = userList;
-        if(viewedList.length > 0) {
-            nonViewedList = userList.filter(user =>
-                viewedList.some(viewedUser => user.getUserID() !== viewedUser.getUserID())
-            )
+        if (showOnlyNewUser) {
+            if (selectedSearchprofile === null) {
+                this.getViewedlist(user.getUserID())
+            } else {
+                this.getViewedlist(selectedSearchprofile.getProfileID())
+            }
+        } else {
+            if (selectedSearchprofile === null) {
+                this.getAllUsers(user)
+            } else {
+                this.getUsersSortedBySimilarityMeasure(selectedSearchprofile.getProfileID())
+            }
         }
-
-        // Toggle the showOnlyNewUser state and update the user list accordingly
-        this.setState(() => ({
-            showOnlyNewUser: !showOnlyNewUser,
-            userList: showOnlyNewUser ? nonViewedList : userList
-        }));
     };
 
     /**
@@ -188,11 +202,14 @@ getAllUsers = async () => {
     };
 
     render() {
-        const { anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList } = this.state;
+        const {anchorEl, selectedSearchprofile, searchprofiles, showOnlyNewUser, userList, user, loading} = this.state;
         const open = Boolean(anchorEl);
 
         return (
             <Box>
+                {loading && (
+                    <LinearProgress sx={{marginBottom: "10px"}}/>
+                )}
                 <Box display="flex" justifyContent="space-between">
                     <Tooltip title={"Suchprofil nach dem gefiltert werden soll"}>
                         <Button
@@ -200,9 +217,9 @@ getAllUsers = async () => {
                             aria-haspopup="true"
                             onClick={this.handleSearchProfileMenuClick}
                             variant="contained"
-                            endIcon={<ArrowDropDownIcon />}
+                            endIcon={<ArrowDropDownIcon/>}
                         >
-                            {selectedSearchprofile ? selectedSearchprofile : 'Suchprofile'}
+                            {selectedSearchprofile ? `Suchprofil ${selectedSearchprofile.getProfileID()}` : 'Keine Auswahl'}
                         </Button>
                     </Tooltip>
                     <Menu
@@ -212,22 +229,23 @@ getAllUsers = async () => {
                         onClose={this.handleCloseSearchprofile}
                     >
                         <MenuItem
-                            onClick = {() => this.handleSearchprofileItemClick("Keine Auswahl")}
-                            sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
+                            onClick={() => this.handleNoSelectionClick()}
+                            sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
                         >
                             Keine Auswahl
                         </MenuItem>
                         {searchprofiles.map((searchprofileItem) => (
                             <MenuItem
-                                onClick = {() => this.handleSearchprofileItemClick(searchprofileItem)}
-                                sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }}
-                                key={1} // Todo key dynamisch einlesen
+                                onClick={() => this.handleSearchprofileItemClick(searchprofileItem)}
+                                sx={{"&:hover": {backgroundColor: "#c6e2ff"}}}
+                                key={searchprofileItem.getProfileID()}
                             >
-                                {searchprofileItem}
+                                {`Suchprofil: ${searchprofileItem.getProfileID()}`}
                             </MenuItem>
                         ))}
                     </Menu>
-                    <Tooltip title={ showOnlyNewUser ? "nur noch nicht angesehene Nutzer anzeigen" : "alle Nutzer anzeigen" }>
+                    <Tooltip
+                        title={showOnlyNewUser ? "nur noch nicht angesehene Nutzer anzeigen" : "alle Nutzer anzeigen"}>
                         <Switch
                             onChange={this.handleShowOnlyNewUser}
                             color="primary"
@@ -245,7 +263,7 @@ getAllUsers = async () => {
                                 },
                             }}
                             icon={<VisibilityIcon/>}
-                            checkedIcon={<VisibilityOffIcon />}
+                            checkedIcon={<VisibilityOffIcon/>}
                         />
                     </Tooltip>
                 </Box>
@@ -259,19 +277,46 @@ getAllUsers = async () => {
                             <Grid xs={4} sm={4} md={4} key={userListItem.getUserID()}>
                                 <ProfileCard
                                     key={userListItem.getUserID()}
-                                    user={this.state.user}
+                                    user={user}
                                     showedUser={userListItem}
                                     showOnlyNewUser={showOnlyNewUser}
                                     onUserRemoved={this.handleRemoveUser}>
                                 </ProfileCard>
                             </Grid>
                         ))
+                    ) : (loading ? (
+                            <>
+                                {Array.from(Array(9)).map((_, index) => (
+                                    <Grid xs={4} sm={4} md={4} key={index}>
+                                        <div>
+                                            <Box display="flex" justifyContent="center" alignItems="center"
+                                                 flexDirection="column" height="100%">
+                                                <Skeleton variant="circular" animation="wave" width={50}
+                                                          height={50} sx={{marginBottom: "10px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={40} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={20} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={20} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={20} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={20} sx={{marginBottom: "5px"}}/>
+                                                <Skeleton variant="rounded" animation="wave" width={300}
+                                                          height={30} sx={{marginBottom: "5px"}}/>
+                                            </Box>
+                                        </div>
+                                    </Grid>
+                                ))}
+                            </>
                         ) : (
                             <ListItem>
-                                <ListItemText sx={{ textAlign: 'center' }}>
+                                <ListItemText sx={{textAlign: 'center'}}>
                                     <Typography variant="body1">Keine anderen Nutzer vorhanden</Typography>
                                 </ListItemText>
                             </ListItem>
+                        )
                     )}
                 </Grid>
             </Box>

@@ -1,4 +1,4 @@
-from backend.src.server.bo.BusinessObject import BusinessObject
+from src.server.bo.BusinessObject import BusinessObject
 # from Property import Property
 # from TextProperty import TextProperty
 # from SelectionProperty import SelectionProperty
