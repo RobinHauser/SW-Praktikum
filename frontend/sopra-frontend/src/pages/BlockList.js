@@ -40,7 +40,8 @@ export default class BlockList extends React.Component {
         } catch (e) {
             this.setState({
                 blocklist: [],
-                error: e
+                error: e,
+                loading: false
             });
         }
     };
