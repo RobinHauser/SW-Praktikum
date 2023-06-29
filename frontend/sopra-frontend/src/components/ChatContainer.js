@@ -178,7 +178,7 @@ class ChatContainer extends Component {
         this.getMessageList(this.state.chatId)
         this.scrollToBottom()
         this.getUserBo()
-        await this.props.currentUserBo().then(user => {
+        await this.state.currentUserBo().then(user => {
             this.setState({
                 currentUserBo: user
             })
