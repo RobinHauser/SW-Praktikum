@@ -60,7 +60,8 @@ class Profile extends Component {
             PropertySelectionDescriptionText: '',
             PropertyFreeTextNameText: '',
             PropertyFreeTextDescriptionText: '',
-            successAlert: ""
+            successAlert: "",
+            warningAlert: ""
         };
 
         this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -167,15 +168,14 @@ class Profile extends Component {
     // Handler um eine neue Auswahl-Eigenschaft ins Backend zu schicken
     addSelectionPropertyClickHandler = () => {
         const {PropertySelectionNameText, PropertySelectionDescriptionText} = this.state;
-        this.setState({openSelectDialog: false, successAlert: "neue Auswahleigenschaft der Liste hinzugefügt"})
         this.addSelectionProperty({
             "name": PropertySelectionNameText,
             "description": PropertySelectionDescriptionText
         })
         this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
         setTimeout(() => {
-                this.setState({successAlert: ""})
-            }, 3000);
+            this.setState({successAlert: "", warningAlert: ""})
+        }, 3000);
     }
 
 
@@ -183,28 +183,31 @@ class Profile extends Component {
 
     addFreeTextPropertyClickHandler = () => {
         const {PropertyFreeTextNameText, PropertyFreeTextDescriptionText} = this.state;
-        this.setState({openFreeTextDialog: false, successAlert: "neue Freitext-Eigenschaft der Liste hinzugefügt"})
+        this.setState({openFreeTextDialog: false})
         this.addFreeTextProperty({
             "name": PropertyFreeTextNameText,
             "description": PropertyFreeTextDescriptionText
         })
         setTimeout(() => {
-                this.setState({successAlert: ""})
+                this.setState({successAlert: "", warningAlert: ""})
             }, 3000);
         this.setState({PropertyFreeTextNameText: '', PropertyFreeTextDescriptionText: ''})
     }
 
     addSelectionProperty = (propertyBO) => {
+        this.setState({openSelectDialog: false})
         SopraDatingAPI.getAPI().addSelectionProperty(propertyBO)
             .then(() => {
                 this.setState({
-                    error: null
+                    error: null,
+                    successAlert: "neue Auswahleigenschaft der Liste hinzugefügt"
                 });
                 this.getAllSelectionProperties()
             }).catch(e => {
-            this.setState({
-                error: e
-            });
+                this.setState({
+                    error: e,
+                    warningAlert: "Auswahleigenschaft existiert bereits"
+                });
         });
     };
 
@@ -212,12 +215,14 @@ class Profile extends Component {
         SopraDatingAPI.getAPI().addFreeTextProperty(propertyBO)
             .then(() => {
                 this.setState({
-                    error: null
+                    error: null,
+                    successAlert: "neue Freitext-Eigenschaft der Liste hinzugefügt"
                 });
                 this.getAllFreeTextProperties()
             }).catch(e => {
             this.setState({
-                error: e
+                error: e,
+                warningAlert: "Freitext-Eigenschaft existiert bereits"
             });
         });
     };
@@ -399,7 +404,8 @@ class Profile extends Component {
             anchorElSelect,
             anchorElFreeText,
             informations,
-            successAlert
+            successAlert,
+            warningAlert
         } = this.state;
         const openSelect = Boolean(anchorElSelect)
         const openFreeText = Boolean(anchorElFreeText)
@@ -626,6 +632,9 @@ class Profile extends Component {
                         />
                         {successAlert.length > 0 && (
                             <Alert severity="success">{successAlert}</Alert>
+                        )}
+                        {warningAlert.length > 0 && (
+                            <Alert severity="warning">{warningAlert}</Alert>
                         )}
                     </Container>
 
