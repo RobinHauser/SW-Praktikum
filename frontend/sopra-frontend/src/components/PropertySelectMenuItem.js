@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import MenuItem from "@mui/material/MenuItem";
 import InfoSelectDialog from "./InfoSelectDialog";
+import {Alert} from "@mui/material";
 
 class PropertySelectMenuItem extends Component {
     constructor(props) {
@@ -23,10 +24,10 @@ class PropertySelectMenuItem extends Component {
             loadingProgressUser: false,
             loadingProgressProfile: false,
             error: null,
+            warningAlert: ""
         };
         this.handleOpenDialogSelect = this.handleOpenDialogSelect.bind(this);
         this.handleCloseDialogInfo = this.handleCloseDialogInfo.bind(this);
-        this.handleListItemClick = this.handleListItemClick.bind(this);
         this.handleDeleteItemClick = this.handleDeleteItemClick.bind(this);
         this.handleAddItemClick = this.handleAddItemClick.bind(this);
         this.handleNewPropertyChange = this.handleNewPropertyChange.bind(this);
@@ -50,15 +51,6 @@ class PropertySelectMenuItem extends Component {
     }
     handleOpenDialogSelect() {
         this.setState({openDialogSelect: true});
-    }
-    /**
-     * handles the dialog button click for component InfoSelectDialog
-     * triggers the handleCloseDialogInfo function
-     * triggers the handleCloseDialogProp function
-     */
-    handleListItemClick(value) {
-        this.handleCloseDialogInfo(value);
-        this.handleCloseDialogProp();
     }
 
     /**
@@ -122,7 +114,6 @@ class PropertySelectMenuItem extends Component {
                 <InfoSelectDialog
                     openDialogSelect={openDialogSelect}
                     handleCloseDialogInfo={this.handleCloseDialogInfo}
-                    handleListItemClick={this.handleListItemClick}
                     handleDeleteItemClick={this.handleDeleteItemClick}
                     handleAddItemClick={this.handleAddItemClick}
                     properties={properties}
