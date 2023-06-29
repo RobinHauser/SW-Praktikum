@@ -38,6 +38,8 @@ class SimilarityMeasure:
             Finally, the similar word count is divided through the length of the shorter word list of phrases to get the
             similarity of the two phrases.
             """
+        search_str = str(search_str)
+        user_str = str(user_str)
         search_str = search_str.lower().split(" ")
         user_str = user_str.lower().split(" ")
         similar_words = 0
@@ -57,14 +59,23 @@ class SimilarityMeasure:
         Then calculate the mean value of all Properties to get the similarity measure
         """
         list_diff = []
+        flag = True
 
-        # checking if a property of an info of the search profile is also present in the personal profile we currently look at
         for prop in self.__search_profile:
+            # checking if a property of an info of the search profile is also present in the personal profile we currently look at
             if prop in self.__user_profile:
-                if (type(self.__search_profile[prop])) == str:
-                    list_diff.append(self.__get_string_sim(self.__search_profile[prop], self.__user_profile[prop]))
+                search = self.__search_profile[prop]
+                personal = self.__user_profile[prop]
+                # checking if the info could be an integer. if so, use the numeric comparison method.
+                try:
+                    search = int(search)
+                    personal = int(personal)
+                except ValueError:
+                    flag = False
+                if flag:
+                    list_diff.append(self.__get_num_sim(search, personal))
                 else:
-                    list_diff.append(self.__get_num_sim(self.__search_profile[prop], self.__user_profile[prop]))
+                    list_diff.append(self.__get_string_sim(search, personal))
                 # print(f"{i} Ähnlichkeitsmaß: {list_diff[-1]}")
             else:
                 list_diff.append(0)
