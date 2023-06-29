@@ -26,7 +26,6 @@ import CachedIcon from "@mui/icons-material/Cached";
 import PropertySelectMenuItem from "../components/PropertySelectMenuItem";
 import PropertyTextMenuItem from "../components/PropertyTextMenuItem";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {Link} from "react-router-dom";
 import {getAuth, signOut} from "firebase/auth";
 
 /**
@@ -123,14 +122,14 @@ class Profile extends Component {
     }
 
     /**
-     * Handles the dialog open for selection dialog
+     * Handles the dialog open for selection dialog to add a new selection property
      */
     handleOpenSelectDialog() {
         this.setState({openSelectDialog: true});
     }
 
     /**
-     * Handles the dialog open for free text dialog
+     * Handles the dialog open for free text dialog to add a new free text property
      */
     handleOpenFreeTextDialog() {
         this.setState({openFreeTextDialog: true});
@@ -156,24 +155,29 @@ class Profile extends Component {
      * Sets the current system user and gets the personal profile
      */
     async componentDidMount() {
-        const exampleProperties = ["Value 1", "Value 2", "Value 3"];
         this.getAllSelectionProperties()
         this.getAllFreeTextProperties()
-        this.setState({properties: exampleProperties});
         this.setState({
             currentUser: this.props.user
         })
         await this.getPersonalProfile()
     }
 
+    // Handler um eine neue Auswahl-Eigenschaft ins Backend zu schicken
     addSelectionPropertyClickHandler = () => {
         this.buttonAddSelectionProperty();
+        this.setState({
+                openSelectDialog: false
+    })}
 
-    }
+
+    // Handler um eine neue Freitext-Eigenschaft ins Backend zu schicken
 
     addFreeTextPropertyClickHandler = () => {
         this.buttonAddFreeTextProperty();
-    }
+        this.setState({
+                openFreeTextDialog: false
+    })}
 
     buttonAddSelectionProperty() {
         const name = this.state.PropertySelectionNameText
@@ -184,20 +188,6 @@ class Profile extends Component {
         }
         this.addSelectionProperty(propertyBO)
         this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
-    }
-
-    isFormValidSelect() {
-        return (
-            this.state.PropertySelectionNameText.trim() !== '' &&
-            this.state.PropertySelectionDescriptionText.trim() !== ''
-        );
-    }
-
-    isFormValidFreeText() {
-        return (
-            this.state.PropertyFreeTextNameText.trim() !== '' &&
-            this.state.PropertyFreeTextDescriptionText.trim() !== ''
-        );
     }
 
     buttonAddFreeTextProperty() {
@@ -238,6 +228,20 @@ class Profile extends Component {
             });
         });
     };
+
+    isFormValidSelect() {
+        return (
+            this.state.PropertySelectionNameText.trim() !== '' &&
+            this.state.PropertySelectionDescriptionText.trim() !== ''
+        );
+    }
+
+    isFormValidFreeText() {
+        return (
+            this.state.PropertyFreeTextNameText.trim() !== '' &&
+            this.state.PropertyFreeTextDescriptionText.trim() !== ''
+        );
+    }
 
     getAllSelectionProperties = () => {
         SopraDatingAPI.getAPI().getAllSelectionProperties()
