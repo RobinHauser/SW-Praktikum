@@ -325,13 +325,17 @@ class Administration():
     --------------------------------------------------------------------------------------------------------------
     """
     def create_text_property(self, name, description):
-        text_prop = TextProperty()
-        text_prop.set_name(name)
-        text_prop.set_is_selection(0)
-        text_prop.set_description(description)
+        present_prop = self.get_property_by_name(name)
+        if present_prop is None:
+            text_prop = TextProperty()
+            text_prop.set_name(name)
+            text_prop.set_is_selection(0)
+            text_prop.set_description(description)
 
-        with TextPropertyMapper() as mapper:
-            return mapper.insert(text_prop)
+            with TextPropertyMapper() as mapper:
+                return mapper.insert(text_prop)
+        else:
+            return TypeError
 
     def get_all_text_properties(self):
         with TextPropertyMapper() as mapper:

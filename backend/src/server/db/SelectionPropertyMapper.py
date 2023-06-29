@@ -256,14 +256,25 @@ class SelectionPropertyMapper(Mapper.Mapper):
             else:
                 max_id = 7001
 
+        # check if the selectable option is already there for this property
+        selections = self.retrieve_selections(sel_prop)
+        is_there = False
+        for selec in selections:
+            if payload.get('value') in selec["value"]:
+                is_there = True
+                break
+        if not is_there:
 
-        command2 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
-        data = (max_id, sel_prop.get_id())
-        cursor.execute(command2, data)
+            command2 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
+            data = (max_id, sel_prop.get_id())
+            cursor.execute(command2, data)
 
-        command = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
-        data = (max_id, payload.get('value'))
-        cursor.execute(command, data)
+            command = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
+            data = (max_id, payload.get('value'))
+            cursor.execute(command, data)
+
+        else:
+            return TypeError
 
         self._cnx.commit()
         cursor.close()
