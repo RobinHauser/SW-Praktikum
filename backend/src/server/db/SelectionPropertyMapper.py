@@ -256,6 +256,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
             else:
                 max_id = 7001
 
+
         command2 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
         data = (max_id, sel_prop.get_id())
         cursor.execute(command2, data)

@@ -264,13 +264,17 @@ class Administration():
     --------------------------------------------------------------------------------------------------------------
     """
     def create_selection_property(self, name, description):
-        sel_prop = SelectionProperty()
-        sel_prop.set_name(name)
-        sel_prop.set_is_selection(1)
-        sel_prop.set_description(description)
+        present_prop = self.get_property_by_name(name)
+        if present_prop is None:
+            sel_prop = SelectionProperty()
+            sel_prop.set_name(name)
+            sel_prop.set_is_selection(1)
+            sel_prop.set_description(description)
 
-        with SelectionPropertyMapper() as mapper:
-            return mapper.insert(sel_prop)
+            with SelectionPropertyMapper() as mapper:
+                return mapper.insert(sel_prop)
+        else:
+            return TypeError
 
     def get_all_selection_properties(self):
         with SelectionPropertyMapper() as mapper:
