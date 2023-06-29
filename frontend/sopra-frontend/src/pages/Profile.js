@@ -5,7 +5,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import {CircularProgress, List, ListSubheader} from "@mui/material";
+import {Alert, CircularProgress, List, ListSubheader} from "@mui/material";
 import ProfilePropertySelect from "../components/ProfilePropertySelect";
 import ProfilePropertyFreeText from "../components/ProfilePropertyFreeText";
 import AddIcon from "@mui/icons-material/Add";
@@ -59,7 +59,8 @@ class Profile extends Component {
             PropertySelectionNameText: '',
             PropertySelectionDescriptionText: '',
             PropertyFreeTextNameText: '',
-            PropertyFreeTextDescriptionText: ''
+            PropertyFreeTextDescriptionText: '',
+            successAlert: ""
         };
 
         this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -165,39 +166,31 @@ class Profile extends Component {
 
     // Handler um eine neue Auswahl-Eigenschaft ins Backend zu schicken
     addSelectionPropertyClickHandler = () => {
-        this.buttonAddSelectionProperty();
-        this.setState({
-                openSelectDialog: false
-    })}
+        const {PropertySelectionNameText, PropertySelectionDescriptionText} = this.state;
+        this.setState({openSelectDialog: false, successAlert: "neue Auswahleigenschaft der Liste hinzugefügt"})
+        this.addSelectionProperty({
+            "name": PropertySelectionNameText,
+            "description": PropertySelectionDescriptionText
+        })
+        this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
+        setTimeout(() => {
+                this.setState({successAlert: ""})
+            }, 3000);
+    }
 
 
     // Handler um eine neue Freitext-Eigenschaft ins Backend zu schicken
 
     addFreeTextPropertyClickHandler = () => {
-        this.buttonAddFreeTextProperty();
-        this.setState({
-                openFreeTextDialog: false
-    })}
-
-    buttonAddSelectionProperty() {
-        const name = this.state.PropertySelectionNameText
-        const description = this.state.PropertySelectionDescriptionText
-        let propertyBO = {
-            "name": name,
-            "description": description
-        }
-        this.addSelectionProperty(propertyBO)
-        this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
-    }
-
-    buttonAddFreeTextProperty() {
-        const name = this.state.PropertyFreeTextNameText
-        const description = this.state.PropertyFreeTextDescriptionText
-        let propertyBO = {
-            "name": name,
-            "description": description
-        }
-        this.addFreeTextProperty(propertyBO)
+        const {PropertyFreeTextNameText, PropertyFreeTextDescriptionText} = this.state;
+        this.setState({openFreeTextDialog: false, successAlert: "neue Freitext-Eigenschaft der Liste hinzugefügt"})
+        this.addFreeTextProperty({
+            "name": PropertyFreeTextNameText,
+            "description": PropertyFreeTextDescriptionText
+        })
+        setTimeout(() => {
+                this.setState({successAlert: ""})
+            }, 3000);
         this.setState({PropertyFreeTextNameText: '', PropertyFreeTextDescriptionText: ''})
     }
 
@@ -405,7 +398,8 @@ class Profile extends Component {
             globalPropertiesFreeText,
             anchorElSelect,
             anchorElFreeText,
-            informations
+            informations,
+            successAlert
         } = this.state;
         const openSelect = Boolean(anchorElSelect)
         const openFreeText = Boolean(anchorElFreeText)
@@ -630,7 +624,9 @@ class Profile extends Component {
                             handleClick={this.handleClick}
                             value={value}
                         />
-
+                        {successAlert.length > 0 && (
+                            <Alert severity="success">{successAlert}</Alert>
+                        )}
                     </Container>
 
                     <hr/>
@@ -679,23 +675,23 @@ class Profile extends Component {
                             handleClick={this.handleClick}
                             value={value}
                         />
-                            <Tooltip title="Account löschen" fontSize="large">
-                                <Button variant="contained"
-                                        onClick={this.handleDeleteUser}
-                                        sx={{
-                                            color: "white",
-                                            backgroundColor: "red",
-                                            borderColor: 'red',
-                                            '&:hover': {
-                                                backgroundColor: "white",
-                                                color: "red",
-                                                border: "solid 1px red"
-                                            },
-                                            fontWeight: 'bold',
-                                            marginBottom: '40px'
-                                        }}
-                                        startIcon={<DeleteIcon/>}>Account löschen</Button>
-                            </Tooltip>
+                        <Tooltip title="Account löschen" fontSize="large">
+                            <Button variant="contained"
+                                    onClick={this.handleDeleteUser}
+                                    sx={{
+                                        color: "white",
+                                        backgroundColor: "red",
+                                        borderColor: 'red',
+                                        '&:hover': {
+                                            backgroundColor: "white",
+                                            color: "red",
+                                            border: "solid 1px red"
+                                        },
+                                        fontWeight: 'bold',
+                                        marginBottom: '40px'
+                                    }}
+                                    startIcon={<DeleteIcon/>}>Account löschen</Button>
+                        </Tooltip>
                     </Container>
                 </div>
             );
