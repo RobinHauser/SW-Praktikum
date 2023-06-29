@@ -111,8 +111,8 @@ class InfoSelectDialog extends Component {
                     textFieldContent: ""
 
                 })
-                alert("Neue Auswahl erfolgreich hinzugefügt")
-                this.getSelectionValues()
+                this.getSelectionValues();
+
             })
             .catch(error => {
                 alert(error)
@@ -123,12 +123,14 @@ class InfoSelectDialog extends Component {
      * @param {int} propId - id of the current property object
      */
     addButtonFunction = (propId) => {
+        const {handleCloseDialogInfo} = this.props
         const content = this.state.textFieldContent
         let valueBo = {
             "value": `${content}`,
         }
         this.postNewValue(propId, valueBo)
         this.getSelectionValues()
+        handleCloseDialogInfo()
     }
     /**
      * button function which triggers the function to delete the selected value out of the system / db
@@ -249,7 +251,7 @@ class InfoSelectDialog extends Component {
                     </Dialog>
 
                     <Dialog open={openDialogSelect && isAddingNewProperty} onClose={handleCloseDialogInfo}>
-                        <DialogTitle>Add a new selection</DialogTitle>
+                        <DialogTitle>Neue Option hinzufügen</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
