@@ -16,7 +16,7 @@ class ConversationOverviewItem extends Component {
      * @returns ConversationOverviewItem - the rendered component
      */
     render() {
-        const {name, chatBo} = this.props;
+        const {name, chatBo, avatarLink} = this.props;
         const chatID = chatBo.getChatID();
         const userID = chatBo.getUserID();
 
@@ -33,7 +33,7 @@ class ConversationOverviewItem extends Component {
                     ':hover': {boxShadow: 2}
                 }}>
                     <div style={{display: "flex", alignItems: "center"}}>
-                        <Avatar src={placeHolderImage}></Avatar>
+                        <Avatar src={avatarLink}></Avatar>
                         <ListItemText noWrap={false} sx={{ml: 2, fontSize: 20, wordBreak: 'break-all'}}
                                       primary={`${name}`}></ListItemText>
                     </div>
