@@ -260,7 +260,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
         selections = self.retrieve_selections(sel_prop)
         is_there = False
         for selec in selections:
-            if payload.get('value') in selec["value"]:
+            if payload.get('value').lower() in selec["value"].lower():
                 is_there = True
                 break
         if not is_there:
