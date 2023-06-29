@@ -1,7 +1,6 @@
 import Typography from "@mui/material/Typography";
 import {ListItem, Paper} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 import {Component} from "react";
 
 /**
