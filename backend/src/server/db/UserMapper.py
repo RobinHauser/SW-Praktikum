@@ -306,7 +306,8 @@ class UserMapper(Mapper):
     def __get_user_related_id(self, cursor, table, id_column, user_column, user_id):
         command = f'SELECT {id_column} FROM {table} WHERE {user_column} = {user_id}'
         cursor.execute(command)
-        return cursor.fetchone()[0]
+        returned_value = cursor.fetchone()[0]
+        return returned_value
 
     def __delete_content(self, cursor, table, id_column, content_id):
         command = f'DELETE FROM {table} WHERE {id_column} = {content_id}'

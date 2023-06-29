@@ -59,6 +59,10 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/user/1000`
     };
 
+    #deleteUserURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/user/${userID}`
+    }
+
     // Main Page related
     #getUserListBySearchprofileURL = (searchProfileID) => {
         return `http://localhost:8081/api/v1/userList/${searchProfileID}`; //Todo set Base URL Back to variable
@@ -270,6 +274,23 @@ export default class SopraDatingAPI {
     postUser(userBO) {
         return this.#fetchAdvanced(this.#postUserURL(), {
             method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            },
+            body: JSON.stringify(userBO)
+        }).then((responseJSON) => {
+            let user = UserBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(user)
+            })
+        })
+    }
+
+    deleteUser(userID, userBO) {
+        return this.#fetchAdvanced(this.#deleteUserURL(userID), {
+            method: 'DELETE',
             headers: {
                 'Accept': 'application/json, text/plain',
                 'Content-type': 'application/json',
