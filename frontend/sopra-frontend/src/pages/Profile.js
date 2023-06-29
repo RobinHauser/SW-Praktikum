@@ -25,6 +25,9 @@ import SopraDatingAPI from "../api/SopraDatingAPI";
 import CachedIcon from "@mui/icons-material/Cached";
 import PropertySelectMenuItem from "../components/PropertySelectMenuItem";
 import PropertyTextMenuItem from "../components/PropertyTextMenuItem";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {Link} from "react-router-dom";
+import {getAuth, signOut} from "firebase/auth";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -368,6 +371,22 @@ class Profile extends Component {
     };
 
     /**
+     *
+     * source: https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
+     */
+    deleteAllCookies = () => {
+        document.cookie = 'token=;path=/';
+    }
+
+    handleDeleteUser = async () => {
+        const {user} = this.props;
+        await SopraDatingAPI.getAPI().deleteUser(user.getUserID(), user)
+        const auth = getAuth();
+        await signOut(auth)
+        this.deleteAllCookies()
+    }
+
+    /**
      * Renders the class component
      * @returns Profile - the rendered component
      */
@@ -612,7 +631,7 @@ class Profile extends Component {
 
                     <hr/>
 
-                    <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
+                    <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '0px'}}>
 
                         <Dialog open={openFreeTextDialog} onClose={() => this.handleCloseDialogProp(null)}>
                             <DialogTitle>Freitext-Eigenschaft hinzufügen</DialogTitle>
@@ -656,7 +675,23 @@ class Profile extends Component {
                             handleClick={this.handleClick}
                             value={value}
                         />
-
+                            <Tooltip title="Account löschen" fontSize="large">
+                                <Button variant="contained"
+                                        onClick={this.handleDeleteUser}
+                                        sx={{
+                                            color: "white",
+                                            backgroundColor: "red",
+                                            borderColor: 'red',
+                                            '&:hover': {
+                                                backgroundColor: "white",
+                                                color: "red",
+                                                border: "solid 1px red"
+                                            },
+                                            fontWeight: 'bold',
+                                            marginBottom: '40px'
+                                        }}
+                                        startIcon={<DeleteIcon/>}>Account löschen</Button>
+                            </Tooltip>
                     </Container>
                 </div>
             );

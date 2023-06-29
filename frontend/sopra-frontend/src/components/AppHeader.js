@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
 import {getAuth, signOut} from "firebase/auth";
+import appLogo from "../Images/logo_transparent_wei.png";
 
 export default function AppHeader(props) {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -39,12 +40,15 @@ export default function AppHeader(props) {
     function navigateToProfilePage() {
         navigate('/profile')
     }
+
     function navigateToConversationOverviewPage() {
         navigate('/conversationOverview')
     }
+
     function navigateToMainPage() {
         navigate('/main')
     }
+
     function navigateToBookmarkListPage() {
         navigate(('/bookmarklist'))
     }
@@ -59,29 +63,26 @@ export default function AppHeader(props) {
 
     function handleSignOutButtonClicked() {
         const auth = getAuth();
-        signOut(auth).then(
-            //TODO clear cookies
-        );
+        signOut(auth)
     }
 
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/main"
-                        sx={{
+                    <Button href="/main"
+                            sx={{
                             display: {xs: 'none', md: 'flex'},
                             fontWeight: 700,
                             color: 'inherit',
                             textDecoration: 'none',
                         }}>
-                        Sopra Dating
-                    </Typography>
-
+                        <img
+                            src={appLogo}
+                            alt={"Date2Mate"}
+                            style={{ width: '150px', height: 'auto' }}
+                        />
+                    </Button>
                     <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                         <IconButton
                             size="large"
@@ -179,7 +180,8 @@ export default function AppHeader(props) {
                         }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Suchprofil
                         </Button>
-                        <Button onClick={navigateToConversationOverviewPage} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={navigateToConversationOverviewPage}
+                                sx={{my: 2, color: 'white', display: 'block'}}>
                             chat
                         </Button>
                     </Box>
@@ -206,13 +208,13 @@ export default function AppHeader(props) {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}>
 
-                            <MenuItem sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }} onClick={() => {
+                            <MenuItem sx={{"&:hover": {backgroundColor: "#c6e2ff"}}} onClick={() => {
                                 handleCloseUserMenu()
                                 navigateToProfilePage()
                             }}>
                                 <Typography textAlign="center">Profil</Typography>
                             </MenuItem>
-                            <MenuItem sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }} onClick={() => {
+                            <MenuItem sx={{"&:hover": {backgroundColor: "#c6e2ff"}}} onClick={() => {
                                 handleCloseUserMenu()
                                 handleSignOutButtonClicked()
                             }}>
