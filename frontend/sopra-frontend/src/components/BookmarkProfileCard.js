@@ -42,9 +42,11 @@ class BookmarkProfileCard extends Component {
      */
     getProfileOfShowedUser = async () => {
         try {
+            this.setState({loadingCircularProgress: true})
             return await SopraDatingAPI.getAPI().getProfile(this.props.bookmarkedUser.getUserID())
         } catch (error) {
             console.log(error);
+            this.setState({loadingCircularProgress: false})
             return null
         }
     };
