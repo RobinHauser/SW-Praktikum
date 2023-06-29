@@ -3,7 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import appLogo from "../Images/logo_transparent_wei.png";
+import appLogo from "../static/images/logo_transparent_wei.png";
 import Button from "@mui/material/Button";
 
 export default function AppHeaderLight() {

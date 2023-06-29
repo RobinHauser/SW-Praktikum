@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
 import {getAuth, signOut} from "firebase/auth";
-import appLogo from "../Images/logo_transparent_wei.png";
+import appLogo from "../static/images/logo_transparent_wei.png";
 
 export default function AppHeader(props) {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
