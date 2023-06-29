@@ -1,0 +1,35 @@
+[
+	{
+		"UserID": 1003,
+		"email": "bt036@hdm-stuttgart.de",
+		"displayname": "Björn",
+		"ProfileIMGURL": "tbd.de"
+	},
+	{
+		"UserID": "rT1cdUHiEFYPZ546KgjTFOwaFcD3",
+		"displayname": "Michi Bergdolt",
+		"email": "michi.bergdolt@gmail.com",
+		"dateOfBirth": "15.6.1999",
+		"blocklistID": 3003,
+		"bookmarklistID": 4003,
+		"profileID": 8003
+	},
+	{
+		"UserID": "15",
+		"displayname": "Max Verstappen",
+		"email": "max.verstappen@gmail.com",
+		"dateOfBirth": "15.6.1999",
+		"blocklistID": 3004,
+		"bookmarklistID": 4004,
+		"profileID": 8004
+	},
+	{
+		"UserID": 2000,
+		"displayname": "Lewis Hamilton",
+		"email": "lewis.hamilton@gmail.com",
+		"dateOfBirth": "30.2.1999",
+		"blocklistID": 3006,
+		"bookmarklistID": 3006,
+		"profileID": 8006
+	}
+]

@@ -1,0 +1,473 @@
+{
+	"info": {
+		"_postman_id": "6ea5f88a-0f09-4a00-b7a6-e5e8f9b28501",
+		"name": "Sopra",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23178657"
+	},
+	"item": [
+		{
+			"name": "Bookmarklist",
+			"item": [
+				{
+					"name": "Get User bookmarklist",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/bookmarklist/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"bookmarklist",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User to bookmarklist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1006\",\n        \"email\": \"bt036@hdm-stuttgart.de\",\n        \"displayname\": \"Hello\",\n        \"ProfileIMGURL\": \"tbd.de\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/bookmarklist/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"bookmarklist",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user from bookmarklist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1006\",\n        \"email\": \"ek103@hdm-stuttgart.de\",\n        \"displayname\": \"Elias Konson\",\n        \"profileImageURL\": \"https://tbd.de\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/bookmarklist/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"bookmarklist",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Blocklist",
+			"item": [
+				{
+					"name": "Get User blocklist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/blocklist/1005",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"blocklist",
+								"1005"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User to blocklist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1001\",\n        \"email\": \"ek103@hdm-stuttgart.de\",\n        \"displayname\": \"Elias Konson\",\n        \"profileImageURL\": \"https://tbd.de/\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/blocklist/1005",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"blocklist",
+								"1005"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User from blocklist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"id\": \"1004\",\n        \"email\": \"tk172@hdm-stuttgart.de\",\n        \"displayname\": \"Theo Klautke\",\n        \"profileImageURL\": \"https://tbd.de\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/blocklist/1005",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"blocklist",
+								"1005"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ViewedList",
+			"item": [
+				{
+					"name": "get user viewedlist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/view/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"view",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add user to viewedlist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1006\",\n        \"email\": \"bt036@hdm-stuttgart.de\",\n        \"displayname\": \"Hello\",\n        \"ProfileIMGURL\": \"tbd.de\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/view/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"view",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user from viewedlist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"1006\",\n        \"email\": \"bt036@hdm-stuttgart.de\",\n        \"displayname\": \"Hello\",\n        \"ProfileIMGURL\": \"tbd.de\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/view/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"view",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Init_user",
+			"item": [
+				{
+					"name": "Get user id by email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/init-user/tk172@hdm-stuttgart.de",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"init-user",
+								"tk172@hdm-stuttgart.de"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/1000",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"1000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a specific user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"UserID\": \"\",\n    \"email\": \"test@hdm-stuttgart.de\",\n    \"displayname\": \"testName\",\n    \"ProfileIMGURL\": \"test.de\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/1000",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"1000"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a specific user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"UserID\": \"1015\",\n    \"email\": \"test@hdm-stuttgart.de\",\n    \"displayname\": \"testName\",\n    \"ProfileIMGURL\": \"test.de\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/1015",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"1015"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"UserID\": \"1004\",\n        \"email\": \"tk172@hdm-stuttgart.de\",\n        \"displayname\": \"Theo\",\n        \"ProfileIMGURL\": \"tbdadasdas.de\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/user/1004",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"1004"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
