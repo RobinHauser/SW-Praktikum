@@ -89,8 +89,7 @@ export default class SopraDatingAPI {
 
     // Message related
     #addMessageURl = (userID) => `${this.#SopraDatingServerBaseURL}/message/${userID}`;
-    //#getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message/30001`; //TODO change ID
-    #getChatMessagesURL = (chatID) => `http://127.0.0.1:8000/message/${chatID}`; //TODO change ID
+    #getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message/${chatID}`; //TODO change ID
 
     // Profile related
     #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/personal-profile/by_user/${userID}`;

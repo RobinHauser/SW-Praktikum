@@ -7,7 +7,8 @@ import {Component} from "react";
 import Dialog from "@mui/material/Dialog";
 import ExtendedProfileCard from "./ExtendedProfileCard";
 import SopraDatingAPI from "../api/SopraDatingAPI";
-import {CircularProgress} from "@mui/material";
+import {CircularProgress, List} from "@mui/material";
+import Box from "@mui/material/Box";
 
 /**
  * @author [Jannik Haug, Theo Klautke, Michael Bergdolt]
@@ -72,7 +73,8 @@ class ProfileCard extends Component {
                 this.setState({
                     addingError: null
                 });
-            }).catch(e => {this.setState({addingError: e});
+            }).catch(e => {
+            this.setState({addingError: e});
         });
     };
 
@@ -127,9 +129,20 @@ class ProfileCard extends Component {
                         </Typography>
                         {informations.length > 0 ? (
                             informations.map((informationListItem) => (
-                                <Typography key={informationListItem.getValueID()} variant="h6" color="text.secondary"
-                                            style={{textAlign: "left"}}>
-                                    {`${informationListItem.getProperty()}: ${informationListItem.getValue()}`}
+                                 <Typography
+                                    key={informationListItem.getValueID()}
+                                    variant="h6"
+                                    color="text.secondary"
+                                    style={{textAlign: "left"}}
+                                >
+                                    <Typography
+                                        component="span"
+                                        variant="h6"
+                                        sx={{fontWeight: "bold"}}
+                                    >
+                                        {`${informationListItem.getProperty()}: `}
+                                    </Typography>
+                                    {informationListItem.getValue()}
                                 </Typography>
                             ))
                         ) : (loading ? (
