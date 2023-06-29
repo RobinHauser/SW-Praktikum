@@ -312,7 +312,7 @@ class Profile extends Component {
     }
 
     handleAddItemClick() {
-        this.setState({openDialogSelect: true, isAddingNewProperty: true});
+        this.setState({openDialogSelect: false, isAddingNewProperty: true});
     }
 
     handleNewPropertyChange(event) {

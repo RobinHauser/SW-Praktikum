@@ -150,8 +150,7 @@ class InfoSelectDialog extends Component {
                 deletingInProgress: false,
                 deletingError: null
             });
-            alert("Löschen aus dem System war erfolgreich")
-            //this.props.onUserRemoved(blockedUser);
+            this.getSelectionValues()
         }).catch(e => {
             this.setState({
                 deletingInProgress: false,
@@ -163,7 +162,6 @@ class InfoSelectDialog extends Component {
             deletingInProgress: true,
             deletingError: null
         });
-        this.getSelectionValues()
     }
     /**
      * handles the textfield input
