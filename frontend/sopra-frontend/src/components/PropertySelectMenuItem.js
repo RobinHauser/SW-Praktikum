@@ -39,6 +39,7 @@ class PropertySelectMenuItem extends Component {
             PropertySelectionNameText: '',
             PropertySelectionDescriptionText: '',
             warningAlert: "",
+            successAlert: "",
         };
         this.handleOpenDialogSelect = this.handleOpenDialogSelect.bind(this);
         this.handleCloseDialogInfo = this.handleCloseDialogInfo.bind(this);
@@ -119,10 +120,22 @@ class PropertySelectMenuItem extends Component {
         this.handleCloseDialogInfo();
     }
 
+    /**
+     * handles the opening for editing a selection property
+     * sets the status for the text fields to the current selection property name and description
+     */
     handleOpenSelectDialog() {
-        this.setState({openSelectDialog: true});
+        this.setState({
+            openSelectDialog: true,
+            PropertySelectionNameText: this.props.InformationsBoProp,
+            PropertySelectionDescriptionText: this.props.InformationsBoPropDescr
+        });
+
     }
 
+    /**
+     * handles the closing for editing a selection property
+     */
     handleCloseDialogProp() {
         const {isAddingNewProperty} = this.state;
         if (isAddingNewProperty) {
@@ -135,6 +148,9 @@ class PropertySelectMenuItem extends Component {
         }
     }
 
+    /**
+     * ensures that the button is not clickable if the text fields are blank
+     */
     isFormValidSelect() {
         return (
             this.state.PropertySelectionNameText.trim() !== '' &&
@@ -142,16 +158,28 @@ class PropertySelectMenuItem extends Component {
         );
     }
 
+    /**
+     * handles the input change for the text field PropertySelectionNameText
+     */
     handleInputChangeSelectionName = (event) => {
         this.setState({PropertySelectionNameText: event.target.value});
     }
-
+    /**
+     * handles the input change for the text field PropertySelectionDescriptionText
+     */
     handleInputChangeSelectionDescription = (event) => {
         this.setState({PropertySelectionDescriptionText: event.target.value});
     }
+    /**
+     * button function to update the selection property
+     * sets a state to close the dialog and sets an alert message
+     * triggers to updateSelectionProperty function to update the current property
+     * sets a timeout for the alert message
+     * triggers the function to get all selection properties to fill the list on the profile page
+     */
     updateSelectionPropertyClickHandler = () => {
         const {PropertySelectionNameText, PropertySelectionDescriptionText} = this.state;
-        this.setState({openSelectDialog: false, successAlert: "neue Auswahleigenschaft der Liste hinzugefügt"})
+        this.setState({openSelectDialog: false, successAlert: "Eigenschaft wurde geändert"})
         this.updateSelectionProperty({
             "id": this.props.InformationsBoPropId,
             "name": `${PropertySelectionNameText}`,
@@ -162,14 +190,19 @@ class PropertySelectMenuItem extends Component {
         setTimeout(() => {
             this.setState({successAlert: ""})
         }, 3000);
+        setTimeout(() => {
+            this.props.getAllSelectionProperties()
+        }, 200);
     }
+    /**
+     * updates the current property with the given name and description
+     */
     updateSelectionProperty = (propertyBO) => {
-        SopraDatingAPI.getAPI().updateProperty(this.props.InformationsBoPropId, propertyBO)
+        SopraDatingAPI.getAPI().updateSelectionProperty(this.props.InformationsBoPropId, propertyBO)
             .then(() => {
                 this.setState({
                     error: null
                 });
-                this.getAllSelectionProperties()
             }).catch(e => {
             this.setState({
                 error: e
@@ -190,7 +223,14 @@ class PropertySelectMenuItem extends Component {
             InformationsBoIsSelection,
             profileId
         } = this.props
-        const {openDialogSelect, properties, newProperty, isAddingNewProperty, openSelectDialog} = this.state;
+        const {
+            openDialogSelect,
+            properties,
+            newProperty,
+            isAddingNewProperty,
+            openSelectDialog,
+            successAlert
+        } = this.state;
         return (
             <div>
                 <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -203,6 +243,9 @@ class PropertySelectMenuItem extends Component {
                         </IconButton>
                     </Tooltip>
                 </Box>
+                {successAlert.length > 0 && (
+                    <Alert severity="success">{successAlert}</Alert>
+                )}
                 <InfoSelectDialog
                     openDialogSelect={openDialogSelect}
                     handleCloseDialogInfo={this.handleCloseDialogInfo}
@@ -222,11 +265,11 @@ class PropertySelectMenuItem extends Component {
                     profileId={profileId}
                 />
                 <Dialog open={openSelectDialog} onClose={() => this.handleCloseDialogProp(null)}>
-                    <DialogTitle>Auswahl-Eigenschaft hinzufügen</DialogTitle>
+                    <DialogTitle>Auswahl-Eigenschaft bearbeiten</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Füge eine neue Auswahl-Eigenschaft hinzu, indem du den Name und die Beschreibung der
-                            Eigenschaft angibst.
+                            Bearbeite die selektierte Eigenschaft, indem du den Name und die Beschreibung der
+                            Eigenschaft bearbeitest.
                         </DialogContentText>
                         <TextField
                             value={this.state.PropertySelectionNameText}

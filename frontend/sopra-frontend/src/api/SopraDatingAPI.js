@@ -178,8 +178,11 @@ export default class SopraDatingAPI {
     #addNewInformationToProfileURL = (valueId) => {
         return `${this.#SopraDatingServerBaseURL}/information/${valueId}`
     }
-    #updatePropertyByIdURL = (propertyId) => {
+    #updateSelectionPropertyByIdURL = (propertyId) => {
         return `${this.#SopraDatingServerBaseURL}/selection-property/${propertyId}`
+    }
+    #updateTextPropertyByIdURL = (propertyId) => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/${propertyId}`
     }
 
 
@@ -870,8 +873,8 @@ export default class SopraDatingAPI {
         })
     };
 
-    updateProperty(propertyId, propertyBo) {
-        return this.#fetchAdvanced(this.#updatePropertyByIdURL(propertyId), {
+    updateSelectionProperty(propertyId, propertyBo) {
+        return this.#fetchAdvanced(this.#updateSelectionPropertyByIdURL(propertyId), {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json, text/plain',
@@ -885,5 +888,22 @@ export default class SopraDatingAPI {
                 resolve(propertyBo)
             })
         })
-    }
+    };
+
+    updateTextProperty(propertyId, propertyBo) {
+        return this.#fetchAdvanced(this.#updateTextPropertyByIdURL(propertyId), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            },
+            body: JSON.stringify(propertyBo)
+        }).then((responseJSON) => {
+            let propertyBo = PropertyBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(propertyBo)
+            })
+        })
+    };
 }

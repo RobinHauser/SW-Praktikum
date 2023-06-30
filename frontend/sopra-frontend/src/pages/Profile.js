@@ -189,8 +189,8 @@ class Profile extends Component {
             "description": PropertyFreeTextDescriptionText
         })
         setTimeout(() => {
-                this.setState({successAlert: "", warningAlert: ""})
-            }, 3000);
+            this.setState({successAlert: "", warningAlert: ""})
+        }, 3000);
         this.setState({PropertyFreeTextNameText: '', PropertyFreeTextDescriptionText: ''})
     }
 
@@ -204,10 +204,10 @@ class Profile extends Component {
                 });
                 this.getAllSelectionProperties()
             }).catch(e => {
-                this.setState({
-                    error: e,
-                    warningAlert: "Auswahleigenschaft existiert bereits"
-                });
+            this.setState({
+                error: e,
+                warningAlert: "Auswahleigenschaft existiert bereits"
+            });
         });
     };
 
@@ -532,7 +532,9 @@ class Profile extends Component {
                                                 InformationsBoPropDescr={globalPropertyItemSelect.getPropertyDescription()}
                                                 UserId={this.props.user.getUserID()}
                                                 InformationsBoIsSelection={globalPropertyItemSelect.getIsSelection()}
-                                                profileId={this.state.personalProfile.getProfileID()}></PropertySelectMenuItem>
+                                                profileId={this.state.personalProfile.getProfileID()}
+                                                getAllSelectionProperties={this.getAllSelectionProperties}>
+                                            </PropertySelectMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>
                                     )
@@ -582,7 +584,8 @@ class Profile extends Component {
                                                 InformationsBoPropDescr={globalPropertyItemFreeText.getPropertyDescription()}
                                                 UserId={this.props.user.getUserID()}
                                                 InformationsBoIsSelection={globalPropertyItemFreeText.getIsSelection()}
-                                                profileId={this.state.personalProfile.getProfileID()}>
+                                                profileId={this.state.personalProfile.getProfileID()}
+                                                getAllFreetextProperties={this.getAllFreeTextProperties}>
                                             </PropertyTextMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>

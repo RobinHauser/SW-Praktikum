@@ -466,7 +466,8 @@ class SearchProfile extends Component {
                                                 InformationsBoPropDescr={globalPropertyItemSelect.getPropertyDescription()}
                                                 UserId={this.props.user.getUserID()}
                                                 InformationsBoIsSelection={globalPropertyItemSelect.getIsSelection()}
-                                                profileId={this.state.SearchProfileId}></PropertySelectMenuItem>
+                                                profileId={this.state.SearchProfileId}
+                                                getAllSelectionProperties={this.getAllSelectionProperties}></PropertySelectMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>
                                     )
@@ -516,7 +517,8 @@ class SearchProfile extends Component {
                                                 InformationsBoPropDescr={globalPropertyItemFreeText.getPropertyDescription()}
                                                 UserId={this.props.user.getUserID()}
                                                 InformationsBoIsSelection={globalPropertyItemFreeText.getIsSelection()}
-                                                profileId={this.state.SearchProfileId}>
+                                                profileId={this.state.SearchProfileId}
+                                                getAllFreetextProperties={this.getAllFreeTextProperties}>
                                             </PropertyTextMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>
