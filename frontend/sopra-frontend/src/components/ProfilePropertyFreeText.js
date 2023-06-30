@@ -92,17 +92,17 @@ class ProfilePropertyFreeText extends Component {
                         <ListItemText primary={`${InformationsBoProp}: ${InformationsBoValue}`}/>
                     </ListItem>
                     <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>
-                        <Tooltip title="Freitext-Eigenschaft bearbeiten">
+                        <Tooltip title="Freitext-Information bearbeiten">
                             <IconButton onClick={this.handleOpenDialogFreeText}>
                                 <BorderColorSharpIcon/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Eigenschaft aus Profil entfernen">
+                        <Tooltip title="Information aus Profil entfernen">
                             <IconButton onClick={this.deleteInformationFromProfileButton}>
                                 <RemoveCircleSharpIcon/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Eigenschaft aus App löschen">
+                        <Tooltip title="Eigenschaft aus dem System löschen">
                             <IconButton onClick={this.deletePropertyFromSystemButton}>
                                 <DeleteIcon/>
                             </IconButton>

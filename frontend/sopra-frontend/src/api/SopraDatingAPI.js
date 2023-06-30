@@ -32,13 +32,13 @@ export default class SopraDatingAPI {
 
     // Inspired by: https://www.w3schools.blog/get-cookie-by-name-javascript-js
     #getCookie(cookieName) {
-         let cookie = {};
-        document.cookie.split(';').forEach(function(el) {
-         let [key,value] = el.split('=');
+        let cookie = {};
+        document.cookie.split(';').forEach(function (el) {
+            let [key, value] = el.split('=');
             cookie[key.trim()] = value;
         })
         return cookie[cookieName];
-        }
+    }
 
     // User related
     #getAllUsersURL = () => {
@@ -177,6 +177,9 @@ export default class SopraDatingAPI {
     }
     #addNewInformationToProfileURL = (valueId) => {
         return `${this.#SopraDatingServerBaseURL}/information/${valueId}`
+    }
+    #updatePropertyByIdURL = (propertyId) => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/${propertyId}`
     }
 
 
@@ -386,22 +389,22 @@ export default class SopraDatingAPI {
     }
 
     getBlocklist(userID) {
-    const requestOptions = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'token': `${this.#getCookie('token')}`
-        }
-    };
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': `${this.#getCookie('token')}`
+            }
+        };
 
-    return this.#fetchAdvanced(this.#getBlocklistURL(userID), requestOptions)
-        .then((responseJSON) => {
-            let userBOs = UserBO.fromJSON(responseJSON);
-            return new Promise(function (resolve) {
-                resolve(userBOs);
+        return this.#fetchAdvanced(this.#getBlocklistURL(userID), requestOptions)
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(userBOs);
+                });
             });
-        });
-}
+    }
 
     removeUserFromBlocklist(userID, userBO) {
         return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(userID), {
@@ -863,6 +866,23 @@ export default class SopraDatingAPI {
             let ProfileBo = ProfileBO.fromJSON(responseJSON)[0];
             return new Promise(function (resolve) {
                 resolve(ProfileBo)
+            })
+        })
+    };
+
+    updateProperty(propertyId, propertyBo) {
+        return this.#fetchAdvanced(this.#updatePropertyByIdURL(propertyId), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            },
+            body: JSON.stringify(propertyBo)
+        }).then((responseJSON) => {
+            let propertyBo = PropertyBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(propertyBo)
             })
         })
     }
