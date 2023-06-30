@@ -372,6 +372,13 @@ class Profile extends Component {
         this.handleOpenDialogFreeText();
     };
 
+    handleSuccessAlert = (text) => {
+        this.setState({successAlert: text})
+        setTimeout(() => {
+            this.setState({successAlert: ""})
+        }, 3000)
+    }
+
     /**
      *
      * source: https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
@@ -472,6 +479,7 @@ class Profile extends Component {
                                                                InformationsBoPropDescr={InformationsBo.getPropDescription()}
                                                                InformationsBoInfoId={InformationsBo.getInformationId()}
                                                                InformationsBoIsSelection={InformationsBo.getIsSelect()}
+                                                               handleSuccessAlert={this.handleSuccessAlert}
                                         />
                                     ) : (
                                         <ProfilePropertyFreeText key={InformationsBo.getInformationId()}
@@ -481,6 +489,7 @@ class Profile extends Component {
                                                                  InformationsBoPropId={InformationsBo.getPropID()}
                                                                  InformationsBoPropDescr={InformationsBo.getPropDescription()}
                                                                  InformationsBoInfoId={InformationsBo.getInformationId()}
+                                                                 handleSuccessAlert={this.handleSuccessAlert}
                                         />
 
                                     )

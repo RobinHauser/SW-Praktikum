@@ -53,7 +53,7 @@ class ProfilePropertySelect extends Component {
             this.setState({
                 deletingError: null
             });
-            alert("Löschen aus dem System war erfolgreich")
+            this.props.handleSuccessAlert("Löschen aus dem System war erfolgreich")
             //this.props.onUserRemoved(blockedUser);
         }).catch(e => {
             this.setState({
@@ -76,7 +76,7 @@ class ProfilePropertySelect extends Component {
             this.setState({
                 deletingError: null
             });
-            alert("Löschen aus dem Profil war erfolgreich")
+            this.props.handleSuccessAlert("Löschen aus dem Profil war erfolgreich")
             //this.props.onUserRemoved(blockedUser);
         }).catch(e => {
             this.setState({
