@@ -5,7 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import {CircularProgress, LinearProgress, ListItem, ListItemText} from "@mui/material";
+import {Alert, CircularProgress, LinearProgress, ListItem, ListItemText} from "@mui/material";
 import List from "@mui/material/List";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -25,6 +25,7 @@ class InfoSelectDialog extends Component {
             deletingInProgress: null,
             deletingError: null,
             textFieldContent: "",
+            warningAlert: ""
         };
     }
 
@@ -101,37 +102,26 @@ class InfoSelectDialog extends Component {
     }
     /**
      * posts the new value to the current property object
-     * @param {ValueBo} valueBo - contains the value content
-     * @param {int} propId - id of the current property object
      */
-    postNewValue = (propId, valueBo) => {
-        SopraDatingAPI.getAPI().addSelectionValueItem(propId, valueBo)
+    postNewValue = () => {
+        const {handleCloseDialogInfo, InformationsBoPropId} = this.props
+        SopraDatingAPI.getAPI().addSelectionValueItem(InformationsBoPropId, {"value": `${this.state.textFieldContent}`})
             .then(() => {
                 this.setState({
                     textFieldContent: ""
-
                 })
                 this.getSelectionValues();
-
             })
             .catch(error => {
-                alert(error)
+                this.setState({
+                    textFieldContent: "",
+                    warningAlert: "Option existiert bereits"
+                })
+                setTimeout(() => {this.setState({warningAlert: ""});}, 3000);
             })
-    }
-    /**
-     * button function which triggers the function to post a new value for the current property object
-     * @param {int} propId - id of the current property object
-     */
-    addButtonFunction = (propId) => {
-        const {handleCloseDialogInfo} = this.props
-        const content = this.state.textFieldContent
-        let valueBo = {
-            "value": `${content}`,
-        }
-        this.postNewValue(propId, valueBo)
-        this.getSelectionValues()
         handleCloseDialogInfo()
     }
+
     /**
      * button function which triggers the function to delete the selected value out of the system / db
      * @param {int} valueId - id of the current value object
@@ -195,10 +185,9 @@ class InfoSelectDialog extends Component {
             handleAddItemClick,
             isAddingNewProperty,
             InformationsBoProp,
-            InformationsBoPropId,
             InformationsBoPropDescr,
         } = this.props;
-        const {propertiesList} = this.state
+        const {propertiesList, warningAlert} = this.state
         if (!propertiesList) {
             //return (<LinearProgress></LinearProgress>)
         } else {
@@ -243,6 +232,9 @@ class InfoSelectDialog extends Component {
                                 </List>
                             </DialogContentText>
                         </DialogContent>
+                        {warningAlert.length > 0 && (
+                            <Alert severity="warning"> {warningAlert}</Alert>
+                        )}
                         <DialogActions>
                             <Button onClick={handleCloseDialogInfo}>Abbrechen</Button>
                         </DialogActions>
@@ -263,7 +255,7 @@ class InfoSelectDialog extends Component {
                         <DialogActions>
                             <Button onClick={handleCloseDialogInfo}>Abbrechen</Button>
                             <Button
-                                onClick={() => this.addButtonFunction(InformationsBoPropId)}
+                                onClick={() => this.postNewValue()}
                                 disabled={this.state.textFieldContent.trim() === ""}
                             >
                                 Hinzufügen

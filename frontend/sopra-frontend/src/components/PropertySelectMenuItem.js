@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import MenuItem from "@mui/material/MenuItem";
 import InfoSelectDialog from "./InfoSelectDialog";
+import {Alert} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import BorderColorSharpIcon from "@mui/icons-material/BorderColorSharp";
@@ -37,6 +38,7 @@ class PropertySelectMenuItem extends Component {
             error: null,
             PropertySelectionNameText: '',
             PropertySelectionDescriptionText: '',
+            warningAlert: "",
         };
         this.handleOpenDialogSelect = this.handleOpenDialogSelect.bind(this);
         this.handleCloseDialogInfo = this.handleCloseDialogInfo.bind(this);
