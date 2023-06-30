@@ -486,25 +486,16 @@ class Profile extends Component {
                                     )
                                 ))
                             ) : (
-                                <p>Keine Informationen im Profil enthalten</p>
+                                <p>Keine Informationen im Profil enthalten.</p>
                             )}
                         </List>
-                        <Box sx={{display: 'flex', justifyContent: 'space-evenly'}}>
+                        <Box>
                             <Container style={{
                                 display: 'grid',
                                 placeItems: 'center',
-                                marginTop: '50px',
-                                marginBottom: '50px'
+                                marginTop: '20px',
+                                marginBottom: '20px'
                             }}>
-                                <Button
-                                    onClick={this.handleOpenSelectDialog}
-                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
-                                    variant="outlined"
-                                    startIcon={<AddIcon/>}
-                                >
-                                    Auswahl-Eigenschaft hinzufügen
-                                </Button>
-
                                 <Tooltip title={"Auswahl-Eigenschaften, die ins Profil geladen werden können."}>
                                     <Button
                                         aria-controls="dropdown-menu"
@@ -540,21 +531,6 @@ class Profile extends Component {
                                     )
                                     }
                                 </Menu>
-                            </Container>
-                            <Container style={{
-                                display: 'grid',
-                                placeItems: 'center',
-                                marginTop: '50px',
-                                marginBottom: '50px'
-                            }}>
-                                <Button
-                                    onClick={this.handleOpenFreeTextDialog}
-                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
-                                    variant="outlined"
-                                    startIcon={<AddIcon/>}
-                                >
-                                    Freitext-Eigenschaft hinzufügen
-                                </Button>
 
                                 <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
                                     <Button
@@ -592,6 +568,30 @@ class Profile extends Component {
                                     )
                                     }
                                 </Menu>
+                            </Container>
+                            <Container style={{
+                                display: 'grid',
+                                placeItems: 'center',
+                                marginTop: '25px',
+                                marginBottom: '25px'
+                            }}>
+                                <Button
+                                    onClick={this.handleOpenSelectDialog}
+                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
+                                    variant="outlined"
+                                    startIcon={<AddIcon/>}
+                                >
+                                    Auswahl-Eigenschaft hinzufügen
+                                </Button>
+
+                                <Button
+                                    onClick={this.handleOpenFreeTextDialog}
+                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
+                                    variant="outlined"
+                                    startIcon={<AddIcon/>}
+                                >
+                                    Freitext-Eigenschaft hinzufügen
+                                </Button>
                             </Container>
                         </Box>
                         <Dialog open={openSelectDialog} onClose={() => this.handleCloseDialogProp(null)}>

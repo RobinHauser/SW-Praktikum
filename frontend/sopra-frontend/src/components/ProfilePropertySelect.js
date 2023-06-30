@@ -3,13 +3,12 @@ import IconButton from "@mui/material/IconButton";
 import EditSharpIcon from '@mui/icons-material/EditSharp';
 import {ListItem, ListItemText} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveCircleSharpIcon from "@mui/icons-material/RemoveCircleSharp";
 import InfoSelectDialog from "./InfoSelectDialog";
-import InformationBO from "../api/InformationBO";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Box from "@mui/material/Box";
+import Typography from '@mui/material/Typography';
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -38,6 +37,7 @@ class ProfilePropertySelect extends Component {
 
     componentDidMount() {
     }
+
     /**
      * triggers the deleteProperty function to delete the current prop out of the system
      */
@@ -62,15 +62,15 @@ class ProfilePropertySelect extends Component {
         });
     }
     /**
-    * triggers the deletion of the current information out of the profile
-    */
+     * triggers the deletion of the current information out of the profile
+     */
     deleteInformationFromProfileButton = () => {
         this.deleteInformation(this.props.InformationsBoInfoId)
     }
     /**
-    * triggers the deletion of the current information out of the profile
+     * triggers the deletion of the current information out of the profile
      * @param {int} informationId - id of the information to be deleted ot of the profile
-    */
+     */
     deleteInformation = (informationId) => {
         SopraDatingAPI.getAPI().deleteInformationById(informationId).then(() => {
             this.setState({
@@ -124,6 +124,7 @@ class ProfilePropertySelect extends Component {
         }
         this.handleCloseDialogInfo();
     }
+
     /**
      * Renders the class component
      * @returns ProfilePropertySelect - the rendered component
@@ -143,10 +144,14 @@ class ProfilePropertySelect extends Component {
         return (
             <div>
                 <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>
-                    <ListItem
-                        sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}
-                    >
-                        <ListItemText primary={`${InformationsBoProp}: ${InformationsBoValue}`}/>
+                    <ListItem sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}>
+                        <ListItemText
+                            primary={
+                                <Typography variant="body1" component="span">
+                                    <strong>{InformationsBoProp}:</strong> {InformationsBoValue}
+                                </Typography>
+                            }
+                        />
                     </ListItem>
                     <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>
                         <Tooltip title="Auswahl-Eigenschaft bearbeiten">
