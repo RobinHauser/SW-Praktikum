@@ -319,6 +319,12 @@ class Administration():
         with SelectionPropertyMapper() as mapper:
             return mapper.remove_selection(value_id)
 
+    def update_option(self, value_id, payload):
+        with SelectionPropertyMapper() as mapper:
+            if payload is not None:
+                return mapper.update_selection(value_id, payload)
+
+
     """
     --------------------------------------------------------------------------------------------------------------
     TextProperty - Functions
