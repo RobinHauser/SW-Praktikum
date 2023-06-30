@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import AppHeader from "../components/AppHeader";
 import Container from "@mui/material/Container";
-import {CircularProgress, List, ListSubheader} from "@mui/material";
+import {Alert, CircularProgress, List, ListSubheader} from "@mui/material";
 import ProfilePropertySelect from "../components/ProfilePropertySelect";
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import Tooltip from "@mui/material/Tooltip";
@@ -59,7 +59,8 @@ class SearchProfile extends Component {
             PropertySelectionNameText: '',
             PropertyFreeTextNameText: '',
             PropertyFreeTextDescriptionText: '',
-            PropertySelectionDescriptionText: ''
+            PropertySelectionDescriptionText: '',
+            successAlert: ""
         };
 
         this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -343,6 +344,13 @@ class SearchProfile extends Component {
         );
     }
 
+    handleSuccessAlert = (text) => {
+        this.setState({successAlert: text})
+        setTimeout(() => {
+            this.setState({successAlert: ""})
+        }, 3000)
+    }
+
     render() {
         const {value} = this.props;
         const {
@@ -354,7 +362,8 @@ class SearchProfile extends Component {
             globalPropertiesFreeText,
             anchorElSelect,
             anchorElFreeText,
-            informations
+            informations,
+            successAlert
         } = this.state;
         const openSelect = Boolean(anchorElSelect)
         const openFreeText = Boolean(anchorElFreeText)
@@ -415,6 +424,7 @@ class SearchProfile extends Component {
                                                                  InformationsBoPropId={InformationsBo.getPropID()}
                                                                  InformationsBoPropDescr={InformationsBo.getPropDescription()}
                                                                  InformationsBoInfoId={InformationsBo.getInformationId()}
+                                                                 handleSuccessAlert={this.handleSuccessAlert}
                                         />
 
                                     )
@@ -567,6 +577,9 @@ class SearchProfile extends Component {
                             handleClick={this.handleClick}
                             value={value}
                         />
+                        {successAlert.length > 0 && (
+                            <Alert severity="success">{successAlert}</Alert>
+                        )}
 
                     </Container>
 
