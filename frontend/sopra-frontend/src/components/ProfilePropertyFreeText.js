@@ -8,6 +8,7 @@ import RemoveCircleSharpIcon from "@mui/icons-material/RemoveCircleSharp";
 import InfoFreeTextDialog from "./InfoFreeTextDialog";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Box from "@mui/material/Box";
+import Typography from '@mui/material/Typography';
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -86,9 +87,14 @@ class ProfilePropertyFreeText extends Component {
         return (
             <div>
                 <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>
-                    <ListItem
-                        sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}>
-                        <ListItemText primary={`${InformationsBoProp}: ${InformationsBoValue}`}/>
+                    <ListItem sx={{'&:hover': {bgcolor: '#c6e2ff'}, borderRadius: '10px'}}>
+                        <ListItemText
+                            primary={
+                                <Typography variant="body1" component="span">
+                                    <strong>{InformationsBoProp}:</strong> {InformationsBoValue}
+                                </Typography>
+                            }
+                        />
                     </ListItem>
                     <Box sx={{display: 'flex', justifyContent: 'space-evenly', flexDirection: 'row'}}>
                         <Tooltip title="Freitext-Information bearbeiten">
