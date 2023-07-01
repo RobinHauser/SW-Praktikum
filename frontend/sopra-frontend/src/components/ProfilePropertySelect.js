@@ -111,8 +111,7 @@ class ProfilePropertySelect extends Component {
     }
 
     handleAddItemClick() {
-        this.setState({openDialogSelect: false, isAddingNewProperty: true});
-        console.log("tst")
+        this.setState({openDialogSelect: true, isAddingNewProperty: true});
     }
 
     handleNewPropertyChange(event) {
