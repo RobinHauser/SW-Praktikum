@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import IconButton from "@mui/material/IconButton";
 import BorderColorSharpIcon from '@mui/icons-material/BorderColorSharp';
-import {ListItem, ListItemText} from "@mui/material";
+import {Alert, ListItem, ListItemText} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveCircleSharpIcon from "@mui/icons-material/RemoveCircleSharp";
@@ -35,7 +35,7 @@ class ProfilePropertyFreeText extends Component {
             this.setState({
                 deletingError: null
             });
-            alert("Löschen aus dem Profil war erfolgreich")
+            this.props.handleSuccessAlert("Löschen aus dem Profil war erfolgreich")
             //this.props.onUserRemoved(blockedUser);
         }).catch(e => {
             this.setState({
@@ -52,7 +52,7 @@ class ProfilePropertyFreeText extends Component {
             this.setState({
                 deletingError: null
             });
-            alert("Löschen aus dem System war erfolgreich")
+            this.props.handleSuccessAlert("Löschen aus dem System war erfolgreich")
             //this.props.onUserRemoved(blockedUser);
         }).catch(e => {
             this.setState({

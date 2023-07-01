@@ -303,3 +303,21 @@ class SelectionPropertyMapper(Mapper.Mapper):
         cursor.close()
 
         return value_id
+
+    def update_selection(self, value_id, payload):
+        """
+        updates the name of a selectable option
+        :param value_id: id of the selectable option
+        :param payload: changed option name
+        :return: updated selectable option name
+        """
+        cursor = self._cnx.cursor()
+
+        command = "UPDATE occupancies SET Value=%s WHERE ValueID=%s"
+        data = (payload.get('value'), value_id)
+        cursor.execute(command, data)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return payload

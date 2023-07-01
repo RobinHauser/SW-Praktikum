@@ -645,6 +645,17 @@ class SelectionPropertyOptions_api(Resource):
         adm.remove_option(id)
         return ''
 
+    @secured
+    def put(self, id):
+        """
+        updates the name of a selectable option of a selection property
+        :param id: id of the selectable option (ValueID)
+        :return: updated option name as json
+        """
+        adm = Administration()
+        response = adm.update_option(id, api.payload)
+        return response
+
 
 """
 --------------------------------------------------------------------------------------------------------------

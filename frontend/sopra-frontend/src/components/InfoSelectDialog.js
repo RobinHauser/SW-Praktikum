@@ -25,7 +25,8 @@ class InfoSelectDialog extends Component {
             deletingInProgress: null,
             deletingError: null,
             textFieldContent: "",
-            warningAlert: ""
+            warningAlert: "",
+            successAlert: ""
         };
     }
 
@@ -56,9 +57,10 @@ class InfoSelectDialog extends Component {
         SopraDatingAPI.getAPI().updateValueOfInformationObject(informationId, valueBo)
             .then(responseJSON => {
                 this.setState({
-                    error: null
+                    error: null,
+                    successAlert: "Die Information wurder erfolgreich aktualisiert"
                 })
-                alert("Die Information wurde erfolgreich aktualisiert")
+                setTimeout(() => {this.setState({successAlert: ""});}, 3000);
             }).catch(e =>
             this.setState({
                 error: e
@@ -74,9 +76,10 @@ class InfoSelectDialog extends Component {
         SopraDatingAPI.getAPI().addNewInformationObjectToProile(valueId, informationBo)
             .then(responseJSON => {
                 this.setState({
-                    error: null
+                    error: null,
+                    successAlert: "Die Information wurde erfolgreich zum Profil hinzugefügt"
                 })
-                alert("Die Information wurde erfolgreich zum Profil hinzugefügt")
+                setTimeout(() => {this.setState({successAlert: ""});}, 3000);
             }).catch(e =>
             this.setState({
                 error: e
@@ -187,7 +190,7 @@ class InfoSelectDialog extends Component {
             InformationsBoProp,
             InformationsBoPropDescr,
         } = this.props;
-        const {propertiesList, warningAlert} = this.state
+        const {propertiesList, warningAlert, successAlert} = this.state
         if (!propertiesList) {
             //return (<LinearProgress></LinearProgress>)
         } else {
@@ -234,6 +237,9 @@ class InfoSelectDialog extends Component {
                         </DialogContent>
                         {warningAlert.length > 0 && (
                             <Alert severity="warning"> {warningAlert}</Alert>
+                        )}
+                        {successAlert.length > 0 && (
+                            <Alert severity="success"> {successAlert}</Alert>
                         )}
                         <DialogActions>
                             <Button onClick={handleCloseDialogInfo}>Abbrechen</Button>
