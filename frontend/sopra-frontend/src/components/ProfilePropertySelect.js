@@ -93,9 +93,11 @@ class ProfilePropertySelect extends Component {
         const {isAddingNewProperty} = this.state;
         if (isAddingNewProperty) {
             this.setState({isAddingNewProperty: false});
+            this.setState({openDialogSelect: true});
         } else {
             this.setState({openDialogSelect: false});
         }
+
     }
 
     handleListItemClick() {
@@ -109,7 +111,7 @@ class ProfilePropertySelect extends Component {
     }
 
     handleAddItemClick() {
-        this.setState({openDialogSelect: false, isAddingNewProperty: true});
+        this.setState({openDialogSelect: true, isAddingNewProperty: true});
     }
 
     handleNewPropertyChange(event) {
