@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TextField from "@mui/material/TextField";
 import SopraDatingAPI from "../api/SopraDatingAPI";
+import Box from '@mui/material/Box';
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
@@ -60,7 +61,9 @@ class InfoSelectDialog extends Component {
                     error: null,
                     successAlert: "Die Information wurder erfolgreich aktualisiert"
                 })
-                setTimeout(() => {this.setState({successAlert: ""});}, 3000);
+                setTimeout(() => {
+                    this.setState({successAlert: ""});
+                }, 3000);
             }).catch(e =>
             this.setState({
                 error: e
@@ -79,7 +82,9 @@ class InfoSelectDialog extends Component {
                     error: null,
                     successAlert: "Die Information wurde erfolgreich zum Profil hinzugefügt"
                 })
-                setTimeout(() => {this.setState({successAlert: ""});}, 3000);
+                setTimeout(() => {
+                    this.setState({successAlert: ""});
+                }, 3000);
             }).catch(e =>
             this.setState({
                 error: e
@@ -120,7 +125,9 @@ class InfoSelectDialog extends Component {
                     textFieldContent: "",
                     warningAlert: "Option existiert bereits"
                 })
-                setTimeout(() => {this.setState({warningAlert: ""});}, 3000);
+                setTimeout(() => {
+                    this.setState({warningAlert: ""});
+                }, 3000);
             })
         handleCloseDialogInfo()
     }
@@ -204,32 +211,36 @@ class InfoSelectDialog extends Component {
                                 <List>
                                     {propertiesList.map((property, index) => (
                                         <ListItem key={index}>
-                                            <ListItemText
-                                                sx={{
-                                                    textAlign: 'center',
-                                                    display: 'flex',
-                                                    justifyContent: 'center',
-                                                }}
-                                                primary={property.getValue()}
-                                                onClick={() => this.updateValueInInformationButton(property.getValueID())}
-                                            />
-                                            <IconButton
-                                                edge="end"
-                                                aria-label="Löschen"
-                                                onClick={() => this.deleteButtonFunction(property.getValueID())}
-                                            >
-                                                <DeleteIcon/>
-                                            </IconButton>
+                                            <Box sx={{width: '100%', display: 'flex', justifyContent: 'center'}}>
+                                                <Button
+                                                    onClick={() => this.updateValueInInformationButton(property.getValueID())}>
+                                                    <ListItemText
+                                                        primary={property.getValue()}
+                                                        sx={{
+                                                            textAlign: 'center',
+                                                            textTransform: 'none',
+                                                        }}
+                                                    />
+                                                </Button>
+                                            </Box>
+                                            <Box sx={{marginLeft: 'auto'}}>
+                                                <IconButton
+                                                    edge="end"
+                                                    aria-label="Löschen"
+                                                    onClick={() => this.deleteButtonFunction(property.getValueID())}
+                                                >
+                                                    <DeleteIcon/>
+                                                </IconButton>
+                                            </Box>
                                         </ListItem>
                                     ))}
                                     <ListItem button onClick={handleAddItemClick}>
                                         <ListItemText
+                                            primary="Neue Option hinzufügen"
                                             sx={{
                                                 textAlign: 'center',
-                                                display: 'flex',
-                                                justifyContent: 'center',
+                                                textTransform: 'none',
                                             }}
-                                            primary="Neue Option hinzufügen"
                                         />
                                     </ListItem>
                                 </List>

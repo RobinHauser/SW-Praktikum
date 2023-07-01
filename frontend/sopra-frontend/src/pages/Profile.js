@@ -514,7 +514,7 @@ class Profile extends Component {
                                         endIcon={<ArrowDropDownIcon/>}
                                         sx={{marginTop: '25px'}}
                                     >
-                                        Auswahl-Eigenschaft laden
+                                        Auswahl-Eigenschaft ins Profil laden
                                     </Button>
                                 </Tooltip>
                                 <Menu
@@ -551,7 +551,7 @@ class Profile extends Component {
                                         sx={{marginTop: '25px'}}
 
                                     >
-                                        Freitext-Eigenschaft laden
+                                        Freitext-Eigenschaft ins Profil laden
                                     </Button>
                                 </Tooltip>
                                 <Menu
@@ -590,7 +590,7 @@ class Profile extends Component {
                                     variant="outlined"
                                     startIcon={<AddIcon/>}
                                 >
-                                    Auswahl-Eigenschaft hinzufügen
+                                    Auswahl-Eigenschaft global hinzufügen
                                 </Button>
 
                                 <Button
@@ -599,7 +599,7 @@ class Profile extends Component {
                                     variant="outlined"
                                     startIcon={<AddIcon/>}
                                 >
-                                    Freitext-Eigenschaft hinzufügen
+                                    Freitext-Eigenschaft global hinzufügen
                                 </Button>
                             </Container>
                         </Box>
