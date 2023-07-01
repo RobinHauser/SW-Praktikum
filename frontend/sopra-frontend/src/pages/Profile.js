@@ -480,6 +480,7 @@ class Profile extends Component {
                                                                InformationsBoInfoId={InformationsBo.getInformationId()}
                                                                InformationsBoIsSelection={InformationsBo.getIsSelect()}
                                                                handleSuccessAlert={this.handleSuccessAlert}
+                                                               getAllSelectionProperties={this.getAllSelectionProperties}
                                         />
                                     ) : (
                                         <ProfilePropertyFreeText key={InformationsBo.getInformationId()}
@@ -490,6 +491,7 @@ class Profile extends Component {
                                                                  InformationsBoPropDescr={InformationsBo.getPropDescription()}
                                                                  InformationsBoInfoId={InformationsBo.getInformationId()}
                                                                  handleSuccessAlert={this.handleSuccessAlert}
+                                                                 getAllFreeTextProperties={this.getAllFreeTextProperties}
                                         />
 
                                     )

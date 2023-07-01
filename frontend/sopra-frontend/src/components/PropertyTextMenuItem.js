@@ -14,7 +14,9 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import {Alert} from "@mui/material";
-
+/**
+ * @author [Jannik Haug](https://github.com/JannikHaug)
+ */
 class PropertyTextMenuItem extends Component {
     constructor(props) {
         super(props);

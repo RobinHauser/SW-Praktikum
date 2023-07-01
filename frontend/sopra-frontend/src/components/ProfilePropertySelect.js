@@ -49,13 +49,15 @@ class ProfilePropertySelect extends Component {
      * @param {int} propertyId - id of the property to be deleted
      */
     deleteProperty = (propertyId) => {
-        SopraDatingAPI.getAPI().deleteSelectPropertyFromSystemById(propertyId).then(() => {
-            this.setState({
-                deletingError: null
-            });
-            this.props.handleSuccessAlert("Löschen aus dem System war erfolgreich")
-            //this.props.onUserRemoved(blockedUser);
-        }).catch(e => {
+        SopraDatingAPI.getAPI().deleteSelectPropertyFromSystemById(propertyId)
+            .then(() => {
+                this.setState({
+                    deletingError: null
+                });
+                this.props.handleSuccessAlert("Löschen aus dem System war erfolgreich")
+                this.props.getAllSelectionProperties()
+                //this.props.onUserRemoved(blockedUser);
+            }).catch(e => {
             this.setState({
                 deletingError: e
             });

@@ -48,13 +48,15 @@ class ProfilePropertyFreeText extends Component {
         this.deleteProperty(this.props.InformationsBoPropId)
     }
     deleteProperty = (propertyId) => {
-        SopraDatingAPI.getAPI().deleteTextPropertyFromSystemById(propertyId).then(() => {
-            this.setState({
-                deletingError: null
-            });
-            this.props.handleSuccessAlert("Löschen aus dem System war erfolgreich")
-            //this.props.onUserRemoved(blockedUser);
-        }).catch(e => {
+        SopraDatingAPI.getAPI().deleteTextPropertyFromSystemById(propertyId)
+            .then(() => {
+                this.setState({
+                    deletingError: null
+                });
+                this.props.handleSuccessAlert("Löschen aus dem System war erfolgreich")
+                this.props.getAllFreeTextProperties()
+                //this.props.onUserRemoved(blockedUser);
+            }).catch(e => {
             this.setState({
                 deletingError: e
             });

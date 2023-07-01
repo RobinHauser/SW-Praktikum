@@ -14,7 +14,9 @@ import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import SopraDatingAPI from "../api/SopraDatingAPI";
-
+/**
+ * @author [Jannik Haug](https://github.com/JannikHaug)
+ */
 class PropertySelectMenuItem extends Component {
     constructor(props) {
         super(props);
@@ -205,7 +207,7 @@ class PropertySelectMenuItem extends Component {
                 });
             }).catch(e => {
             this.setState({
-                error: e
+                error: e,
             });
         });
     };
