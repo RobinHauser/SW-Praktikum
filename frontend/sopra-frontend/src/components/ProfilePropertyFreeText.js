@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
+ * Class react component which includes the list and buttons of the free text properties and info objects
  */
 
 class ProfilePropertyFreeText extends Component {
@@ -27,26 +28,42 @@ class ProfilePropertyFreeText extends Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
+    /**
+     * Button which handles the deletion of a information on the profile
+     */
+
     deleteInformationFromProfileButton = () => {
         this.deleteInformation(this.props.InformationsBoInfoId)
     }
+
+    /**
+     * Calls the api to delete an information from the profile
+     * @param {int} informationId - id of the current information
+     */
     deleteInformation = (informationId) => {
         SopraDatingAPI.getAPI().deleteInformationById(informationId).then(() => {
             this.setState({
                 deletingError: null
             });
             this.props.handleSuccessAlert("Löschen aus dem Profil war erfolgreich")
-            //this.props.onUserRemoved(blockedUser);
         }).catch(e => {
             this.setState({
                 deletingError: e
             });
         });
     }
+
+    /**
+     * Calls the function to delete a free text property from the system
+     */
     deletePropertyFromSystemButton = () => {
-        console.log(this.props.InformationsBoPropId)
         this.deleteProperty(this.props.InformationsBoPropId)
     }
+
+    /**
+     * Calls the api to delete a free text property from the system
+     * @param {int} propertyId - id of the current property
+     */
     deleteProperty = (propertyId) => {
         SopraDatingAPI.getAPI().deleteTextPropertyFromSystemById(propertyId)
             .then(() => {
@@ -63,9 +80,17 @@ class ProfilePropertyFreeText extends Component {
         });
     }
 
+    /**
+     * Handles the dialog open for the free text dialog
+     */
+
     handleOpenDialogFreeText() {
         this.setState({openDialogFreeText: true});
     }
+
+    /**
+     * Handles the dialog close for the free text dialog
+     */
 
     handleCloseDialogFreeText() {
         this.setState({openDialogFreeText: false, selectedValue: this.props.value});
@@ -74,6 +99,11 @@ class ProfilePropertyFreeText extends Component {
     handleClick(value) {
         this.handleCloseDialogFreeText(value);
     }
+
+    /**
+     * Renders the class component
+     * @returns ProfilePropertyFreeText - the rendered component
+     */
 
 
     render() {
