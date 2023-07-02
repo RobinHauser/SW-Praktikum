@@ -18,6 +18,15 @@ The project team consisted of the following persons:
 * Elias Konson
 * Björn Till
 
+## Authors - Disclaimer
+Due to changing approaches to our system, we did not have strict responsibilities for each member and functionality. 
+There are fragments in our code that were written by a single team member, however there are also classes and functions
+multiple team members worked on, with up to 5-6 people per class. 
+<br/>
+Hence, we decided not to indicate the authors of the code everywhere.
+You can see who worked on which functions, classes and components, if you clone this project from our GitHub repository. 
+
+
 
 ## Technologies
 ***
