@@ -196,9 +196,9 @@ class InfoSelectDialog extends Component {
     handleInputChangeTextFieldContentEdit = (event) => {
         this.setState({textFieldContentEdit: event.target.value});
     }
-
     /**
-     * handles the updating of a new selection option
+     * api function for updating the selected selection value
+     * sets alerts for success and error
      * @param {int} valueId
      */
     updateSelectionValue = (valueId) => {

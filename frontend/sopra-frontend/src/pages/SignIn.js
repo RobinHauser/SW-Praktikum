@@ -11,11 +11,17 @@ import {Component} from "react";
 import PropTypes from "prop-types";
 
 class SignIn extends Component {
-
-    handleSignInButtonClicked = () =>  {
+    /**
+     * handles the sign in button click to sign the user in with google firebase
+     */
+    handleSignInButtonClicked = () => {
         this.props.onSignIn();
     }
 
+    /**
+     * Renders the class component
+     * @returns SignIn - the rendered component
+     */
     render() {
         return (
             <div className="App">
@@ -33,7 +39,7 @@ class SignIn extends Component {
                                 <br/>
                                 <Typography color="text.secondary">
                                     Willkommen auf der Sopra Dating Webseite. Wenn Sie noch keinen Account haben können
-                                    Sie sich hier  einfach über Google registrieren. Dann wird ein neuer Account für
+                                    Sie sich hier einfach über Google registrieren. Dann wird ein neuer Account für
                                     Sie angelegt. Haben Sie bereits einen, können sie sich mit dem gleichen Google
                                     Account anmelden, mit dem Sie sich registriert haben.
                                     <br/>
@@ -56,10 +62,10 @@ class SignIn extends Component {
 
 /** PropTypes */
 SignIn.propTypes = {
-	/**
-	 * Handler function, which is called if the user wants to sign in.
-	 */
-	onSignIn: PropTypes.func.isRequired,
+    /**
+     * Handler function, which is called if the user wants to sign in.
+     */
+    onSignIn: PropTypes.func.isRequired,
 }
 
 export default SignIn;
