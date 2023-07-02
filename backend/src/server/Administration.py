@@ -264,7 +264,7 @@ class Administration():
     --------------------------------------------------------------------------------------------------------------
     """
     def create_selection_property(self, name, description):
-        present_prop = self.get_property_by_name(name)
+        present_prop = self.get_selection_property_by_name(name)
         if present_prop is None:
             sel_prop = SelectionProperty()
             sel_prop.set_name(name)
@@ -331,7 +331,7 @@ class Administration():
     --------------------------------------------------------------------------------------------------------------
     """
     def create_text_property(self, name, description):
-        present_prop = self.get_property_by_name(name)
+        present_prop = self.get_text_property_by_name(name)
         if present_prop is None:
             text_prop = TextProperty()
             text_prop.set_name(name)
