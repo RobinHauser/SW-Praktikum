@@ -1114,6 +1114,13 @@ export default class SopraDatingAPI {
         })
     };
 
+    /**
+     * Updates a text value.
+     *
+     * @param valueId - The ID of the value to be updated.
+     * @param valueBo - The updated value object.
+     * @return {Promise<unknown>} - A Promise that resolves to a ValueBo object representing the updated value.
+     */
     updateTextValue(valueId, valueBo) {
         return this.#fetchAdvanced(this.#updateTextValueByIdURL(valueId), {
             method: 'PUT',
