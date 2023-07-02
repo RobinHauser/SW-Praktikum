@@ -2,7 +2,6 @@
  * Abstracts the REST interface of the Python backend with convenient access methods.
  * The class is implemented as a singleton.
  *
- * @author [Michael Bergdolt] (https://github.com/MichaelBergdolt)
  * inspired by [Christoph Kunz] (https://github.com/christophkunz)
  */
 import UserBO from "./UserBO";
@@ -321,7 +320,6 @@ export default class SopraDatingAPI {
      * @return {Promise<unknown>} - A Promise that resolves to the updated UserBO.
      */
     addUserToBookmarklist(userID, userBO) {
-        // console.log(JSON.stringify(userBO))
         return this.#fetchAdvanced(this.#addUserToBookmarklistURL(userID), {
             method: 'POST',
             headers: {
@@ -354,7 +352,6 @@ export default class SopraDatingAPI {
         })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
-                // console.log(blocklistBOs)
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
@@ -493,7 +490,6 @@ export default class SopraDatingAPI {
             }
         }).then((responseJSON) => {
             let chatBOs = ChatBO.fromJSON(responseJSON);
-            console.log("chatBOS:", chatBOs)
             return new Promise(function (resolve) {
                 resolve(chatBOs)
             })
@@ -606,7 +602,6 @@ export default class SopraDatingAPI {
             }
         })
             .then((responseJSON) => {
-                // console.log(responseJSON)
                 let SearchProfileBOs = ProfileBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
                     resolve(SearchProfileBOs)
@@ -933,7 +928,6 @@ export default class SopraDatingAPI {
      * @return {Promise<unknown>} - A Promise that resolves to the added PropertyBO object.
      */
     addSelectionProperty(propertyBO) {
-        console.log(propertyBO)
         return this.#fetchAdvanced(this.#addSelectionPropertyURL(), {
             method: 'POST',
             headers: {
@@ -979,7 +973,6 @@ export default class SopraDatingAPI {
      * @return {Promise<unknown>} - A Promise that resolves to the added PropertyBO object.
      */
     addFreeTextProperty(propertyBO) {
-        console.log(propertyBO)
         return this.#fetchAdvanced(this.#addFreeTextPropertyURL(), {
             method: 'POST',
             headers: {

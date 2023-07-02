@@ -29,8 +29,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {getAuth, signOut} from "firebase/auth";
 
 /**
- * @author [Björn Till](https://github.com/BjoernTill)
- * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which includes the profile page
  */
 

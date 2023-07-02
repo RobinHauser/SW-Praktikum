@@ -5,11 +5,9 @@ import * as React from "react";
 import {Component} from "react";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import {Link} from "react-router-dom";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
- * @author [Björn Till](https://github.com/BjoernTill)
  * Class react component which renders the container in which the list of search profiles are placed
  **/
 

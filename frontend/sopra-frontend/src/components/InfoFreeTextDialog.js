@@ -9,8 +9,6 @@ import TextField from "@mui/material/TextField";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
- * @author [Björn Till](https://github.com/BjoernTill)
- * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which includes the dialog window to fill out the text for a free text property
  */
 
@@ -117,7 +115,6 @@ class InfoFreeTextDialog extends Component {
      * Checks whether the text field is filled out
      */
     isFormValid() {
-        console.log(this.state.textFieldContent)
         return (
             this.state.textFieldContent.trim() !== ''
         );

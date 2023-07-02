@@ -8,7 +8,6 @@ import IconButton from "@mui/material/IconButton";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
- * @author [Björn Till](https://github.com/BjoernTill)
  * Class react component which renders the search profile list items
  */
 

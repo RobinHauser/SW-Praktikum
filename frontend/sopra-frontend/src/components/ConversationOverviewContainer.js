@@ -8,7 +8,6 @@ import AppHeader from "./AppHeader";
 import Box from "@mui/material/Box";
 
 /**
- * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which includes a list for all current chats where the current user is a part of.
  */
 class ConversationOverviewContainer extends Component {

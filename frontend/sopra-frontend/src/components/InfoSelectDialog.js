@@ -16,8 +16,6 @@ import BorderColorSharpIcon from "@mui/icons-material/BorderColorSharp";
 import DoneIcon from '@mui/icons-material/Done';
 
 /**
- * @author [Björn Till](https://github.com/BjoernTill)
- * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which includes the dialog window to choose a new selection for a selection property
  */
 
