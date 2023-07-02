@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
+ * @author [Jannik Haug](https://github.com/JannikHaug)
  */
 
 class ProfilePropertyFreeText extends Component {
@@ -27,9 +28,15 @@ class ProfilePropertyFreeText extends Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
+    /**
+     * Button function for deleting an information from the profile
+     */
     deleteInformationFromProfileButton = () => {
         this.deleteInformation(this.props.InformationsBoInfoId)
     }
+    /**
+     * API call function for deleting an information from the profile
+     */
     deleteInformation = (informationId) => {
         SopraDatingAPI.getAPI().deleteInformationById(informationId).then(() => {
             this.setState({
@@ -43,10 +50,16 @@ class ProfilePropertyFreeText extends Component {
             });
         });
     }
+    /**
+     * Button function for deleting a property out of the system
+     */
     deletePropertyFromSystemButton = () => {
         console.log(this.props.InformationsBoPropId)
         this.deleteProperty(this.props.InformationsBoPropId)
     }
+    /**
+     * API call function for deleting a property out of the system
+     */
     deleteProperty = (propertyId) => {
         SopraDatingAPI.getAPI().deleteTextPropertyFromSystemById(propertyId)
             .then(() => {
@@ -83,7 +96,7 @@ class ProfilePropertyFreeText extends Component {
             InformationsBoId,
             InformationsBoPropId,
             InformationsBoPropDescr,
-            InformationsBoInfoId
+            InformationsBoInfoId,
         } = this.props;
         const {openDialogFreeText} = this.state;
         return (
