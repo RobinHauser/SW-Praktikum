@@ -11,6 +11,7 @@ import SopraDatingAPI from "../api/SopraDatingAPI";
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which includes the dialog window to fill out the text for a free text property
  */
 
 class InfoFreeTextDialog extends Component {
@@ -36,6 +37,8 @@ class InfoFreeTextDialog extends Component {
             "entry": `${content}`,
         }
         this.postNewValue(this.props.InformationsBoPropId, valueBo, parseInt(this.props.InformationsBoInfoId))
+        this.props.handleCloseDialogFreeText()
+
     }
     /**
      * posts a new value for a prop and triggers the function to add it to the current information object
@@ -109,15 +112,34 @@ class InfoFreeTextDialog extends Component {
         this.setState({textFieldContent: event.target.value})
     }
 
+     /**
+     * Checks whether the text field is filled out
+     */
+    isFormValid() {
+        console.log(this.state.textFieldContent)
+        return (
+            this.state.textFieldContent.trim() !== ''
+        );
+    }
+
     /**
      * Called after the component did mount.
      * Sets the textfield to the current value
      */
     componentDidMount() {
+        if (!this.props.InformationsBoValue) {
+            this.setState({textFieldContent: ""})
+        }
+        else {
         this.setState({
             textFieldContent: this.props.InformationsBoValue
-        })
+        })}
     }
+
+    /**
+     * Renders the class component
+     * @returns InfoFreeTextDialog - the rendered component
+     */
 
     render() {
         const {
@@ -147,7 +169,7 @@ class InfoFreeTextDialog extends Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCloseDialogFreeText}>Abbrechen</Button>
-                        <Button onClick={this.addButtonFunction}>Bestätigen</Button>
+                        <Button onClick={this.addButtonFunction} disabled={!this.isFormValid()}>Bestätigen</Button>
                     </DialogActions>
                 </Dialog>
             </div>

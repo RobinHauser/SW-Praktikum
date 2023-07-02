@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which includes the list and buttons of the free text properties and info objects
  */
 
 class ProfilePropertyFreeText extends Component {
@@ -29,13 +30,16 @@ class ProfilePropertyFreeText extends Component {
     }
 
     /**
-     * Button function for deleting an information from the profile
+     * Button which handles the deletion of a information on the profile
      */
+
     deleteInformationFromProfileButton = () => {
         this.deleteInformation(this.props.InformationsBoInfoId)
     }
+
     /**
-     * API call function for deleting an information from the profile
+     * Calls the api to delete an information from the profile
+     * @param {int} informationId - id of the current information
      */
     deleteInformation = (informationId) => {
         SopraDatingAPI.getAPI().deleteInformationById(informationId).then(() => {
@@ -43,22 +47,23 @@ class ProfilePropertyFreeText extends Component {
                 deletingError: null
             });
             this.props.handleSuccessAlert("Löschen aus dem Profil war erfolgreich")
-            //this.props.onUserRemoved(blockedUser);
         }).catch(e => {
             this.setState({
                 deletingError: e
             });
         });
     }
+
     /**
-     * Button function for deleting a property out of the system
+     * Calls the function to delete a free text property from the system
      */
     deletePropertyFromSystemButton = () => {
-        console.log(this.props.InformationsBoPropId)
         this.deleteProperty(this.props.InformationsBoPropId)
     }
+
     /**
-     * API call function for deleting a property out of the system
+     * Calls the api to delete a free text property from the system
+     * @param {int} propertyId - id of the current property
      */
     deleteProperty = (propertyId) => {
         SopraDatingAPI.getAPI().deleteTextPropertyFromSystemById(propertyId)
@@ -76,9 +81,17 @@ class ProfilePropertyFreeText extends Component {
         });
     }
 
+    /**
+     * Handles the dialog open for the free text dialog
+     */
+
     handleOpenDialogFreeText() {
         this.setState({openDialogFreeText: true});
     }
+
+    /**
+     * Handles the dialog close for the free text dialog
+     */
 
     handleCloseDialogFreeText() {
         this.setState({openDialogFreeText: false, selectedValue: this.props.value});
@@ -88,6 +101,11 @@ class ProfilePropertyFreeText extends Component {
         this.handleCloseDialogFreeText(value);
     }
 
+    /**
+     * Renders the class component
+     * @returns ProfilePropertyFreeText - the rendered component
+     */
+
 
     render() {
         const {
@@ -96,7 +114,7 @@ class ProfilePropertyFreeText extends Component {
             InformationsBoId,
             InformationsBoPropId,
             InformationsBoPropDescr,
-            InformationsBoInfoId,
+            InformationsBoInfoId
         } = this.props;
         const {openDialogFreeText} = this.state;
         return (
