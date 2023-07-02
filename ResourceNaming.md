@@ -73,113 +73,113 @@ beschrieben.
 
 1. Erhalten einer Liste aller persönlichen Profile:
 
-    `GET /profile/personal_profiles`
+    `GET /personal-profile/personal_profiles`
 
 2. Erhalten liste aller persönlichen Profile sortiert nach Ähnlichkeitsmaß:
 
-    `GET /profile/sorted/<int:id>`
+    `GET /personal-profile/sorted/<int:id>`
 
 3. Erhalten eines persönlichen Profils via ID:
 
-    `GET /profile/<int:id>`
+    `GET /personal-profile/<int:id>`
 
 4. Löschen eines persönlichen Profils via ID:
 
-    `DELETE /profile/<int:id>`
+    `DELETE /personal-profile/<int:id>`
 
 5. Erhalten eines persönlichen Profils via User ID:
 
-    `GET /profile/by_user/<int:id>`
+    `GET /personal-profile/by_user/<int:id>`
 
 6. Erstellen eines persönlichen Profils für einen User via User ID:
 
-    `POST /profile/by_user/<int:id>`
+    `POST /personal-profile/by_user/<int:id>`
 
 
 ## G) "SearchProfile"- Schnittstellen
 
 1. Erhalte eine Liste aller Suchprofile eines Users:
 
-    `GET /searchprofile/by_user/<user_id>`
+    `GET /search-profile/by_user/<user_id>`
 
 2. Erstellen eines neuen Suchprofils für einen User:
 
-    `POST /searchprofile/by_user/<user_id>`
+    `POST /search-profile/by_user/<user_id>`
 
 3. Erhalten eines Suchprofils via ID:
 
-    `GET /searchprofile/<int:id>`
+    `GET /search-profile/<int:id>`
 
 4. Löschen eines Suchprofils via ID:
     
-   `DELETE /searchprofile/<int:id>`
+   `DELETE /search-profile/<int:id>`
 
 ## H) "Selection Property"- Schnittstellen
 
 1. Erhalten einer Auswahleigenschaft via ID:
 
-    `GET /selection_property/<int:id>` 
+    `GET /selection-property/<int:id>` 
 
 2. Aktualisieren einer Auswahleigenschaft via ID:
 
-    `PUT /selection_property/<int:id>`
+    `PUT /selection-property/<int:id>`
 
 3. Löschen einer Auswahleigenschaft via ID:
 
-    `DELETE /selection_property/<int:id>`
+    `DELETE /selection-property/<int:id>`
 
 4. Erstellen einer Auswahleigenschaft:
     
-   `POST /selection_property/selection_properties`
+   `POST /selection-property/selection_properties`
 
 5. Erhalten einer Liste aller Auswahleigenschaften
 
-    `GET /selection_property/selection_properties`
+    `GET /selection-property/selection_properties`
 
 6. Erhalten aller auswählbaren Informationen zu einer Auswahleigenschaft:
 
-    `GET /selection_property/options/<int:id>`
+    `GET /selection-property/options/<int:id>`
 
 7. Hinzufügen einer auswählbaren Information zu einer Auswahleigenschaft:
 
-    `POST /selection_property/options/<int:id>`
+    `POST /selection-property/options/<int:id>`
 
 8. Löschen einer auswählbaren Information zu einer Auswahleigenschaft:
 
-    `DELETE /selection_property/options/<int:id>`
+    `DELETE /selection-property/options/<int:id>`
 
 9. Aktualisieren einer auswählbaren Information zu einer Auswahleigenschaft:
 
-    `PUT /selection_property/options/<int:id>`
+    `PUT /selection-property/options/<int:id>`
 
 ## I) "Text Property"- Schnittstellen
 
 1. Erhalten einer Texteigenschaft via ID:
 
-    `GET /text_property/<int:id>`
+    `GET /text-property/<int:id>`
 
 2. Aktualisieren einer Texteigenschaft via ID:
 
-    `PUT /text_property/<int:id>`
+    `PUT /text-property/<int:id>`
 
 3. Löschen einer Texteigenschaft via ID:
 
-    `DELETE /text_property/<int:id>`
+    `DELETE /text-property/<int:id>`
 
 4. Erstellen einer Texteigenschaft:
 
-   `POST /text_property/text_properties`
+   `POST /text-property/text_properties`
 
 5. Erhalten einer Liste aller Texteigenschaften:
 
-    `GET /text_property/text_properties`
+    `GET /text-property/text_properties`
 
 6. Hinzufügen eines Eintrags für eine ausgewähle Texteigenschaft:
 
-    `POST /text_property/entries/<int:id>`
+    `POST /text-property/entries/<int:id>`
 7. Aktualisieren eines Eintrags für eine ausgewähle Texteigenschaft:
 
-    `PUT /text_property/entries/<int:id>`
+    `PUT /text-property/entries/<int:id>`
 
 ## J) "Information"- Schnittstellen
 
