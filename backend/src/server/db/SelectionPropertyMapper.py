@@ -134,10 +134,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
 
         for maxid in tuples:
             if maxid[0] is not None:
-                if maxid[0]+1 > 7000:
-                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
-                else:
-                    sel_prop.set_id(maxid[0]+1)
+                sel_prop.set_id(maxid[0]+1)
             else:
                 sel_prop.set_id(6001)
 
@@ -248,11 +245,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
         max_id = 0
         for maxid in tuples:
             if maxid[0] is not None:
-                if maxid[0] + 1 > 8000:
-                    raise ValueError(
-                        "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
-                else:
-                    max_id = maxid[0] + 1
+                max_id = maxid[0] + 1
             else:
                 max_id = 7001
 
@@ -280,7 +273,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
         cursor.close()
 
         return payload
-        # todo im frontend: sobald man eine neue option anlegt muss direkt danach der retrieve_selections befehl aufgerufen werden, damit die ValueID wieder geholt wird.
+
 
     def remove_selection(self, value_id):
         """

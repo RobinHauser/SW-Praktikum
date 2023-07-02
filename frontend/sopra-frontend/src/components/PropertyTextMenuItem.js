@@ -60,7 +60,7 @@ class PropertyTextMenuItem extends Component {
     /**
      * handles the dialog closing for component InfoFreeTextDialog
      * Sets the openDialogFreeText to false
-     * Sets the selectedValue to props.value
+     * Sets the selectedValue to props value
      */
     handleCloseDialogFreeText() {
         this.setState({openDialogFreeText: false, selectedValue: this.props.value});

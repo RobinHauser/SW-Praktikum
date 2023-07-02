@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which includes the list and buttons of the selection properties and info objects
  */
 
 class ProfilePropertySelect extends Component {
@@ -35,8 +36,6 @@ class ProfilePropertySelect extends Component {
         this.handleAddProperty = this.handleAddProperty.bind(this);
     }
 
-    componentDidMount() {
-    }
 
     /**
      * triggers the deleteProperty function to delete the current prop out of the system
@@ -87,10 +86,17 @@ class ProfilePropertySelect extends Component {
         });
     }
 
+    /**
+     * Handles the dialog open for the selection dialog
+     */
+
     handleOpenDialogSelect() {
         this.setState({openDialogSelect: true});
     }
 
+    /**
+     * Handles the dialog close for the selection dialog
+     */
     handleCloseDialogInfo() {
         const {isAddingNewProperty} = this.state;
         if (isAddingNewProperty) {
