@@ -116,6 +116,7 @@ class InfoFreeTextDialog extends Component {
      * Checks whether the text field is filled out
      */
     isFormValid() {
+        console.log(this.state.textFieldContent)
         return (
             this.state.textFieldContent.trim() !== ''
         );
@@ -126,9 +127,13 @@ class InfoFreeTextDialog extends Component {
      * Sets the textfield to the current value
      */
     componentDidMount() {
+        if (!this.props.InformationsBoValue) {
+            this.setState({textFieldContent: ""})
+        }
+        else {
         this.setState({
             textFieldContent: this.props.InformationsBoValue
-        })
+        })}
     }
 
     /**

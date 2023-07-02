@@ -539,7 +539,7 @@ class SearchProfile extends Component {
                                     )
                                 ))
                             ) : (
-                                <p>Keine Informationen im Profil enthalten.</p>
+                                <p>Keine Informationen im Suchprofil enthalten.</p>
                             )}
                         </List>
 
@@ -557,7 +557,7 @@ class SearchProfile extends Component {
                                 marginTop: '20px',
                                 marginBottom: '20px'
                             }}>
-                                <Tooltip title={"Auswahl-Eigenschaften, die ins Profil geladen werden können."}>
+                                <Tooltip title={"Auswahl-Eigenschaften, die ins Suchprofil geladen werden können."}>
                                     <Button
                                         aria-controls="dropdown-menu"
                                         aria-haspopup="true"
@@ -566,7 +566,7 @@ class SearchProfile extends Component {
                                         endIcon={<ArrowDropDownIcon/>}
                                         sx={{marginTop: '25px'}}
                                     >
-                                        Auswahl-Eigenschaft ins Profil laden
+                                        Auswahl-Eigenschaft ins Suchprofil laden
                                     </Button>
                                 </Tooltip>
                                 <Menu
@@ -593,7 +593,7 @@ class SearchProfile extends Component {
                                     }
                                 </Menu>
 
-                                <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
+                                <Tooltip title={"Freitext-Eigenschaften, die ins Suchprofil geladen werden können."}>
                                     <Button
                                         aria-controls="dropdown-menu"
                                         aria-haspopup="true"
@@ -603,7 +603,7 @@ class SearchProfile extends Component {
                                         sx={{marginTop: '25px'}}
 
                                     >
-                                        Freitext-Eigenschaft ins Profil laden
+                                        Freitext-Eigenschaft ins Suchprofil laden
                                     </Button>
                                 </Tooltip>
                                 <Menu
