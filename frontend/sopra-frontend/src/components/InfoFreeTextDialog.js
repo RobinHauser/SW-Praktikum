@@ -82,6 +82,7 @@ class InfoFreeTextDialog extends Component {
                 this.setState({
                     textFieldContent: "",
                 })
+                alert("Die Information wurde erfolgreich aktualisiert.")
             }).catch(error => {
             alert(error)
         })
@@ -97,7 +98,7 @@ class InfoFreeTextDialog extends Component {
                 this.setState({
                     error: null
                 })
-                alert("Die Information wurde erfolgreich zum Profil hinzugefügt")
+                alert("Die Information wurde erfolgreich zum Profil hinzugefügt.")
             }).catch(e =>
             this.setState({
                 error: e
