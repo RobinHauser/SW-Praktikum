@@ -243,7 +243,7 @@ class PropertySelectMenuItem extends Component {
                     <MenuItem onClick={() => this.handleOpenDialogSelect()}>
                         {this.props.InformationsBoProp}
                     </MenuItem>
-                    <Tooltip title="Freitext-Eigenschaft bearbeiten">
+                    <Tooltip title="Auswahl-Eigenschaft bearbeiten">
                         <IconButton onClick={this.handleOpenSelectDialog}>
                             <BorderColorSharpIcon/>
                         </IconButton>

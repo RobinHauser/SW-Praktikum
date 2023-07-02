@@ -176,7 +176,8 @@ class PropertyTextMenuItem extends Component {
             InformationsBoProp,
             UserId,
             InformationsBoIsSelection,
-            profileId
+            profileId,
+            handleSuccessAlert
         } = this.props
         const {openDialogFreeText, openFreeTextDialog, successAlert} = this.state;
         return (
@@ -205,6 +206,7 @@ class PropertyTextMenuItem extends Component {
                     UserId={UserId}
                     InformationsBoIsSelection={InformationsBoIsSelection}
                     profileId={profileId}
+                    handleSuccessAlert={handleSuccessAlert}
                 />
                 <Dialog open={openFreeTextDialog} onClose={() => this.handleCloseDialogProp(null)}>
                     <DialogTitle>Freitext-Eigenschaft bearbeiten</DialogTitle>

@@ -568,7 +568,7 @@ class SearchProfile extends Component {
                                         endIcon={<ArrowDropDownIcon/>}
                                         sx={{marginTop: '25px'}}
                                     >
-                                        Auswahl-Eigenschaft ins Profil laden
+                                        Auswahl-Eigenschaft ins Suchprofil laden
                                     </Button>
                                 </Tooltip>
                                 <Menu
@@ -605,7 +605,7 @@ class SearchProfile extends Component {
                                         sx={{marginTop: '25px'}}
 
                                     >
-                                        Freitext-Eigenschaft ins Profil laden
+                                        Freitext-Eigenschaft ins Suchprofil laden
                                     </Button>
                                 </Tooltip>
                                 <Menu

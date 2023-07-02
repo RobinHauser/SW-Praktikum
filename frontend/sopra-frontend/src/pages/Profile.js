@@ -664,7 +664,8 @@ class Profile extends Component {
                                                 UserId={this.props.user.getUserID()}
                                                 InformationsBoIsSelection={globalPropertyItemFreeText.getIsSelection()}
                                                 profileId={this.state.personalProfile.getProfileID()}
-                                                getAllFreetextProperties={this.getAllFreeTextProperties}>
+                                                getAllFreetextProperties={this.getAllFreeTextProperties}
+                                                handleSuccessAlert={this.handleSuccessAlert}>
                                             </PropertyTextMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>

@@ -114,7 +114,8 @@ class ProfilePropertyFreeText extends Component {
             InformationsBoId,
             InformationsBoPropId,
             InformationsBoPropDescr,
-            InformationsBoInfoId
+            InformationsBoInfoId,
+            handleSuccessAlert
         } = this.props;
         const {openDialogFreeText} = this.state;
         return (
@@ -158,6 +159,7 @@ class ProfilePropertyFreeText extends Component {
                     InformationsBoPropId={InformationsBoPropId}
                     InformationsBoPropDescr={InformationsBoPropDescr}
                     InformationsBoInfoId={InformationsBoInfoId}
+                    handleSuccessAlert={handleSuccessAlert}
                 />
             </div>
         )
