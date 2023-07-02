@@ -1,7 +1,7 @@
 from src.server.bo.BusinessObject import BusinessObject
+from abc import ABC
 
-
-class Property(BusinessObject): #todo abstrakt
+class Property(BusinessObject, ABC):
     def __init__(self):
         super().__init__()
         self.__name = ""

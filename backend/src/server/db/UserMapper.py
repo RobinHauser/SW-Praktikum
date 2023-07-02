@@ -335,7 +335,7 @@ class UserMapper(Mapper):
         cursor = self._cnx.cursor()
 
         # Get related ChatIDs of user
-        command_get_ChatID = f"SELECT ChatID FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}" # TODO Vielleicht error weil user2 nicht mehr gibt
+        command_get_ChatID = f"SELECT ChatID FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}"
         cursor.execute(command_get_ChatID)
         ChatID_tuples = cursor.fetchall()
 

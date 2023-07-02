@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
+ * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which includes the list and buttons of the free text properties and info objects
  */
 
