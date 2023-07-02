@@ -7,7 +7,6 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import Tooltip from "@mui/material/Tooltip";
 import {Link} from "react-router-dom";
 import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from "@mui/icons-material/Add";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -20,7 +19,6 @@ import ProfilePropertyFreeText from "../components/ProfilePropertyFreeText";
 import InfoFreeTextDialog from "../components/InfoFreeTextDialog";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import Box from "@mui/material/Box";
 import CachedIcon from "@mui/icons-material/Cached";
@@ -31,6 +29,7 @@ import PropertyTextMenuItem from "../components/PropertyTextMenuItem";
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which includes the search profile page
  */
 
 class SearchProfile extends Component {
@@ -81,11 +80,15 @@ class SearchProfile extends Component {
 
     }
 
+    /**
+     * Called after the component did mount.
+     * Gets the search profile
+     */
+
     componentDidMount() {
         this.getSearchProfileId()
         this.getAllSelectionProperties()
         this.getAllFreeTextProperties()
-        console.log(this.props.user)
         this.getInformations(this.state.SearchProfileId)
     }
 
@@ -106,6 +109,11 @@ class SearchProfile extends Component {
             })
         })
     }
+
+    /**
+     * Calls the API to get a search profile
+     * It retrieves the search profile of a search profile id
+     */
     getSearchProfile = () => {
         SopraDatingAPI.getAPI().getSearchProfile(this.state.SearchProfileId)
             .then(SearchProfileBO => {
@@ -122,19 +130,31 @@ class SearchProfile extends Component {
             });
     };
 
+    /**
+     * Gets the search profile id of a search profile for a user
+     */
     getSearchProfileId() {
         const urlSearchProfileId = window.location.pathname.split('/')
         this.state.SearchProfileId = urlSearchProfileId[2]
-        console.log(this.state.SearchProfileId)
     }
 
+     /**
+     * Handles the dialog open for selection dialog to add a new selection property
+     */
     handleOpenSelectDialog() {
         this.setState({openSelectDialog: true});
     }
 
+    /**
+     * Handles the dialog open for free text dialog to add a new free text property
+     */
     handleOpenFreeTextDialog() {
         this.setState({openFreeTextDialog: true});
     }
+
+    /**
+     * Handles the dialog close for dialogs
+     */
 
     handleCloseDialogProp() {
         const {isAddingNewProperty} = this.state;
@@ -148,10 +168,16 @@ class SearchProfile extends Component {
         }
     }
 
+    /**
+     * Handles the dialog open for dialogs
+     */
     handleOpenDialogSelect() {
         this.setState({openDialogSelect: true});
     }
 
+    /**
+     * Handles the dialog close for dialogs
+     */
     handleCloseDialogInfo() {
         const {isAddingNewProperty} = this.state;
         if (isAddingNewProperty) {
@@ -161,11 +187,19 @@ class SearchProfile extends Component {
         }
     }
 
+    /**
+     * Handles clicking on an item in the dialog window in which options for a selection property can be selected
+     * @param value - value of the Item which is getting clicked
+     */
     handleListItemClick(value) {
         this.handleCloseDialogInfo(value);
         this.handleCloseDialogProp();
     }
 
+    /**
+     * Handles clicking on an item in the dialog window in which options for a selection property can be selected
+     * @param value - value of the Item which is getting clicked
+     */
     handleDeleteItemClick(value) {
         const {properties} = this.state;
         const updatedProperties = properties.filter((property) => property !== value);
@@ -181,6 +215,9 @@ class SearchProfile extends Component {
         this.setState({newProperty: event.target.value});
     }
 
+    /**
+     * Handles the adding of a new Property and closes the dialog
+     */
     handleAddProperty() {
         const {properties, newProperty} = this.state;
         if (newProperty.trim() !== "") {
@@ -190,10 +227,16 @@ class SearchProfile extends Component {
         this.handleCloseDialogInfo();
     }
 
+    /**
+     * Handles the dialog open to the dialog with which a new free text property can be added
+     */
     handleOpenDialogFreeText() {
         this.setState({openDialogFreeText: true});
     }
 
+    /**
+     * Handles the dialog close to the dialog with which a new free text property can be added
+     */
     handleCloseDialogFreeText() {
         this.setState({openDialogFreeText: false, selectedValue: this.props.value});
     }
@@ -203,31 +246,40 @@ class SearchProfile extends Component {
         this.handleCloseDialogProp();
     }
 
+
+    /**
+     * Opens the list to load new selection properties into the profile
+     * @param event -  Returns the list of the selection properties
+     */
     handleGlobalPropertiesMenuSelectClick = (event) => {
         this.setState({anchorElSelect: event.currentTarget});
     };
 
+     /**
+     * Opens the list to load new free text properties into the profile
+     * @param event -  Returns the list of the free text properties
+     */
     handleGlobalPropertiesMenuFreeTextClick = (event) => {
         this.setState({anchorElFreeText: event.currentTarget})
     }
 
+    /**
+     * Handles the close of the list with which new selection properties can be loaded into the profile
+     */
     handleCloseGlobalPropertiesSelect = () => {
         this.setState({anchorElSelect: null});
     };
 
+    /**
+     * Handles the close of the list with which new free text properties can be loaded into the profile
+     */
     handleCloseGlobalPropertiesFreeText = () => {
         this.setState({anchorElFreeText: null});
     };
 
-    handleGlobalPropertiesItemClickSelect = () => {
-        this.setState({anchorElSelect: null});
-        this.handleOpenDialogSelect();
-    };
-
-    handleGlobalPropertiesItemClickFreeText = () => {
-        this.setState({anchorElFreeText: null});
-        this.handleOpenDialogFreeText();
-    };
+    /**
+     * Gets all selection properties of the system
+     */
     getAllSelectionProperties = () => {
         SopraDatingAPI.getAPI().getAllSelectionProperties()
             .then(PropertyBOs => {
@@ -244,6 +296,10 @@ class SearchProfile extends Component {
             });
 
     };
+
+     /**
+     * Gets all free text properties of the system
+     */
     getAllFreeTextProperties = () => {
         SopraDatingAPI.getAPI().getAllFreeTextProperties()
             .then(PropertyBOs => {
@@ -261,6 +317,9 @@ class SearchProfile extends Component {
 
     };
 
+    /**
+     * Checks whether the text fields of name and description are filled in when adding a new selection property
+     */
     isFormValidSelect() {
         return (
             this.state.PropertySelectionNameText.trim() !== '' &&
@@ -268,75 +327,120 @@ class SearchProfile extends Component {
         );
     }
 
-    buttonAddSelectionProperty() {
-        const name = this.state.PropertySelectionNameText
-        const description = this.state.PropertySelectionDescriptionText
-        let propertyBO = {
-            "name": name,
-            "description": description
-        }
-        this.addSelectionProperty(propertyBO)
-        this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
-    }
-
+    /**
+     * Captures the value of the input field in which the name of a new selection property is entered
+     * and sets it in the State
+     * @param event - value of the input
+     */
     handleInputChangeSelectionName = (event) => {
         this.setState({PropertySelectionNameText: event.target.value});
     }
-    addFreeTextPropertyClickHandler = () => {
-        this.buttonAddFreeTextProperty();
-    }
 
-    buttonAddFreeTextProperty() {
-        const name = this.state.PropertyFreeTextNameText
-        const description = this.state.PropertyFreeTextDescriptionText
-        let propertyBO = {
-            "name": name,
-            "description": description
-        }
-        this.addFreeTextProperty(propertyBO)
+    /**
+     * Handler to further process the input data of a new free text property
+     * Calls the function that makes the API call
+     */
+
+    addFreeTextPropertyClickHandler = () => {
+        const {PropertyFreeTextNameText, PropertyFreeTextDescriptionText} = this.state;
+        this.setState({openFreeTextDialog: false})
+        this.addFreeTextProperty({
+            "name": PropertyFreeTextNameText,
+            "description": PropertyFreeTextDescriptionText
+        })
+        setTimeout(() => {
+            this.setState({successAlert: "", warningAlert: ""})
+        }, 3000);
         this.setState({PropertyFreeTextNameText: '', PropertyFreeTextDescriptionText: ''})
     }
 
+    /**
+     * Calls the API to add a new free text property and checks if it already exists in the system
+     * @param propertyBO - Business Object of the new free text property
+     */
     addFreeTextProperty = (propertyBO) => {
         SopraDatingAPI.getAPI().addFreeTextProperty(propertyBO)
             .then(() => {
                 this.setState({
-                    error: null
+                    error: null,
+                    successAlert: "neue Freitext-Eigenschaft der Liste hinzugefügt"
                 });
                 this.getAllFreeTextProperties()
             }).catch(e => {
             this.setState({
-                error: e
+                error: e,
+                warningAlert: "Freitext-Eigenschaft existiert bereits"
             });
         });
     };
+
+    /**
+     * Captures the value of the input field in which the name of a new free text property is entered
+     * and sets it in the State
+     * @param event - value of the input
+     */
     handleInputChangeFreeTextName = (event) => {
         this.setState({PropertyFreeTextNameText: event.target.value});
     }
+
+    /**
+     * Captures the value of the input field in which the description of a new free text is entered
+     * and sets it in the State
+     * @param event - value of the input
+     */
     handleInputChangeFreeTextDescription = (event) => {
         this.setState({PropertyFreeTextDescriptionText: event.target.value});
     }
-   addSelectionPropertyClickHandler  = () => {
-        this.buttonAddSelectionProperty();
 
+    /**
+     * Handler to further process the input data of a new selection property
+     * Calls the function that makes the API call
+     */
+   addSelectionPropertyClickHandler = () => {
+        const {PropertySelectionNameText, PropertySelectionDescriptionText} = this.state;
+        this.addSelectionProperty({
+            "name": PropertySelectionNameText,
+            "description": PropertySelectionDescriptionText
+        })
+        this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
+        setTimeout(() => {
+            this.setState({successAlert: "", warningAlert: ""})
+        }, 3000);
     }
+
+     /**
+     * Captures the value of the input field in which the descprition of a new selection property is entered
+     * and sets it in the State
+     * @param event - value of the input
+     */
     handleInputChangeSelectionDescription = (event) => {
         this.setState({PropertySelectionDescriptionText: event.target.value});
     }
+
+    /**
+     * Calls the API to add a new selection property and checks if it already exists in the system
+     * @param propertyBO - Business Object of the new selection property
+     */
     addSelectionProperty = (propertyBO) => {
+        this.setState({openSelectDialog: false})
         SopraDatingAPI.getAPI().addSelectionProperty(propertyBO)
             .then(() => {
                 this.setState({
-                    error: null
+                    error: null,
+                    successAlert: "neue Auswahleigenschaft der Liste hinzugefügt"
                 });
                 this.getAllSelectionProperties()
             }).catch(e => {
             this.setState({
-                error: e
+                error: e,
+                warningAlert: "Auswahleigenschaft existiert bereits"
             });
         });
     };
 
+     /**
+     * Checks whether the text fields of name and description are filled in when adding a new free text property
+     */
     isFormValidFreeText() {
         return (
             this.state.PropertyFreeTextNameText.trim() !== '' &&
@@ -344,6 +448,20 @@ class SearchProfile extends Component {
         );
     }
 
+    /**
+     * Handles the execution of an alert when user input is successful
+     */
+    handleSuccessAlert = (text) => {
+        this.setState({successAlert: text})
+        setTimeout(() => {
+            this.setState({successAlert: ""})
+        }, 3000)
+    }
+
+    /**
+     * Renders the class component
+     * @returns SearchProfile - the rendered component
+     */
     render() {
         const {value} = this.props;
         const {
@@ -409,6 +527,7 @@ class SearchProfile extends Component {
                                                                InformationsBoPropDescr={InformationsBo.getPropDescription()}
                                                                InformationsBoInfoId={InformationsBo.getInformationId()}
                                                                InformationsBoIsSelection={InformationsBo.getIsSelect()}
+                                                               handleSuccessAlert={this.handleSuccessAlert}
                                         />
                                     ) : (
                                         <ProfilePropertyFreeText key={InformationsBo.getInformationId()}
@@ -418,6 +537,7 @@ class SearchProfile extends Component {
                                                                  InformationsBoPropId={InformationsBo.getPropID()}
                                                                  InformationsBoPropDescr={InformationsBo.getPropDescription()}
                                                                  InformationsBoInfoId={InformationsBo.getInformationId()}
+                                                                 handleSuccessAlert={this.handleSuccessAlert}
                                         />
 
                                     )
