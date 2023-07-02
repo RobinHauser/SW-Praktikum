@@ -18,6 +18,7 @@ import DoneIcon from '@mui/icons-material/Done';
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
  * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which includes the dialog window to choose a new selection for a selection property
  */
 
 class InfoSelectDialog extends Component {
@@ -195,6 +196,11 @@ class InfoSelectDialog extends Component {
     handleInputChangeTextFieldContentEdit = (event) => {
         this.setState({textFieldContentEdit: event.target.value});
     }
+
+    /**
+     * handles the updating of a new selection option
+     * @param {int} valueId
+     */
     updateSelectionValue = (valueId) => {
         SopraDatingAPI.getAPI().updateSelectionValue(valueId, {"value": `${this.state.textFieldContentEdit}`})
             .then(() => {

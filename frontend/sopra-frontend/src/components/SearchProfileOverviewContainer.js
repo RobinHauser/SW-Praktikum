@@ -10,7 +10,8 @@ import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
- */
+ * Class react component which renders the container in which the list of search profiles are placed
+ **/
 
 class SearchProfileOverviewContainer extends Component {
 
@@ -23,11 +24,21 @@ class SearchProfileOverviewContainer extends Component {
         };
     }
 
+    /**
+     * Deletes a search profiles from the list of all search profiles for a user
+     * @param {object} searchprofile - the searchprofile which is getting deleted
+     **/
+
     deleteSearchProfileHandler = (searchprofile) => {
         this.setState({
             searchprofiles: this.state.searchprofiles.filter(profile => profile.getProfileID() !== searchprofile.getProfileID())
         });
     };
+
+    /**
+     * Gets all search profiles for a user
+     * Calls the API to get all search profiles
+     **/
 
     getSearchProfiles = () => {
         SopraDatingAPI.getAPI().getSearchProfiles(this.props.user.getUserID())
@@ -45,6 +56,10 @@ class SearchProfileOverviewContainer extends Component {
             });
     };
 
+    /**
+     * Handles the adding of a new search profile and returns the refreshed list with all search profiles
+     **/
+
     addButtonClick() {
         this.addSearchProfile();
         setTimeout(() => {
@@ -52,6 +67,9 @@ class SearchProfileOverviewContainer extends Component {
         }, 100)
     }
 
+     /**
+     * Calls the API and is adding the new search profiles into the system
+     **/
     addSearchProfile = () => {
         SopraDatingAPI.getAPI().addSearchProfile(this.props.user.getUserID())
             .then(() => {
@@ -65,9 +83,19 @@ class SearchProfileOverviewContainer extends Component {
             });
     };
 
+     /**
+     * Called after the component did mount
+     * Gets all the search profiles for a user
+     */
+
     componentDidMount() {
         this.getSearchProfiles();
     }
+
+    /**
+     * Renders the class component
+     * @returns SearchProfileOverviewContainer - the rendered component
+     */
     render() {
         return (
             <div>
