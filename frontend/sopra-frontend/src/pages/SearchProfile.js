@@ -99,7 +99,6 @@ class SearchProfile extends Component {
     getInformations = async (id) => {
         SopraDatingAPI.getAPI().getInformationsByProfile(id)
             .then(responseJSON => {
-                console.log(responseJSON)
                 this.setState({
                     informations: responseJSON
                 })
@@ -595,7 +594,7 @@ class SearchProfile extends Component {
                                     }
                                 </Menu>
 
-                                <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
+                                <Tooltip title={"Freitext-Eigenschaften, die ins Suchprofil geladen werden können."}>
                                     <Button
                                         aria-controls="dropdown-menu"
                                         aria-haspopup="true"
@@ -624,7 +623,8 @@ class SearchProfile extends Component {
                                                 UserId={this.props.user.getUserID()}
                                                 InformationsBoIsSelection={globalPropertyItemFreeText.getIsSelection()}
                                                 profileId={this.state.SearchProfileId}
-                                                getAllFreetextProperties={this.getAllFreeTextProperties}>
+                                                getAllFreetextProperties={this.getAllFreeTextProperties}
+                                                handleSuccessAlert={this.handleSuccessAlert}>
                                             </PropertyTextMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>
