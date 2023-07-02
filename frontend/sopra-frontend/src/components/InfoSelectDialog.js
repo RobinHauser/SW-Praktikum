@@ -195,6 +195,11 @@ class InfoSelectDialog extends Component {
     handleInputChangeTextFieldContentEdit = (event) => {
         this.setState({textFieldContentEdit: event.target.value});
     }
+    /**
+     * api function for updating the selected selection value
+     * sets alerts for success and error
+     * @param {int} valueId
+     */
     updateSelectionValue = (valueId) => {
         SopraDatingAPI.getAPI().updateSelectionValue(valueId, {"value": `${this.state.textFieldContentEdit}`})
             .then(() => {

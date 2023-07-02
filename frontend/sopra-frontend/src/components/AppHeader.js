@@ -21,46 +21,76 @@ export default function AppHeader(props) {
 
     const navigate = useNavigate()
 
-
+    /**
+     * handles the opening for the navigation menu
+     */
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
+    /**
+     * handles the opening for the user menu
+     */
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
-
+    /**
+     * handles the closing for the navigation menu
+     */
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-
+    /**
+     * handles the closing for the user menu
+     */
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
 
+    /**
+     * handles the closing for the user menu
+     */
     function navigateToProfilePage() {
         navigate('/profile')
     }
 
+    /**
+     * handles the navigation to the conversationoverview page
+     */
     function navigateToConversationOverviewPage() {
         navigate('/conversationOverview')
     }
 
+    /**
+     * handles the navigation to the main page
+     */
     function navigateToMainPage() {
         navigate('/main')
     }
 
+    /**
+     * handles the navigation to the bookmarklist page
+     */
     function navigateToBookmarkListPage() {
         navigate(('/bookmarklist'))
     }
 
+    /**
+     * handles the navigation to the blocklist page
+     */
     function navigateToBlockListPage() {
         navigate(('/blockList'))
     }
 
+    /**
+     * handles the navigation to the searchprofile overview page
+     */
     function navigateToSearchProfileOverviewPage() {
         navigate(('/searchProfileOverview'))
     }
 
+    /**
+     * handles the button click to sign out of the system
+     */
     function handleSignOutButtonClicked() {
         const auth = getAuth();
         signOut(auth)
@@ -72,15 +102,15 @@ export default function AppHeader(props) {
                 <Toolbar disableGutters>
                     <Button href="/main"
                             sx={{
-                            display: {xs: 'none', md: 'flex'},
-                            fontWeight: 700,
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}>
+                                display: {xs: 'none', md: 'flex'},
+                                fontWeight: 700,
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}>
                         <img
                             src={appLogo}
                             alt={"Date2Mate"}
-                            style={{ width: '150px', height: 'auto' }}
+                            style={{width: '150px', height: 'auto'}}
                         />
                     </Button>
                     <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
