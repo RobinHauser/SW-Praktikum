@@ -30,6 +30,7 @@ import PropertyTextMenuItem from "../components/PropertyTextMenuItem";
 
 /**
  * @author [Björn Till](https://github.com/BjoernTill)
+ * @author [Jannik Haug](https://github.com/JannikHaug)
  */
 
 class SearchProfile extends Component {
