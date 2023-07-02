@@ -27,7 +27,7 @@ export default class SopraDatingAPI {
     // Local http-fake-backend
     //#SopraDatingServerBaseURL = 'http://localhost:8081/api/v1'
 
-    #token = document.cookie.split("; ").find((row) => row.startsWith("token="))?.split("=")[1]; // todo wieso unused?
+    #token = document.cookie.split("; ").find((row) => row.startsWith("token="))?.split("=")[1];
 
 
     // Inspired by: https://www.w3schools.blog/get-cookie-by-name-javascript-js
@@ -1025,7 +1025,7 @@ export default class SopraDatingAPI {
      * @param valueBo - The information object to be added.
      * @return {Promise<unknown>} - A Promise that resolves to a ProfileBO object representing the updated profile.
      */
-    addNewInformationObjectToProile(valueId, valueBo) { // Todo change name
+    addNewInformationObjectToProfile(valueId, valueBo) {
         return this.#fetchAdvanced(this.#addNewInformationToProfileURL(valueId), {
             method: 'POST',
             headers: {

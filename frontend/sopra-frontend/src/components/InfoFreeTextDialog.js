@@ -92,7 +92,7 @@ class InfoFreeTextDialog extends Component {
      * @param {int} valueId - id of the current information object
      */
     addNewInformationObject = (valueId, informationBo) => {
-        SopraDatingAPI.getAPI().addNewInformationObjectToProile(valueId, informationBo)
+        SopraDatingAPI.getAPI().addNewInformationObjectToProfile(valueId, informationBo)
             .then(responseJSON => {
                 this.setState({
                     error: null
