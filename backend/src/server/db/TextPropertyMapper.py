@@ -108,11 +108,7 @@ class TextPropertyMapper(Mapper.Mapper):
 
         for maxid in tuples:
             if maxid[0] is not None:
-                if maxid[0] + 1 > 7000:
-                    raise ValueError(
-                        "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
-                else:
-                    text_prop.set_id(maxid[0] + 1)
+                text_prop.set_id(maxid[0] + 1)
             else:
                 text_prop.set_id(6001)
 
@@ -200,11 +196,7 @@ class TextPropertyMapper(Mapper.Mapper):
         max_id = 0
         for maxid in tuples:
             if maxid[0] is not None:
-                if maxid[0] + 1 > 8000:
-                    raise ValueError(
-                        "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
-                else:
-                    max_id = maxid[0] + 1
+                max_id = maxid[0] + 1
             else:
                 max_id = 7001
 

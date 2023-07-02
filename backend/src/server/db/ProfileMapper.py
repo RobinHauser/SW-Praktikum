@@ -238,10 +238,7 @@ class ProfileMapper(Mapper.Mapper):
 
         for maxid in tuples:
             if maxid[0] is not None:
-                if maxid[0]+1 > 5000:
-                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
-                else:
-                    profile.set_id(maxid[0]+1)
+                profile.set_id(maxid[0]+1)
             else:
                 profile.set_id(4001)
 

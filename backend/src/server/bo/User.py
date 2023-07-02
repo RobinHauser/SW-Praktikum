@@ -35,7 +35,7 @@ class User(BusinessObject):
 
 
     @staticmethod
-    def from_dict(dict): #todo default wert setzen
+    def from_dict(dict = dict()):
         user = User()
         user.set_user_id(dict["UserID"])
         user.set_email(dict["email"])
