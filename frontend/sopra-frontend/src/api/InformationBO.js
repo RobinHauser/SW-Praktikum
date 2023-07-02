@@ -1,7 +1,7 @@
 import BusinessObject from './BusinessObject';
 
 /**
- * Represents a Information object.
+ * Represents an Information object.
  */
 export default class InformationBO extends BusinessObject {
 
@@ -18,7 +18,7 @@ export default class InformationBO extends BusinessObject {
      * @param {int} informationID - id of an information
      *
      */
-    constructor(valueID, value, property, isSelect, propDescription, propID, informationID ) {
+    constructor(valueID, value, property, isSelect, propDescription, propID, informationID) {
         super();
         this.property = property;
         this.valueID = valueID;
@@ -38,12 +38,12 @@ export default class InformationBO extends BusinessObject {
         this.property = property;
     }
 
-     /**
+    /**
      * Gets the property of this InformationBO.
      *
      * @return {str} property - the property of this InformationBO
      */
-     getProperty() {
+    getProperty() {
         return this.property;
     }
 
@@ -77,11 +77,12 @@ export default class InformationBO extends BusinessObject {
     /**
      * Gets the Value of this InformationBo
      *
-     * @return {str} Value - the Value of this InformationBO
+     * @return {str} value - the Value of this InformationBO
      */
     getValue() {
         return this.value;
     }
+
     /**
      * Sets the isSelect of this InformationBO.
      *
@@ -99,6 +100,7 @@ export default class InformationBO extends BusinessObject {
     getIsSelect() {
         return this.isSelect;
     }
+
     /**
      * Sets the propDescription of this InformationBO.
      *
@@ -116,6 +118,7 @@ export default class InformationBO extends BusinessObject {
     getPropDescription() {
         return this.propDescription;
     }
+
     /**
      * Sets the propID of this InformationBO.
      *
@@ -133,7 +136,8 @@ export default class InformationBO extends BusinessObject {
     getPropID() {
         return this.propID;
     }
-            /**
+
+    /**
      * Sets the propID of this InformationBO.
      *
      * @param {int} informationID - the new informationID of this InformationBO.
@@ -150,24 +154,25 @@ export default class InformationBO extends BusinessObject {
     getInformationId() {
         return this.informationID;
     }
+
     /**
      * Returns an Array of UserBOs from a given JSON structure
      */
     static fromJSON(informations) {
-    let result = [];
+        let result = [];
 
-    if (Array.isArray(informations)) {
-      informations.forEach((a) => {
-        Object.setPrototypeOf(a, InformationBO.prototype);
-        result.push(a);
-      })
-    } else {
-      // Es handelt sich offenbar um ein singuläres Objekt
-      let a = informations;
-      Object.setPrototypeOf(a, InformationBO.prototype);
-      result.push(a);
+        if (Array.isArray(informations)) {
+            informations.forEach((a) => {
+                Object.setPrototypeOf(a, InformationBO.prototype);
+                result.push(a);
+            })
+        } else {
+            // Es handelt sich offenbar um ein singuläres Objekt
+            let a = informations;
+            Object.setPrototypeOf(a, InformationBO.prototype);
+            result.push(a);
+        }
+
+        return result;
     }
-
-    return result;
-  }
 }

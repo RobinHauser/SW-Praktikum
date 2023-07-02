@@ -2,7 +2,6 @@
  * Abstracts the REST interface of the Python backend with convenient access methods.
  * The class is implemented as a singleton.
  *
- * @author [Michael Bergdolt] (https://github.com/MichaelBergdolt)
  * inspired by [Christoph Kunz] (https://github.com/christophkunz)
  */
 import UserBO from "./UserBO";
@@ -32,19 +31,15 @@ export default class SopraDatingAPI {
 
     // Inspired by: https://www.w3schools.blog/get-cookie-by-name-javascript-js
     #getCookie(cookieName) {
-         let cookie = {};
-        document.cookie.split(';').forEach(function(el) {
-         let [key,value] = el.split('=');
+        let cookie = {};
+        document.cookie.split(';').forEach(function (el) {
+            let [key, value] = el.split('=');
             cookie[key.trim()] = value;
         })
         return cookie[cookieName];
-        }
-
-    // User related
-    #getAllUsersURL = () => {
-        return `${this.#SopraDatingServerBaseURL}/user/1000`
     }
 
+    // User related
     #getAllUsersFilteredURL = (userID) => {
         return `${this.#SopraDatingServerBaseURL}/all-user/${userID}`
     }
@@ -59,10 +54,9 @@ export default class SopraDatingAPI {
         return `${this.#SopraDatingServerBaseURL}/user/1000`
     };
 
-    // Main Page related
-    #getUserListBySearchprofileURL = (searchProfileID) => {
-        return `http://localhost:8081/api/v1/userList/${searchProfileID}`; //Todo set Base URL Back to variable
-    };
+    #deleteUserURL = (userID) => {
+        return `${this.#SopraDatingServerBaseURL}/user/${userID}`
+    }
 
     // Bookmarklist related
     #addUserToBookmarklistURL = (userID) => {
@@ -83,21 +77,15 @@ export default class SopraDatingAPI {
     // Chat related
     #addUserToChatURL = (userID) => `${this.#SopraDatingServerBaseURL}/chat/${userID}`;
     #getUserChatsURL = (userID) => {
-        return `${this.#SopraDatingServerBaseURL}/chat/${userID}`; //TODO change ID
+        return `${this.#SopraDatingServerBaseURL}/chat/${userID}`;
     }
-    #removeChatURL = (chatID) => `${this.#SopraDatingServerBaseURL}/conversationoverview?id=${chatID}`;
 
     // Message related
     #addMessageURl = (userID) => `${this.#SopraDatingServerBaseURL}/message/${userID}`;
-    #getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message/${chatID}`; //TODO change ID
+    #getChatMessagesURL = (chatID) => `${this.#SopraDatingServerBaseURL}/message/${chatID}`;
 
     // Profile related
     #getProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/personal-profile/by_user/${userID}`;
-    #updateProfileURL = (userID) => `${this.#SopraDatingServerBaseURL}/profile?id=${userID}`;
-    #getAllProfilesURL = () => `${this.#SopraDatingServerBaseURL}/personal-profile/personal_profiles`
-
-    // Information related
-    #getSelectionInformationURL = (propertyID) => `${this.#SopraDatingServerBaseURL}/Information/${propertyID}`
 
     // SearchProfile related
     #getSearchProfileURL = (searchprofileID) => {
@@ -108,9 +96,6 @@ export default class SopraDatingAPI {
     }
     #addSearchProfileURL = (userID) => {
         return `${this.#SopraDatingServerBaseURL}/search-profile/by_user/${userID}`;
-    }
-    #updateSearchProfileURL = (searchprofileID) => {
-        return `${this.#SopraDatingServerBaseURL}/searchprofile?id=${searchprofileID}`;
     }
     #deleteSearchProfileURL = (searchprofileID) => {
         return `${this.#SopraDatingServerBaseURL}/search-profile/${searchprofileID}`;
@@ -174,6 +159,18 @@ export default class SopraDatingAPI {
     #addNewInformationToProfileURL = (valueId) => {
         return `${this.#SopraDatingServerBaseURL}/information/${valueId}`
     }
+    #updateSelectionPropertyByIdURL = (propertyId) => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/${propertyId}`
+    }
+    #updateTextPropertyByIdURL = (propertyId) => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/${propertyId}`
+    }
+    #updateSelectionValueByIdURL = (valueId) => {
+        return `${this.#SopraDatingServerBaseURL}/selection-property/options/${valueId}`
+    }
+    #updateTextValueByIdURL = (valueId) => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/entries/${valueId}`
+    }
 
 
     /**
@@ -202,22 +199,12 @@ export default class SopraDatingAPI {
             }
         )
 
-    getAllUsers() {
-        return this.#fetchAdvanced(this.#getAllUsersURL(), {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Token': `${this.#getCookie('token')}`
-            }
-        })
-            .then((responseJSON) => {
-                let userBOs = UserBO.fromJSON(responseJSON);
-                return new Promise(function (resolve) {
-                    resolve(userBOs)
-                })
-            })
-    }
-
+    /**
+     * Returns a Promise, which resolves to an Array of UserBOs
+     *
+     * @param userID - The ID of the user
+     * @return {Promise<unknown>} -  A Promise that resolves to an Array of UserBOs.
+     */
     getAllUsersFiltered(userID) {
         return this.#fetchAdvanced(this.#getAllUsersFilteredURL(userID), {
             method: 'GET',
@@ -234,6 +221,12 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Returns a Promise, which resolves to a UserBO of the user
+     *
+     * @param email - email of the user
+     * @return {Promise<unknown>} - A Promise that resolves to a UserBO
+     */
     getUser(email) {
         return this.#fetchAdvanced(this.#getUserURL(email), {
             method: 'GET',
@@ -250,6 +243,12 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Returns a Promise, which resolves to a UserBO of the user
+     *
+     * @param id - id of the user
+     * @return {Promise<unknown>} - A Promise that resolves to a UserBO
+     */
     getUserbyId(id) {
         return this.#fetchAdvanced(this.#getUserByIdURL(id), {
             method: 'GET',
@@ -266,6 +265,12 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Sends a POST request to create a new user.
+     *
+     * @param userBO - The UserBO object representing the user.
+     * @return {Promise<unknown>} - A Promise that resolves to the created UserBO.
+     */
     postUser(userBO) {
         return this.#fetchAdvanced(this.#postUserURL(), {
             method: 'POST',
@@ -283,19 +288,38 @@ export default class SopraDatingAPI {
         })
     }
 
-    getUserListBySearchprofile(searchProfileID = 1) {
-        return this.#fetchAdvanced(this.#getUserListBySearchprofileURL(searchProfileID))
-            .then((responseJSON) => {
-                let userBOs = UserBO.fromJSON(responseJSON);
-                // console.log(blocklistBOs)
-                return new Promise(function (resolve) {
-                    resolve(userBOs)
-                })
+    /**
+     * Sends a DELETE request to delete a user.
+     *
+     * @param userID - The ID of the user.
+     * @param userBO - The UserBO object representing the user.
+     * @return {Promise<unknown>} - A Promise that resolves to the deleted UserBO.
+     */
+    deleteUser(userID, userBO) {
+        return this.#fetchAdvanced(this.#deleteUserURL(userID), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            },
+            body: JSON.stringify(userBO)
+        }).then((responseJSON) => {
+            let user = UserBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(user)
             })
+        })
     }
 
+    /**
+     * Adds a user to a bookmark list.
+     *
+     * @param userID - The ID of the user.
+     * @param userBO - The UserBO object representing the user.
+     * @return {Promise<unknown>} - A Promise that resolves to the updated UserBO.
+     */
     addUserToBookmarklist(userID, userBO) {
-        // console.log(JSON.stringify(userBO))
         return this.#fetchAdvanced(this.#addUserToBookmarklistURL(userID), {
             method: 'POST',
             headers: {
@@ -312,6 +336,12 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Retrieves the bookmark list for a user.
+     *
+     * @param userID - The ID of the user.
+     * @return {Promise<unknown>} - A Promise that resolves to an Array of UserBOs representing the bookmark list.
+     */
     getBookmarklist(userID) {
         return this.#fetchAdvanced(this.#getBookmarklistURL(userID), {
             method: 'GET',
@@ -322,13 +352,19 @@ export default class SopraDatingAPI {
         })
             .then((responseJSON) => {
                 let userBOs = UserBO.fromJSON(responseJSON);
-                // console.log(blocklistBOs)
                 return new Promise(function (resolve) {
                     resolve(userBOs)
                 })
             })
     }
 
+    /**
+     * Removes a user from a bookmark list.
+     *
+     * @param userID - The ID of the user.
+     * @param userBO - The UserBO object representing the user.
+     * @return {Promise<unknown>} -  A Promise that resolves to the updated UserBO.
+     */
     removeUserFromBookmarklist(userID, userBO) {
         return this.#fetchAdvanced(this.#removeUserFromBookmarklistURL(userID), {
             method: 'DELETE',
@@ -347,6 +383,13 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Adds a user to the blocklist.
+     *
+     * @param userID - The ID of the user that wants to block.
+     * @param userBO - The UserBO object representing the user to block.
+     * @return {Promise<unknown>} - A Promise that resolves to the updated UserBO.
+     */
     addUserToBlocklist(userID, userBO) {
         return this.#fetchAdvanced(this.#addUserToBlocklistURL(userID), {
             method: 'POST',
@@ -364,24 +407,37 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Retrieves the blocklist for a user.
+     *
+     * @param userID - The ID of the user.
+     * @return {Promise<unknown>} - A Promise that resolves to an Array of UserBOs representing the blocklist.
+     */
     getBlocklist(userID) {
-    const requestOptions = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'token': `${this.#getCookie('token')}`
-        }
-    };
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': `${this.#getCookie('token')}`
+            }
+        };
 
-    return this.#fetchAdvanced(this.#getBlocklistURL(userID), requestOptions)
-        .then((responseJSON) => {
-            let userBOs = UserBO.fromJSON(responseJSON);
-            return new Promise(function (resolve) {
-                resolve(userBOs);
+        return this.#fetchAdvanced(this.#getBlocklistURL(userID), requestOptions)
+            .then((responseJSON) => {
+                let userBOs = UserBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(userBOs);
+                });
             });
-        });
-}
+    }
 
+    /**
+     * Removes a user from the blocklist.
+     *
+     * @param userID - The ID of the user that wants to remove a user from the bookmarklist.
+     * @param userBO - The UserBO object representing the user to remove from the blocklist.
+     * @return {Promise<unknown>} - A Promise that resolves to the updated UserBO.
+     */
     removeUserFromBlocklist(userID, userBO) {
         return this.#fetchAdvanced(this.#removeUserFromBlocklistURL(userID), {
             method: 'DELETE',
@@ -400,6 +456,13 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Adds a user to a chat.
+     *
+     * @param ownUserId - The ID of the user initiating the chat.
+     * @param partnerUserId - The ID of the user to be added to the chat.
+     * @return {Promise<any>} - A Promise that resolves to the response from the server.
+     */
     addUserToChat(ownUserId, partnerUserId) {
         return this.#fetchAdvanced(this.#addUserToChatURL(ownUserId), {
             method: 'POST',
@@ -412,6 +475,12 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Retrieves the chats for a user.
+     *
+     * @param userID - The ID of the user.
+     * @return {Promise<unknown>} - A Promise that resolves to an Array of ChatBOs representing the user's chats.
+     */
     getUserChats(userID) {
         return this.#fetchAdvanced(this.#getUserChatsURL(userID), {
             method: 'GET',
@@ -421,19 +490,19 @@ export default class SopraDatingAPI {
             }
         }).then((responseJSON) => {
             let chatBOs = ChatBO.fromJSON(responseJSON);
-            console.log("chatBOS:", chatBOs)
             return new Promise(function (resolve) {
                 resolve(chatBOs)
             })
         })
     }
 
-    removeChat(chatID) {
-        return this.#fetchAdvanced(this.#removeChatURL(chatID), {
-            method: 'DELETE'
-        })
-    }
-
+    /**
+     * Adds a message to a chat.
+     *
+     * @param userID - The ID of the user sending the message.
+     * @param messageBO - The MessageBO object representing the message.
+     * @return {Promise<unknown>} - A Promise that resolves to a messageBO
+     */
     addMessage(userID, messageBO) {
         return this.#fetchAdvanced(this.#addMessageURl(userID), {
             method: 'POST',
@@ -444,13 +513,19 @@ export default class SopraDatingAPI {
             },
             body: JSON.stringify(messageBO)
         }).then((responseJSON) => {
-            let userBO = UserBO.fromJSON(responseJSON)[0];
+            let messageBO = MessageBO.fromJSON(responseJSON)[0];
             return new Promise(function (resolve) {
-                resolve(userBO)
+                resolve(messageBO)
             })
         })
     }
 
+    /**
+     * Retrieves the messages for a chat.
+     *
+     * @param chatID - The ID of the chat.
+     * @return {Promise<unknown>} - A Promise that resolves to an Array of MessageBOs representing the chat's messages.
+     */
     getChatMessages(chatID) {
         return this.#fetchAdvanced(this.#getChatMessagesURL(chatID), {
             method: 'GET',
@@ -467,16 +542,12 @@ export default class SopraDatingAPI {
             })
     }
 
-    getAllProfiles() {
-        return this.#fetchAdvanced(this.#getAllProfilesURL())
-            .then((responseJSON) => {
-                let profileBOs = ProfileBO.fromJSON(responseJSON);
-                return new Promise(function (resolve) {
-                    resolve(profileBOs)
-                })
-            })
-    }
-
+    /**
+     * Retrieves the profile of a user.
+     *
+     * @param userID - The ID of the user.
+     * @return {Promise<unknown>} A Promise that resolves to the ProfileBO object representing the user's profile.
+     */
     getProfile(userID) {
         return this.#fetchAdvanced(this.#getProfileURL(userID), {
             method: 'GET',
@@ -493,6 +564,12 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Retrieves a search profile.
+     *
+     * @param searchprofileID - The ID of the search profile.
+     * @return {Promise<unknown>} - A Promise that resolves to the ProfileBO object representing the search profile.
+     */
     getSearchProfile(searchprofileID) {
         return this.#fetchAdvanced(this.#getSearchProfileURL(searchprofileID), {
             method: 'GET',
@@ -509,6 +586,13 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Retrieves the search profiles of a user.
+     *
+     * @param UserID - The ID of the user.
+     * @return {Promise<unknown>} - A Promise that resolves to an Array of ProfileBO objects
+     * representing the user's search profiles.
+     */
     getSearchProfiles(UserID) {
         return this.#fetchAdvanced(this.#getSearchProfilesURL(UserID), {
             method: 'GET',
@@ -518,7 +602,6 @@ export default class SopraDatingAPI {
             }
         })
             .then((responseJSON) => {
-                // console.log(responseJSON)
                 let SearchProfileBOs = ProfileBO.fromJSON(responseJSON);
                 return new Promise(function (resolve) {
                     resolve(SearchProfileBOs)
@@ -526,6 +609,12 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Adds a search profile for a user.
+     *
+     * @param UserID - The ID of the user.
+     * @return {Promise<any>} - A Promise that resolves when the search profile is successfully added.
+     */
     addSearchProfile(UserID) {
         return this.#fetchAdvanced(this.#addSearchProfileURL(UserID), {
             method: 'POST',
@@ -537,17 +626,12 @@ export default class SopraDatingAPI {
         })
     }
 
-    updateSearchProfile(searchprofileBO) {
-        return this.#fetchAdvanced(this.#updateSearchProfileURL(searchprofileBO.id), {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json, text/plain',
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(searchprofileBO)
-        })
-    }
-
+    /**
+     * Deletes a search profile.
+     *
+     * @param profileID - The ID of the search profile.
+     * @return {Promise<unknown>} -  A Promise that resolves to the deleted ProfileBO object.
+     */
     deleteSearchProfile(profileID) {
         return this.#fetchAdvanced(this.#deleteSearchProfileURL(profileID), {
             method: 'DELETE',
@@ -564,6 +648,12 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Retrieves information by profile ID.
+     *
+     * @param profileID - The ID of the profile.
+     * @return {Promise<unknown>} - A Promise that resolves to an array of InformationBO objects.
+     */
     getInformationsByProfile(profileID) {
         return this.#fetchAdvanced(this.#getInformationsByProfileURL(profileID), {
             method: 'GET',
@@ -580,6 +670,13 @@ export default class SopraDatingAPI {
             }).catch(e => console.log(e))
     }
 
+    /**
+     * Adds a user to the viewed list.
+     *
+     * @param userID - The ID of the user.
+     * @param userBO - The UserBO of the viewed user.
+     * @return {Promise<unknown>} - A Promise that resolves to the updated UserBO object.
+     */
     addUserToViewedlist(userID, userBO) {
         return this.#fetchAdvanced(this.#addUserToViewedlistURL(userID), {
             method: 'POST',
@@ -597,6 +694,12 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Retrieves the viewed list for a user.
+     *
+     * @param userID - The ID of the user.
+     * @return {Promise<unknown>} - A Promise that resolves to an array of UserBO objects.
+     */
     getViewedlist(userID) {
         return this.#fetchAdvanced(this.#getViewedlistURL(userID), {
             method: 'GET',
@@ -613,6 +716,12 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Retrieves a list of users sorted by similarity measure to a search profile.
+     *
+     * @param searchprofileID - The ID of the search profile.
+     * @return {Promise<unknown>} -  A Promise that resolves to an array of UserBO objects.
+     */
     getUsersSortedBySimilarityMeasure(searchprofileID) {
         return this.#fetchAdvanced(this.#getUsersSortedBySimilarityMeasureURL(searchprofileID), {
             method: 'GET',
@@ -629,6 +738,12 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Retrieves all selection values for a given property.
+     *
+     * @param propertyID - The ID of the property.
+     * @return {Promise<unknown>} - A Promise that resolves to an array of InformationBO objects.
+     */
     getAllSelectionValuesByPropertyID(propertyID) {
         return this.#fetchAdvanced(this.#getAlleValuesFromPropertyByPropertyIdURL(propertyID), {
             method: 'GET',
@@ -645,6 +760,12 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Deletes a selection value item by its ID.
+     *
+     * @param valueId - The ID of the selection value item to delete.
+     * @return {Promise<unknown>} - A Promise that resolves to the deleted UserBO object.
+     */
     deleteSelectionValueItem(valueId) {
         return this.#fetchAdvanced(this.#deleteSelectionValueItemURL(valueId), {
             method: 'DELETE',
@@ -662,6 +783,13 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Adds a new selection value item for a property.
+     *
+     * @param userID - The ID of the user.
+     * @param valueBo - The valueBO object representing the selection value item.
+     * @return {Promise<unknown>} -  A Promise that resolves to the created InformationBO object.
+     */
     addSelectionValueItem(userID, valueBo) {
         return this.#fetchAdvanced(this.#postNewValueForPropertyWithPropertyIdURL(userID), {
             method: 'POST',
@@ -679,6 +807,13 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Updates the value of an information object.
+     *
+     * @param infoId - The ID of the information object.
+     * @param valueBo - The valueBO object representing the updated value.
+     * @return {Promise<unknown>} -  A Promise that resolves to the updated InformationBO object.
+     */
     updateValueOfInformationObject(infoId, valueBo) {
         return this.#fetchAdvanced(this.#updateValueOfInformationObjectByIdURL(infoId), {
             method: 'PUT',
@@ -696,6 +831,12 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Deletes an information object by its ID.
+     *
+     * @param informationId - The ID of the information object to delete.
+     * @return {Promise<unknown>} - A Promise that resolves to the deleted InformationBO object.
+     */
     deleteInformationById(informationId) {
         return this.#fetchAdvanced(this.#deleteInformationByIdURL(informationId), {
             method: 'DELETE',
@@ -712,6 +853,12 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Deletes a select property from the system by its ID.
+     *
+     * @param propertyId - The ID of the select property to delete.
+     * @return {Promise<unknown>} - A Promise that resolves to the deleted InformationBO object.
+     */
     deleteSelectPropertyFromSystemById(propertyId) {
         return this.#fetchAdvanced(this.#deleteSelectPropertyInSystemByIdURL(propertyId), {
             method: 'DELETE',
@@ -728,6 +875,13 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Adds a text property value by the property ID.
+     *
+     * @param propertyId - The ID of the text property.
+     * @param valueBo - The ValueBo object containing the text property value.
+     * @return {Promise<unknown>} - A Promise that resolves to the added ValueBo object.
+     */
     addTextPropertyValueById(propertyId, valueBo) {
         return this.#fetchAdvanced(this.#addNewTextValueToTextPropertyURL(propertyId), {
             method: 'POST',
@@ -745,6 +899,12 @@ export default class SopraDatingAPI {
         })
     }
 
+    /**
+     * Deletes a text property from the system by its ID.
+     *
+     * @param propertyId - The ID of the text property to delete.
+     * @return {Promise<unknown>} - A Promise that resolves to the deleted PropertyBO object.
+     */
     deleteTextPropertyFromSystemById(propertyId) {
         return this.#fetchAdvanced(this.#deleteTextPropertyInSystemByIdURL(propertyId), {
             method: 'DELETE',
@@ -754,15 +914,20 @@ export default class SopraDatingAPI {
                 'Token': `${this.#getCookie('token')}`
             },
         }).then((responseJSON) => {
-            let informationBo = InformationBO.fromJSON(responseJSON)[0];
+            let propertyBo = PropertyBO.fromJSON(responseJSON)[0];
             return new Promise(function (resolve) {
-                resolve(informationBo);
+                resolve(propertyBo);
             })
         })
     }
 
+    /**
+     * Adds a selection property to the system.
+     *
+     * @param propertyBO - The PropertyBO object representing the selection property to add.
+     * @return {Promise<unknown>} - A Promise that resolves to the added PropertyBO object.
+     */
     addSelectionProperty(propertyBO) {
-        console.log(propertyBO)
         return this.#fetchAdvanced(this.#addSelectionPropertyURL(), {
             method: 'POST',
             headers: {
@@ -779,6 +944,12 @@ export default class SopraDatingAPI {
         })
     };
 
+    /**
+     * Retrieves all selection properties from the system.
+     *
+     * @return {Promise<unknown>} - A Promise that resolves to an array of PropertyBO objects
+     * representing the selection properties.
+     */
     getAllSelectionProperties() {
         return this.#fetchAdvanced(this.#getAllSelectionPropertiesURL(), {
             method: 'GET',
@@ -795,8 +966,13 @@ export default class SopraDatingAPI {
             })
     }
 
+    /**
+     * Adds a free text property to the system.
+     *
+     * @param propertyBO - The PropertyBO object representing the free text property to be added.
+     * @return {Promise<unknown>} - A Promise that resolves to the added PropertyBO object.
+     */
     addFreeTextProperty(propertyBO) {
-        console.log(propertyBO)
         return this.#fetchAdvanced(this.#addFreeTextPropertyURL(), {
             method: 'POST',
             headers: {
@@ -813,6 +989,12 @@ export default class SopraDatingAPI {
         })
     };
 
+    /**
+     * Retrieves all free text properties from the system.
+     *
+     * @return {Promise<unknown>} - A Promise that resolves to an array of PropertyBO objects
+     * representing the free text properties.
+     */
     getAllFreeTextProperties() {
         return this.#fetchAdvanced(this.#getAllFreeTextPropertiesURL(), {
             method: 'GET',
@@ -829,7 +1011,14 @@ export default class SopraDatingAPI {
             })
     };
 
-    addNewInformationObjectToProile(valueId, valueBo) {
+    /**
+     * Adds a new information object to a profile.
+     *
+     * @param valueId - The ID of the value associated with the information object.
+     * @param valueBo - The information object to be added.
+     * @return {Promise<unknown>} - A Promise that resolves to a ProfileBO object representing the updated profile.
+     */
+    addNewInformationObjectToProfile(valueId, valueBo) {
         return this.#fetchAdvanced(this.#addNewInformationToProfileURL(valueId), {
             method: 'POST',
             headers: {
@@ -844,5 +1033,101 @@ export default class SopraDatingAPI {
                 resolve(ProfileBo)
             })
         })
-    }
+    };
+
+    /**
+     * Updates a selection property.
+     *
+     * @param propertyId - The ID of the property to be updated.
+     * @param propertyBo - The updated property object.
+     * @return {Promise<unknown>} - A Promise that resolves to a PropertyBO object representing the updated property.
+     */
+    updateSelectionProperty(propertyId, propertyBo) {
+        return this.#fetchAdvanced(this.#updateSelectionPropertyByIdURL(propertyId), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            },
+            body: JSON.stringify(propertyBo)
+        }).then((responseJSON) => {
+            let propertyBo = PropertyBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(propertyBo)
+            })
+        })
+    };
+
+    /**
+     * Updates a text property.
+     *
+     * @param propertyId - The ID of the property to be updated.
+     * @param propertyBo - The updated property object.
+     * @return {Promise<unknown>} - A Promise that resolves to a PropertyBO object representing the updated property.
+     */
+    updateTextProperty(propertyId, propertyBo) {
+        return this.#fetchAdvanced(this.#updateTextPropertyByIdURL(propertyId), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            },
+            body: JSON.stringify(propertyBo)
+        }).then((responseJSON) => {
+            let propertyBo = PropertyBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(propertyBo)
+            })
+        })
+    };
+
+    /**
+     * Updates a selection value.
+     *
+     * @param valueId - The ID of the value to be updated.
+     * @param valueBo - The updated value object.
+     * @return {Promise<unknown>} - A Promise that resolves to a ValueBo object representing the updated value.
+     */
+    updateSelectionValue(valueId, valueBo) {
+        return this.#fetchAdvanced(this.#updateSelectionValueByIdURL(valueId), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            },
+            body: JSON.stringify(valueBo)
+        }).then((responseJSON) => {
+            let valueBo = ValueBo.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(valueBo)
+            })
+        })
+    };
+
+    /**
+     * Updates a text value.
+     *
+     * @param valueId - The ID of the value to be updated.
+     * @param valueBo - The updated value object.
+     * @return {Promise<unknown>} - A Promise that resolves to a ValueBo object representing the updated value.
+     */
+    updateTextValue(valueId, valueBo) {
+        return this.#fetchAdvanced(this.#updateTextValueByIdURL(valueId), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            },
+            body: JSON.stringify(valueBo)
+        }).then((responseJSON) => {
+            let valueBo = ValueBo.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(valueBo)
+            })
+        })
+    };
 }

@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
 import {getAuth, signOut} from "firebase/auth";
+import appLogo from "../static/images/logo_transparent_wei.png";
 
 export default function AppHeader(props) {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -20,68 +21,98 @@ export default function AppHeader(props) {
 
     const navigate = useNavigate()
 
-
+    /**
+     * handles the opening for the navigation menu
+     */
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
+    /**
+     * handles the opening for the user menu
+     */
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
-
+    /**
+     * handles the closing for the navigation menu
+     */
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
-
+    /**
+     * handles the closing for the user menu
+     */
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
 
+    /**
+     * handles the closing for the user menu
+     */
     function navigateToProfilePage() {
         navigate('/profile')
     }
+
+    /**
+     * handles the navigation to the conversationoverview page
+     */
     function navigateToConversationOverviewPage() {
         navigate('/conversationOverview')
     }
+
+    /**
+     * handles the navigation to the main page
+     */
     function navigateToMainPage() {
         navigate('/main')
     }
+
+    /**
+     * handles the navigation to the bookmarklist page
+     */
     function navigateToBookmarkListPage() {
         navigate(('/bookmarklist'))
     }
 
+    /**
+     * handles the navigation to the blocklist page
+     */
     function navigateToBlockListPage() {
         navigate(('/blockList'))
     }
 
+    /**
+     * handles the navigation to the searchprofile overview page
+     */
     function navigateToSearchProfileOverviewPage() {
         navigate(('/searchProfileOverview'))
     }
 
+    /**
+     * handles the button click to sign out of the system
+     */
     function handleSignOutButtonClicked() {
         const auth = getAuth();
-        signOut(auth).then(
-            //TODO clear cookies
-        );
+        signOut(auth)
     }
 
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/main"
-                        sx={{
-                            display: {xs: 'none', md: 'flex'},
-                            fontWeight: 700,
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}>
-                        Sopra Dating
-                    </Typography>
-
+                    <Button href="/main"
+                            sx={{
+                                display: {xs: 'none', md: 'flex'},
+                                fontWeight: 700,
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}>
+                        <img
+                            src={appLogo}
+                            alt={"Date2Mate"}
+                            style={{width: '150px', height: 'auto'}}
+                        />
+                    </Button>
                     <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                         <IconButton
                             size="large"
@@ -179,7 +210,8 @@ export default function AppHeader(props) {
                         }} sx={{my: 2, color: 'white', display: 'block'}}>
                             Suchprofil
                         </Button>
-                        <Button onClick={navigateToConversationOverviewPage} sx={{my: 2, color: 'white', display: 'block'}}>
+                        <Button onClick={navigateToConversationOverviewPage}
+                                sx={{my: 2, color: 'white', display: 'block'}}>
                             chat
                         </Button>
                     </Box>
@@ -206,13 +238,13 @@ export default function AppHeader(props) {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}>
 
-                            <MenuItem sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }} onClick={() => {
+                            <MenuItem sx={{"&:hover": {backgroundColor: "#c6e2ff"}}} onClick={() => {
                                 handleCloseUserMenu()
                                 navigateToProfilePage()
                             }}>
                                 <Typography textAlign="center">Profil</Typography>
                             </MenuItem>
-                            <MenuItem sx={{ "&:hover": { backgroundColor: "#c6e2ff" } }} onClick={() => {
+                            <MenuItem sx={{"&:hover": {backgroundColor: "#c6e2ff"}}} onClick={() => {
                                 handleCloseUserMenu()
                                 handleSignOutButtonClicked()
                             }}>

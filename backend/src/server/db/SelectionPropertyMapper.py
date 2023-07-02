@@ -134,10 +134,7 @@ class SelectionPropertyMapper(Mapper.Mapper):
 
         for maxid in tuples:
             if maxid[0] is not None:
-                if maxid[0]+1 > 7000:
-                    raise ValueError("Reached maximum entities. Initializing not possible.") #todo catch error somewhere
-                else:
-                    sel_prop.set_id(maxid[0]+1)
+                sel_prop.set_id(maxid[0]+1)
             else:
                 sel_prop.set_id(6001)
 
@@ -248,27 +245,35 @@ class SelectionPropertyMapper(Mapper.Mapper):
         max_id = 0
         for maxid in tuples:
             if maxid[0] is not None:
-                if maxid[0] + 1 > 8000:
-                    raise ValueError(
-                        "Reached maximum entities. Initializing not possible.")  # todo catch error somewhere
-                else:
-                    max_id = maxid[0] + 1
+                max_id = maxid[0] + 1
             else:
                 max_id = 7001
 
-        command2 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
-        data = (max_id, sel_prop.get_id())
-        cursor.execute(command2, data)
+        # check if the selectable option is already there for this property
+        selections = self.retrieve_selections(sel_prop)
+        is_there = False
+        for selec in selections:
+            if payload.get('value').lower() == selec["value"].lower():
+                is_there = True
+                break
+        if not is_there:
 
-        command = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
-        data = (max_id, payload.get('value'))
-        cursor.execute(command, data)
+            command2 = "INSERT INTO property_assignment (ValueID, PropertyID) VALUES (%s, %s)"
+            data = (max_id, sel_prop.get_id())
+            cursor.execute(command2, data)
+
+            command = "INSERT INTO occupancies (ValueID, Value) VALUES (%s, %s)"
+            data = (max_id, payload.get('value'))
+            cursor.execute(command, data)
+
+        else:
+            return TypeError
 
         self._cnx.commit()
         cursor.close()
 
         return payload
-        # todo im frontend: sobald man eine neue option anlegt muss direkt danach der retrieve_selections befehl aufgerufen werden, damit die ValueID wieder geholt wird.
+
 
     def remove_selection(self, value_id):
         """
@@ -291,3 +296,21 @@ class SelectionPropertyMapper(Mapper.Mapper):
         cursor.close()
 
         return value_id
+
+    def update_selection(self, value_id, payload):
+        """
+        updates the name of a selectable option
+        :param value_id: id of the selectable option
+        :param payload: changed option name
+        :return: updated selectable option name
+        """
+        cursor = self._cnx.cursor()
+
+        command = "UPDATE occupancies SET Value=%s WHERE ValueID=%s"
+        data = (payload.get('value'), value_id)
+        cursor.execute(command, data)
+
+        self._cnx.commit()
+        cursor.close()
+
+        return payload

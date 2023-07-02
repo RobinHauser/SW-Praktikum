@@ -5,7 +5,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import {CircularProgress, List, ListSubheader} from "@mui/material";
+import {Alert, CircularProgress, List, ListSubheader} from "@mui/material";
 import ProfilePropertySelect from "../components/ProfilePropertySelect";
 import ProfilePropertyFreeText from "../components/ProfilePropertyFreeText";
 import AddIcon from "@mui/icons-material/Add";
@@ -25,10 +25,11 @@ import SopraDatingAPI from "../api/SopraDatingAPI";
 import CachedIcon from "@mui/icons-material/Cached";
 import PropertySelectMenuItem from "../components/PropertySelectMenuItem";
 import PropertyTextMenuItem from "../components/PropertyTextMenuItem";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {getAuth, signOut} from "firebase/auth";
 
 /**
- * @author [Björn Till](https://github.com/BjoernTill)
- * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which includes the profile page
  */
 
 class Profile extends Component {
@@ -57,7 +58,9 @@ class Profile extends Component {
             PropertySelectionNameText: '',
             PropertySelectionDescriptionText: '',
             PropertyFreeTextNameText: '',
-            PropertyFreeTextDescriptionText: ''
+            PropertyFreeTextDescriptionText: '',
+            successAlert: "",
+            warningAlert: ""
         };
 
         this.handleOpenSelectDialog = this.handleOpenSelectDialog.bind(this);
@@ -120,14 +123,14 @@ class Profile extends Component {
     }
 
     /**
-     * Handles the dialog open for selection dialog
+     * Handles the dialog open for selection dialog to add a new selection property
      */
     handleOpenSelectDialog() {
         this.setState({openSelectDialog: true});
     }
 
     /**
-     * Handles the dialog open for free text dialog
+     * Handles the dialog open for free text dialog to add a new free text property
      */
     handleOpenFreeTextDialog() {
         this.setState({openFreeTextDialog: true});
@@ -153,36 +156,93 @@ class Profile extends Component {
      * Sets the current system user and gets the personal profile
      */
     async componentDidMount() {
-        const exampleProperties = ["Value 1", "Value 2", "Value 3"];
         this.getAllSelectionProperties()
         this.getAllFreeTextProperties()
-        this.setState({properties: exampleProperties});
         this.setState({
             currentUser: this.props.user
         })
         await this.getPersonalProfile()
     }
 
+    /**
+     * Handler to further process the input data of a new selection property
+     * Calls the function that makes the API call
+     */
     addSelectionPropertyClickHandler = () => {
-        this.buttonAddSelectionProperty();
-
+        const {PropertySelectionNameText, PropertySelectionDescriptionText} = this.state;
+        this.addSelectionProperty({
+            "name": PropertySelectionNameText,
+            "description": PropertySelectionDescriptionText
+        })
+        this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
+        setTimeout(() => {
+            this.setState({successAlert: "", warningAlert: ""})
+        }, 3000);
     }
+
+
+    /**
+     * Handler to further process the input data of a new free text property
+     * Calls the function that makes the API call
+     */
 
     addFreeTextPropertyClickHandler = () => {
-        this.buttonAddFreeTextProperty();
+        const {PropertyFreeTextNameText, PropertyFreeTextDescriptionText} = this.state;
+        this.setState({openFreeTextDialog: false})
+        this.addFreeTextProperty({
+            "name": PropertyFreeTextNameText,
+            "description": PropertyFreeTextDescriptionText
+        })
+        setTimeout(() => {
+            this.setState({successAlert: "", warningAlert: ""})
+        }, 3000);
+        this.setState({PropertyFreeTextNameText: '', PropertyFreeTextDescriptionText: ''})
     }
 
-    buttonAddSelectionProperty() {
-        const name = this.state.PropertySelectionNameText
-        const description = this.state.PropertySelectionDescriptionText
-        let propertyBO = {
-            "name": name,
-            "description": description
-        }
-        this.addSelectionProperty(propertyBO)
-        this.setState({PropertySelectionNameText: '', PropertySelectionDescriptionText: ''})
-    }
+    /**
+     * Calls the API to add a new selection property and checks if it already exists in the system
+     * @param propertyBO - Business Object of the new selection property
+     */
+    addSelectionProperty = (propertyBO) => {
+        this.setState({openSelectDialog: false})
+        SopraDatingAPI.getAPI().addSelectionProperty(propertyBO)
+            .then(() => {
+                this.setState({
+                    error: null,
+                    successAlert: "neue Auswahleigenschaft der Liste hinzugefügt"
+                });
+                this.getAllSelectionProperties()
+            }).catch(e => {
+            this.setState({
+                error: e,
+                warningAlert: "Auswahleigenschaft existiert bereits"
+            });
+        });
+    };
 
+    /**
+     * Calls the API to add a new free text property and checks if it already exists in the system
+     * @param propertyBO - Business Object of the new free text property
+     */
+    addFreeTextProperty = (propertyBO) => {
+        SopraDatingAPI.getAPI().addFreeTextProperty(propertyBO)
+            .then(() => {
+                this.setState({
+                    error: null,
+                    successAlert: "neue Freitext-Eigenschaft der Liste hinzugefügt"
+                });
+                this.getAllFreeTextProperties()
+            }).catch(e => {
+            this.setState({
+                error: e,
+                warningAlert: "Freitext-Eigenschaft existiert bereits"
+            });
+        });
+    };
+
+    /**
+     * Checks whether the text fields of name and description are filled in when adding a new selection property
+     */
     isFormValidSelect() {
         return (
             this.state.PropertySelectionNameText.trim() !== '' &&
@@ -190,6 +250,9 @@ class Profile extends Component {
         );
     }
 
+    /**
+     * Checks whether the text fields of name and description are filled in when adding a new free text property
+     */
     isFormValidFreeText() {
         return (
             this.state.PropertyFreeTextNameText.trim() !== '' &&
@@ -197,45 +260,9 @@ class Profile extends Component {
         );
     }
 
-    buttonAddFreeTextProperty() {
-        const name = this.state.PropertyFreeTextNameText
-        const description = this.state.PropertyFreeTextDescriptionText
-        let propertyBO = {
-            "name": name,
-            "description": description
-        }
-        this.addFreeTextProperty(propertyBO)
-        this.setState({PropertyFreeTextNameText: '', PropertyFreeTextDescriptionText: ''})
-    }
-
-    addSelectionProperty = (propertyBO) => {
-        SopraDatingAPI.getAPI().addSelectionProperty(propertyBO)
-            .then(() => {
-                this.setState({
-                    error: null
-                });
-                this.getAllSelectionProperties()
-            }).catch(e => {
-            this.setState({
-                error: e
-            });
-        });
-    };
-
-    addFreeTextProperty = (propertyBO) => {
-        SopraDatingAPI.getAPI().addFreeTextProperty(propertyBO)
-            .then(() => {
-                this.setState({
-                    error: null
-                });
-                this.getAllFreeTextProperties()
-            }).catch(e => {
-            this.setState({
-                error: e
-            });
-        });
-    };
-
+    /**
+     * Gets all selection properties of the system
+     */
     getAllSelectionProperties = () => {
         SopraDatingAPI.getAPI().getAllSelectionProperties()
             .then(PropertyBOs => {
@@ -252,6 +279,10 @@ class Profile extends Component {
             });
 
     };
+
+    /**
+     * Gets all free text properties of the system
+     */
 
     getAllFreeTextProperties = () => {
         SopraDatingAPI.getAPI().getAllFreeTextProperties()
@@ -270,27 +301,54 @@ class Profile extends Component {
 
     };
 
+    /**
+     * Captures the value of the input field in which the name of a new selection property is entered
+     * and sets it in the State
+     * @param event - value of the input
+     */
+
     handleInputChangeSelectionName = (event) => {
         this.setState({PropertySelectionNameText: event.target.value});
     }
+
+    /**
+     * Captures the value of the input field in which the descprition of a new selection property is entered
+     * and sets it in the State
+     * @param event - value of the input
+     */
 
     handleInputChangeSelectionDescription = (event) => {
         this.setState({PropertySelectionDescriptionText: event.target.value});
     }
 
+    /**
+     * Captures the value of the input field in which the name of a new free text property is entered
+     * and sets it in the State
+     * @param event - value of the input
+     */
     handleInputChangeFreeTextName = (event) => {
         this.setState({PropertyFreeTextNameText: event.target.value});
     }
 
+    /**
+     * Captures the value of the input field in which the description of a new free text is entered
+     * and sets it in the State
+     * @param event - value of the input
+     */
     handleInputChangeFreeTextDescription = (event) => {
         this.setState({PropertyFreeTextDescriptionText: event.target.value});
     }
 
+    /**
+     * Handles the dialog open for dialogs
+     */
     handleOpenDialogSelect() {
         this.setState({openDialogSelect: true});
     }
 
-
+    /**
+     * Handles the dialog close for dialogs
+     */
     handleCloseDialogInfo() {
         const {isAddingNewProperty} = this.state;
         if (isAddingNewProperty) {
@@ -300,10 +358,19 @@ class Profile extends Component {
         }
     }
 
+    /**
+     * Handles clicking on an item in the dialog window in which options for a selection property can be selected
+     * @param value - value of the Item which is getting clicked
+     */
     handleListItemClick(value) {
         this.handleCloseDialogInfo(value);
         this.handleCloseDialogProp();
     }
+
+    /**
+     * Handles clicking on an item in the dialog window in which options for a selection property can be selected
+     * @param value - value of the Item which is getting clicked
+     */
 
     handleDeleteItemClick(value) {
         const {properties} = this.state;
@@ -312,13 +379,16 @@ class Profile extends Component {
     }
 
     handleAddItemClick() {
-        this.setState({openDialogSelect: true, isAddingNewProperty: true});
+        this.setState({openDialogSelect: false, isAddingNewProperty: true});
     }
 
     handleNewPropertyChange(event) {
         this.setState({newProperty: event.target.value});
     }
 
+    /**
+     * Handles the adding of a new Property and closes the dialog
+     */
     handleAddProperty() {
         const {properties, newProperty} = this.state;
         if (newProperty.trim() !== "") {
@@ -328,10 +398,16 @@ class Profile extends Component {
         this.handleCloseDialogInfo();
     }
 
+    /**
+     * Handles the dialog open to the dialog with which a new free text property can be added
+     */
     handleOpenDialogFreeText() {
         this.setState({openDialogFreeText: true});
     }
 
+    /**
+     * Handles the dialog close to the dialog with which a new free text property can be added
+     */
     handleCloseDialogFreeText() {
         this.setState({openDialogFreeText: false, selectedValue: this.props.value});
     }
@@ -341,31 +417,65 @@ class Profile extends Component {
         this.handleCloseDialogProp();
     }
 
-
+    /**
+     * Opens the list to load new selection properties into the profile
+     * @param event -  Returns the list of the selection properties
+     */
     handleGlobalPropertiesMenuSelectClick = (event) => {
         this.setState({anchorElSelect: event.currentTarget});
     };
 
+    /**
+     * Opens the list to load new free text properties into the profile
+     * @param event -  Returns the list of the free text properties
+     */
     handleGlobalPropertiesMenuFreeTextClick = (event) => {
         this.setState({anchorElFreeText: event.currentTarget})
     }
 
+    /**
+     * Handles the close of the list with which new selection properties can be loaded into the profile
+     */
     handleCloseGlobalPropertiesSelect = () => {
         this.setState({anchorElSelect: null});
     };
+
+    /**
+     * Handles the close of the list with which new free text properties can be loaded into the profile
+     */
 
     handleCloseGlobalPropertiesFreeText = () => {
         this.setState({anchorElFreeText: null});
     };
 
-    handleGlobalPropertiesItemClickSelect = () => {
-        this.setState({anchorElSelect: null, openDialogSelect: true});
-    };
+    /**
+     * Handles the execution of an alert when user input is successful
+     */
+    handleSuccessAlert = (text) => {
+        this.setState({successAlert: text})
+        setTimeout(() => {
+            this.setState({successAlert: ""})
+        }, 3000)
+    }
 
-    handleGlobalPropertiesItemClickFreeText = () => {
-        this.setState({anchorElFreeText: null});
-        this.handleOpenDialogFreeText();
-    };
+    /**
+     *
+     * source: https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
+     */
+    deleteAllCookies = () => {
+        document.cookie = 'token=;path=/';
+    }
+
+    /**
+     * Handles the deletion of a user from the system and calls the responsible API
+     */
+    handleDeleteUser = async () => {
+        const {user} = this.props;
+        await SopraDatingAPI.getAPI().deleteUser(user.getUserID(), user)
+        const auth = getAuth();
+        await signOut(auth)
+        this.deleteAllCookies()
+    }
 
     /**
      * Renders the class component
@@ -382,7 +492,9 @@ class Profile extends Component {
             globalPropertiesFreeText,
             anchorElSelect,
             anchorElFreeText,
-            informations
+            informations,
+            successAlert,
+            warningAlert
         } = this.state;
         const openSelect = Boolean(anchorElSelect)
         const openFreeText = Boolean(anchorElFreeText)
@@ -449,6 +561,8 @@ class Profile extends Component {
                                                                InformationsBoPropDescr={InformationsBo.getPropDescription()}
                                                                InformationsBoInfoId={InformationsBo.getInformationId()}
                                                                InformationsBoIsSelection={InformationsBo.getIsSelect()}
+                                                               handleSuccessAlert={this.handleSuccessAlert}
+                                                               getAllSelectionProperties={this.getAllSelectionProperties}
                                         />
                                     ) : (
                                         <ProfilePropertyFreeText key={InformationsBo.getInformationId()}
@@ -458,30 +572,31 @@ class Profile extends Component {
                                                                  InformationsBoPropId={InformationsBo.getPropID()}
                                                                  InformationsBoPropDescr={InformationsBo.getPropDescription()}
                                                                  InformationsBoInfoId={InformationsBo.getInformationId()}
+                                                                 handleSuccessAlert={this.handleSuccessAlert}
+                                                                 getAllFreeTextProperties={this.getAllFreeTextProperties}
                                         />
 
                                     )
                                 ))
                             ) : (
-                                <p>Keine Informationen im Profil enthalten</p>
+                                <p>Keine Informationen im Profil enthalten.</p>
                             )}
                         </List>
-                        <Box sx={{display: 'flex', justifyContent: 'space-evenly'}}>
+
+                        {successAlert.length > 0 && (
+                            <Alert severity="success">{successAlert}</Alert>
+                        )}
+                        {warningAlert.length > 0 && (
+                            <Alert severity="warning">{warningAlert}</Alert>
+                        )}
+
+                        <Box>
                             <Container style={{
                                 display: 'grid',
                                 placeItems: 'center',
-                                marginTop: '50px',
-                                marginBottom: '50px'
+                                marginTop: '20px',
+                                marginBottom: '20px'
                             }}>
-                                <Button
-                                    onClick={this.handleOpenSelectDialog}
-                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
-                                    variant="outlined"
-                                    startIcon={<AddIcon/>}
-                                >
-                                    Auswahl-Eigenschaft hinzufügen
-                                </Button>
-
                                 <Tooltip title={"Auswahl-Eigenschaften, die ins Profil geladen werden können."}>
                                     <Button
                                         aria-controls="dropdown-menu"
@@ -491,7 +606,7 @@ class Profile extends Component {
                                         endIcon={<ArrowDropDownIcon/>}
                                         sx={{marginTop: '25px'}}
                                     >
-                                        Auswahl-Eigenschaft laden
+                                        Auswahl-Eigenschaft ins Profil laden
                                     </Button>
                                 </Tooltip>
                                 <Menu
@@ -509,27 +624,14 @@ class Profile extends Component {
                                                 InformationsBoPropDescr={globalPropertyItemSelect.getPropertyDescription()}
                                                 UserId={this.props.user.getUserID()}
                                                 InformationsBoIsSelection={globalPropertyItemSelect.getIsSelection()}
-                                                profileId={this.state.personalProfile.getProfileID()}></PropertySelectMenuItem>
+                                                profileId={this.state.personalProfile.getProfileID()}
+                                                getAllSelectionProperties={this.getAllSelectionProperties}>
+                                            </PropertySelectMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>
                                     )
                                     }
                                 </Menu>
-                            </Container>
-                            <Container style={{
-                                display: 'grid',
-                                placeItems: 'center',
-                                marginTop: '50px',
-                                marginBottom: '50px'
-                            }}>
-                                <Button
-                                    onClick={this.handleOpenFreeTextDialog}
-                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
-                                    variant="outlined"
-                                    startIcon={<AddIcon/>}
-                                >
-                                    Freitext-Eigenschaft hinzufügen
-                                </Button>
 
                                 <Tooltip title={"Freitext-Eigenschaften, die ins Profil geladen werden können."}>
                                     <Button
@@ -541,7 +643,7 @@ class Profile extends Component {
                                         sx={{marginTop: '25px'}}
 
                                     >
-                                        Freitext-Eigenschaft laden
+                                        Freitext-Eigenschaft ins Profil laden
                                     </Button>
                                 </Tooltip>
                                 <Menu
@@ -559,13 +661,39 @@ class Profile extends Component {
                                                 InformationsBoPropDescr={globalPropertyItemFreeText.getPropertyDescription()}
                                                 UserId={this.props.user.getUserID()}
                                                 InformationsBoIsSelection={globalPropertyItemFreeText.getIsSelection()}
-                                                profileId={this.state.personalProfile.getProfileID()}>
+                                                profileId={this.state.personalProfile.getProfileID()}
+                                                getAllFreetextProperties={this.getAllFreeTextProperties}
+                                                handleSuccessAlert={this.handleSuccessAlert}>
                                             </PropertyTextMenuItem>
                                         ))) : (
                                         <p>Es gibt keine globalen Eigenschaften.</p>
                                     )
                                     }
                                 </Menu>
+                            </Container>
+                            <Container style={{
+                                display: 'grid',
+                                placeItems: 'center',
+                                marginTop: '25px',
+                                marginBottom: '25px'
+                            }}>
+                                <Button
+                                    onClick={this.handleOpenSelectDialog}
+                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
+                                    variant="outlined"
+                                    startIcon={<AddIcon/>}
+                                >
+                                    Auswahl-Eigenschaft global hinzufügen
+                                </Button>
+
+                                <Button
+                                    onClick={this.handleOpenFreeTextDialog}
+                                    sx={{marginTop: '20px', fontWeight: 'bold'}}
+                                    variant="outlined"
+                                    startIcon={<AddIcon/>}
+                                >
+                                    Freitext-Eigenschaft global hinzufügen
+                                </Button>
                             </Container>
                         </Box>
                         <Dialog open={openSelectDialog} onClose={() => this.handleCloseDialogProp(null)}>
@@ -607,12 +735,11 @@ class Profile extends Component {
                             handleClick={this.handleClick}
                             value={value}
                         />
-
                     </Container>
 
                     <hr/>
 
-                    <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '50px'}}>
+                    <Container style={{display: 'grid', placeItems: 'center', marginTop: '50px', marginBottom: '0px'}}>
 
                         <Dialog open={openFreeTextDialog} onClose={() => this.handleCloseDialogProp(null)}>
                             <DialogTitle>Freitext-Eigenschaft hinzufügen</DialogTitle>
@@ -656,7 +783,23 @@ class Profile extends Component {
                             handleClick={this.handleClick}
                             value={value}
                         />
-
+                        <Tooltip title="Account löschen" fontSize="large">
+                            <Button variant="contained"
+                                    onClick={this.handleDeleteUser}
+                                    sx={{
+                                        color: "white",
+                                        backgroundColor: "red",
+                                        borderColor: 'red',
+                                        '&:hover': {
+                                            backgroundColor: "white",
+                                            color: "red",
+                                            border: "solid 1px red"
+                                        },
+                                        fontWeight: 'bold',
+                                        marginBottom: '40px'
+                                    }}
+                                    startIcon={<DeleteIcon/>}>Account löschen</Button>
+                        </Tooltip>
                     </Container>
                 </div>
             );

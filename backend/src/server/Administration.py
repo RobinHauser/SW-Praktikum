@@ -264,13 +264,17 @@ class Administration():
     --------------------------------------------------------------------------------------------------------------
     """
     def create_selection_property(self, name, description):
-        sel_prop = SelectionProperty()
-        sel_prop.set_name(name)
-        sel_prop.set_is_selection(1)
-        sel_prop.set_description(description)
+        present_prop = self.get_selection_property_by_name(name)
+        if present_prop is None:
+            sel_prop = SelectionProperty()
+            sel_prop.set_name(name)
+            sel_prop.set_is_selection(1)
+            sel_prop.set_description(description)
 
-        with SelectionPropertyMapper() as mapper:
-            return mapper.insert(sel_prop)
+            with SelectionPropertyMapper() as mapper:
+                return mapper.insert(sel_prop)
+        else:
+            return TypeError
 
     def get_all_selection_properties(self):
         with SelectionPropertyMapper() as mapper:
@@ -315,19 +319,29 @@ class Administration():
         with SelectionPropertyMapper() as mapper:
             return mapper.remove_selection(value_id)
 
+    def update_option(self, value_id, payload):
+        with SelectionPropertyMapper() as mapper:
+            if payload is not None:
+                return mapper.update_selection(value_id, payload)
+
+
     """
     --------------------------------------------------------------------------------------------------------------
     TextProperty - Functions
     --------------------------------------------------------------------------------------------------------------
     """
     def create_text_property(self, name, description):
-        text_prop = TextProperty()
-        text_prop.set_name(name)
-        text_prop.set_is_selection(0)
-        text_prop.set_description(description)
+        present_prop = self.get_text_property_by_name(name)
+        if present_prop is None:
+            text_prop = TextProperty()
+            text_prop.set_name(name)
+            text_prop.set_is_selection(0)
+            text_prop.set_description(description)
 
-        with TextPropertyMapper() as mapper:
-            return mapper.insert(text_prop)
+            with TextPropertyMapper() as mapper:
+                return mapper.insert(text_prop)
+        else:
+            return TypeError
 
     def get_all_text_properties(self):
         with TextPropertyMapper() as mapper:

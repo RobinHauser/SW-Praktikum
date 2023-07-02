@@ -8,12 +8,7 @@ import Dialog from "@mui/material/Dialog";
 import ExtendedProfileCard from "./ExtendedProfileCard";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import {CircularProgress, List} from "@mui/material";
-import Box from "@mui/material/Box";
 
-/**
- * @author [Jannik Haug, Theo Klautke, Michael Bergdolt]
- * Diaologhandling von Björn Till übernommen
- */
 class ProfileCard extends Component {
     constructor(props) {
         super(props);

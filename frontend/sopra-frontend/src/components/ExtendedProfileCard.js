@@ -12,9 +12,6 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import BlockIcon from '@mui/icons-material/Block';
 import SopraDatingAPI from "../api/SopraDatingAPI";
 
-/**
- * @author [Jannik Haug, Michael Bergdolt]
- */
 class ExtendedProfileCard extends Component {
     constructor(props) {
         super(props);

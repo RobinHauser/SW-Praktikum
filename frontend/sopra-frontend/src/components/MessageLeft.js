@@ -1,11 +1,9 @@
 import Typography from "@mui/material/Typography";
 import {ListItem, Paper} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 import {Component} from "react";
 
 /**
- * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which shows a message on a Paper as a ListItem.
  * This ist the component for the left message (a message written by chat partner user).
  */

@@ -124,7 +124,6 @@ class UserMapper(Mapper):
         try:
             user = User()
             user.set_user_id(tuples[0])
-            useruser_id = user.get_user_id()
             user.set_email(tuples[1])
             user.set_displayname(tuples[2])
             user.set_avatarurl(tuples[3])
@@ -306,7 +305,8 @@ class UserMapper(Mapper):
     def __get_user_related_id(self, cursor, table, id_column, user_column, user_id):
         command = f'SELECT {id_column} FROM {table} WHERE {user_column} = {user_id}'
         cursor.execute(command)
-        return cursor.fetchone()[0]
+        returned_value = cursor.fetchone()[0]
+        return returned_value
 
     def __delete_content(self, cursor, table, id_column, content_id):
         command = f'DELETE FROM {table} WHERE {id_column} = {content_id}'
@@ -334,7 +334,7 @@ class UserMapper(Mapper):
         cursor = self._cnx.cursor()
 
         # Get related ChatIDs of user
-        command_get_ChatID = f"SELECT ChatID FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}" # TODO Vielleicht error weil user2 nicht mehr gibt
+        command_get_ChatID = f"SELECT ChatID FROM chatrelation WHERE UserID = {user_id} OR UserRelationToChatID = {user_id}"
         cursor.execute(command_get_ChatID)
         ChatID_tuples = cursor.fetchall()
 

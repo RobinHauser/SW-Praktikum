@@ -1,13 +1,11 @@
 import {ListItem, ListItemText} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import placeHolderImage from '../static/images/profileImagePlaceholder.jpeg';
 import Tooltip from "@mui/material/Tooltip";
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import {Link} from "react-router-dom";
 import {Component} from "react";
 
 /**
- * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which shows a chat user partner as a ListItem.
  */
 class ConversationOverviewItem extends Component {

@@ -9,8 +9,7 @@ import TextField from "@mui/material/TextField";
 import SopraDatingAPI from "../api/SopraDatingAPI";
 
 /**
- * @author [Björn Till](https://github.com/BjoernTill)
- * @author [Jannik Haug](https://github.com/JannikHaug)
+ * Class react component which includes the dialog window to fill out the text for a free text property
  */
 
 class InfoFreeTextDialog extends Component {
@@ -36,59 +35,55 @@ class InfoFreeTextDialog extends Component {
             "entry": `${content}`,
         }
         this.postNewValue(this.props.InformationsBoPropId, valueBo, parseInt(this.props.InformationsBoInfoId))
+        this.props.handleCloseDialogFreeText()
+
     }
     /**
      * posts a new value for a prop and triggers the function to add it to the current information object
      * @param {int} propId - id of the current property
      * @param {ValueBo} valueBo - includes the value content
-     * @param {int} informationId - id of the current information object
      */
-    postNewValue = (propId, valueBo, informationId) => {
-        SopraDatingAPI.getAPI().addTextPropertyValueById(propId, valueBo)
+    postNewValue = (propId, valueBo) => {
+        if (this.props.InformationsBoInfoId === null || typeof this.props.InformationsBoInfoId === 'undefined') {
+            const informationBo = {
+                "id": `${this.props.profileId}`
+            }
+            SopraDatingAPI.getAPI().addTextPropertyValueById(propId, valueBo)
+                .then((responseJSON) => {
+                    this.setState({
+                        currentInformation: responseJSON,
+                        currentInformationId: responseJSON.getValueId()
+                    })
+                    this.addNewInformationObject(responseJSON.getValueId(), informationBo)
+                    this.setState({
+                        textFieldContent: "",
+                    })
+                }).catch(error => {
+                alert(error)
+            })
+        } else {
+            const valueBo1 = {
+                "entry": `${this.state.textFieldContent}`
+            }
+            this.updateTextValue(this.props.InformationsBoId, valueBo1)
+        }
+    }
+    /**
+     * update the value with new string input
+     * @param {ValueBo} valueBo - includes the value content
+     * @param {int} valueId - id of the current text value
+     */
+    updateTextValue = (valueId, valueBo) => {
+        SopraDatingAPI.getAPI().updateTextValue(valueId, valueBo)
             .then((responseJSON) => {
-                this.setState({
-                    currentInformation: responseJSON,
-                    currentInformationId: responseJSON.getValueId()
-                })
+                this.setState({})
                 this.setState({
                     textFieldContent: "",
                 })
-                if (this.props.InformationsBoInfoId === null || typeof this.props.InformationsBoInfoId === 'undefined') {
-                    const informationBo = {
-                        "id": `${this.props.profileId}`
-                    }
-                    this.addNewInformationObject(responseJSON.getValueId(), informationBo)
-
-                } else {
-                    const valueBo1 = {
-                        "valueID": `${responseJSON.getValueId()}`
-                    }
-                    alert("Neue Auswahl erfolgreich hinzugefügt")
-                    this.updateInformation(informationId, valueBo1)
-                }
-
-
+                this.props.handleSuccessAlert("Die Information wurde erfolgreich aktualisiert.")
             }).catch(error => {
             alert(error)
         })
-    }
-    /**
-     * update the value with the new value to the current information object
-     * @param {ValueBo} valueBo - includes the value content
-     * @param {int} informationId - id of the current information object
-     */
-    updateInformation = (informationId, valueBo) => {
-        SopraDatingAPI.getAPI().updateValueOfInformationObject(informationId, valueBo)
-            .then(responseJSON => {
-                this.setState({
-                    error: null
-                })
-                alert("Auswahl erfolgreich zur Information hinzugefügt")
-            }).catch(e =>
-            this.setState({
-                error: e
-            })
-        )
     }
     /**
      * adds a new information object
@@ -96,12 +91,12 @@ class InfoFreeTextDialog extends Component {
      * @param {int} valueId - id of the current information object
      */
     addNewInformationObject = (valueId, informationBo) => {
-        SopraDatingAPI.getAPI().addNewInformationObjectToProile(valueId, informationBo)
+        SopraDatingAPI.getAPI().addNewInformationObjectToProfile(valueId, informationBo)
             .then(responseJSON => {
                 this.setState({
                     error: null
                 })
-                alert("Die Information wurde erfolgreich zum Profil hinzugefügt")
+                this.props.handleSuccessAlert("Die Information wurde erfolgreich zum Profil hinzugefügt.")
             }).catch(e =>
             this.setState({
                 error: e
@@ -116,10 +111,34 @@ class InfoFreeTextDialog extends Component {
         this.setState({textFieldContent: event.target.value})
     }
 
+     /**
+     * Checks whether the text field is filled out
+     */
+    isFormValid() {
+        return (
+            this.state.textFieldContent.trim() !== ''
+        );
+    }
+
+    /**
+     * Called after the component did mount.
+     * Sets the textfield to the current value
+     */
+    componentDidMount() {
+        if (!this.props.InformationsBoValue) {
+            this.setState({textFieldContent: ""})
+        }
+        else {
+        this.setState({
+            textFieldContent: this.props.InformationsBoValue
+        })}
+    }
+
     /**
      * Renders the class component
      * @returns InfoFreeTextDialog - the rendered component
      */
+
     render() {
         const {
             openDialogFreeText,
@@ -148,7 +167,7 @@ class InfoFreeTextDialog extends Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCloseDialogFreeText}>Abbrechen</Button>
-                        <Button onClick={this.addButtonFunction}>Bestätigen</Button>
+                        <Button onClick={this.addButtonFunction} disabled={!this.isFormValid()}>Bestätigen</Button>
                     </DialogActions>
                 </Dialog>
             </div>
