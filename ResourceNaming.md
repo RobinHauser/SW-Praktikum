@@ -2,7 +2,7 @@
 
 ## Erklärung
 Um mit einem Flask Rest-Server arbeiten zu können benötigen wir Schnittstellen, welche
-vom Frontend aus gecallt werden können. Hierfür ist eine Konsitenz in der Namensgebung
+vom Frontend aus aufgerufen werden können. Hierfür ist eine Konsistenz in der Namensgebung
 der Schnittstellen notwendig. Die Namensgebung der Schnittstellen ist in diesem Dokument
 beschrieben.
 
