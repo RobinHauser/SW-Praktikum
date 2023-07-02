@@ -187,6 +187,9 @@ export default class SopraDatingAPI {
     #updateSelectionValueByIdURL = (valueId) => {
         return `${this.#SopraDatingServerBaseURL}/selection-property/options/${valueId}`
     }
+    #updateTextValueByIdURL = (valueId) => {
+        return `${this.#SopraDatingServerBaseURL}/text-property/entries/${valueId}`
+    }
 
 
     /**
@@ -912,6 +915,23 @@ export default class SopraDatingAPI {
 
     updateSelectionValue(valueId, valueBo) {
         return this.#fetchAdvanced(this.#updateSelectionValueByIdURL(valueId), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-type': 'application/json',
+                'Token': `${this.#getCookie('token')}`
+            },
+            body: JSON.stringify(valueBo)
+        }).then((responseJSON) => {
+            let valueBo = ValueBo.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(valueBo)
+            })
+        })
+    };
+
+    updateTextValue(valueId, valueBo) {
+        return this.#fetchAdvanced(this.#updateTextValueByIdURL(valueId), {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json, text/plain',

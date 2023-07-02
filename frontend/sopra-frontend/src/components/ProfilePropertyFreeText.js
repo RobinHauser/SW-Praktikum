@@ -96,7 +96,7 @@ class ProfilePropertyFreeText extends Component {
             InformationsBoId,
             InformationsBoPropId,
             InformationsBoPropDescr,
-            InformationsBoInfoId
+            InformationsBoInfoId,
         } = this.props;
         const {openDialogFreeText} = this.state;
         return (
