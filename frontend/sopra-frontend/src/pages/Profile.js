@@ -414,7 +414,6 @@ class Profile extends Component {
         this.setState({openDialogFreeText: false, selectedValue: this.props.value});
     }
 
-    //Keine Verwendung
     handleClick(value) {
         this.handleCloseDialogFreeText(value);
         this.handleCloseDialogProp();
