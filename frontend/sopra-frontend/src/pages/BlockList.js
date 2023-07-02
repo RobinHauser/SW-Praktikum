@@ -10,8 +10,6 @@ import Box from "@mui/material/Box";
 
 /**
  * Shows the Blocklist with all Profiles, that are Blocked by the User
- *
- * @author [Michael Bergdolt]
  */
 export default class BlockList extends React.Component {
 

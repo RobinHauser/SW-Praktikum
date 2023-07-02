@@ -18,7 +18,6 @@ import CachedIcon from '@mui/icons-material/Cached';
 
 
 /**
- * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which includes the complete chat ui with messages, textfield and a send button.
  */
 

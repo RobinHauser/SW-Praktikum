@@ -4,7 +4,7 @@ import SearchProfileOverviewContainer from "../components/SearchProfileOverviewC
 import React, {Component} from "react";
 
 /**
- * @author [Björn Till](https://github.com/BjoernTill)
+ * Class react component which includes the search profile overview
  */
 
 class SearchProfileOverview extends Component {
@@ -13,6 +13,11 @@ class SearchProfileOverview extends Component {
         this.state = {
         }
     }
+
+     /**
+     * Renders the class component
+     * @returns SearchProfileOverview - the rendered component
+     */
     render() {
         const user = this.props.user
         return (

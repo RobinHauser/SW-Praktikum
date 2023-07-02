@@ -10,8 +10,6 @@ import Typography from "@mui/material/Typography";
 
 /**
  * Shows the Bookmarklist with all Profiles, that are Bookmarked by the User
- *
- * @author [Michael Bergdolt]
  */
 
 export default class bookmarkList extends React.Component {

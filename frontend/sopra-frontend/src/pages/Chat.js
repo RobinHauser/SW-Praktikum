@@ -3,7 +3,6 @@ import ChatContainer from "../components/ChatContainer";
 import {Component} from "react";
 
 /**
- * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which renders the ChatContainer component
  */
 

@@ -4,7 +4,6 @@ import Avatar from "@mui/material/Avatar";
 import {Component} from "react";
 
 /**
- * @author [Jannik Haug](https://github.com/JannikHaug)
  * Class react component which shows a message on a Paper as a ListItem.
  * This ist the component for the right message (a message written by the current user).
  * Reference for wordBreak in the Typography: https://stackoverflow.com/questions/52260553/after-word-break-align-next-line-to-the-left-rather-than-center

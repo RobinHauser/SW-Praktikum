@@ -12,9 +12,6 @@ import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
 import SopraDatingAPI from "../api/SopraDatingAPI";
 import {Alert, CircularProgress, LinearProgress} from "@mui/material";
 
-/**
- * @author [Jannik Haug]
- */
 class BookmarkProfileCard extends Component {
 
     constructor(props) {
